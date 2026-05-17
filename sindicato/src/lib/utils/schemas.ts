@@ -11,19 +11,28 @@ export const caseSubmissionSchema = z
   .object({
     displayName: z.string().min(1).max(100),
     country: z.string().min(1).max(100),
-    projects: z.string().min(1),
+    projects: z.string().min(1).max(500),
     dateRange: z.string().min(1).max(200),
-    amountOwed: z.string().min(1).regex(/^\d+(\.\d{1,2})?$/, "Must be a valid amount"),
+    amountOwed: z.string().min(1).regex(/^\d+(\.\d{1,2})?$/, "Must be a valid amount").refine(
+      (v) => parseFloat(v) <= 99999999.99,
+      { message: "Amount exceeds maximum allowed value" }
+    ),
     currency: z.string().length(3).default("EUR"),
-    contactAttempts: z.number().int().min(0),
-    story: z.string().min(100).max(5000),
+    contactAttempts: z.coerce.number().int().min(0),
+    story: z.string().min(1).max(10000).refine(
+      (s) => {
+        const words = s.trim().split(/\s+/).filter(Boolean).length;
+        return words >= 100 && words <= 500;
+      },
+      { message: "Story must be between 100 and 500 words" }
+    ),
     email: z.email(),
-    companySlug: z.string().min(1).max(100),
+    companySlug: z.string().min(1).max(100).optional(),
     claimTypes: claimTypesSchema.refine(
       (v) => v.unpaidWages || v.unfairPractices || v.retaliation || v.other,
       { message: "Select at least one claim type" }
     ),
-    otherDescription: z.string().optional(),
+    otherDescription: z.string().max(1000).optional(),
     attestation: z.literal(true),
     consentLegal: z.literal(true),
     consentCollective: z.literal(true),

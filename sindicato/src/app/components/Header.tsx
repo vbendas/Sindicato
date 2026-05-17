@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface HeaderProps {
-  onRelateCase: () => void;
+  onRelateCase?: () => void;
 }
 
 export default function Header({ onRelateCase }: HeaderProps) {
@@ -119,7 +119,7 @@ export default function Header({ onRelateCase }: HeaderProps) {
               <button
                 onClick={() => {
                   setIsOpen(false);
-                  onRelateCase();
+                  onRelateCase?.();
                 }}
                 className="w-full bg-sindicato-red text-sindicato-cream px-6 py-3 font-bold uppercase tracking-wider torn-edge mt-4"
               >

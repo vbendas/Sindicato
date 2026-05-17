@@ -14,7 +14,7 @@ const validCase = {
   amountOwed: "5000",
   currency: "EUR",
   contactAttempts: 12,
-  story: "A".repeat(100),
+  story: Array.from({ length: 101 }, (_, i) => `word${i}`).join(" "),
   email: "test@example.com",
   companySlug: "alignerr",
   claimTypes: { unpaidWages: true },
@@ -83,26 +83,29 @@ describe("caseSubmissionSchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("rejects story shorter than 100 chars", () => {
-    const data = { ...validCase, story: "hi" };
+  it("rejects story shorter than 100 words", () => {
+    const data = { ...validCase, story: "hi there" };
     const result = caseSubmissionSchema.safeParse(data);
     expect(result.success).toBe(false);
   });
 
-  it("accepts story exactly 100 chars", () => {
-    const data = { ...validCase, story: "A".repeat(100) };
+  it("accepts story exactly 100 words", () => {
+    const story = Array.from({ length: 100 }, (_, i) => `word${i}`).join(" ");
+    const data = { ...validCase, story };
     const result = caseSubmissionSchema.safeParse(data);
     expect(result.success).toBe(true);
   });
 
-  it("accepts story exactly 5000 chars", () => {
-    const data = { ...validCase, story: "A".repeat(5000) };
+  it("accepts story exactly 500 words", () => {
+    const story = Array.from({ length: 500 }, (_, i) => `word${i}`).join(" ");
+    const data = { ...validCase, story };
     const result = caseSubmissionSchema.safeParse(data);
     expect(result.success).toBe(true);
   });
 
-  it("rejects story over 5000 chars", () => {
-    const data = { ...validCase, story: "A".repeat(5001) };
+  it("rejects story over 500 words", () => {
+    const story = Array.from({ length: 501 }, (_, i) => `word${i}`).join(" ");
+    const data = { ...validCase, story };
     const result = caseSubmissionSchema.safeParse(data);
     expect(result.success).toBe(false);
   });

@@ -1,1 +1,2 @@
-export { sendEmail } from "./send";
+export { sendEmail, sendTemplateEmail } from "./send";
+export { notifyCompanyNewCase, notifyWorkerDataAccessed } from "./notifications";
