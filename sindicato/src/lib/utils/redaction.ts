@@ -1,6 +1,6 @@
 export function redactName(fullName: string): string {
-  if (!fullName || fullName.length < 3) return "***";
-  return fullName.substring(0, 3) + "*****";
+  if (!fullName || fullName.length < 1) return "***";
+  return fullName[0] + "*****";
 }
 
 export function redactEmail(email: string): string {

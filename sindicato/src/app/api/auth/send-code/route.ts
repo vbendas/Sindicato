@@ -6,14 +6,14 @@ import { eq, and, isNull, gt } from "drizzle-orm";
 import { rateLimit } from "@/lib/auth/rate-limit";
 import { sendEmail } from "@/lib/email/send";
 import { emailSchema } from "@/lib/utils/schemas";
-import { success, error } from "@/lib/utils/api";
+import { success, error, getClientIp } from "@/lib/utils/api";
 
 function generateCode(): string {
   return crypto.randomInt(100000, 1000000).toString();
 }
 
 export async function POST(request: NextRequest) {
-  const ip = request.headers.get("x-forwarded-for") ?? "unknown";
+  const ip = getClientIp(request);
   const { allowed, retryAfterMs } = rateLimit(`send-code:${ip}`);
   if (!allowed) {
     return error("Too many requests", 429, { retryAfterMs });

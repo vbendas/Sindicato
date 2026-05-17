@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Modal from "./components/Modal";
 import Hero from "./sections/Hero";
 import Numbers from "./sections/Numbers";
@@ -42,24 +42,28 @@ const defaultStats: Stats = {
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [stats, setStats] = useState<Stats>(defaultStats);
+  const fetchedRef = useRef(false);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       const response = await fetch("/api/stats");
       if (response.ok) {
-        const data = await response.json();
-        setStats(data);
+        const json = await response.json();
+        setStats(json.ok ? json.data : json);
       }
     } catch (error) {
       console.error("Failed to fetch stats:", error);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchStats();
+    if (!fetchedRef.current) {
+      fetchedRef.current = true;
+      fetchStats();
+    }
     const interval = setInterval(fetchStats, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchStats]);
 
   return (
     <>
