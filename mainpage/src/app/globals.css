@@ -80,7 +80,7 @@ body {
 .marquee-track {
   display: flex;
   width: fit-content;
-  animation: marquee 40s linear infinite;
+  animation: marquee 160s linear infinite;
 }
 
 /* Diagonal section transitions (desktop only) */

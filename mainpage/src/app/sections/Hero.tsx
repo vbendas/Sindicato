@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 
 interface HeroProps {
@@ -10,6 +10,11 @@ interface HeroProps {
 }
 
 export default function Hero({ onRelateCase, caseCount = 0, companyCount = 0 }: HeroProps) {
+  const { scrollYProgress } = useScroll();
+  const fistOpacity = useTransform(scrollYProgress, [0, 0.4], [0.65, 0]);
+  const fistY = useTransform(scrollYProgress, [0, 0.4], [225, 625]);
+  const fistTransform = useTransform(fistY, (y) => `translate(-25px, ${y}px)`);
+
   return (
     <section className="relative min-h-screen bg-sindicato-bordeaux overflow-hidden">
       {/* Radial gradient overlay for depth */}
@@ -18,7 +23,7 @@ export default function Hero({ onRelateCase, caseCount = 0, companyCount = 0 }: 
 
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[6fr_4fr] min-h-screen">
         {/* Left column — text */}
-        <div className="flex flex-col justify-center px-4 sm:px-6 lg:px-12 xl:px-16 py-20">
+        <div className="flex flex-col justify-center px-4 sm:px-6 lg:px-12 xl:px-16 py-20 -mt-10 sm:-mt-14">
           <div className="mb-4 sm:mb-6">
             <motion.span
               initial={{ opacity: 0 }}
@@ -34,11 +39,12 @@ export default function Hero({ onRelateCase, caseCount = 0, companyCount = 0 }: 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
+            className="text-center"
           >
-            <span className="text-7xl sm:text-8xl md:text-9xl lg:text-[10rem] xl:text-[11rem] font-black text-white uppercase leading-[0.85] font-[family-name:var(--font-barlow)] tracking-tighter block">
+            <span className="text-6xl sm:text-7xl md:text-8xl lg:text-[8rem] xl:text-[9rem] font-black text-white uppercase leading-[0.85] font-[family-name:var(--font-barlow)] tracking-wide block">
               Wage Theft
             </span>
-            <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white/90 uppercase leading-[1.1] font-[family-name:var(--font-barlow)] tracking-wide mt-2 sm:mt-3 block text-center w-full">
+            <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white/90 uppercase leading-[1.1] font-[family-name:var(--font-barlow)] tracking-wider mt-2 sm:mt-3 block">
               Is Not a Mistake. <span className="text-white text-outline">It&apos;s a Policy.</span>
             </span>
           </motion.h1>
@@ -76,19 +82,19 @@ export default function Hero({ onRelateCase, caseCount = 0, companyCount = 0 }: 
 
         {/* Right column — hand image */}
         <div className="hidden lg:flex items-end justify-center overflow-visible relative pb-12">
-          <div
+          <motion.div
             className="w-[129%] h-[116%] -ml-[15%] pointer-events-none select-none"
             style={{
-              transform: 'translate(-25px, 225px)',
+              transform: fistTransform,
               backgroundImage: 'linear-gradient(#6B0F1A, #6B0F1A), url(/hand_noborder.png)',
               backgroundBlendMode: 'multiply, normal',
               backgroundSize: 'cover, contain',
               backgroundPosition: 'center, bottom',
               backgroundRepeat: 'no-repeat, no-repeat',
-              opacity: 0.35,
-              maskImage: 'linear-gradient(to bottom, transparent 0%, black 5%, black 100%), linear-gradient(to right, transparent 0%, black 5%, black 100%)',
+              opacity: fistOpacity,
+              maskImage: 'linear-gradient(to bottom, transparent 0%, black 3%, black 100%), linear-gradient(to right, transparent 0%, black 20%, black 100%)',
               maskComposite: 'intersect',
-              WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 5%, black 100%), linear-gradient(to right, transparent 0%, black 5%, black 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 3%, black 100%), linear-gradient(to right, transparent 0%, black 20%, black 100%)',
               WebkitMaskComposite: 'source-in',
             }}
           />
