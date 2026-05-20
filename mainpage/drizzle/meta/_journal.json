@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1779013035314,
+      "tag": "0000_outstanding_firelord",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1779285984187,
+      "tag": "0001_romantic_magus",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1779307879844,
+      "tag": "0002_add_company_summary",
+      "breakpoints": true
+    }
+  ]
+}

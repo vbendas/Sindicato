@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'LaborUnion Small';
+  src: url('/fonts/LaborUnion-Small.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --bordeaux: rgb(107 15 26);
+  --bordeaux-dark: rgb(74 10 18);
+  --bordeaux-light: rgb(139 26 42);
+  --parchment: rgb(245 232 227);
+  --warm-white: rgb(245 214 208);
+  --white: rgb(255 255 255);
+  --charcoal: rgb(26 26 26);
+  --slate: rgb(26 35 48);
+  --red: rgb(196 30 58);
+  --orange: rgb(242 101 34);
+  --gold: rgb(201 168 76);
+}
+
+@theme inline {
+  --color-sindicato-red: var(--red);
+  --color-sindicato-orange: var(--orange);
+  --color-sindicato-bordeaux: var(--bordeaux);
+  --color-sindicato-bordeaux-dark: var(--bordeaux-dark);
+  --color-sindicato-bordeaux-light: var(--bordeaux-light);
+  --color-sindicato-parchment: var(--parchment);
+  --color-sindicato-warm-white: var(--warm-white);
+  --color-sindicato-charcoal: var(--charcoal);
+  --color-sindicato-slate: var(--slate);
+  --color-sindicato-gold: var(--gold);
+  --font-display: var(--font-barlow);
+  --font-body: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
+  --font-labor-union: 'LaborUnion Small', serif;
+}
+
+body {
+  background: var(--parchment);
+  color: var(--charcoal);
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+}
+
+/* Grain texture overlay */
+.grain-overlay::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.05;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--charcoal);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bordeaux);
+  border-radius: 4px;
+}
+
+/* Marquee animation */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  display: flex;
+  width: fit-content;
+  animation: marquee 40s linear infinite;
+}
+
+/* Diagonal section transitions (desktop only) */
+@media (min-width: 1024px) {
+  .section-diagonal-top {
+    clip-path: polygon(0 1.5rem, 100% 0, 100% 100%, 0 100%);
+  }
+  .section-diagonal-bottom {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 1.5rem), 0 100%);
+  }
+  .section-diagonal {
+    clip-path: polygon(0 1.5rem, 100% 0, 100% calc(100% - 1.5rem), 0 100%);
+  }
+}
+
+/* Stroke/outline text treatment */
+.text-outline {
+  -webkit-text-stroke: 1.5px white;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+}

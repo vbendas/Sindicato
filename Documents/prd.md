@@ -1,7 +1,7 @@
 # Sindicato — Product Requirements Document
-**Version 1.0 | May 2026**
+**Version 2.0 | May 2026**
 **Domain:** sindicato.report
-**Status:** Pre-launch | Case #001 Active
+**Status:** Active build — launch sprint in progress
 
 ---
 
@@ -36,9 +36,7 @@ The uberization model — pioneered by Uber and replicated across food delivery,
 - Terms of service written exclusively to protect the platform
 - Zero collective bargaining infrastructure for workers
 
-This model is not accidental. It is a deliberate architecture for extracting labor while avoiding the legal obligations of employment. Workers in lower-currency countries are specifically targeted because they are less likely to know their legal options, less likely to afford individual legal action, and more economically desperate — making resistance costly and silence rational.
-
-Individual complaints get ignored. Isolated workers have no leverage. Lawyers won't touch individual small claims. Social media pressure is fleeting. Sindicato plugs all three gaps simultaneously.
+This model is not accidental. It is a deliberate architecture for extracting labor while avoiding the legal obligations of employment.
 
 ### The Market Gap
 
@@ -46,11 +44,9 @@ No existing platform combines:
 - Individual self-reported cases with a public testimony wall
 - Per-company aggregated financial dashboards
 - Automated company notification and social pressure
-- Direct contact release to verified lawyers and companies (no intermediation)
+- Anonymous alias-based contact release to verified lawyers and companies
 - Class action solicitor intake pipeline
 - A self-funding model where companies finance the infrastructure that holds them accountable
-
-The closest existing tools — Coworker.org (petition campaigns), Fairwork (academic platform scoring), Reclamo (NY immigrant wage complaints), Turkopticon (MTurk-specific) — address fragments of the problem. None address the full pipeline from individual report to collective legal action with social pressure in between.
 
 ---
 
@@ -58,21 +54,13 @@ The closest existing tools — Coworker.org (petition campaigns), Fairwork (acad
 
 ### Primary — The Uberization Cluster
 
-Companies that meet all of the following criteria:
-
-- Operate primarily through contractor, not employment, relationships
-- Use a platform or app as the primary work intermediary
-- Source workers globally or across economic gradients
-- Control payment, dispute resolution, and account access unilaterally
-- Have no collective worker representation mechanism
+Companies that operate primarily through contractor relationships, use a platform as the primary work intermediary, source workers globally, control payment and dispute resolution unilaterally, and have no collective worker representation mechanism.
 
 **Verticals covered:**
 
-- AI training and data annotation platforms (Alignerr/Labelbox, Scale AI, Appen, Remotasks, Clickworker, Toloka, Amazon MTurk, DataAnnotation.tech, Outlier AI, Surge AI)
-- Food delivery and ride-hailing (Uber, Deliveroo, Glovo, DoorDash, Bolt, Just Eat, Amazon Flex)
-- Freelance and contractor marketplaces (Upwork, Fiverr, Freelancer.com, Workana, PeoplePerHour, Toptal)
-- Remote professional contractor platforms (Deel, Remote.com, Andela, Braintrust)
-- App-based service platforms (BetterHelp, Fever, cleaning and home service apps)
+- **Remote workers** — AI training and data annotation platforms (Alignerr/Labelbox, Scale AI, Appen, Remotasks, Clickworker, Toloka, Amazon MTurk, DataAnnotation.tech, Outlier AI, Surge AI), freelance and contractor marketplaces (Upwork, Fiverr, Freelancer.com, Workana, PeoplePerHour, Toptal), remote professional contractor platforms (Deel, Remote.com, Andela, Braintrust)
+- **Gig workers** — Food delivery and ride-hailing (Uber, Deliveroo, Glovo, DoorDash, Bolt, Just Eat, Amazon Flex), app-based service platforms (BetterHelp, Fever, cleaning and home service apps)
+- **Tenants** — Landlord exploitation (future vertical)
 
 ### Secondary — Stakeholders
 
@@ -80,34 +68,72 @@ Companies that meet all of the following criteria:
 - Labor journalists and investigative reporters
 - EU and US labor regulators and policy researchers
 - ESG investors and institutional researchers
-- Workers advocacy organizations
+- Worker advocacy organizations
 
 ---
 
 ## 4. Platform Architecture
 
-### Single Domain Model
+### Domain Structure
 
-**sindicato.report** serves all audiences through page-level design. A single domain, a single brand, a single marketing effort — with visual registers that shift depending on context.
+Sindicato operates on a consolidated single-domain architecture. All content lives on sindicato.report as the canonical domain. All other domains redirect here.
 
-**Company campaign pages** — `sindicato.report/[company]`
-- Bold, confrontational, worker-solidarity energy
-- Designed for social media sharing, press, and public pressure
-- Numbers displayed assertively: "Labelbox owes workers €500,000 in reported unpaid wages"
-- Hero sections with campaign energy, transitioning into data sections below
+```
+sindicato.report          — canonical domain, everything lives here
+sindicato.exposed         — redirects to sindicato.report
+alignerr.exposed          — redirects to sindicato.report/workers/alignerr
+remoteworkers.report      — redirects to sindicato.report/workers
+gigworkers.report         — redirects to sindicato.report/gig
+tenantsrights.report      — redirects to sindicato.report/tenants (future)
+```
 
-**Company report pages** — `sindicato.report/[company]/report`
-- Clean, neutral, data-forward
-- Designed for solicitors, journalists, regulators, and companies seeking resolution
-- Language precise: "150 individual reports totalling €500,000 in reported unpaid wages"
-- Resolution pathway clearly visible
-- The door to settlement remains open
+### URL Structure
 
-Both views pull from the same database. They speak to completely different audiences through design, not domain separation.
+```
+sindicato.report/                    — homepage, network overview, manifesto
+sindicato.report/workers             — remote workers and data annotation hub
+sindicato.report/workers/[company]   — individual company dashboard (workers vertical)
+sindicato.report/gig                 — gig and delivery workers hub
+sindicato.report/gig/[company]       — individual company dashboard (gig vertical)
+sindicato.report/tenants             — tenant rights hub (future)
+sindicato.report/cases               — all cases across network
+sindicato.report/file                — universal case submission entry point
+sindicato.report/clerk               — Clerk AI chat interface
+sindicato.report/about               — manifesto and founding story
+sindicato.report/transparency        — public financial transparency
+sindicato.report/protected           — dedicated landing page for vulnerable workers
+sindicato.report/seguro              — same, Portuguese/Spanish
+```
 
-### Company Campaign Pages
+### Network Hub Model
 
-Individual company campaign pages follow the pattern **sindicato.report/[company]**. sindicato.report/alignerr is the first, live with Case #001.
+sindicato.report is the root hub of a federated network. Each vertical (workers, gig, tenants) lives as a subpath. The homepage displays network-wide aggregate statistics — total cases across all verticals, total reported unpaid wages, total companies, total open to collective action — alongside links to each active vertical hub.
+
+Community forks can operate independent platforms under AGPL-3.0 and are listed on sindicato.report if they sign the Sindicato Network Principles:
+
+- Workers and claimants always pay nothing
+- AGPL-3.0 license — always open source
+- Data minimalism — collect only what's necessary
+- No advertising
+- No VC funding
+- Financial transparency — publish income and expenditure publicly
+- Non-retaliation protection in all communication flows
+
+### Design Direction
+
+**sindicato.report** uses two design registers within a single domain:
+
+**Campaign sections** (company dashboard pages, hero sections, social sharing):
+- Labor movement heritage meets modern product
+- Bold, typographic, confrontational — not friendly SaaS pastels
+- Deep red, black, dark ink tones — union poster energy
+- Numbers displayed large and assertively
+
+**Institutional sections** (transparency page, report views, legal-facing):
+- Clean, data-forward, neutral
+- Designed to be taken seriously by lawyers, journalists, regulators
+
+Both registers coexist within sindicato.report. Campaign energy draws people in; institutional credibility gets them to act.
 
 ---
 
@@ -117,125 +143,169 @@ Individual company campaign pages follow the pattern **sindicato.report/[company
 
 Workers self-publish their cases through the platform. The process has two stages: authentication and publication.
 
-**Authentication (anti-spam and anti-bot only):**
+**Authentication:**
 - Worker signs up with email address
 - Verification code sent to that email — must be confirmed
-- Optional: phone number verification for additional trust signal
+- Cloudflare Turnstile (invisible human verification) on submission — no CAPTCHA friction
+- No password, no social login, no identity documents — minimal friction
 - Purpose: confirm the person is real. Sindicato verifies *people*, not *claims*.
-- No password reuse requirements, no social login, no identity documents — minimal friction
 
 **Publication form — required fields:**
 
 - Display name (first name or chosen pseudonym)
-- Country
-- Project(s) worked on
+- Country (optional)
+- Age range (optional: 18–24, 25–34, 35–44, 45+)
+- Sex (optional)
+- Company
+- Vertical (remote workers / gig / tenants)
+- Project(s) worked on (optional)
 - Work date range
 - Amount owed (self-reported, in chosen currency)
 - Number of contact attempts made with no response
-- Their story in their own words (100–500 words, free text)
-- Email address (partially shown publicly as v*****@g***.com; full email released only to verified paying parties who sign the non-retaliation agreement)
+- Their testimony in their own words (100–500 words, free text)
+- Email address — **never displayed publicly**; used to generate anonymous alias
 - Attestation checkbox: *"I confirm this account is truthful and based on my personal experience"*
 
 **Optional fields:**
 
 - Consent to be contacted by labor law professionals if a collective case is opened
 - Consent to join collective legal action if one is organised
-- Phone number (only shared with verified paying parties, never displayed publicly)
+- Consent to company notification (default: on)
 
-**Consent for data release:**
-Worker agrees at submission time that their unredacted contact information may be released to verified lawyers or companies who pay the access fee and sign the non-retaliation agreement. This consent covers all future releases — no per-release approval needed. Workers are notified immediately each time their data is accessed.
+**AI writing assistant:** Workers who struggle to express themselves can use the "Help me express this clearly" AI button. Powered by Kimi K2 Instant via OpenRouter. The result is editable — the worker's words, clarified. Disclaimer displayed below button.
 
-The attestation checkbox shifts legal responsibility for the claim to the contributor. Sindicato is the bulletin board. Workers publish, Sindicato displays.
+**Clerk AI intake:** Alternative submission path via `/clerk` — conversational AI chat that guides workers through intake in their own language, then populates the submission form.
 
-### 5.2 The Cases Wall
+**Consent for data release:** Worker agrees at submission time that their alias (not real email) may be shared with verified lawyers or companies who pay the access fee and sign the non-retaliation agreement. Workers are notified immediately each time their case is accessed.
 
-Public display of self-published worker testimony. Each card shows:
+### 5.2 Anonymous Email Alias System
 
-- Partially redacted display name (e.g., Vic*****) and country
+Every case submission automatically generates a private anonymous email alias. This alias is the only contact point ever shared externally. The contributor's real email never leaves Sindicato's encrypted database.
+
+**Alias format:** `case-{caseId}@sindicato.report`
+
+**How it works:**
+
+1. Worker submits case with their real email
+2. System creates Cloudflare Email Routing rule: `case-{id}@sindicato.report` forwards to worker's real inbox
+3. Alias stored in case record (public field)
+4. Worker's real email stored encrypted (private field, never exposed)
+5. Worker receives alias confirmation email
+
+**Communication flow:**
+
+```
+Inbound: company → case-4721@sindicato.report → Cloudflare forwards → worker@gmail.com
+Outbound: worker replies from inbox → shows as sent FROM case-4721@sindicato.report
+```
+
+Company never sees the worker's real email at any point.
+
+**Alias disable:** If worker reports harassment, Sindicato disables the Cloudflare routing rule instantly. Communication channel closed without any interaction with the company.
+
+**Purpose:**
+- Enables contact without exposing identity
+- Removes the primary psychological barrier to submission — fear of identification
+- Creates a controlled channel Sindicato can close immediately
+- Allows universal email collection including from vulnerable workers
+
+### 5.3 The Cases Wall
+
+Public display of self-published worker testimony at `sindicato.report/cases`. Each card shows:
+
+- Partially redacted display name (e.g., Vic*****)
+- Country (if provided)
+- Vertical (remote workers / gig)
+- Company
 - Project(s) and date range
 - Amount owed (self-reported)
 - Number of unanswered contact attempts
-- Their story in their own words
-- Partially redacted email (e.g., v*****@g***.com)
+- Their testimony in their own words
+- Anonymous alias (`case-4721@sindicato.report`) — this is the only contact shown
 - Case status (active / resolved)
+- Original/translated testimony toggle (for non-English submissions)
 
-Identity is protected by partial redaction. Display names show first 3 characters + asterisks (e.g., Vic*****). Emails show first character + asterisks + first domain character + asterisks + TLD (e.g., v*****@g***.com). Partial display proves to visitors that real people stand behind each report, while preventing identification within large contractor pools. Contributors self-identify further only by their own choice. Full name and email are released only to verified paying parties who have signed the non-retaliation agreement.
+The alias proves real people stand behind each report while protecting their identity completely. Full name and real email are released only to verified paying parties who have signed the non-retaliation agreement.
 
-### 5.2.1 Public Display Redaction
+**Redaction rules:**
 
-All personally identifying information is redacted on public pages using the following rules:
-
-| Field | Public Display | Unredacted (paid access after non-retaliation agreement signed) |
-|-------|---------------|--------------------------------------------------------|
+| Field | Public Display | Unredacted (paid access, post-agreement) |
+|-------|---------------|------------------------------------------|
 | Name | `Vic*****` (first 3 chars + asterisks) | Full name |
-| Email | `v*****@g***.com` (first char + asterisks + domain char + asterisks + TLD) | Full email |
-| Country | Full (e.g., Portugal) | Full |
-| Project, dates, amount, story | Full | Full |
+| Email | Never shown — alias only | Full real email |
+| Alias | `case-4721@sindicato.report` | Same |
+| Country | Full | Full |
+| Age range, sex | Full (if provided) | Full |
+| Project, dates, amount, testimony | Full | Full |
 
-### 5.3 Company Dashboard
+### 5.4 Company Dashboards
 
-Per-company aggregate display. All figures tagged as self-reported:
+Per-company aggregate display at `sindicato.report/workers/[company]` or `sindicato.report/gig/[company]`. Two views from the same data:
 
-- Total individual cases reported
-- Total reported unpaid wages (sum of self-reported figures)
-- Date range of cases (earliest to most recent)
-- Projects named in reports
-- Number of unanswered contact attempts reported across all cases
-- Number of contributors open to collective legal action
-- Legal interest indicator: "This case cluster has been flagged for solicitor review"
+**Campaign view** (public URL):
+- Worker-solidarity design, campaign energy
+- Total cases, total reported unpaid wages, unanswered contact attempts
+- Projects named in reports, date range of cases
+- Number open to collective legal action
+- Social sharing optimized
+
+**Report view** (linked from campaign page):
+- Clean, data-forward, designed for lawyers and journalists
+- Same numbers, neutral language: "150 individual reports totalling €500,000 in reported unpaid wages"
+- Resolution pathway clearly visible
+- "This case cluster has been flagged for solicitor review" indicator when threshold reached
 
 Every number carries the disclaimer: *"Figures represent individual reports submitted by registered users. Sindicato does not independently verify claims."*
 
-### 5.4 Resolution Workflow
+### 5.5 Resolution Workflow
 
-Sindicato does not intermediate, host, or monitor any communication between parties. Companies and lawyers who pay the access fee receive unredacted contact information and reach workers directly through their own channels (email, phone, etc.). Sindicato is never in the loop.
+Sindicato does not intermediate, host, or monitor any communication between parties. Companies and lawyers who pay the access fee receive worker aliases and contact workers directly.
 
 **Worker controls their own case at all times:**
-
-- Worker can mark their case as **resolved** at any point — case is removed from active unpaid totals
-- Worker can leave **resolution feedback** — a short account of how the company handled the situation
-- Worker can **delete** their case entirely — removed from all displays and dashboards
-- Worker can **edit** their case — update amounts, add information, correct details
-- Worker **cannot opt out** of the feedback appearing on the company report once they mark resolved — the feedback is part of the public record
+- Mark case as **resolved** — removed from active unpaid totals
+- Leave **resolution feedback** — appears publicly on company report
+- **Delete** case entirely — removed from all displays
+- **Edit** case — update amounts, add information
 
 **Company dashboard reflects changes in real time:**
+- Resolved cases removed from active unpaid totals
+- Resolved cases + worker feedback in dedicated "Resolved Cases" section
+- Both active and resolved counts shown separately
 
-- Resolved cases removed from "active unpaid wages" totals
-- Resolved cases and worker feedback appear in a dedicated "Resolved Cases" section on the company report
-- Dashboard shows both active and resolved counts separately
-- Worker feedback on resolved cases becomes a **collaboration signal** — public evidence that the company engaged with and resolved worker complaints
-
-**How resolution happens:**
-1. Company pays access fee + signs non-retaliation agreement
-2. Company receives worker's full name, email, phone (if provided)
-3. Company contacts worker directly — through their own channels
-4. If resolved, worker logs in and marks their case resolved
-5. Worker leaves feedback describing how the resolution went
-6. Dashboard numbers update: case subtracted from active totals, feedback added to company report
-7. The complaint becomes a marketing asset for the company — public proof they resolved it
-
-**The incentive structure:**
-- Workers benefit: case resolved, story heard, feedback published
-- Companies benefit: active case numbers drop, resolved cases with positive feedback signal collaboration to regulators, journalists, and future workers
-- Sindicato benefits: accurate numbers, no intermediation, resolution documented without involvement
-
-Sindicato never intermediates disputes, hosts conversations, or takes a position on whether a resolution is fair. The worker decides.
-
-### 5.5 Automated Notifications
+### 5.6 Automated Notifications
 
 **To workers when their data is accessed:**
-> *"[Company name] has accessed your case information and contact details on Sindicato. Attached is the signed non-retaliation agreement they committed to before receiving your information. You are under no obligation to respond to any contact from them."*
-
-Non-retaliation terms PDF automatically attached. Sent immediately upon data release — no delay window. Consent for data release was given by the worker at submission time.
+> *"[Company name] has accessed your case information on Sindicato. Before receiving your information, they signed the attached Non-Retaliation Agreement. This agreement legally protects you from adverse action. You are under no obligation to respond."*
+>
+> Non-retaliation agreement PDF automatically attached. Sent immediately upon data release.
 
 **To companies when new cases are filed:**
-Automated notification to company's public contact email that a new case has been filed on their Sindicato dashboard, with a link to their report page.
+Automated notification to company's scraped public contact email that a new case has been filed on their Sindicato dashboard, with link to their report page.
 
-**Resolution follow-up to workers (periodic):**
+**Resolution follow-up to workers:**
 Workers with active cases older than 30 days receive a periodic email:
 > *"Your case against [Company] is still active. If your situation has been resolved, log in to update your status. If not, your case remains visible and counts toward the company's reported totals."*
 
-Simple template, cron-triggered. No AI. Workers control their own case status at all times.
+### 5.7 Vulnerable Worker Landing Page
+
+Dedicated landing page at `/protected` (and `/seguro` for Portuguese/Spanish) designed for workers in sensitive situations — undocumented immigrants, students on restricted visas, account sharers — who need additional reassurance before submitting.
+
+Five fears addressed directly on the page:
+1. Will anyone know it was me?
+2. Can the company find out who I am?
+3. Can immigration authorities access my information?
+4. What if I used someone else's account?
+5. What if my English isn't good?
+
+Trust signals: non-profit status, GDPR compliance (EU law protects regardless of immigration status), alias system explained in plain language, data minimalism statement. No government logos, no law enforcement associations.
+
+Physical and digital flyers in worker community languages pointing to `/seguro` for distribution through immigrant worker organizations, community centers, and WhatsApp/Telegram worker groups.
+
+### 5.8 Clerk AI Chat Interface
+
+Conversational AI intake at `/clerk`. Workers who struggle with form-based submission can describe their situation in natural language in their own language. Clerk AI (Kimi K2 Instant via OpenRouter) guides them through the case fields conversationally, then generates a pre-filled submission form. CTA at end of conversation: "File your case now."
+
+Rate limited: 20 messages per IP per day.
 
 ---
 
@@ -246,46 +316,55 @@ Simple template, cron-triggered. No AI. Workers control their own case status at
 Sindicato is a notice board and aggregation platform, not a publisher making claims. This mirrors the legal model of Glassdoor, Trustpilot, and court filing registries.
 
 Key legal protections:
-
 - Attestation checkbox makes contributors legally responsible for their own words
 - Platform never verifies, endorses, or asserts claims
 - All figures labeled as "self-reported" throughout
 - Workers self-publish their own testimony — Sindicato displays, it does not editorialize
-- Sindicato verifies *people* (anti-spam email/phone verification), not *claims*
-- No communication between parties is hosted, monitored, or intermediated by the platform
-- Companies and lawyers contact workers directly — Sindicato is never in the loop
+- No communication between parties is hosted, monitored, or intermediated
+- Companies contact workers via alias only — Sindicato is never in the communication loop
 - Clear platform disclaimer on every page: *"All cases are self-published by individual workers. Sindicato is a notice board and aggregation platform, not a legal entity making these claims."*
 
 ### Non-Retaliation Agreement
 
-Every company accessing contributor contact information signs a digital agreement before receiving data. The agreement includes:
+Every company accessing contributor information signs a digital agreement before receiving any data. The agreement is auto-generated as a PDF with:
+- Company legal name and representative name + role
+- Verified company domain email
+- ISO timestamp and IP at time of signing
+- Payment transaction ID
+- List of case aliases accessed
 
-> *"By accessing contributor contact information through Sindicato, [Company Name], represented by [Employee Name, Role], irrevocably agrees that no contributor whose information is accessed through this transaction shall face account termination, payment withholding, reduced work allocation, negative performance assessment, blacklisting, or any other adverse action as a consequence of their participation in Sindicato reporting. Breach of this clause constitutes a separate actionable violation independent of the underlying reported claims, and the contributor holds this signed agreement as standing evidence of that commitment."*
+The signed PDF is automatically forwarded to every worker whose case was accessed. The company's commercial transaction generates the worker's legal protection document as a direct byproduct.
 
-The signed agreement is automatically forwarded to every worker whose data is accessed. The company's commercial transaction generates the worker's legal protection document as a direct byproduct.
+Agreement text:
+
+> *"By completing this transaction, [Company Name], represented by [Employee Name, Role], irrevocably agrees that no contributor whose information is accessed through this transaction shall face account termination, payment withholding, reduced work allocation, negative performance assessment, blacklisting, or any other adverse action as a consequence of their participation in Sindicato reporting or any legal action arising from their reports.*
+>
+> *Breach of this agreement constitutes a separate actionable violation independent of the underlying reported claims. Each contributor holds this signed agreement as standing evidence of that commitment.*
+>
+> *This agreement is governed by Portuguese law and EU consumer protection regulations."*
 
 ### Company Verification Flow
 
 Before any company can access contributor data:
 
 1. Official company domain email required (no Gmail or personal addresses)
-2. Confirmation code sent to that official email
-3. Employee name and role captured — named individual attached to the agreement
-4. Digital terms presented and signed with timestamp
-5. Payment processed
-6. Contact list released automatically
-7. Worker notification emails sent simultaneously
+2. Confirmation code sent to that official email — verifies actual company domain
+3. Employee full name and role captured
+4. Non-retaliation agreement terms presented
+5. Digital signature with timestamp and IP recorded
+6. Payment processed via CoinGate
+7. Alias contact list released automatically
+8. Worker notification emails sent simultaneously with signed agreement PDF attached
 
 ---
 
 ## 7. Monetization
 
-Sindicato operates as a non-profit. All revenue covers operational costs first, with surplus directed entirely to the Worker Support Fund. No revenue goes to founders or staff as profit.
+Sindicato operates as a non-profit. All revenue covers operational costs first, with surplus directed entirely to the Worker Support Fund.
 
 ### Revenue Streams
 
 **Stream 1 — Lawyer Referral Fee**
-Labor law firms pay a fixed fee per worker contact to access opted-in contributor clusters for class action intake.
 
 | Cluster Size | Fee |
 |---|---|
@@ -294,129 +373,131 @@ Labor law firms pay a fixed fee per worker contact to access opted-in contributo
 | 100 workers | €2,500 |
 | 200+ workers | €5,000 |
 
-What firms receive: full name, email, phone (if worker provided), and all public case information already visible on the report. Nothing more. Firms contact workers directly. Sindicato is the matchmaker, not the evidence custodian.
+What firms receive: alias emails (not real emails), plus all public case information. Firms contact workers directly via alias. Sindicato is the matchmaker, not the evidence custodian.
 
 **Stream 2 — Company Resolution Fee**
-Companies pay a fixed fee per worker contact to access contributor information. Fixed rate, no volume discount — the pricing creates natural incentive to engage early before case numbers grow.
 
-Fee: **€200 per worker contact**
+Fixed rate: **€200 per worker contact**
 
-What companies receive: full name, email, phone (if worker provided), public case information. Companies contact workers directly. Signed non-retaliation agreement is a mandatory precondition, not optional.
+What companies receive: alias email only (real email never released). Public case information. Companies contact workers via alias. Signed non-retaliation agreement is a mandatory precondition.
 
 **Stream 3 — Donations**
-Always visible, never pressured. Covers gap between operational costs and revenue streams during early growth.
+Always visible, never pressured.
+
+### Payment Provider
+
+**CoinGate** (primary) — cryptocurrency and traditional payment processing. Backup: NexaPay.
 
 ### Revenue Allocation
 
-Priority order:
-
-1. Platform operational costs (hosting, domains, maintenance)
-2. Reserve fund (minimum 3 months operational runway)
+1. Platform operational costs
+2. Reserve fund (minimum 3 months runway)
 3. Everything above reserve → Worker Support Fund
 
 ---
 
 ## 8. Worker Support Fund
 
-All surplus revenue beyond operational costs and reserve is directed to the Worker Support Fund. This fund pays for two programmes, both delivered entirely by third-party partners — requiring no ongoing time from Sindicato operations.
+All surplus revenue beyond operational costs and reserve is directed to the Worker Support Fund.
 
 ### Programme 1 — Small Claims Legal Support
-
-For workers who want to pursue their individual case in court:
-
 - Partner lawyers per jurisdiction evaluate cases (no cost to worker)
-- Approved cases: Sindicato fund covers small claims filing fee (~$75 in California, similar elsewhere)
-- Plus: one-hour professional legal consultation at negotiated bulk rate (~$100)
-- Total cost per worker: approximately $175
-- Worker pays nothing. Ever.
-- If case wins: worker keeps everything. Sindicato takes no percentage.
-- Partner lawyers report outcomes back to Sindicato for platform track record.
+- Approved cases: fund covers filing fee (~$75 in California) + one-hour legal consultation (~$100)
+- Worker pays nothing. If case wins, worker keeps everything.
 
-**Initial jurisdiction partnerships needed:**
-- 1 California labor attorney (covers majority of US-incorporated gig platforms)
-- 1 UK solicitor (British platforms and UK-based workers)
-- 1 Portuguese labor lawyer (EU workers, EU Platform Work Directive cases)
-- 1 Brazilian labor lawyer (largest global gig workforce, strong labor courts)
-- 1 Indian labor lawyer (massive AI annotation workforce)
+**Initial jurisdiction partnerships:** California, UK, Portugal, Brazil, India.
 
 ### Programme 2 — Psychological Support
-
-Wage theft is genuinely traumatic, particularly for workers in lower-currency countries for whom unpaid amounts represent months of living expenses. Sindicato recognizes workers as whole humans, not case numbers.
-
-- Partner psychologists/therapists per language region
-- One-hour session at negotiated bulk rate (~€50–80)
-- Worker applies through simple form, gets matched automatically
+- Partner therapists per language region
+- One session at negotiated bulk rate (~€50–80)
 - Worker pays nothing
-
-Partners: independent practitioners working with worker advocacy organisations, burnout specialists, multilingual online therapy practitioners.
 
 ---
 
 ## 9. Non-Profit Structure
 
-Sindicato registers as an Associação (non-profit association) in Portugal — simple structure, low registration cost, minimal ongoing compliance burden.
+Sindicato registers as an Associação in Portugal — simple structure, low registration cost.
 
-**Published publicly on the platform at all times:**
-- Every euro received (by category: referral fees, resolution fees, donations)
-- Every euro spent (operations, reserve, Worker Support Fund disbursements)
+**Published publicly at all times:**
+- Every euro received (by category)
+- Every euro spent (operations, reserve, Worker Support Fund)
 - Worker Support Fund: total cases funded, total sessions funded, outcomes where public
 
-Full financial transparency is a foundational commitment, not an optional feature.
+---
+
+## 10. Technical Architecture
+
+### Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16.2 (App Router) |
+| Database | Neon (PostgreSQL) + Drizzle ORM |
+| Auth | NextAuth.js v5 (email verification codes) |
+| Email delivery | Resend + React Email templates |
+| Anonymous aliases | Cloudflare Email Routing (API-driven) |
+| Human verification | Cloudflare Turnstile (invisible) |
+| AI | OpenRouter (Kimi K2, DeepSeek R1, DeepSeek V3) |
+| Payments | CoinGate (primary), NexaPay (backup) |
+| PDF generation | @react-pdf/renderer (non-retaliation agreements) |
+| Validation | Zod |
+| Hosting | Vercel |
+
+### AI Model Routing
+
+| Use Case | Model |
+|----------|-------|
+| Writing assistant | moonshot/kimi-k2-instant |
+| Translation | moonshot/kimi-k2-instant |
+| Clerk AI chat | moonshot/kimi-k2-instant |
+| Pattern detection | deepseek/deepseek-r1 |
+| Report generation | deepseek/deepseek-v3 |
+| Legal triage | deepseek/deepseek-v3 |
+
+### Anonymous Alias Infrastructure
+
+Built on Cloudflare Email Routing. Each case creates one API rule:
+
+```
+case-{caseId}@sindicato.report  →  worker's real email (private, encrypted in DB)
+```
+
+Alias can be disabled instantly via API if worker reports harassment. Free tier supports 200 routing rules. At 200 cases, migrate to Cloudflare paid or self-hosted AnonAddy (same API interface, designed as a configuration swap not a rebuild).
+
+**Critical pre-launch verification:** Bidirectional alias test — worker reply must show as sent FROM alias, not real email. If this fails, migrate to AnonAddy before launch.
 
 ---
 
-## 10. Launch Roadmap
+## 11. Launch Roadmap
 
-### Phase 1 — Week 1 (Immediate)
+### 5-Day Sprint (Current)
 
-- Register sindicato.report domain
-- Build core platform: submission form, cases wall, company dashboard
-- File Case #001 (Alignerr/Labelbox) as founding case
-- Launch sindicato.report/alignerr as first campaign page
-- Automated company notification to Alignerr/Labelbox
+**Day 1 — Wednesday:** DB schema V2 migration, Cloudflare email routing setup, Turnstile integration, Next.js route skeleton, bidirectional alias test
 
-### Phase 2 — Month 1
+**Day 2 — Thursday:** Case submission form + API + alias creation, cases wall + company dashboards (workers/gig), company email scraper (stateless notification)
 
-- Outreach to other Alignerr/Labelbox workers to file cases
-- First solicitor outreach — California labor attorney
-- Platform announcement on LinkedIn with founding story
-- Press outreach to labor and tech journalists
+**Day 3 — Friday:** Writing assistant + translation pipeline update, Clerk AI chat interface, network hub homepage + vertical hub pages
 
-### Phase 3 — Month 2–3
+**Day 4 — Saturday:** CoinGate payment integration, company verification flow, non-retaliation agreement PDF generation + automated delivery
 
-- Second company dashboard (second data annotation platform)
-- Resolution workflow and worker case management live
-- Company resolution fee system operational
-- First Worker Support Fund disbursement
-- Portuguese and Brazilian Portuguese language support
+**Day 5 — Sunday:** Vulnerable worker landing pages, Case #001 seed (Victor vs Alignerr/Labelbox), end-to-end flow test, compliance audit
 
-### Phase 4 — Month 4–6
+**Monday — Launch:**
+- `sindicato.report/workers/alignerr` live with Case #001
+- LinkedIn founding story post
+- Reddit posts — r/WorkOnline, r/freelance, r/ArtificialIntelligence
+- Direct outreach to Alignerr worker communities
 
-- Third and fourth company dashboards (freelance marketplace + delivery platform)
-- Psychological support programme launch
-- Partner lawyer network expanded to 3–5 jurisdictions
-- sindicato.report institutional face fully operational
-- Press story: platform statistics, cases funded, outcomes
+### Post-Launch (Week 2+)
 
----
-
-## 11. Design Direction
-
-**sindicato.report** uses two design registers within a single domain:
-
-**Campaign sections** (company pages, hero sections, social sharing):
-- Labor movement heritage meets modern product
-- Bold, typographic, confrontational — not friendly SaaS pastels
-- Deep red, black, dark ink tones — union poster energy
-- Wordmark-forward
-- Numbers displayed large and assertively
-
-**Institutional sections** (report pages, data tables, legal-facing views):
-- Clean, data-forward, neutral
-- Designed to be taken seriously by lawyers, journalists, regulators
-- Same data, different register
-
-Both registers coexist within sindicato.report. Campaign energy draws people in; institutional credibility gets them to act.
+- MCP server for Clerk (when data volume warrants)
+- Nightly pattern detection cron job (DeepSeek R1)
+- Legal triage pre-screening (when lawyer partnerships active)
+- Weekly company email reports
+- Non-profit Associação registration (parallel process)
+- `/tenants` vertical
+- Multilingual UI (PT-BR, ES) — month 2
+- Psychological support programme — month 2
 
 ---
 
@@ -448,3 +529,4 @@ Workers pay nothing. Ever.
 
 *Sindicato — sindicato.report*
 *Built from Case #001. Built for everyone after.*
+*Built by an unpaid worker and his three cats in a campervan, on the road, somewhere in Europe.*
