@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <footer className="bg-sindicato-bordeaux">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
           <div>
             <span className="text-base sm:text-lg font-bold tracking-widest text-white uppercase font-[family-name:var(--font-barlow)]">

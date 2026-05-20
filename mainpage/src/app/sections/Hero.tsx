@@ -19,7 +19,6 @@ export default function Hero({ onRelateCase, caseCount = 0, companyCount = 0 }: 
     <section className="relative min-h-screen bg-sindicato-bordeaux overflow-hidden">
       {/* Radial gradient overlay for depth */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.06)_0%,_transparent_70%)] z-[1]" />
-      <div className="absolute inset-0 grain-overlay z-[1]" style={{ opacity: 0.05 }} />
 
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[6fr_4fr] min-h-screen">
         {/* Left column — text */}
@@ -56,7 +55,7 @@ export default function Hero({ onRelateCase, caseCount = 0, companyCount = 0 }: 
             className="text-base sm:text-lg md:text-xl text-white/65 mt-6 sm:mt-8 leading-relaxed text-center"
           >
             One worker was exploited. One case became a platform.<br />
-            Thousands of voices are about to become impossible to ignore.
+            Dozens of voices are about to become impossible to ignore.
           </motion.p>
 
           <motion.div

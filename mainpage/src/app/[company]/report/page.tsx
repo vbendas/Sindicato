@@ -125,11 +125,9 @@ export default function CompanyReportPage({
   }
 
   return (
-    <div className="min-h-screen bg-sindicato-black">
-      <div className="relative">
-        <div className="absolute inset-0 grain-overlay" />
-
-        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div className="min-h-screen bg-sindicato-black relative">
+      <div className="fixed inset-0 pointer-events-none z-50 grain-overlay" style={{ opacity: 0.04 }} />
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -278,7 +276,6 @@ export default function CompanyReportPage({
             </div>
           </motion.div>
         </div>
-      </div>
     </div>
   );
 }

@@ -89,7 +89,7 @@ export default function LiveCaseFeed() {
   };
 
   return (
-    <section id="feed" className="bg-sindicato-bordeaux py-20 sm:py-24 lg:py-28">
+    <section id="feed" className="bg-sindicato-near-black py-28 sm:py-32 lg:py-36">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
