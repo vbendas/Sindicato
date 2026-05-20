@@ -77,16 +77,19 @@ export default function Hero({ onRelateCase, caseCount = 0, companyCount = 0 }: 
         {/* Right column — hand image */}
         <div className="hidden lg:flex items-end justify-center overflow-visible relative pb-12">
           <div
-            className="w-full h-[90%] -rotate-[15deg] -ml-[15%] pointer-events-none select-none"
+            className="w-[129%] h-[116%] -ml-[15%] pointer-events-none select-none"
             style={{
+              transform: 'translate(-25px, 225px)',
               backgroundImage: 'linear-gradient(#6B0F1A, #6B0F1A), url(/hand_noborder.png)',
               backgroundBlendMode: 'multiply, normal',
               backgroundSize: 'cover, contain',
               backgroundPosition: 'center, bottom',
               backgroundRepeat: 'no-repeat, no-repeat',
-              opacity: 0.25,
-              maskImage: 'linear-gradient(to right, transparent 0%, black 15%, black 100%)',
-              WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 15%, black 100%)',
+              opacity: 0.35,
+              maskImage: 'linear-gradient(to bottom, transparent 0%, black 5%, black 100%), linear-gradient(to right, transparent 0%, black 5%, black 100%)',
+              maskComposite: 'intersect',
+              WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 5%, black 100%), linear-gradient(to right, transparent 0%, black 5%, black 100%)',
+              WebkitMaskComposite: 'source-in',
             }}
           />
         </div>
