@@ -85,8 +85,8 @@ export default function Hero({ onRelateCase, caseCount = 0, companyCount = 0 }: 
               backgroundPosition: 'center, bottom',
               backgroundRepeat: 'no-repeat, no-repeat',
               opacity: 0.25,
-              maskImage: 'radial-gradient(ellipse 90% 90% at 60% 70%, black 80%, transparent 100%)',
-              WebkitMaskImage: 'radial-gradient(ellipse 90% 90% at 60% 70%, black 80%, transparent 100%)',
+              maskImage: 'linear-gradient(to right, transparent 0%, black 15%, black 100%)',
+              WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 15%, black 100%)',
             }}
           />
         </div>
