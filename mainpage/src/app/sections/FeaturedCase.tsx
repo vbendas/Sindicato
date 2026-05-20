@@ -43,7 +43,7 @@ export default function FeaturedCase() {
   };
 
   return (
-    <section className="bg-sindicato-bordeaux py-12 sm:py-16 lg:py-20 lg:section-diagonal-bottom">
+    <section className="bg-sindicato-near-black py-16 sm:py-20 lg:py-24 lg:section-diagonal-bottom">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6 sm:mb-8 text-center sm:text-left">
           <span className="text-white/30 text-xs font-bold tracking-[0.25em] uppercase font-[family-name:var(--font-jetbrains)]">
@@ -55,7 +55,7 @@ export default function FeaturedCase() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="border border-white/25 p-8 sm:p-10 lg:p-12 transition-all duration-300 hover:border-white/35"
+          className="border border-white/15 p-8 sm:p-10 lg:p-12 transition-all duration-300 hover:border-white/30"
         >
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
             <div>
@@ -71,7 +71,7 @@ export default function FeaturedCase() {
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 mb-8">
             <div>
-              <span className="block text-white/35 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
+              <span className="block text-white/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
                 Amount
               </span>
               <span className="text-white text-2xl sm:text-3xl font-bold font-[family-name:var(--font-jetbrains)]">
@@ -79,7 +79,7 @@ export default function FeaturedCase() {
               </span>
             </div>
             <div>
-              <span className="block text-white/35 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
+              <span className="block text-white/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
                 Period
               </span>
               <span className="text-white text-base sm:text-lg font-[family-name:var(--font-jetbrains)]">
@@ -87,7 +87,7 @@ export default function FeaturedCase() {
               </span>
             </div>
             <div>
-              <span className="block text-white/35 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
+              <span className="block text-white/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
                 Cases Filed
               </span>
               <span className="text-white text-2xl sm:text-3xl font-bold font-[family-name:var(--font-jetbrains)]">
@@ -95,7 +95,7 @@ export default function FeaturedCase() {
               </span>
             </div>
             <div>
-              <span className="block text-white/35 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
+              <span className="block text-white/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
                 Workers for Legal Action
               </span>
               <span className="text-white text-2xl sm:text-3xl font-bold font-[family-name:var(--font-jetbrains)]">
@@ -112,7 +112,7 @@ export default function FeaturedCase() {
             </p>
 
             <Link
-              href={`/remote/${display.company.slug}`}
+              href={`/remote-workers/${display.company.slug}`}
               className="inline-flex items-center gap-2 text-white font-bold uppercase tracking-wider text-sm hover:text-white/80 transition-colors font-[family-name:var(--font-barlow)] group"
             >
               View Full Report

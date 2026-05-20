@@ -122,7 +122,7 @@ export default function CaseDetailPage({
       <Header />
 
       <div className="relative pt-24 pb-16">
-        <div className="absolute inset-0 grain-overlay" />
+        <div className="fixed inset-0 pointer-events-none z-50 grain-overlay" style={{ opacity: 0.04 }} />
 
         <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
