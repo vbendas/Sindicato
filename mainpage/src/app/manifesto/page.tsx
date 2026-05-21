@@ -5,27 +5,16 @@ import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../sections/Footer";
 
-const sections = [
-  {
-    title: "The Problem",
-    body: "Wage theft costs workers billions every year. Individual complaints are ignored, buried in support tickets, or dismissed as isolated incidents. Companies know that most workers can't afford legal action, and those who try face retaliation, account locks, and blacklisting.",
-  },
-  {
-    title: "The Insight",
-    body: "One worker is a nuisance. A hundred workers from the same company are a pattern. A thousand are a class action waiting to happen. The only thing between exploitation and accountability is visibility.",
-  },
-  {
-    title: "The Solution",
-    body: "Sindicato is a public record of worker exploitation. We make every case visible, searchable, and connected to every other case from the same company. Workers remain anonymous to the public but can choose to connect with attorneys pursuing collective action.",
-  },
-  {
-    title: "The Principles",
-    body: "Public record. Worker-first. Free to use. No ads. Ever. We do not edit or rewrite worker accounts. We do not take sides in disputes. We do not sell data. We do not accept money from investors, advertisers, or any company listed on this platform.",
-  },
-  {
-    title: "How We're Funded",
-    body: "Sindicato takes no money from investors, advertisers, or any company listed on this platform. Ever. It runs on the voluntary support of workers, attorneys, journalists, and anyone who believes wage theft should have consequences. No pressure. No commercialisation. No business. Community built for community.",
-  },
+const paragraphs = [
+  "For most of the twentieth century, workers shared physical space with the people who depended on the same wages, answered to the same foreman, and walked out the same factory gate. Organising was not a strategy you planned. It happened because you could not avoid the people your employer was also exploiting. You saw them every morning. Grievances spread fast because the conditions were shared and the people were present.",
+  "That proximity was never neutral. It was power.",
+  "Corporations understood this long before workers named it. Decades of subcontracting, outsourcing, and fragmentation were attempts to thin out that density. Then globalisation and the internet finished the job.",
+  "A team of fifty people doing the same work might now be spread across twelve countries, in different time zones, communicating through channels the company controls. They may never speak.",
+  "They may not even know the others exist.",
+  "When one of them stops getting paid, they assume it is their problem. Most of the time it is not. But there is no infrastructure to let them find out.",
+  "The platforms built on top of this model did not create that isolation. They found it ready-made and formalised it. Independent contractor status. Mandatory arbitration clauses that make collective legal action impossible. Terms of service that waive the right to public dispute. Communication routed through company channels, where it can be monitored, deleted, or simply ignored.",
+  "The factory floor gave workers one thing the remote platform deliberately withholds: the ability to look sideways and see who else was being treated the same way.",
+  "Sindicato gives that back.",
 ];
 
 export default function ManifestoPage() {
@@ -33,47 +22,53 @@ export default function ManifestoPage() {
     <>
       <Header />
       <main className="bg-sindicato-bordeaux min-h-screen">
-        <section className="pt-24 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto">
+        <section className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mb-12"
+            className="mb-16"
           >
             <Link
               href="/"
-              className="text-white/40 hover:text-white text-xs uppercase tracking-wider transition-colors mb-6 inline-block font-[family-name:var(--font-barlow)] font-bold"
+              className="text-white/40 hover:text-white text-xs uppercase tracking-wider transition-colors mb-8 inline-block font-[family-name:var(--font-barlow)] font-bold"
             >
               &larr; Back
             </Link>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-4">
-              Manifesto
+            <div className="w-12 h-0.5 bg-white/20 mb-6" />
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-2">
+              Sindicato Manifesto
             </h1>
-            <p className="text-white/60 text-sm sm:text-base leading-relaxed">
-              Why Sindicato exists, how it works, and what we stand for.
+            <p className="text-white/40 text-sm font-[family-name:var(--font-jetbrains)]">
+              sindicato.report
             </p>
           </motion.div>
 
-          <div className="space-y-12">
-            {sections.map((section, i) => (
-              <motion.div
-                key={section.title}
-                initial={{ opacity: 0, y: 20 }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="space-y-5"
+          >
+            {paragraphs.map((p, i) => (
+              <motion.p
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.6 }}
+                transition={{ delay: i * 0.06, duration: 0.5 }}
+                className="text-white/75 text-sm sm:text-base leading-relaxed"
               >
-                <h2 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-wider mb-3 font-[family-name:var(--font-barlow)]">
-                  {section.title}
-                </h2>
-                <p className="text-white/70 text-sm sm:text-base leading-relaxed">
-                  {section.body}
-                </p>
-                {i < sections.length - 1 && (
-                  <div className="w-12 h-0.5 bg-white/10 mt-8" />
-                )}
-              </motion.div>
+                {p}
+              </motion.p>
             ))}
+          </motion.div>
+
+          <div className="pt-16 border-t border-white/10 mt-16">
+            <p className="text-white/30 text-xs font-[family-name:var(--font-jetbrains)]">
+              Sindicato — sindicato.report
+            </p>
           </div>
         </section>
         <Footer />

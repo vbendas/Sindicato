@@ -6,45 +6,27 @@
 
 ## I.
 
-One worker was exploited. One case became a platform. Thousands of voices are about to become impossible to ignore.
+For most of the twentieth century, workers shared physical space with the people who depended on the same wages, answered to the same foreman, and walked out the same factory gate. Organising was not a strategy you planned. It happened because you could not avoid the people your employer was also exploiting. You saw them every morning. Grievances spread fast because the conditions were shared and the people were present.
 
-This platform exists because a company stole my wages, and when I proved it, they retaliated. Then I found out they had done the same thing to hundreds of others, in the same way, across the same projects, on the same timeline. Each of us was told we were alone. Each of us believed it. None of us were.
+That proximity was never neutral. It was power.
 
-Sindicato is the infrastructure that makes sure that never happens again.
+Corporations understood this long before workers named it. Decades of subcontracting, outsourcing, and fragmentation were attempts to thin out that density. Then globalisation and the internet finished the job.
+
+A team of fifty people doing the same work might now be spread across twelve countries, in different time zones, communicating through channels the company controls. They may never speak.
+
+They may not even know the others exist.
+
+When one of them stops getting paid, they assume it is their problem. Most of the time it is not. But there is no infrastructure to let them find out.
+
+The platforms built on top of this model did not create that isolation. They found it ready-made and formalised it. Independent contractor status. Mandatory arbitration clauses that make collective legal action impossible. Terms of service that waive the right to public dispute. Communication routed through company channels, where it can be monitored, deleted, or simply ignored.
+
+The factory floor gave workers one thing the remote platform deliberately withholds: the ability to look sideways and see who else was being treated the same way.
+
+Sindicato gives that back.
 
 ---
 
 ## II.
-
-I am a senior machine learning engineer. In 2024 and 2025, I contracted with Alignerr, a platform operated by Labelbox Inc, to perform quality review and AI model evaluation work across three projects: CC Review, CHP Claude Code, and NEXT. I did the work. I logged my hours through Hubstaff time tracking. I passed the AutoQA quality checks. I followed the pinned Discord policies to the letter.
-
-Then payment was withheld. No valid reason given.
-
-I did what you are supposed to do. I assembled the evidence: Hubstaff logs, AutoQA scores, Discord policy screenshots. I documented the retaliation sequence that followed my escalation — the account deactivation, the project removals, the platform lockout. I packaged everything methodically and escalated formally, all the way to Labelbox's C-suite and Chief Legal Officer. I gave them five business days to resolve it.
-
-The deadline passed. The silence continued.
-
-This is Case #001. It is documented, timestamped, and active. It is the case that built this platform.
-
----
-
-## III.
-
-What I discovered after my own case shocked me, though it should not have. I was not the first. I was not the tenth. I was not even the fiftieth.
-
-Over sixty unique workers have filed complaints across more than fifteen platforms — Reddit, Glassdoor, Trustpilot, the Better Business Bureau, Twitter, independent Discord servers, investigative journalism outlets. The complaints span two years and multiple continents. They describe the same sequence, every time: consistent payment for two to four months, then abrupt termination upon inquiring about back pay, reaching a cumulative balance of $800 to $2,100, or completing a project milestone. The amounts cluster too tightly to be random. The timeline repeats too precisely to be accidental. This is not a series of billing errors. It is a business model.
-
-The Better Business Bureau gave Alignerr an F rating — its lowest possible score — for failing to respond to seven consecutive payment complaints. The BBB's own summary describes the company as operating "illegally." Glassdoor carries a 2.2 out of 5 rating, with algorithmically generated tags that read like an indictment: "Missing payments," "No transparency," "Stolen hours," "Random termination." On Reddit, workers who post about unpaid wages are banned within hours. The official r/alignerr subreddit operates as a reputation management tool: moderators publicly promise help, redirect complainants to a support black hole, then delete the posts. Workers created r/alignerrunofficial as an uncensored refuge — it exists precisely because the official channel cannot be trusted.
-
-The CHP Claude Code project alone affected over five hundred workers simultaneously. Completed tasks were retroactively flipped from "passed" to "failed" — eliminating pay for work already done, en masse. An open letter posted to Reddit named the exact same three projects I worked on: CHP Claude Code, CC Review, and NEXT. Weeks of completed work, still unpaid. Forty-seven upvotes. Thirty-four comments. Then silence.
-
-Scale AI, a $13.8 billion competitor in the same market, settled four separate worker lawsuits and exited the California independent contractor market entirely. Surge AI faces an identical class action. Three major annotation companies facing simultaneous litigation over the same practices is not coincidence. It is the industry's business model exposed.
-
-A senior Labelbox engineer posted anonymously that the company had "burned the rest of their runway on this shitty Alignerr platform" and expected bankruptcy. Whether that prediction proves accurate is beside the point. What matters is that wage theft appears to be not a bug in the system but a feature of survival — contractors' pay treated as a discretionary expense rather than a contractual obligation.
-
----
-
-## IV.
 
 The uberization model — pioneered by Uber and replicated across food delivery, AI training, freelance marketplaces, therapy platforms, cleaning apps, data annotation services — shares an identical structure everywhere it appears:
 
@@ -58,7 +40,7 @@ Together, our voices become impossible to silence. This is the collective action
 
 ---
 
-## V.
+## III.
 
 Sindicato is a digital labor rights platform. Workers self-publish their cases — their own words, their own evidence, their own attestation. The platform aggregates individual reports into collective dashboards per company, quantifying the total number of affected workers, unpaid hours, and monetary debt owed.
 
@@ -74,7 +56,7 @@ Sindicato never verifies, endorses, or asserts individual claims. Workers attest
 
 ---
 
-## VI.
+## IV.
 
 These are non-negotiable:
 
@@ -104,7 +86,7 @@ These are not aspirational values. They are the platform's integrity and its leg
 
 ---
 
-## VII.
+## V.
 
 The system runs on a simple ethical logic: make exploitation expensive, make workers unstoppable. Companies fund the infrastructure that holds them accountable. Workers fund nothing. Silence is the weapon of the powerful. Visibility is the defense of everyone else.
 

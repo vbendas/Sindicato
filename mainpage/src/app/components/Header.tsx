@@ -43,7 +43,7 @@ export default function Header({ onRelateCase, scrolledBg = "bg-sindicato-bordea
               Manifesto
             </Link>
             <Link
-              href="#"
+              href="/about"
               className="text-white/70 hover:text-white transition-colors uppercase tracking-wider text-xs lg:text-sm font-[family-name:var(--font-barlow)] font-bold relative after:absolute after:bottom-[-2px] after:left-0 after:h-[1px] after:w-0 after:bg-white/50 after:transition-all hover:after:w-full"
             >
               About Us
