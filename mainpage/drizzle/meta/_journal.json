@@ -22,6 +22,13 @@
       "when": 1779307879844,
       "tag": "0002_add_company_summary",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1747785600000,
+      "tag": "0003_v2_schema_update",
+      "breakpoints": true
     }
   ]
 }

@@ -15,7 +15,6 @@ interface NewCaseNotificationProps {
   country: string;
   amountOwed: string;
   currency: string;
-  claimTypes: string[];
   caseUrl: string;
 }
 
@@ -25,7 +24,6 @@ export default function NewCaseNotification({
   country,
   amountOwed,
   currency,
-  claimTypes,
   caseUrl,
 }: NewCaseNotificationProps) {
   return (
@@ -60,9 +58,6 @@ export default function NewCaseNotification({
             </Text>
             <Text style={{ margin: "4px 0", fontSize: 14, color: "#555" }}>
               <strong>Amount Owed:</strong> {currency} {amountOwed}
-            </Text>
-            <Text style={{ margin: "4px 0", fontSize: 14, color: "#555" }}>
-              <strong>Claim Types:</strong> {claimTypes.join(", ")}
             </Text>
           </Container>
           <Text style={{ fontSize: 16, color: "#333" }}>

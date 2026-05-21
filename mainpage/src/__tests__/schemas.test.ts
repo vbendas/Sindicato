@@ -3,14 +3,13 @@ import {
   caseSubmissionSchema,
   companySlugSchema,
   emailSchema,
-  claimTypesSchema,
 } from "@/lib/utils/schemas";
 
 const validCase = {
   vertical: "remote",
   displayName: "Victor",
   country: "Portugal",
-  projects: "CC Review, CHP Claude Code",
+  project: "CC Review, CHP Claude Code",
   dateRange: "March 2024 - September 2024",
   amountOwed: "5000",
   currency: "EUR",
@@ -18,10 +17,10 @@ const validCase = {
   story: Array.from({ length: 101 }, (_, i) => `word${i}`).join(" "),
   email: "test@example.com",
   companySlug: "alignerr",
-  claimTypes: { unpaidWages: true },
-  attestation: true as const,
-  consentLegal: true as const,
-  consentCollective: true as const,
+  optInSolicitor: false,
+  optInCollective: false,
+  optInCompanyNotify: true,
+  attested: true as const,
 };
 
 describe("caseSubmissionSchema", () => {
@@ -37,51 +36,6 @@ describe("caseSubmissionSchema", () => {
     if (result.success) {
       expect(result.data.currency).toBe("EUR");
     }
-  });
-
-  it("rejects empty claim types", () => {
-    const data = { ...validCase, claimTypes: {} };
-    const result = caseSubmissionSchema.safeParse(data);
-    expect(result.success).toBe(false);
-  });
-
-  it("rejects all-false claim types", () => {
-    const data = {
-      ...validCase,
-      claimTypes: { unpaidWages: false, unfairPractices: false },
-    };
-    const result = caseSubmissionSchema.safeParse(data);
-    expect(result.success).toBe(false);
-  });
-
-  it("rejects 'other' claim without description", () => {
-    const data = {
-      ...validCase,
-      claimTypes: { other: true },
-      otherDescription: undefined,
-    };
-    const result = caseSubmissionSchema.safeParse(data);
-    expect(result.success).toBe(false);
-  });
-
-  it("rejects 'other' claim with blank description", () => {
-    const data = {
-      ...validCase,
-      claimTypes: { other: true },
-      otherDescription: "   ",
-    };
-    const result = caseSubmissionSchema.safeParse(data);
-    expect(result.success).toBe(false);
-  });
-
-  it("accepts 'other' claim with valid description", () => {
-    const data = {
-      ...validCase,
-      claimTypes: { other: true },
-      otherDescription: "Forced arbitration clause",
-    };
-    const result = caseSubmissionSchema.safeParse(data);
-    expect(result.success).toBe(true);
   });
 
   it("rejects story shorter than 100 words", () => {
@@ -124,19 +78,7 @@ describe("caseSubmissionSchema", () => {
   });
 
   it("rejects attestation: false", () => {
-    const data = { ...validCase, attestation: false as true };
-    const result = caseSubmissionSchema.safeParse(data);
-    expect(result.success).toBe(false);
-  });
-
-  it("rejects consentLegal: false", () => {
-    const data = { ...validCase, consentLegal: false as true };
-    const result = caseSubmissionSchema.safeParse(data);
-    expect(result.success).toBe(false);
-  });
-
-  it("rejects consentCollective: false", () => {
-    const data = { ...validCase, consentCollective: false as true };
+    const data = { ...validCase, attested: false as true };
     const result = caseSubmissionSchema.safeParse(data);
     expect(result.success).toBe(false);
   });
@@ -227,21 +169,5 @@ describe("emailSchema", () => {
     expect(emailSchema.safeParse("user@mail.example.co.uk").success).toBe(
       true
     );
-  });
-});
-
-describe("claimTypesSchema", () => {
-  it("accepts at least one true claim type", () => {
-    const result = claimTypesSchema
-      .refine((v) => v.unpaidWages || v.unfairPractices || v.retaliation || v.other)
-      .safeParse({ unpaidWages: true });
-    expect(result.success).toBe(true);
-  });
-
-  it("rejects all undefined claim types", () => {
-    const result = claimTypesSchema
-      .refine((v) => v.unpaidWages || v.unfairPractices || v.retaliation || v.other)
-      .safeParse({});
-    expect(result.success).toBe(false);
   });
 });

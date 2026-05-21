@@ -6,13 +6,12 @@ import { WRITING_ASSISTANT_SYSTEM, WRITING_ASSISTANT_USER } from "@/lib/ai/promp
 
 const writingAssistantSchema = z.object({
   displayName: z.string().min(1),
-  country: z.string().min(1),
-  projects: z.string().min(1),
+  country: z.string().optional().default(""),
+  project: z.string().optional().default(""),
   dateRange: z.string().min(1),
   amountOwed: z.string().min(1),
   currency: z.string().min(1),
   contactAttempts: z.number().int().min(0),
-  claimTypes: z.array(z.enum(["unpaidWages", "unfairPractices", "retaliation", "other"])).min(1),
   rawStory: z.string().min(50),
 });
 

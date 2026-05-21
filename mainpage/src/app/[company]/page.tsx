@@ -9,43 +9,20 @@ import Modal from "@/app/components/Modal";
 interface CaseCard {
   id: string;
   displayName: string;
-  email: string;
   country: string;
-  projects: string;
+  project: string | null;
   dateRange: string;
   amountOwed: string;
   currency: string;
-  claimTypes: {
-    unpaidWages?: boolean;
-    unfairPractices?: boolean;
-    retaliation?: boolean;
-    other?: boolean;
-  };
+  contactAlias: string | null;
   story: string;
+  vertical: string;
   createdAt: string;
   company: {
     name: string;
     slug: string;
   };
 }
-
-interface CompanyStats {
-  slug: string;
-  name: string;
-  caseCount: number;
-  totalUnpaid: number;
-  wageClaims: number;
-  unfairPracticeClaims: number;
-  retaliationClaims: number;
-  otherClaims: number;
-}
-
-const CLAIM_LABELS: Record<string, string> = {
-  unpaidWages: "Unpaid Wages",
-  unfairPractices: "Unfair Practices",
-  retaliation: "Retaliation",
-  other: "Other",
-};
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
   EUR: "\u20ac",
@@ -62,7 +39,6 @@ export default function CompanyPage({
 }) {
   const [slug, setSlug] = useState<string>("");
   const [casesList, setCasesList] = useState<CaseCard[]>([]);
-  const [companyStats, setCompanyStats] = useState<CompanyStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -76,22 +52,11 @@ export default function CompanyPage({
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [casesRes, statsRes] = await Promise.all([
-          fetch(`/api/cases?company=${slug}&limit=100`),
-          fetch("/api/stats"),
-        ]);
+        const casesRes = await fetch(`/api/cases?company=${slug}&limit=100`);
 
         if (casesRes.ok) {
           const json = await casesRes.json();
           setCasesList(json.data.cases);
-        }
-
-        if (statsRes.ok) {
-          const json = await statsRes.json();
-          const found = json.data.companies.find(
-            (c: CompanyStats) => c.slug === slug
-          );
-          if (found) setCompanyStats(found);
         }
       } catch (err) {
         console.error("Failed to fetch company data:", err);
@@ -111,7 +76,7 @@ export default function CompanyPage({
   const totalUnpaidDisplay = Array.from(unpaidByCurrency.entries())
     .map(([curr, total]) => `${CURRENCY_SYMBOLS[curr] ?? curr}${total.toLocaleString()}`)
     .join(" + ");
-  const displayName = companyStats?.name ?? slug.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+  const displayName = casesList[0]?.company.name ?? slug.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
 
   return (
     <>
@@ -143,7 +108,7 @@ export default function CompanyPage({
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -165,41 +130,19 @@ export default function CompanyPage({
                   className="bg-sindicato-cream/5 border border-sindicato-cream/10 p-6 text-center torn-edge"
                 >
                   <p className="text-3xl sm:text-4xl font-bold text-sindicato-red">
-                    {"\u20ac"}{totalUnpaidDisplay}
+                    {totalUnpaidDisplay}
                   </p>
                   <p className="text-sindicato-cream/60 text-sm uppercase tracking-wider mt-2">
-                    Total Unpaid
-                  </p>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="bg-sindicato-cream/5 border border-sindicato-cream/10 p-6 text-center torn-edge"
-                >
-                  <p className="text-3xl sm:text-4xl font-bold text-sindicato-orange">
-                    {casesList.filter((c) => c.claimTypes.unpaidWages).length}
-                  </p>
-                  <p className="text-sindicato-cream/60 text-sm uppercase tracking-wider mt-2">
-                    Wage Claims
+                    Total Reported Unpaid
                   </p>
                 </motion.div>
               </div>
 
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="bg-sindicato-red/10 border border-sindicato-red/30 p-6 mb-12 torn-edge"
-              >
-                <p className="text-sindicato-cream font-bold uppercase tracking-wider text-sm mb-2">
-                  Notice
+              <div className="bg-sindicato-red/10 border border-sindicato-red/30 p-6 mb-12 torn-edge">
+                <p className="text-sindicato-cream/70 text-sm">
+                  Figures represent individual reports submitted by registered users. Sindicato does not independently verify claims.
                 </p>
-                <p className="text-sindicato-cream/70">
-                  This company has not responded to any of the reported cases. All claims remain unresolved.
-                </p>
-              </motion.div>
+              </div>
 
               {casesList.length === 0 ? (
                 <div className="text-center py-12">
@@ -233,19 +176,6 @@ export default function CompanyPage({
                             </p>
                           </div>
 
-                          <div className="flex flex-wrap gap-2 mb-3">
-                            {Object.entries(c.claimTypes)
-                              .filter(([, v]) => v)
-                              .map(([key]) => (
-                                <span
-                                  key={key}
-                                  className="bg-sindicato-red/20 text-sindicato-red text-xs px-2 py-1 uppercase tracking-wider font-semibold"
-                                >
-                                  {CLAIM_LABELS[key] ?? key}
-                                </span>
-                              ))}
-                          </div>
-
                           <p className="text-sindicato-cream/60 text-sm flex-1">
                             {c.story}
                           </p>
@@ -273,15 +203,6 @@ export default function CompanyPage({
                 >
                   Worked here? Report your case
                 </button>
-              </div>
-
-              <div className="text-center mt-8">
-                <Link
-                  href={`/${slug}/report`}
-                  className="text-sindicato-cream/50 hover:text-sindicato-cream transition-colors text-sm uppercase tracking-wider underline"
-                >
-                  View Data Report
-                </Link>
               </div>
             </>
           )}

@@ -10,10 +10,11 @@ export async function notifyCompanyNewCase(opts: {
     country: string;
     amountOwed: string;
     currency: string;
-    claimTypes: string[];
     caseId: string;
   };
 }): Promise<void> {
+  if (!opts.companyEmail) return;
+
   try {
     await sendTemplateEmail(
       opts.companyEmail,
@@ -25,7 +26,6 @@ export async function notifyCompanyNewCase(opts: {
         country: opts.caseSummary.country,
         amountOwed: opts.caseSummary.amountOwed,
         currency: opts.caseSummary.currency,
-        claimTypes: opts.caseSummary.claimTypes,
         caseUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/cases/${opts.caseSummary.caseId}`,
       }
     );

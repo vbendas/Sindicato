@@ -15,6 +15,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@marsidev/react-turnstile": "^1.5.2",
     "@neondatabase/serverless": "^1.1.0",
     "@react-email/components": "^1.0.12",
     "drizzle-orm": "^0.45.2",

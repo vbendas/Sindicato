@@ -21,7 +21,7 @@ export async function GET(request: Request) {
         companyId: cases.companyId,
         companySlug: companies.slug,
         companyName: companies.name,
-        companyEmail: companies.publicEmail,
+        companyEmail: sql<string>`COALESCE(${companies.contactEmails}->>0, NULL)`,
         amountOwed: cases.amountOwed,
         currency: cases.currency,
       })

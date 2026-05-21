@@ -32,16 +32,11 @@ export async function GET(request: Request) {
       return error("Company not found", 404);
     }
 
-    if (company.summary) {
-      return success({ summary: company.summary });
-    }
-
     const companyCases = await db
       .select({
         story: cases.story,
         amountOwed: cases.amountOwed,
         dateRange: cases.dateRange,
-        claimTypes: cases.claimTypes,
       })
       .from(cases)
       .where(and(eq(cases.companyId, company.id), eq(cases.status, "active")));
@@ -65,7 +60,6 @@ export async function GET(request: Request) {
           story: c.story,
           amountOwed: c.amountOwed,
           dateRange: c.dateRange,
-          claimTypes: JSON.stringify(c.claimTypes),
         })),
       }),
       temperature: 0.3,

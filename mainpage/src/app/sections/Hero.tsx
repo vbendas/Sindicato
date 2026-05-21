@@ -66,7 +66,7 @@ export default function Hero({ onRelateCase, caseCount = 0, companyCount = 0 }: 
           >
             <button
               onClick={onRelateCase}
-              className="bg-sindicato-warm-white text-sindicato-bordeaux px-10 sm:px-12 py-3.5 sm:py-4 text-base sm:text-lg font-bold uppercase tracking-wider hover:bg-sindicato-warm-white/90 transition-all font-[family-name:var(--font-barlow)] shadow-md hover:shadow-lg active:scale-[0.98]"
+              className="bg-sindicato-charcoal text-white px-10 sm:px-12 py-3.5 sm:py-4 text-base sm:text-lg font-bold uppercase tracking-wider hover:bg-sindicato-charcoal/80 transition-all font-[family-name:var(--font-barlow)] shadow-md hover:shadow-lg active:scale-[0.98]"
             >
               File a Report
             </button>

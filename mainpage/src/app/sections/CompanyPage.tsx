@@ -57,7 +57,7 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
       <main className="bg-sindicato-charcoal min-h-screen">
         <section className="pt-20 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
           <Link
-            href={vertical === "remote" ? "/remote-workers" : "/gig-workers"}
+            href={vertical === "remote" ? "/workers" : "/gig"}
             className="text-white/40 hover:text-white text-xs uppercase tracking-wider transition-colors mb-6 inline-block font-[family-name:var(--font-barlow)] font-bold"
           >
             &larr; Back to {vertical === "remote" ? "Remote Workers" : "Gig Workers"} Hub

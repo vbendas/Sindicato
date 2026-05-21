@@ -17,10 +17,6 @@ interface Company {
   name: string;
   caseCount: number;
   totalUnpaid: number;
-  wageClaims: number;
-  unfairPracticeClaims: number;
-  retaliationClaims: number;
-  otherClaims: number;
   vertical?: string;
 }
 

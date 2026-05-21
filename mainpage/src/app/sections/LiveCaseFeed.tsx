@@ -104,7 +104,7 @@ export default function LiveCaseFeed() {
   };
 
   return (
-    <section id="feed" className="bg-sindicato-charcoal pt-28 sm:pt-32 lg:pt-36 pb-4">
+    <section id="feed" className="bg-sindicato-charcoal pt-14 sm:pt-16 lg:pt-20 pb-4">
       <div className="px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -179,10 +179,12 @@ export default function LiveCaseFeed() {
                       >
                         {verticalStyles[item.vertical].label}
                       </span>
-                      <span className="text-white font-bold text-base font-[family-name:var(--font-jetbrains)] tracking-tight">
-                        {item.currency === "EUR" ? "\u20AC" : item.currency === "USD" ? "$" : item.currency}{" "}
-                        {Number(item.amountOwed).toLocaleString()}
-                      </span>
+                      {Number(item.amountOwed) > 0 && (
+                        <span className="text-white font-bold text-base font-[family-name:var(--font-jetbrains)] tracking-tight">
+                          {item.currency === "EUR" ? "\u20AC" : item.currency === "USD" ? "$" : item.currency}{" "}
+                          {Number(item.amountOwed).toLocaleString()}
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-2 flex-wrap mb-2">
@@ -207,9 +209,9 @@ export default function LiveCaseFeed() {
                       <span className="text-white/40 text-xs font-[family-name:var(--font-jetbrains)]">
                         {formatTimeAgo(item.createdAt)}
                       </span>
-                      <span className="inline-flex items-center gap-1 text-xs font-[family-name:var(--font-jetbrains)]">
+                      <span className="inline-flex items-center gap-1.5 bg-white/10 border border-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider font-[family-name:var(--font-jetbrains)]">
                         <span className={`w-1.5 h-1.5 rounded-full ${item.resolutionStatus === "resolved" ? "bg-green-400" : "bg-red-400"}`} />
-                        <span className={item.resolutionStatus === "resolved" ? "text-green-400/70" : "text-red-400/70"}>
+                        <span className={item.resolutionStatus === "resolved" ? "text-green-400" : "text-red-400"}>
                           {item.resolutionStatus === "resolved" ? "solved" : "unresolved"}
                         </span>
                       </span>
