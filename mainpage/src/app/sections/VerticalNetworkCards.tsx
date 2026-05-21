@@ -20,12 +20,12 @@ const verticalConfig = {
   remote: {
     title: "Remote Platform",
     description: "Data annotators, translators, freelancers, and remote platform workers",
-    href: "/remote-workers",
+    href: "/workers",
   },
   gig: {
     title: "Gig Delivery",
     description: "Delivery workers from Uber, Glovo, DoorDash, Just Eat, and other platforms",
-    href: "/gig-workers",
+    href: "/gig",
   },
 };
 

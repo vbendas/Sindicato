@@ -46,7 +46,7 @@ No existing platform combines:
 - Automated company notification and social pressure
 - Anonymous alias-based contact release to verified lawyers and companies
 - Class action solicitor intake pipeline
-- A self-funding model where companies finance the infrastructure that holds them accountable
+- A donations-only model with no company, advertiser, or investor money
 
 ---
 
@@ -364,29 +364,11 @@ Sindicato operates as a non-profit. All revenue covers operational costs first, 
 
 ### Revenue Streams
 
-**Stream 1 — Lawyer Referral Fee**
+**Donations only.**
 
-| Cluster Size | Fee |
-|---|---|
-| 20 workers | €500 |
-| 50 workers | €1,500 |
-| 100 workers | €2,500 |
-| 200+ workers | €5,000 |
+Sindicato takes no money from investors, advertisers, companies listed on the platform, or attorneys. It runs on the voluntary support of workers, attorneys, journalists, and anyone who believes wage theft should have consequences. No pressure. No commercialisation.
 
-What firms receive: alias emails (not real emails), plus all public case information. Firms contact workers directly via alias. Sindicato is the matchmaker, not the evidence custodian.
-
-**Stream 2 — Company Resolution Fee**
-
-Fixed rate: **€200 per worker contact**
-
-What companies receive: alias email only (real email never released). Public case information. Companies contact workers via alias. Signed non-retaliation agreement is a mandatory precondition.
-
-**Stream 3 — Donations**
-Always visible, never pressured.
-
-### Payment Provider
-
-**CoinGate** (primary) — cryptocurrency and traditional payment processing. Backup: NexaPay.
+Workers pay nothing. The platform costs nothing to use. Everything runs on what people choose to give.
 
 ### Revenue Allocation
 
@@ -512,6 +494,8 @@ Alias can be disabled instantly via API if worker reports harassment. Free tier 
 - Accept advertising
 - Take VC funding
 - Take a percentage of worker settlements
+- Accept money from any company listed on the platform
+- Accept money from law firms or attorneys
 
 These are non-negotiable. They are the platform's integrity and its legal protection simultaneously.
 
@@ -519,11 +503,11 @@ These are non-negotiable. They are the platform's integrity and its legal protec
 
 ## 13. The Core Principle
 
-Companies pay to access the resolution pathway. That payment generates the worker's legal protection document. The surplus funds worker legal aid and psychological support. The worse a company behaves, the more cases accumulate, the more they eventually pay to engage, the more workers get supported.
+Sindicato takes no money from the companies it holds accountable, the attorneys who benefit from its data, or investors who would expect a return. Its independence is its credibility. You cannot take money from the same parties whose behaviour you are documenting.
 
-The system runs on the ethical logic of making exploitation expensive and resolution affordable. Companies fund the infrastructure that holds them accountable.
+The system runs on the support of people who believe wage theft should have consequences — workers, journalists, attorneys, and anyone who thinks this matters. That support is voluntary. There is no pressure and no commercialisation.
 
-Workers pay nothing. Ever.
+Workers pay nothing. Ever. The platform costs nothing to use and always will.
 
 ---
 

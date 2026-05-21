@@ -63,21 +63,25 @@ export default function FeaturedCase() {
                 {display.company.name}
               </h2>
             </div>
-            <span className="inline-flex items-center gap-2 bg-white/10 text-white text-xs font-bold uppercase tracking-wider px-3 py-1.5 font-[family-name:var(--font-jetbrains)] shrink-0">
-              <span className={`w-2 h-2 rounded-full ${display.resolutionStatus === "resolved" ? "bg-green-400" : "bg-red-400"}`} />
-              {display.resolutionStatus === "resolved" ? "SOLVED" : "UNRESOLVED"}
+            <span className="inline-flex items-center gap-1.5 bg-white/10 border border-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider font-[family-name:var(--font-jetbrains)] shrink-0">
+              <span className={`w-1.5 h-1.5 rounded-full ${display.resolutionStatus === "resolved" ? "bg-green-400" : "bg-red-400"}`} />
+              <span className={display.resolutionStatus === "resolved" ? "text-green-400" : "text-red-400"}>
+                {display.resolutionStatus === "resolved" ? "solved" : "unresolved"}
+              </span>
             </span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 mb-8">
-            <div>
-              <span className="block text-white/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
-                Amount
-              </span>
-              <span className="text-white text-2xl sm:text-3xl font-bold font-[family-name:var(--font-jetbrains)]">
-                {display.currency === "USD" ? "$" : "\u20AC"}{Number(display.amountOwed).toLocaleString()}
-              </span>
-            </div>
+            {Number(display.amountOwed) > 0 && (
+              <div>
+                <span className="block text-white/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
+                  Amount
+                </span>
+                <span className="text-white text-2xl sm:text-3xl font-bold font-[family-name:var(--font-jetbrains)]">
+                  {display.currency === "USD" ? "$" : "\u20AC"}{Number(display.amountOwed).toLocaleString()}
+                </span>
+              </div>
+            )}
             <div>
               <span className="block text-white/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
                 Period

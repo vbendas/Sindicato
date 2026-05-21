@@ -66,11 +66,9 @@ It operates as a modern worker syndicate:
 
 Workers submit their case. It appears publicly on the Cases Wall — name partially redacted, story fully visible. Numbers aggregate on the company dashboard. Automated notifications inform the company each time a new case is filed. The totals grow. The pressure compounds.
 
-Companies that want to reach workers and resolve cases pay a fixed access fee and sign a non-retaliation agreement before receiving any contact information. That payment generates the worker's legal protection document as a direct byproduct. The worse a company behaves, the more cases accumulate, the more they eventually pay to engage, the more workers get supported.
+Companies that want to reach workers and resolve cases sign a non-retaliation agreement before receiving any contact information. That agreement legally protects every worker whose data is accessed. Workers are notified immediately each time their case is viewed. Labor law firms can access opted-in worker clusters for class action intake. No intermediation. Firms contact workers directly. Workers own their claims. Sindicato provides the platform, not the verdict.
 
-Labor law firms pay to access opted-in worker clusters for class action intake. No intermediation. Firms contact workers directly. Workers own their claims. Sindicato provides the platform, not the verdict.
-
-All surplus revenue — every euro beyond operational costs — goes to the Worker Support Fund: small claims filing fees covered, legal consultations provided, psychological support sessions funded. Workers pay nothing. Ever.
+Sindicato takes no money from investors, advertisers, companies listed on the platform, or attorneys. It runs on the voluntary support of workers, attorneys, journalists, and anyone who believes wage theft should have consequences. All surplus beyond operational costs goes to the Worker Support Fund: small claims filing fees covered, legal consultations provided, psychological support sessions funded. Workers pay nothing. Ever.
 
 Sindicato never verifies, endorses, or asserts individual claims. Workers attest to their own words under their own legal responsibility. The platform is the bulletin board. Workers publish. Sindicato displays.
 
@@ -97,6 +95,10 @@ Sindicato will never accept advertising.
 Sindicato will never take venture capital funding.
 
 Sindicato will never take a percentage of worker settlements.
+
+Sindicato will never accept money from any company listed on this platform.
+
+Sindicato will never accept money from law firms or attorneys.
 
 These are not aspirational values. They are the platform's integrity and its legal protection, simultaneously. They cannot be negotiated, traded, or compromised — because the moment they are, Sindicato becomes part of the system it was built to oppose.
 

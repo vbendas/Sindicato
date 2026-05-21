@@ -1,16 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 
 interface CaseFormProps {
   onSuccess: () => void;
-}
-
-interface ChecklistItem {
-  name: string;
-  passed: boolean;
-  note: string;
+  initialCompany?: string;
 }
 
 interface StrengthElement {
@@ -26,12 +22,12 @@ interface StrengthEvaluation {
   summary: string;
 }
 
-export default function CaseForm({ onSuccess }: CaseFormProps) {
+export default function CaseForm({ onSuccess, initialCompany }: CaseFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState("");
-  const [checklist, setChecklist] = useState<ChecklistItem[] | null>(null);
-  const [checklistLoading, setChecklistLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef<TurnstileInstance>(null);
   const [strengthEval, setStrengthEval] = useState<StrengthEvaluation | null>(null);
   const [strengthLoading, setStrengthLoading] = useState(false);
 
@@ -39,23 +35,20 @@ export default function CaseForm({ onSuccess }: CaseFormProps) {
     vertical: "",
     displayName: "",
     country: "",
-    projects: "",
+    ageRange: "",
+    sex: "",
+    project: "",
     dateRange: "",
     amountOwed: "",
     currency: "EUR",
     contactAttempts: "",
     story: "",
     email: "",
-    consentLegal: false,
-    consentCollective: false,
-    attestation: false,
-    claimTypes: {
-      unpaidWages: false,
-      unfairPractices: false,
-      retaliation: false,
-      other: false,
-    },
-    otherDescription: "",
+    companySlug: initialCompany || "",
+    optInSolicitor: false,
+    optInCollective: false,
+    optInCompanyNotify: true,
+    attested: false,
   });
 
   const handleChange = (
@@ -69,44 +62,63 @@ export default function CaseForm({ onSuccess }: CaseFormProps) {
     }));
   };
 
-  const handleClaimTypeChange = (claimType: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      claimTypes: {
-        ...prev.claimTypes,
-        [claimType]: !prev.claimTypes[claimType as keyof typeof prev.claimTypes],
-      },
-    }));
-  };
+  const doSubmit = useCallback(async (token: string) => {
+    setError("");
 
-  const getActiveClaimTypes = () =>
-    Object.entries(formData.claimTypes)
-      .filter(([, v]) => v)
-      .map(([k]) => k);
-
-  const checkCompleteness = async () => {
-    setChecklistLoading(true);
     try {
-      const response = await fetch("/api/ai/case-checklist", {
+      const payload = {
+        ...formData,
+        contactAttempts: Number(formData.contactAttempts),
+        amountOwed: formData.amountOwed,
+        turnstileToken: token,
+      };
+
+      const response = await fetch("/api/cases", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          displayName: formData.displayName,
-          projects: formData.projects,
-          dateRange: formData.dateRange,
-          amountOwed: formData.amountOwed,
-          contactAttempts: Number(formData.contactAttempts),
-          claimTypes: getActiveClaimTypes(),
-          story: formData.story,
-        }),
+        body: JSON.stringify(payload),
       });
-      const data = await response.json();
-      if (data.ok) {
-        setChecklist(data.data.items);
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || "Failed to submit case");
       }
-    } catch {
+
+      setIsSubmitted(true);
+      fetchCaseStrength();
+      setTimeout(() => {
+        onSuccess();
+      }, 4000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
-      setChecklistLoading(false);
+      setIsSubmitting(false);
+    }
+  }, [formData, onSuccess]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (!formData.vertical) {
+      setError("Select the type of work you do.");
+      return;
+    }
+
+    if (turnstileToken) {
+      setIsSubmitting(true);
+      doSubmit(turnstileToken);
+      return;
+    }
+
+    turnstileRef.current?.execute();
+    setIsSubmitting(true);
+  };
+
+  const onTurnstileSuccess = (token: string) => {
+    setTurnstileToken(token);
+    if (isSubmitting) {
+      doSubmit(token);
     }
   };
 
@@ -119,12 +131,11 @@ export default function CaseForm({ onSuccess }: CaseFormProps) {
         body: JSON.stringify({
           displayName: formData.displayName,
           country: formData.country,
-          projects: formData.projects,
+          project: formData.project,
           dateRange: formData.dateRange,
           amountOwed: formData.amountOwed,
           currency: formData.currency,
           contactAttempts: Number(formData.contactAttempts),
-          claimTypes: getActiveClaimTypes(),
           story: formData.story,
         }),
       });
@@ -135,40 +146,6 @@ export default function CaseForm({ onSuccess }: CaseFormProps) {
     } catch {
     } finally {
       setStrengthLoading(false);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    if (!formData.attestation) {
-      setError("You must confirm that your account is truthful and based on your personal experience.");
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      const response = await fetch("/api/cases", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to submit case");
-      }
-
-      setIsSubmitted(true);
-      fetchCaseStrength();
-      setTimeout(() => {
-        onSuccess();
-      }, 3000);
-    } catch {
-      setError("Something went wrong. Please try again.");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -203,22 +180,11 @@ export default function CaseForm({ onSuccess }: CaseFormProps) {
           </p>
         </div>
 
-        <div className="border border-sindicato-bordeaux/20 p-6">
-          <h4 className="text-lg font-bold text-sindicato-bordeaux mb-4 font-[family-name:var(--font-barlow)] tracking-wide uppercase">
-            Case Strength Analysis
-          </h4>
-
-          {strengthLoading && (
-            <div className="flex items-center gap-2 text-sindicato-charcoal/60">
-              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-              <span className="text-sm">Analyzing your case...</span>
-            </div>
-          )}
-
-          {strengthEval && (
+        {strengthEval && (
+          <div className="border border-sindicato-bordeaux/20 p-6">
+            <h4 className="text-lg font-bold text-sindicato-bordeaux mb-4 font-[family-name:var(--font-barlow)] tracking-wide uppercase">
+              Case Strength Analysis
+            </h4>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-3xl font-bold text-sindicato-bordeaux">
@@ -233,7 +199,6 @@ export default function CaseForm({ onSuccess }: CaseFormProps) {
                   />
                 </div>
               </div>
-
               <div className="space-y-2 mb-4">
                 {strengthEval.elements.map((el, i) => (
                   <div key={i} className="flex items-start gap-2">
@@ -247,17 +212,21 @@ export default function CaseForm({ onSuccess }: CaseFormProps) {
                   </div>
                 ))}
               </div>
-
               <p className="text-sindicato-charcoal/60 text-sm border-t border-sindicato-bordeaux/10 pt-3">
                 {strengthEval.summary}
               </p>
             </motion.div>
-          )}
+          </div>
+        )}
 
-          {!strengthLoading && !strengthEval && (
-            <p className="text-sindicato-charcoal/40 text-sm">Case analysis unavailable.</p>
-          )}
-        </div>
+        {strengthLoading && (
+          <div className="flex items-center justify-center py-8">
+            <svg className="animate-spin h-6 w-6 text-sindicato-bordeaux" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+          </div>
+        )}
       </motion.div>
     );
   }
@@ -320,29 +289,79 @@ export default function CaseForm({ onSuccess }: CaseFormProps) {
 
         <div>
           <label className="block text-sindicato-charcoal/80 mb-2 text-sm uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold">
-            Country *
+            Country
           </label>
           <input
             type="text"
             name="country"
-            required
             value={formData.country}
             onChange={handleChange}
-            placeholder="Your country"
+            placeholder="Your country (optional)"
             className="w-full bg-white border border-sindicato-charcoal/20 text-sindicato-charcoal p-3 focus:border-sindicato-bordeaux focus:outline-none transition-colors"
           />
         </div>
       </div>
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          <label className="block text-sindicato-charcoal/80 mb-2 text-sm uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold">
+            Age Range
+          </label>
+          <select
+            name="ageRange"
+            value={formData.ageRange}
+            onChange={handleChange}
+            className="w-full bg-white border border-sindicato-charcoal/20 text-sindicato-charcoal p-3 focus:border-sindicato-bordeaux focus:outline-none transition-colors"
+          >
+            <option value="">Prefer not to say</option>
+            <option value="18-24">18-24</option>
+            <option value="25-34">25-34</option>
+            <option value="35-44">35-44</option>
+            <option value="45+">45+</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sindicato-charcoal/80 mb-2 text-sm uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold">
+            Sex
+          </label>
+          <select
+            name="sex"
+            value={formData.sex}
+            onChange={handleChange}
+            className="w-full bg-white border border-sindicato-charcoal/20 text-sindicato-charcoal p-3 focus:border-sindicato-bordeaux focus:outline-none transition-colors"
+          >
+            <option value="">Prefer not to say</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="non-binary">Non-binary</option>
+          </select>
+        </div>
+      </div>
+
       <div>
         <label className="block text-sindicato-charcoal/80 mb-2 text-sm uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold">
-          Project(s) Worked On *
+          Company *
         </label>
         <input
           type="text"
-          name="projects"
+          name="companySlug"
           required
-          value={formData.projects}
+          value={formData.companySlug}
+          onChange={handleChange}
+          placeholder="Company name or slug (e.g., alignerr, uber)"
+          className="w-full bg-white border border-sindicato-charcoal/20 text-sindicato-charcoal p-3 focus:border-sindicato-bordeaux focus:outline-none transition-colors"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sindicato-charcoal/80 mb-2 text-sm uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold">
+          Project (optional)
+        </label>
+        <input
+          type="text"
+          name="project"
+          value={formData.project}
           onChange={handleChange}
           placeholder="e.g., CC Review, CHP Claude Code, NEXT"
           className="w-full bg-white border border-sindicato-charcoal/20 text-sindicato-charcoal p-3 focus:border-sindicato-bordeaux focus:outline-none transition-colors"
@@ -412,92 +431,8 @@ export default function CaseForm({ onSuccess }: CaseFormProps) {
 
       <div>
         <label className="block text-sindicato-charcoal/80 mb-2 text-sm uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold">
-          Claim Type(s) *
+          Your Story (100-500 words) *
         </label>
-        <div className="space-y-3">
-          <div className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              id="unpaidWages"
-              checked={formData.claimTypes.unpaidWages}
-              onChange={() => handleClaimTypeChange("unpaidWages")}
-              className="mt-1 w-5 h-5 accent-sindicato-bordeaux"
-            />
-            <label htmlFor="unpaidWages" className="text-sindicato-charcoal/70 text-sm">
-              Unpaid wages
-            </label>
-          </div>
-
-          <div className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              id="unfairPractices"
-              checked={formData.claimTypes.unfairPractices}
-              onChange={() => handleClaimTypeChange("unfairPractices")}
-              className="mt-1 w-5 h-5 accent-sindicato-bordeaux"
-            />
-            <label htmlFor="unfairPractices" className="text-sindicato-charcoal/70 text-sm">
-              Unfair practices
-            </label>
-          </div>
-
-          <div className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              id="retaliation"
-              checked={formData.claimTypes.retaliation}
-              onChange={() => handleClaimTypeChange("retaliation")}
-              className="mt-1 w-5 h-5 accent-sindicato-bordeaux"
-            />
-            <label htmlFor="retaliation" className="text-sindicato-charcoal/70 text-sm">
-              Retaliation
-            </label>
-          </div>
-
-          <div className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              id="other"
-              checked={formData.claimTypes.other}
-              onChange={() => handleClaimTypeChange("other")}
-              className="mt-1 w-5 h-5 accent-sindicato-bordeaux"
-            />
-            <label htmlFor="other" className="text-sindicato-charcoal/70 text-sm">
-              Other
-            </label>
-          </div>
-
-          {formData.claimTypes.other && (
-            <div className="mt-2">
-              <input
-                type="text"
-                name="otherDescription"
-                value={formData.otherDescription}
-                onChange={handleChange}
-                placeholder="Please describe the nature of your claim"
-                className="w-full bg-white border border-sindicato-charcoal/20 text-sindicato-charcoal p-3 focus:border-sindicato-bordeaux focus:outline-none transition-colors"
-              />
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <label className="block text-sindicato-charcoal/80 text-sm uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold">
-            Your Story (100-500 words) *
-          </label>
-          {formData.story.length >= 50 && (
-            <button
-              type="button"
-              onClick={checkCompleteness}
-              disabled={checklistLoading}
-              className="text-xs bg-sindicato-bordeaux/10 text-sindicato-bordeaux px-3 py-1 hover:bg-sindicato-bordeaux/20 transition-colors disabled:opacity-50 font-[family-name:var(--font-barlow)] font-bold uppercase tracking-wider"
-            >
-              {checklistLoading ? "Checking..." : "Check completeness"}
-            </button>
-          )}
-        </div>
         <textarea
           name="story"
           required
@@ -507,44 +442,9 @@ export default function CaseForm({ onSuccess }: CaseFormProps) {
           placeholder="Describe what happened in your own words..."
           className="w-full bg-white border border-sindicato-charcoal/20 text-sindicato-charcoal p-3 focus:border-sindicato-bordeaux focus:outline-none transition-colors resize-none"
         />
-
-        {checklistLoading && (
-          <div className="mt-3 flex items-center gap-2 text-sindicato-charcoal/60">
-            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-            </svg>
-            <span className="text-sm">Checking completeness...</span>
-          </div>
-        )}
-
-        {checklist && !checklistLoading && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-3 border border-sindicato-bordeaux/20 bg-sindicato-bordeaux/5 p-4"
-          >
-            <span className="block text-sindicato-bordeaux text-xs uppercase tracking-wider mb-3 font-[family-name:var(--font-barlow)] font-bold">
-              Completeness Check
-            </span>
-            <div className="space-y-2">
-              {checklist.map((item, i) => (
-                <div key={i} className="flex items-start gap-2">
-                  <span className={`text-sm mt-0.5 ${item.passed ? "text-green-500" : "text-red-400"}`}>
-                    {item.passed ? "\u2713" : "\u2717"}
-                  </span>
-                  <div>
-                    <span className="text-sindicato-charcoal/80 text-sm font-medium">{item.name}</span>
-                    <p className="text-sindicato-charcoal/50 text-xs">{item.note}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <p className="text-sindicato-charcoal/40 text-xs mt-3">
-              This is just advice. Your words stay exactly as you wrote them.
-            </p>
-          </motion.div>
-        )}
+        <p className="text-sindicato-charcoal/40 text-xs mt-1">
+          {formData.story.trim() ? `${formData.story.trim().split(/\s+/).filter(Boolean).length} words` : ""}
+        </p>
       </div>
 
       <div>
@@ -561,7 +461,7 @@ export default function CaseForm({ onSuccess }: CaseFormProps) {
           className="w-full bg-white border border-sindicato-charcoal/20 text-sindicato-charcoal p-3 focus:border-sindicato-bordeaux focus:outline-none transition-colors"
         />
         <p className="text-sindicato-charcoal/40 text-xs mt-1">
-          Your email will be partially redacted in public (e.g., v*****@g***.com)
+          Your email is never displayed publicly. An anonymous alias is generated for communication.
         </p>
       </div>
 
@@ -569,13 +469,13 @@ export default function CaseForm({ onSuccess }: CaseFormProps) {
         <div className="flex items-start gap-3">
           <input
             type="checkbox"
-            name="consentLegal"
-            id="consentLegal"
-            checked={formData.consentLegal}
+            name="optInSolicitor"
+            id="optInSolicitor"
+            checked={formData.optInSolicitor}
             onChange={handleChange}
             className="mt-1 w-5 h-5 accent-sindicato-bordeaux"
           />
-          <label htmlFor="consentLegal" className="text-sindicato-charcoal/70 text-sm">
+          <label htmlFor="optInSolicitor" className="text-sindicato-charcoal/70 text-sm">
             I consent to be contacted by labor law professionals if a collective case is opened
           </label>
         </div>
@@ -583,13 +483,13 @@ export default function CaseForm({ onSuccess }: CaseFormProps) {
         <div className="flex items-start gap-3">
           <input
             type="checkbox"
-            name="consentCollective"
-            id="consentCollective"
-            checked={formData.consentCollective}
+            name="optInCollective"
+            id="optInCollective"
+            checked={formData.optInCollective}
             onChange={handleChange}
             className="mt-1 w-5 h-5 accent-sindicato-bordeaux"
           />
-          <label htmlFor="consentCollective" className="text-sindicato-charcoal/70 text-sm">
+          <label htmlFor="optInCollective" className="text-sindicato-charcoal/70 text-sm">
             I consent to join collective legal action if one is organised
           </label>
         </div>
@@ -597,21 +497,46 @@ export default function CaseForm({ onSuccess }: CaseFormProps) {
         <div className="flex items-start gap-3">
           <input
             type="checkbox"
-            name="attestation"
-            id="attestation"
-            checked={formData.attestation}
+            name="optInCompanyNotify"
+            id="optInCompanyNotify"
+            checked={formData.optInCompanyNotify}
             onChange={handleChange}
             className="mt-1 w-5 h-5 accent-sindicato-bordeaux"
           />
-          <label htmlFor="attestation" className="text-sindicato-charcoal/70 text-sm">
+          <label htmlFor="optInCompanyNotify" className="text-sindicato-charcoal/70 text-sm">
+            Notify the company about this case (recommended)
+          </label>
+        </div>
+
+        <div className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            name="attested"
+            id="attested"
+            checked={formData.attested ? true : false}
+            onChange={() => setFormData((prev) => ({ ...prev, attested: !prev.attested }))}
+            className="mt-1 w-5 h-5 accent-sindicato-bordeaux"
+          />
+          <label htmlFor="attested" className="text-sindicato-charcoal/70 text-sm">
             I confirm this account is truthful and based on my personal experience *
           </label>
         </div>
       </div>
 
+      <Turnstile
+        ref={turnstileRef}
+        siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
+        onSuccess={onTurnstileSuccess}
+        options={{
+          theme: "light",
+          size: "invisible",
+          execution: "execute",
+        }}
+      />
+
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || !formData.attested}
         className="w-full bg-sindicato-bordeaux text-white py-4 font-bold uppercase tracking-wider hover:bg-sindicato-bordeaux-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-[family-name:var(--font-barlow)]"
       >
         {isSubmitting ? "Submitting..." : "Submit Case"}

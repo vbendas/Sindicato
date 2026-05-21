@@ -1,18 +1,13 @@
 import { z } from "zod/v4";
 
-export const claimTypesSchema = z.object({
-  unpaidWages: z.boolean().optional(),
-  unfairPractices: z.boolean().optional(),
-  retaliation: z.boolean().optional(),
-  other: z.boolean().optional(),
-});
-
 export const caseSubmissionSchema = z
   .object({
     vertical: z.enum(["remote", "gig"]),
     displayName: z.string().min(1).max(100),
-    country: z.string().min(1).max(100),
-    projects: z.string().min(1).max(500),
+    country: z.string().max(100).optional(),
+    ageRange: z.enum(["18-24", "25-34", "35-44", "45+"]).optional(),
+    sex: z.string().max(20).optional(),
+    project: z.string().max(500).optional(),
     dateRange: z.string().min(1).max(200),
     amountOwed: z.string().min(1).regex(/^\d+(\.\d{1,2})?$/, "Must be a valid amount").refine(
       (v) => parseFloat(v) <= 99999999.99,
@@ -28,20 +23,12 @@ export const caseSubmissionSchema = z
       { message: "Story must be between 100 and 500 words" }
     ),
     email: z.email(),
-    companySlug: z.string().min(1).max(100).optional(),
-    claimTypes: claimTypesSchema.refine(
-      (v) => v.unpaidWages || v.unfairPractices || v.retaliation || v.other,
-      { message: "Select at least one claim type" }
-    ),
-    otherDescription: z.string().max(1000).optional(),
-    attestation: z.literal(true),
-    consentLegal: z.literal(true),
-    consentCollective: z.literal(true),
-  })
-  .refine(
-    (d) => !(d.claimTypes.other && !d.otherDescription?.trim()),
-    { message: "Please provide a description for 'Other' claim type", path: ["otherDescription"] }
-  );
+    companySlug: z.string().min(1).max(100),
+    optInSolicitor: z.coerce.boolean().default(false),
+    optInCollective: z.coerce.boolean().default(false),
+    optInCompanyNotify: z.coerce.boolean().default(true),
+    attested: z.literal(true, { message: "You must confirm that your account is truthful and based on your personal experience" }),
+  });
 
 export const companySlugSchema = z
   .string()

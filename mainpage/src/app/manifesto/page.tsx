@@ -20,7 +20,11 @@ const sections = [
   },
   {
     title: "The Principles",
-    body: "Public record. Worker-first. Free to use. No ads. Ever. We do not edit or rewrite worker accounts. We do not take sides in disputes. We do not sell data. We do not accept money from companies listed on this platform.",
+    body: "Public record. Worker-first. Free to use. No ads. Ever. We do not edit or rewrite worker accounts. We do not take sides in disputes. We do not sell data. We do not accept money from investors, advertisers, or any company listed on this platform.",
+  },
+  {
+    title: "How We're Funded",
+    body: "Sindicato takes no money from investors, advertisers, or any company listed on this platform. Ever. It runs on the voluntary support of workers, attorneys, journalists, and anyone who believes wage theft should have consequences. No pressure. No commercialisation. No business. Community built for community.",
   },
 ];
 

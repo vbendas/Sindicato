@@ -23,17 +23,20 @@ const validBody = {
   vertical: "remote",
   displayName: "Worker",
   country: "Brazil",
-  projects: "CC Review",
+  project: "CC Review",
   dateRange: "Jan 2024 - Mar 2024",
   amountOwed: "5000",
   currency: "BRL",
   contactAttempts: 3,
   story: Array.from({ length: 100 }, (_, i) => `word${i}`).join(" "),
   email: "worker@example.com",
-  claimTypes: { unpaidWages: true },
+  companySlug: "acme",
   attestation: true,
-  consentLegal: true,
-  consentCollective: true,
+  optInSolicitor: false,
+  optInCollective: false,
+  optInCompanyNotify: true,
+  attested: true,
+  turnstileToken: "test-token",
 };
 
 function mockRequest(body: unknown, ip = "1.2.3.4") {
@@ -65,30 +68,12 @@ describe("POST /api/cases", () => {
   });
 
   it("rejects missing attestation", async () => {
-    const req = mockRequest({ ...validBody, attestation: false });
+    const req = mockRequest({ ...validBody, attested: false });
     const res = await POST(req);
     expect(res.status).toBe(400);
   });
 
-  it("accepts submission without companySlug (falls back to first company)", async () => {
-    const mockCompany = { id: "company-1", slug: "acme", name: "Acme Corp", publicEmail: null };
-    const mockCase = { id: "case-1" };
-
-    (db.select as ReturnType<typeof vi.fn>).mockImplementation(() => ({
-      from: vi.fn().mockReturnValue({
-        where: vi.fn().mockReturnValue({
-          limit: vi.fn().mockResolvedValue([mockCompany]),
-        }),
-        limit: vi.fn().mockResolvedValue([mockCompany]),
-      }),
-    }));
-
-    (db.insert as ReturnType<typeof vi.fn>).mockImplementation(() => ({
-      values: vi.fn().mockReturnValue({
-        returning: vi.fn().mockResolvedValue([mockCase]),
-      }),
-    }));
-
+  it("rejects submission without companySlug", async () => {
     const body = { ...validBody };
     delete (body as Record<string, unknown>).companySlug;
 
@@ -96,13 +81,12 @@ describe("POST /api/cases", () => {
     const res = await POST(req);
     const json = await res.json();
 
-    expect(res.status).toBe(201);
-    expect(json.ok).toBe(true);
-    expect(json.data.id).toBe("case-1");
+    expect(res.status).toBe(400);
+    expect(json.ok).toBe(false);
   });
 
   it("accepts contactAttempts as string (coerced to number)", async () => {
-    const mockCompany = { id: "company-1", slug: "acme", name: "Acme Corp", publicEmail: null };
+    const mockCompany = { id: "company-1", slug: "acme", name: "Acme Corp" };
     const mockCase = { id: "case-2" };
 
     (db.select as ReturnType<typeof vi.fn>).mockImplementation(() => ({
@@ -138,12 +122,17 @@ describe("GET /api/cases", () => {
         displayName: "John Doe",
         email: "john@example.com",
         country: "Portugal",
-        projects: "CC Review",
+        project: "CC Review",
         dateRange: "2024",
         amountOwed: "5000",
         currency: "EUR",
-        claimTypes: { unpaidWages: true },
+        ageRange: null,
+        sex: null,
+        contactAlias: null,
         story: "short",
+        storyTranslated: null,
+        translationLanguage: null,
+        vertical: "remote",
         createdAt: new Date(),
         companyName: "Acme",
         companySlug: "acme",

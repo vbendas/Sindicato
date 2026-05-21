@@ -6,11 +6,10 @@ import { CASE_CHECKLIST_SYSTEM, CASE_CHECKLIST_USER } from "@/lib/ai/prompts";
 
 const checklistSchema = z.object({
   displayName: z.string().min(1),
-  projects: z.string().min(1),
+  project: z.string().optional().default(""),
   dateRange: z.string().min(1),
   amountOwed: z.string().min(1),
   contactAttempts: z.number().int().min(0),
-  claimTypes: z.array(z.string()).min(1),
   story: z.string().min(1),
 });
 

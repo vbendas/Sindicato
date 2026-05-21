@@ -26,12 +26,30 @@ const tabs = [
 ];
 
 const commitments = [
-  "Workers pay nothing. Ever.",
-  "Non-profit. Full financial transparency.",
-  "Workers own their claims. We amplify their voices.",
-  "Companies and attorneys must sign non-retaliation contracts before contacting workers.",
-  "Communication is anonymized through Sindicato alias emails until you decide otherwise.",
-  "Workers choose when and if to share their identity or contact details.",
+  {
+    title: "No money. No strings. No business.",
+    body: "Sindicato takes no money from investors, advertisers, or any company listed on this platform. Ever. It runs on the voluntary support of workers, attorneys, journalists, and anyone who believes wage theft should have consequences. No pressure. No commercialisation. No business. Community built for community."
+  },
+  {
+    title: "Workers pay nothing. Ever.",
+    body: "Every tool, every case filing, every communication channel is free for workers. No subscriptions. No hidden fees. No pay-to-play."
+  },
+  {
+    title: "Non-profit. Full financial transparency.",
+    body: "Every dollar that comes in and goes out is published. No black boxes. No executive bonuses. No shareholder expectations."
+  },
+  {
+    title: "Workers own their claims. We amplify their voices.",
+    body: "We provide the platform, not the verdict. Workers control their story, their identity, and their legal strategy at every step."
+  },
+  {
+    title: "Legal protection built in.",
+    body: "Companies and attorneys must sign non-retaliation contracts before contacting workers. Communication is anonymized through Sindicato alias emails until you decide otherwise."
+  },
+  {
+    title: "Identity is a choice.",
+    body: "Workers choose when and if to share their identity or contact details. Anonymity is never a barrier to filing a case."
+  },
 ];
 
 export default function WhyItExists({ stats, activeVertical, onVerticalChange }: WhyItExistsProps) {
@@ -77,7 +95,7 @@ export default function WhyItExists({ stats, activeVertical, onVerticalChange }:
           className="text-left sm:text-center mb-12"
         >
           <div className="w-12 h-0.5 bg-white/20 sm:mx-auto mb-4" />
-          <div className="sm:border-l-4 sm:border-sindicato-gold sm:pl-6 inline-block">
+          <div className="sm:border-l-4 sm:border-sindicato-charcoal sm:pl-6 inline-block">
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white uppercase font-[family-name:var(--font-barlow)] tracking-wide leading-tight">
               Why It<br className="sm:hidden" /> Exists
             </h2>
@@ -132,7 +150,7 @@ export default function WhyItExists({ stats, activeVertical, onVerticalChange }:
           ))}
         </div>
 
-          <div className="border-t border-white/10 pt-10 sm:pt-12 mt-10 sm:mt-12">
+          <div className="-mx-4 sm:-mx-6 lg:-mx-8 mt-10 sm:mt-12 bg-sindicato-charcoal px-4 sm:px-6 lg:px-8 pt-10 sm:pt-12 pb-[75px]">
             <div className="w-12 h-0.5 bg-white/20 mx-auto mb-6" />
             <h3 className="text-xl sm:text-2xl font-bold text-white uppercase text-center mb-8 font-[family-name:var(--font-barlow)] tracking-wide">
               Our Commitment
@@ -144,23 +162,29 @@ export default function WhyItExists({ stats, activeVertical, onVerticalChange }:
               transition={{ duration: 0.6 }}
               className="border border-white/25 p-8 sm:p-10 max-w-2xl mx-auto"
             >
-              <div className="space-y-5 sm:space-y-6">
-                {commitments.map((item, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1, duration: 0.4 }}
-                    className="flex items-start gap-4"
-                  >
-                    <span className="w-6 h-6 rounded-full border border-white/30 flex items-center justify-center shrink-0 mt-0.5">
-                      <Check className="w-3 h-3 text-white/80" />
-                    </span>
-                    <p className="text-white/80 text-sm sm:text-base leading-relaxed">
-                      {item}
-                    </p>
-                  </motion.div>
+              <div className="space-y-6 sm:space-y-8">
+                  {commitments.map((item, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.1, duration: 0.4 }}
+                    >
+                      <div className="flex items-start gap-4">
+                        <span className="w-6 h-6 rounded-full border border-white/30 flex items-center justify-center shrink-0 mt-0.5">
+                          <Check className="w-3 h-3 text-white/80" />
+                        </span>
+                        <div>
+                          <p className="text-white text-sm sm:text-base font-bold mb-1">
+                            {item.title}
+                          </p>
+                          <p className="text-white/60 text-xs sm:text-sm leading-relaxed">
+                            {item.body}
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
                 ))}
               </div>
             </motion.div>

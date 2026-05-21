@@ -57,9 +57,9 @@ export default function HowItWorks() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.15, duration: 0.5 }}
-                  className="w-12 h-12 rounded-full bg-sindicato-warm-white flex items-center justify-center shadow-md mb-5 relative z-10"
+                  className="w-12 h-12 rounded-full bg-sindicato-charcoal flex items-center justify-center shadow-md mb-5 relative z-10"
                 >
-                  <step.icon className="w-5 h-5 text-sindicato-bordeaux" />
+                  <step.icon className="w-5 h-5 text-white" />
                 </motion.div>
 
                 <motion.span
@@ -100,8 +100,8 @@ export default function HowItWorks() {
               transition={{ delay: index * 0.15, duration: 0.5 }}
               className="flex items-start gap-5 relative"
             >
-              <div className="w-11 h-11 rounded-full bg-sindicato-warm-white flex items-center justify-center shrink-0 shadow-md relative z-10">
-                <step.icon className="w-4 h-4 text-sindicato-bordeaux" />
+              <div className="w-11 h-11 rounded-full bg-sindicato-charcoal flex items-center justify-center shrink-0 shadow-md relative z-10">
+                <step.icon className="w-4 h-4 text-white" />
               </div>
               <div className="pt-1.5">
                 <span className="text-base font-bold text-white uppercase tracking-wider font-[family-name:var(--font-barlow)] block mb-1.5">

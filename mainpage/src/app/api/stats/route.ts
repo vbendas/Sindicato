@@ -42,13 +42,13 @@ async function getStats(vertical?: Vertical | null) {
     .from(cases)
     .where(and(...activeConditions));
 
-  const legalConditions = [eq(cases.consentLegal, true), ne(cases.status, "deleted")];
-  if (vw) legalConditions.push(vw);
+  const solicitorConditions = [eq(cases.optInSolicitor, true), ne(cases.status, "deleted")];
+  if (vw) solicitorConditions.push(vw);
 
   const [workersLegalRow] = await db
     .select({ total: count() })
     .from(cases)
-    .where(and(...legalConditions));
+    .where(and(...solicitorConditions));
 
   const resolvedConditions = [eq(cases.status, "resolved")];
   if (vw) resolvedConditions.push(vw);
@@ -69,10 +69,6 @@ async function getStats(vertical?: Vertical | null) {
       vertical: companies.vertical,
       caseCount: count(),
       totalUnpaid: sum(cases.amountOwed),
-      wageClaims: sql<number>`COALESCE(SUM(CASE WHEN (${cases.claimTypes}->>'unpaidWages')::boolean = true THEN 1 ELSE 0 END), 0)`,
-      unfairPracticeClaims: sql<number>`COALESCE(SUM(CASE WHEN (${cases.claimTypes}->>'unfairPractices')::boolean = true THEN 1 ELSE 0 END), 0)`,
-      retaliationClaims: sql<number>`COALESCE(SUM(CASE WHEN (${cases.claimTypes}->>'retaliation')::boolean = true THEN 1 ELSE 0 END), 0)`,
-      otherClaims: sql<number>`COALESCE(SUM(CASE WHEN (${cases.claimTypes}->>'other')::boolean = true THEN 1 ELSE 0 END), 0)`,
     })
     .from(cases)
     .innerJoin(companies, eq(cases.companyId, companies.id))
@@ -95,10 +91,6 @@ async function getStats(vertical?: Vertical | null) {
       vertical: c.vertical,
       caseCount: c.caseCount,
       totalUnpaid: Number(c.totalUnpaid ?? 0),
-      wageClaims: Number(c.wageClaims),
-      unfairPracticeClaims: Number(c.unfairPracticeClaims),
-      retaliationClaims: Number(c.retaliationClaims),
-      otherClaims: Number(c.otherClaims),
     })),
   };
 }
