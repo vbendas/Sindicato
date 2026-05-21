@@ -1,12 +1,14 @@
 import { franc } from "franc";
 import { db } from "@/lib/db/client";
-import { cases, companies, workers } from "@/lib/db/schema";
+import { cases, companies } from "@/lib/db/schema";
 import { eq, and, desc, count } from "drizzle-orm";
 import { success, error, getClientIp } from "@/lib/utils/api";
 import { rateLimit } from "@/lib/auth/rate-limit";
 import { caseSubmissionSchema } from "@/lib/utils/schemas";
-import { redactName, redactEmail } from "@/lib/utils/redaction";
+import { redactName } from "@/lib/utils/redaction";
+import { verifyTurnstileToken } from "@/lib/utils/turnstile";
 import { notifyCompanyNewCase } from "@/lib/email/notifications";
+import { createCaseAlias } from "@/lib/email/aliases";
 
 export async function POST(request: Request) {
   const ip = getClientIp(request);
@@ -20,50 +22,35 @@ export async function POST(request: Request) {
 
     const parsed = caseSubmissionSchema.safeParse(body);
     if (!parsed.success) {
-      return error("Validation failed. Please check your submission.", 400);
+      return error(
+        "Validation failed. Please check your submission.",
+        400,
+        parsed.error.flatten().fieldErrors
+      );
     }
 
     const data = parsed.data;
 
-    let companySlug = data.companySlug;
-    if (!companySlug) {
-      const [firstCompany] = await db.select().from(companies).limit(1);
-      if (!firstCompany) {
-        return error("No companies found in database", 404);
-      }
-      companySlug = firstCompany.slug;
+    const turnstileToken = body.turnstileToken as string | undefined;
+    if (!turnstileToken) {
+      return error("Human verification required.", 400);
+    }
+    const verified = await verifyTurnstileToken(turnstileToken);
+    if (!verified) {
+      return error("Human verification failed. Please try again.", 400);
     }
 
     const [company] = await db
       .select()
       .from(companies)
-      .where(eq(companies.slug, companySlug))
+      .where(eq(companies.slug, data.companySlug))
       .limit(1);
 
     if (!company) {
-      return error("Company not found", 404);
-    }
-
-    const [existingWorker] = await db
-      .select()
-      .from(workers)
-      .where(eq(workers.email, data.email))
-      .limit(1);
-
-    let workerId: string;
-
-    if (existingWorker) {
-      workerId = existingWorker.id;
-    } else {
-      const [newWorker] = await db
-        .insert(workers)
-        .values({
-          email: data.email,
-          displayName: data.displayName,
-          emailVerified: false,
-        })
-        .returning({ id: workers.id });
-      workerId = newWorker.id;
+      return error(
+        `Company "${data.companySlug}" not found. Please check the name and try again.`,
+        404
+      );
     }
 
     const detectedLang = franc(data.story, { minLength: 50 });
@@ -71,44 +58,48 @@ export async function POST(request: Request) {
     const [newCase] = await db
       .insert(cases)
       .values({
-        workerId,
         companyId: company.id,
         vertical: data.vertical,
         displayName: data.displayName,
-        country: data.country,
-        projects: data.projects,
+        country: data.country || null,
+        ageRange: data.ageRange || null,
+        sex: data.sex || null,
+        project: data.project || null,
         dateRange: data.dateRange,
         amountOwed: data.amountOwed,
         currency: data.currency,
         contactAttempts: data.contactAttempts,
         story: data.story,
         email: data.email,
-        claimTypes: data.claimTypes,
-        otherDescription: data.otherDescription,
-        attestation: data.attestation,
-        consentLegal: data.consentLegal,
-        consentCollective: data.consentCollective,
         translationLanguage: detectedLang,
+        attested: true,
+        turnstileVerified: !!turnstileToken,
+        optInSolicitor: data.optInSolicitor,
+        optInCollective: data.optInCollective,
+        optInCompanyNotify: data.optInCompanyNotify,
         status: "active",
       })
       .returning({ id: cases.id });
 
-    if (company.publicEmail) {
-      const claimTypeLabels: string[] = [];
-      if (data.claimTypes.unpaidWages) claimTypeLabels.push("Unpaid wages");
-      if (data.claimTypes.unfairPractices) claimTypeLabels.push("Unfair practices");
-      if (data.claimTypes.retaliation) claimTypeLabels.push("Retaliation");
-      if (data.claimTypes.other) claimTypeLabels.push("Other");
+    try {
+      const alias = await createCaseAlias(newCase.id, data.email);
+      await db
+        .update(cases)
+        .set({ contactAlias: alias })
+        .where(eq(cases.id, newCase.id));
+    } catch (err) {
+      console.error("Failed to create alias:", err);
+    }
 
+    if (data.optInCompanyNotify) {
       notifyCompanyNewCase({
-        companyEmail: company.publicEmail,
+        companyEmail: company.contactEmails?.[0] || "",
         companyName: company.name,
         caseSummary: {
           workerName: redactName(data.displayName),
-          country: data.country,
+          country: data.country || "",
           amountOwed: data.amountOwed,
           currency: data.currency,
-          claimTypes: claimTypeLabels,
           caseId: newCase.id,
         },
       }).catch((err) => console.error("Failed to notify company:", err));
@@ -153,15 +144,19 @@ export async function GET(request: Request) {
       .select({
         id: cases.id,
         displayName: cases.displayName,
-        email: cases.email,
         country: cases.country,
-        projects: cases.projects,
+        project: cases.project,
         dateRange: cases.dateRange,
         amountOwed: cases.amountOwed,
         currency: cases.currency,
-        claimTypes: cases.claimTypes,
+        ageRange: cases.ageRange,
+        sex: cases.sex,
+        contactAlias: cases.contactAlias,
         story: cases.story,
+        storyTranslated: cases.storyTranslated,
+        translationLanguage: cases.translationLanguage,
         vertical: cases.vertical,
+        resolutionStatus: cases.resolutionStatus,
         createdAt: cases.createdAt,
         companyName: companies.name,
         companySlug: companies.slug,
@@ -176,17 +171,19 @@ export async function GET(request: Request) {
     const data = rows.map((row) => ({
       id: row.id,
       displayName: redactName(row.displayName),
-      email: redactEmail(row.email),
       country: row.country,
-      projects: row.projects,
+      project: row.project,
       dateRange: row.dateRange,
       amountOwed: row.amountOwed,
       currency: row.currency,
-      claimTypes: row.claimTypes,
-      story: row.story.length > 200
-        ? row.story.slice(0, row.story.lastIndexOf(" ", 200)) + "..."
-        : row.story,
+      ageRange: row.ageRange,
+      sex: row.sex,
+      contactAlias: row.contactAlias,
+      story: row.story,
+      storyTranslated: row.storyTranslated,
+      translationLanguage: row.translationLanguage,
       vertical: row.vertical,
+      resolutionStatus: row.resolutionStatus,
       createdAt: row.createdAt,
       company: {
         name: row.companyName,

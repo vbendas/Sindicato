@@ -8,34 +8,26 @@ import Header from "@/app/components/Header";
 interface CaseDetail {
   id: string;
   displayName: string;
-  email: string;
   country: string;
-  projects: string;
+  ageRange: string | null;
+  sex: string | null;
+  project: string | null;
   dateRange: string;
   amountOwed: string;
   currency: string;
   contactAttempts: number;
+  contactAlias: string | null;
   story: string;
-  claimTypes: {
-    unpaidWages?: boolean;
-    unfairPractices?: boolean;
-    retaliation?: boolean;
-    other?: boolean;
-  };
-  otherDescription?: string;
+  storyTranslated: string | null;
+  translationLanguage: string | null;
+  vertical: string;
+  resolutionStatus: string;
   createdAt: string;
   company: {
     name: string;
     slug: string;
   };
 }
-
-const CLAIM_LABELS: Record<string, string> = {
-  unpaidWages: "Unpaid Wages",
-  unfairPractices: "Unfair Practices",
-  retaliation: "Retaliation",
-  other: "Other",
-};
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
   EUR: "\u20ac",
@@ -54,6 +46,7 @@ export default function CaseDetailPage({
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [id, setId] = useState<string>("");
+  const [showTranslated, setShowTranslated] = useState(false);
 
   useEffect(() => {
     params.then((p) => setId(p.id));
@@ -147,6 +140,8 @@ export default function CaseDetailPage({
                   </p>
                   <p className="text-sindicato-cream/50 text-sm">
                     {caseData.country}
+                    {caseData.ageRange && ` \u00b7 ${caseData.ageRange}`}
+                    {caseData.sex && ` \u00b7 ${caseData.sex}`}
                   </p>
                 </div>
                 <div className="text-right">
@@ -160,20 +155,30 @@ export default function CaseDetailPage({
                 </div>
               </div>
 
-              <Link
-                href={`/${caseData.company.slug}`}
-                className="text-sindicato-orange text-sm font-semibold uppercase tracking-wider hover:underline inline-block mb-6"
-              >
-                {caseData.company.name}
-              </Link>
+              <div className="flex items-center gap-3 mb-6">
+                <Link
+                  href={`/${caseData.vertical === "gig" ? "gig" : "workers"}/${caseData.company.slug}`}
+                  className="text-sindicato-orange text-sm font-semibold uppercase tracking-wider hover:underline"
+                >
+                  {caseData.company.name}
+                </Link>
+                <span className="inline-flex items-center gap-1.5 bg-sindicato-cream/5 border border-sindicato-cream/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider font-[family-name:var(--font-jetbrains)]">
+                  <span className={`w-1.5 h-1.5 rounded-full ${caseData.resolutionStatus === "resolved" ? "bg-green-400" : "bg-red-400"}`} />
+                  <span className={caseData.resolutionStatus === "resolved" ? "text-green-400" : "text-red-400"}>
+                    {caseData.resolutionStatus === "resolved" ? "solved" : "unresolved"}
+                  </span>
+                </span>
+              </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
-                <div className="bg-sindicato-cream/5 p-3">
-                  <p className="text-sindicato-cream/40 text-xs uppercase tracking-wider mb-1">
-                    Projects
-                  </p>
-                  <p className="text-sindicato-cream text-sm">{caseData.projects}</p>
-                </div>
+                {caseData.project && (
+                  <div className="bg-sindicato-cream/5 p-3">
+                    <p className="text-sindicato-cream/40 text-xs uppercase tracking-wider mb-1">
+                      Project
+                    </p>
+                    <p className="text-sindicato-cream text-sm">{caseData.project}</p>
+                  </div>
+                )}
                 <div className="bg-sindicato-cream/5 p-3">
                   <p className="text-sindicato-cream/40 text-xs uppercase tracking-wider mb-1">
                     Date Range
@@ -188,34 +193,24 @@ export default function CaseDetailPage({
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-2 mb-6">
-                {Object.entries(caseData.claimTypes)
-                  .filter(([, v]) => v)
-                  .map(([key]) => (
-                    <span
-                      key={key}
-                      className="bg-sindicato-red/20 text-sindicato-red text-xs px-3 py-1 uppercase tracking-wider font-semibold"
-                    >
-                      {CLAIM_LABELS[key] ?? key}
-                    </span>
-                  ))}
-              </div>
-
-              {caseData.otherDescription && (
-                <div className="mb-6 bg-sindicato-cream/5 p-3">
-                  <p className="text-sindicato-cream/40 text-xs uppercase tracking-wider mb-1">
-                    Other Description
-                  </p>
-                  <p className="text-sindicato-cream text-sm">{caseData.otherDescription}</p>
-                </div>
-              )}
-
               <div className="border-t border-sindicato-cream/10 pt-6">
-                <p className="text-sindicato-cream/40 text-xs uppercase tracking-wider mb-3">
-                  Story
-                </p>
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-sindicato-cream/40 text-xs uppercase tracking-wider">
+                    Story
+                  </p>
+                  {caseData.storyTranslated && (
+                    <button
+                      onClick={() => setShowTranslated(!showTranslated)}
+                      className="text-sindicato-orange text-xs uppercase tracking-wider hover:underline"
+                    >
+                      {showTranslated ? "Show original" : "Show English translation"}
+                    </button>
+                  )}
+                </div>
                 <p className="text-sindicato-cream/80 leading-relaxed whitespace-pre-wrap">
-                  {caseData.story}
+                  {showTranslated && caseData.storyTranslated
+                    ? caseData.storyTranslated
+                    : caseData.story}
                 </p>
               </div>
             </div>
@@ -229,9 +224,11 @@ export default function CaseDetailPage({
                   day: "numeric",
                 })}
               </p>
-              <p className="text-sindicato-cream/30 text-xs">
-                Redacted email: {caseData.email}
-              </p>
+              {caseData.contactAlias && (
+                <p className="text-sindicato-cream/30 text-xs">
+                  Contact: {caseData.contactAlias}
+                </p>
+              )}
             </div>
           </motion.div>
         </div>
