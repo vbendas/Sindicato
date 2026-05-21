@@ -11,7 +11,7 @@ interface CaseData {
   dateRange: string;
   createdAt: string;
   company: { name: string; slug: string };
-  status: string;
+  resolutionStatus: string;
 }
 
 export default function FeaturedCase() {
@@ -39,11 +39,11 @@ export default function FeaturedCase() {
     currency: "USD",
     dateRange: "Apr 9 – May 18, 2026",
     company: { name: "Alignerr", slug: "alignerr" },
-    status: "active",
+    resolutionStatus: "none",
   };
 
   return (
-    <section className="bg-sindicato-near-black py-16 sm:py-20 lg:py-24 lg:section-diagonal-bottom">
+    <section className="bg-sindicato-charcoal py-16 sm:py-20 lg:py-24 lg:section-diagonal-bottom">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6 sm:mb-8 text-center sm:text-left">
           <span className="text-white/30 text-xs font-bold tracking-[0.25em] uppercase font-[family-name:var(--font-jetbrains)]">
@@ -64,8 +64,8 @@ export default function FeaturedCase() {
               </h2>
             </div>
             <span className="inline-flex items-center gap-2 bg-white/10 text-white text-xs font-bold uppercase tracking-wider px-3 py-1.5 font-[family-name:var(--font-jetbrains)] shrink-0">
-              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              {display.status === "active" ? "ACTIVE" : display.status.toUpperCase()}
+              <span className={`w-2 h-2 rounded-full ${display.resolutionStatus === "resolved" ? "bg-green-400" : "bg-red-400"}`} />
+              {display.resolutionStatus === "resolved" ? "SOLVED" : "UNRESOLVED"}
             </span>
           </div>
 
@@ -112,7 +112,7 @@ export default function FeaturedCase() {
             </p>
 
             <Link
-              href={`/remote-workers/${display.company.slug}`}
+              href={`/workers/${display.company.slug}`}
               className="inline-flex items-center gap-2 text-white font-bold uppercase tracking-wider text-sm hover:text-white/80 transition-colors font-[family-name:var(--font-barlow)] group"
             >
               View Full Report

@@ -12,6 +12,7 @@ interface CaseItem {
   currency: string;
   story: string;
   vertical: "remote" | "gig";
+  resolutionStatus: string;
   createdAt: string;
   company: {
     name: string;
@@ -46,18 +47,22 @@ function formatTimeAgo(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString();
 }
 
+const MASONRY_MAX_HEIGHT = 1380;
+
 export default function LiveCaseFeed() {
   const [activeTab, setActiveTab] = useState<TabValue>("all");
   const [cases, setCases] = useState<CaseItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(false);
   const fetchedRef = useRef(false);
+  const masonryRef = useRef<HTMLDivElement>(null);
 
   const fetchCases = useCallback(async (tab: TabValue) => {
     try {
       setLoading(true);
       setError(false);
-      const params = new URLSearchParams({ limit: "5", sort: "newest" });
+      const params = new URLSearchParams({ limit: "12", sort: "newest" });
       if (tab !== "all") params.set("vertical", tab);
       const response = await fetch(`/api/cases?${params}`);
       if (response.ok) {
@@ -82,6 +87,16 @@ export default function LiveCaseFeed() {
     return () => clearInterval(interval);
   }, [fetchCases, activeTab]);
 
+  useEffect(() => {
+    const el = masonryRef.current;
+    if (!el) return;
+    const check = () => setIsOverflowing(el.scrollHeight > MASONRY_MAX_HEIGHT);
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [cases]);
+
   const handleTabChange = (tab: TabValue) => {
     setActiveTab(tab);
     fetchedRef.current = true;
@@ -89,8 +104,8 @@ export default function LiveCaseFeed() {
   };
 
   return (
-    <section id="feed" className="bg-sindicato-near-black py-28 sm:py-32 lg:py-36">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="feed" className="bg-sindicato-charcoal pt-28 sm:pt-32 lg:pt-36 pb-4">
+      <div className="px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -111,7 +126,7 @@ export default function LiveCaseFeed() {
               onClick={() => handleTabChange(tab.value)}
               className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] ${
                 activeTab === tab.value
-                  ? "bg-sindicato-warm-white text-sindicato-bordeaux shadow-sm"
+                  ? "bg-white/20 backdrop-blur-sm border border-white/30 text-white"
                   : "bg-white/10 text-white/60 hover:bg-white/20"
               }`}
             >
@@ -141,18 +156,22 @@ export default function LiveCaseFeed() {
         )}
 
         {cases.length > 0 && (
-          <div className="space-y-4">
-            {cases.map((item, index) => (
-              <Link key={item.id} href={`/cases/${item.id}`}>
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
-                  className="bg-sindicato-warm-white p-5 sm:p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
-                >
-                  <div className="flex items-start justify-between gap-4 mb-2">
-                    <div className="flex items-center gap-2 flex-wrap">
+          <div
+            className="relative"
+            style={isOverflowing ? {
+              maxHeight: `${MASONRY_MAX_HEIGHT}px`,
+              overflow: "hidden",
+              maskImage: "linear-gradient(to bottom, black 65%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, black 65%, transparent 100%)",
+            } : undefined}
+          >
+            <div ref={masonryRef} className="columns-1 md:columns-2 lg:columns-3 gap-6">
+              {cases.map((item, index) => (
+                <Link key={item.id} href={`/cases/${item.id}`}>
+                  <div
+                    className="break-inside-avoid mb-5 bg-white/10 backdrop-blur-sm p-5 sm:p-6 border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/25 hover:-translate-y-1"
+                  >
+                    <div className="flex items-start justify-between gap-4 mb-2">
                       <span
                         className={`text-[10px] px-2 py-0.5 font-bold uppercase tracking-wider ${
                           verticalStyles[item.vertical].badge
@@ -160,43 +179,53 @@ export default function LiveCaseFeed() {
                       >
                         {verticalStyles[item.vertical].label}
                       </span>
-                      <span className="text-sindicato-charcoal/80 text-sm font-medium">
-                        {item.displayName}
-                      </span>
-                      <span className="text-sindicato-charcoal/20 text-sm">&bull;</span>
-                      <span className="text-sindicato-charcoal/60 text-sm">
-                        {item.company.name}
+                      <span className="text-white font-bold text-base font-[family-name:var(--font-jetbrains)] tracking-tight">
+                        {item.currency === "EUR" ? "\u20AC" : item.currency === "USD" ? "$" : item.currency}{" "}
+                        {Number(item.amountOwed).toLocaleString()}
                       </span>
                     </div>
-                    <span className="text-sindicato-charcoal/40 text-xs whitespace-nowrap font-[family-name:var(--font-jetbrains)]">
-                      {formatTimeAgo(item.createdAt)}
-                    </span>
-                  </div>
 
-                  <p className="text-sindicato-charcoal/65 text-sm leading-relaxed">
-                    {item.story.length > 150
-                      ? item.story.slice(0, item.story.lastIndexOf(" ", 150)) + "..."
-                      : item.story}
-                  </p>
+                    <div className="flex items-center gap-2 flex-wrap mb-2">
+                      <span className="text-white/80 text-sm font-medium">
+                        {item.displayName}
+                      </span>
+                      <span className="text-white/20 text-sm">&bull;</span>
+                      <Link
+                        href={`/${item.vertical === "gig" ? "gig" : "workers"}/${item.company.slug}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-white/60 text-sm hover:text-white transition-colors"
+                      >
+                        {item.company.name}
+                      </Link>
+                    </div>
 
-                  <div className="mt-2">
-                    <span className="text-sindicato-bordeaux font-bold text-sm font-[family-name:var(--font-jetbrains)]">
-                      {item.currency === "EUR" ? "\u20AC" : item.currency === "USD" ? "$" : item.currency}{" "}
-                      {Number(item.amountOwed).toLocaleString()}
-                    </span>
-                    <span className="text-sindicato-charcoal/30 text-xs ml-2">unpaid</span>
+                    <p className="text-white/65 text-sm leading-relaxed">
+                      {item.story}
+                    </p>
+
+                    <div className="mt-2 flex items-center justify-between">
+                      <span className="text-white/40 text-xs font-[family-name:var(--font-jetbrains)]">
+                        {formatTimeAgo(item.createdAt)}
+                      </span>
+                      <span className="inline-flex items-center gap-1 text-xs font-[family-name:var(--font-jetbrains)]">
+                        <span className={`w-1.5 h-1.5 rounded-full ${item.resolutionStatus === "resolved" ? "bg-green-400" : "bg-red-400"}`} />
+                        <span className={item.resolutionStatus === "resolved" ? "text-green-400/70" : "text-red-400/70"}>
+                          {item.resolutionStatus === "resolved" ? "solved" : "unresolved"}
+                        </span>
+                      </span>
+                    </div>
                   </div>
-                </motion.div>
-              </Link>
-            ))}
+                </Link>
+              ))}
+            </div>
           </div>
         )}
 
         {cases.length > 0 && (
-          <div className="mt-10 text-center">
+          <div className="mt-[15px] text-center">
             <Link
               href="/cases"
-              className="inline-block text-white/60 hover:text-white text-sm uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] font-bold"
+              className="inline-block bg-white/10 backdrop-blur-sm border border-white/30 px-6 py-3 text-white text-sm uppercase tracking-wider hover:bg-white/20 transition-all font-[family-name:var(--font-barlow)] font-bold"
             >
               View All Cases &rarr;
             </Link>

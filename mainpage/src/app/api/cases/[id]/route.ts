@@ -2,7 +2,7 @@ import { db } from "@/lib/db/client";
 import { cases, companies } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { success, error } from "@/lib/utils/api";
-import { redactName, redactEmail } from "@/lib/utils/redaction";
+import { redactName } from "@/lib/utils/redaction";
 
 export async function GET(
   request: Request,
@@ -15,17 +15,21 @@ export async function GET(
       .select({
         id: cases.id,
         displayName: cases.displayName,
-        email: cases.email,
         country: cases.country,
-        projects: cases.projects,
+        ageRange: cases.ageRange,
+        sex: cases.sex,
+        project: cases.project,
         dateRange: cases.dateRange,
         amountOwed: cases.amountOwed,
         currency: cases.currency,
         contactAttempts: cases.contactAttempts,
+        contactAlias: cases.contactAlias,
         story: cases.story,
-        claimTypes: cases.claimTypes,
-        otherDescription: cases.otherDescription,
+        storyTranslated: cases.storyTranslated,
+        translationLanguage: cases.translationLanguage,
         status: cases.status,
+        resolutionStatus: cases.resolutionStatus,
+        vertical: cases.vertical,
         createdAt: cases.createdAt,
         companyName: companies.name,
         companySlug: companies.slug,
@@ -42,16 +46,20 @@ export async function GET(
     const data = {
       id: row.id,
       displayName: redactName(row.displayName),
-      email: redactEmail(row.email),
       country: row.country,
-      projects: row.projects,
+      ageRange: row.ageRange,
+      sex: row.sex,
+      project: row.project,
       dateRange: row.dateRange,
       amountOwed: row.amountOwed,
       currency: row.currency,
       contactAttempts: row.contactAttempts,
+      contactAlias: row.contactAlias,
       story: row.story,
-      claimTypes: row.claimTypes,
-      otherDescription: row.otherDescription,
+      storyTranslated: row.storyTranslated,
+      translationLanguage: row.translationLanguage,
+      vertical: row.vertical,
+      resolutionStatus: row.resolutionStatus,
       createdAt: row.createdAt,
       company: {
         name: row.companyName,
