@@ -82,7 +82,7 @@ export default function VerticalHub({ vertical }: { vertical: "remote" | "gig" }
     <>
       <Header onRelateCase={() => { window.location.href = "/file"; }} />
       <main className="bg-sindicato-parchment relative">
-        <div className="fixed inset-0 pointer-events-none z-50 grain-overlay" style={{ opacity: 0.04 }} />
+        <div className="fixed inset-0 pointer-events-none z-50 grain-overlay" style={{ opacity: 0.15 }} />
         <section className="min-h-[60vh] flex items-center justify-center bg-sindicato-bordeaux relative overflow-hidden">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

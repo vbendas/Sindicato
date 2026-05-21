@@ -117,8 +117,8 @@ export default function Home() {
   return (
     <>
       <Header onRelateCase={() => setIsModalOpen(true)} />
+      <div className="fixed inset-0 pointer-events-none z-[60] grain-overlay" style={{ opacity: 0.45 }} />
       <main className="bg-sindicato-parchment relative">
-        <div className="fixed inset-0 pointer-events-none z-50 grain-overlay" style={{ opacity: 0.04 }} />
         <Hero
           onRelateCase={() => setIsModalOpen(true)}
           caseCount={stats.totalCases}
