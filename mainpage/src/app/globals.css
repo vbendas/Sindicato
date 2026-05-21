@@ -16,6 +16,7 @@
   --white: rgb(255 255 255);
   --charcoal: rgb(26 26 26);
   --near-black: rgb(39 7 11);
+  --pine: rgb(18 38 28);
   --slate: rgb(26 35 48);
   --red: rgb(196 30 58);
   --orange: rgb(242 101 34);
@@ -32,6 +33,7 @@
   --color-sindicato-warm-white: var(--warm-white);
   --color-sindicato-charcoal: var(--charcoal);
   --color-sindicato-near-black: var(--near-black);
+  --color-sindicato-pine: var(--pine);
   --color-sindicato-slate: var(--slate);
   --color-sindicato-gold: var(--gold);
   --font-display: var(--font-barlow);

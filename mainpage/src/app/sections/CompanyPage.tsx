@@ -53,8 +53,8 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
 
   return (
     <>
-      <Header />
-      <main className="bg-sindicato-charcoal min-h-screen">
+      <Header scrolledBg="bg-sindicato-pine/70 backdrop-blur-md border-white/5" />
+      <main className="bg-sindicato-pine min-h-screen">
         <section className="pt-20 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
           <Link
             href={vertical === "remote" ? "/workers" : "/gig"}
@@ -127,12 +127,14 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
                       <p className="text-white/60 text-sm line-clamp-2">
                         {item.story}
                       </p>
-                      <div className="mt-2">
-                        <span className="text-sindicato-bordeaux-light font-bold text-sm font-[family-name:var(--font-jetbrains)]">
-                          {item.currency === "EUR" ? "\u20AC" : "$"}{Number(item.amountOwed).toLocaleString()}
-                        </span>
-                        <span className="text-white/30 text-xs ml-2">unpaid</span>
-                      </div>
+                      {Number(item.amountOwed) > 0 && (
+                        <div className="mt-2">
+                          <span className="text-white font-bold text-sm font-[family-name:var(--font-jetbrains)]">
+                            {item.currency === "EUR" ? "\u20AC" : "$"}{Number(item.amountOwed).toLocaleString()}
+                          </span>
+                          <span className="text-white/30 text-xs ml-2">unpaid</span>
+                        </div>
+                      )}
                     </div>
                   </Link>
                 ))}
@@ -140,7 +142,7 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
             </div>
           </motion.div>
         </section>
-        <Footer />
+        <Footer bg="bg-sindicato-pine" />
       </main>
     </>
   );

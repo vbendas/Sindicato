@@ -150,7 +150,7 @@ export default function WhyItExists({ stats, activeVertical, onVerticalChange }:
           ))}
         </div>
 
-          <div className="-mx-4 sm:-mx-6 lg:-mx-8 mt-10 sm:mt-12 bg-sindicato-charcoal px-4 sm:px-6 lg:px-8 pt-10 sm:pt-12 pb-[75px]">
+          <div className="-mx-4 sm:-mx-6 lg:-mx-8 mt-10 sm:mt-12 bg-sindicato-charcoal px-4 sm:px-6 lg:px-8 pt-[15px] pb-[100px]">
             <div className="w-12 h-0.5 bg-white/20 mx-auto mb-6" />
             <h3 className="text-xl sm:text-2xl font-bold text-white uppercase text-center mb-8 font-[family-name:var(--font-barlow)] tracking-wide">
               Our Commitment

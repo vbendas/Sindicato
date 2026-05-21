@@ -108,7 +108,7 @@ export default function Hero({ onRelateCase, caseCount = 0, companyCount = 0 }: 
         className="absolute bottom-8 sm:bottom-10 left-0 right-0 z-10 text-center"
       >
         <p className="text-white/45 text-xs sm:text-sm font-[family-name:var(--font-jetbrains)] tracking-widest">
-          #{String(caseCount).padStart(3, "0")} CASES FILED &middot; {companyCount} COMPANIES EXPOSED &middot; ALL WORKER-REPORTED
+          #{String(caseCount).padStart(3, "0")} CASES FILED &middot; {companyCount}{" "}COMPANIES EXPOSED &middot; ALL WORKER-REPORTED
         </p>
       </motion.div>
     </section>
