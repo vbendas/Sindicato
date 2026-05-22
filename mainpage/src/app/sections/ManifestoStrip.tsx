@@ -23,7 +23,7 @@ export default function ManifestoStrip() {
             {i > 0 && (
               <span className="w-1 h-1 bg-white/30 rounded-full inline-block shrink-0" />
             )}
-            <span className="text-white/70 text-xs sm:text-sm font-bold uppercase tracking-widest font-[family-name:var(--font-barlow)]">
+            <span className="text-sindicato-cream/70 text-xs sm:text-sm font-bold uppercase tracking-widest font-[family-name:var(--font-barlow)]">
               {item.text}
             </span>
           </span>

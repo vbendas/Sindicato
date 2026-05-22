@@ -76,9 +76,9 @@ export default function VerticalHub({ vertical }: { vertical: "remote" | "gig" }
 
   return (
     <>
-      <Header onRelateCase={() => { window.location.href = "/file"; }} />
+      <div className="fixed inset-0 pointer-events-none z-[60] grain-overlay" style={{ opacity: 0.45 }} />
+      <Header />
       <main className="bg-sindicato-parchment relative">
-        <div className="fixed inset-0 pointer-events-none z-50 grain-overlay" style={{ opacity: 0.15 }} />
         <section className="min-h-[60vh] flex items-center justify-center bg-sindicato-bordeaux relative overflow-hidden">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -86,10 +86,10 @@ export default function VerticalHub({ vertical }: { vertical: "remote" | "gig" }
             transition={{ duration: 0.8 }}
             className="relative z-10 max-w-3xl mx-auto px-4 text-center py-16 sm:py-20"
           >
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white uppercase mb-4 leading-tight font-[family-name:var(--font-barlow)]">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-cream uppercase mb-4 leading-tight font-[family-name:var(--font-barlow)]">
               {cfg.title}
             </h1>
-            <p className="text-base sm:text-lg text-white/70 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-sindicato-cream/70 max-w-2xl mx-auto">
               {cfg.subtitle}
             </p>
           </motion.div>
@@ -103,7 +103,7 @@ export default function VerticalHub({ vertical }: { vertical: "remote" | "gig" }
           onVerticalChange={setActiveVertical}
         />
         <LiveCaseFeed />
-        <CTAs onRelateCase={() => { window.location.href = "/file"; }} />
+        <CTAs />
         <Footer />
       </main>
     </>

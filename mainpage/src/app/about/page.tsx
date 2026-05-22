@@ -16,7 +16,7 @@ const sections: Section[] = [
   {
     title: "How It Started",
     paragraphs: [
-      "One worker was exploited. One case became a platform. Thousands of voices are about to become impossible to ignore.",
+      "One worker was exploited. One case became a platform. Many voices are about to become impossible to ignore.",
       "This platform exists because a company stole my wages, and when I proved it, they retaliated. Then I found out they had done the same thing to hundreds of others, in the same way, across the same projects, on the same timeline. Each of us was told we were alone. Each of us believed it. None of us were.",
       "Sindicato is the infrastructure that makes sure that never happens again.",
     ],
@@ -97,27 +97,22 @@ const sections: Section[] = [
 export default function AboutPage() {
   return (
     <>
+      <div className="fixed inset-0 pointer-events-none z-[60] grain-overlay" style={{ opacity: 0.45 }} />
       <Header />
-      <main className="bg-sindicato-charcoal min-h-screen">
+      <main className="bg-sindicato-bordeaux min-h-screen">
         <section className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mb-16"
+            className="mb-16 text-center"
           >
-            <Link
-              href="/"
-              className="text-white/40 hover:text-white text-xs uppercase tracking-wider transition-colors mb-8 inline-block font-[family-name:var(--font-barlow)] font-bold"
-            >
-              &larr; Back
-            </Link>
-            <div className="w-12 h-0.5 bg-white/20 mb-6" />
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-2">
+            <div className="w-12 h-0.5 bg-white/20 mb-6 mx-auto" />
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-cream uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-2">
               About Sindicato
             </h1>
-            <p className="text-white/40 text-sm font-[family-name:var(--font-jetbrains)]">
-              sindicato.report
+            <p className="text-sindicato-cream/40 text-sm font-[family-name:var(--font-jetbrains)]">
+              One case. Many voices.
             </p>
           </motion.div>
 
@@ -130,7 +125,7 @@ export default function AboutPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05, duration: 0.6 }}
               >
-                <h2 className="text-xs uppercase tracking-widest text-white/30 font-[family-name:var(--font-barlow)] font-bold mb-6">
+                <h2 className="text-xs uppercase tracking-widest text-sindicato-cream/30 font-[family-name:var(--font-barlow)] font-bold mb-6">
                   {section.title}
                 </h2>
 
@@ -138,7 +133,7 @@ export default function AboutPage() {
                   {section.paragraphs.map((p, j) => (
                     <p
                       key={j}
-                      className="text-white/75 text-sm sm:text-base leading-relaxed"
+                      className="text-sindicato-cream/75 text-sm sm:text-base leading-relaxed"
                     >
                       {p}
                     </p>
@@ -149,7 +144,7 @@ export default function AboutPage() {
                       {section.list.map((item, j) => (
                         <p
                           key={j}
-                          className="text-white/70 text-sm sm:text-base leading-relaxed"
+                          className="text-sindicato-cream/70 text-sm sm:text-base leading-relaxed"
                         >
                           {item}
                         </p>
@@ -160,7 +155,7 @@ export default function AboutPage() {
                   {section.closing?.map((p, j) => (
                     <p
                       key={j}
-                      className="text-white/75 text-sm sm:text-base leading-relaxed"
+                      className="text-sindicato-cream/75 text-sm sm:text-base leading-relaxed"
                     >
                       {p}
                     </p>
@@ -174,10 +169,10 @@ export default function AboutPage() {
             ))}
 
             <div className="pt-8 border-t border-white/10">
-              <p className="text-white/30 text-xs font-[family-name:var(--font-jetbrains)]">
+              <p className="text-sindicato-cream/30 text-xs font-[family-name:var(--font-jetbrains)]">
                 Sindicato — sindicato.report
               </p>
-              <p className="text-white/20 text-xs mt-1 font-[family-name:var(--font-jetbrains)]">
+              <p className="text-sindicato-cream/20 text-xs mt-1 font-[family-name:var(--font-jetbrains)]">
                 Built from Case #001. Built for everyone after.
               </p>
             </div>

@@ -38,21 +38,16 @@ export async function POST(request: NextRequest) {
     return error("Too many requests", 429);
   }
 
-  const recent = await db
-    .select()
-    .from(verificationTokens)
+  // Delete any existing unexpired tokens so we always send a fresh code
+  await db
+    .delete(verificationTokens)
     .where(
       and(
         eq(verificationTokens.email, email),
         isNull(verificationTokens.usedAt),
         gt(verificationTokens.expiresAt, new Date())
       )
-    )
-    .limit(1);
-
-  if (recent.length > 0) {
-    return success({ message: "If an account exists, a code has been sent." });
-  }
+    );
 
   const code = generateCode();
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000);

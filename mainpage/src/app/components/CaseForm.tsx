@@ -159,7 +159,7 @@ export default function CaseForm({ onSuccess, initialCompany }: CaseFormProps) {
         <div className="text-center mb-8">
           <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg
-              className="w-10 h-10 text-white"
+              className="w-10 h-10 text-sindicato-cream"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -537,7 +537,7 @@ export default function CaseForm({ onSuccess, initialCompany }: CaseFormProps) {
       <button
         type="submit"
         disabled={isSubmitting || !formData.attested}
-        className="w-full bg-sindicato-bordeaux text-white py-4 font-bold uppercase tracking-wider hover:bg-sindicato-bordeaux-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-[family-name:var(--font-barlow)]"
+        className="w-full bg-sindicato-bordeaux text-sindicato-cream py-4 font-bold uppercase tracking-wider hover:bg-sindicato-bordeaux-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-[family-name:var(--font-barlow)]"
       >
         {isSubmitting ? "Submitting..." : "Submit Case"}
       </button>

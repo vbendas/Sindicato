@@ -29,6 +29,20 @@
       "when": 1747785600000,
       "tag": "0003_v2_schema_update",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1779402389052,
+      "tag": "0004_condemned_squirrel_girl",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1779448684374,
+      "tag": "0005_colorful_queen_noir",
+      "breakpoints": true
     }
   ]
 }

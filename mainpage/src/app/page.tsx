@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import Modal from "./components/Modal";
 import Header from "./components/Header";
 import Hero from "./sections/Hero";
 import ManifestoStrip from "./sections/ManifestoStrip";
@@ -54,7 +53,6 @@ const defaultVerticals = {
 };
 
 export default function Home() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [stats, setStats] = useState<Stats>(defaultStats);
   const [activeVertical, setActiveVertical] = useState("all");
   const [displayStats, setDisplayStats] = useState(defaultStats);
@@ -112,11 +110,10 @@ export default function Home() {
 
   return (
     <>
-      <Header onRelateCase={() => setIsModalOpen(true)} />
+      <Header />
       <div className="fixed inset-0 pointer-events-none z-[60] grain-overlay" style={{ opacity: 0.45 }} />
       <main className="bg-sindicato-parchment relative">
         <Hero
-          onRelateCase={() => setIsModalOpen(true)}
           caseCount={stats.totalCases}
           companyCount={stats.activeCompanies}
         />
@@ -130,11 +127,9 @@ export default function Home() {
         />
         <VerticalNetworkCards verticals={stats.verticals ?? defaultVerticals} />
         <LiveCaseFeed />
-        <CTAs onRelateCase={() => setIsModalOpen(true)} />
+        <CTAs />
         <Footer />
       </main>
-
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
 }

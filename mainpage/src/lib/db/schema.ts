@@ -13,6 +13,38 @@ import {
   index,
 } from "drizzle-orm/pg-core";
 
+export const caseTypeEnum = pgEnum("case_type", [
+  "unpaid_wages",
+  "late_payment",
+  "sudden_deactivation",
+  "unfair_review",
+  "predatory_practices",
+  "harassment",
+  "retaliation",
+  "contract_violation",
+  "data_privacy",
+  "other",
+]);
+
+export const timelineDirectionEnum = pgEnum("timeline_direction", [
+  "worker_to_company",
+  "company_to_worker",
+  "system",
+]);
+
+export const timelineEventTypeEnum = pgEnum("timeline_event_type", [
+  "email_sent",
+  "no_response",
+  "canned_response",
+  "chat_support",
+  "phone_call",
+  "legal_notice",
+  "payment_partial",
+  "case_updated",
+  "resolved",
+  "other",
+]);
+
 export const caseStatusEnum = pgEnum("case_status", [
   "active",
   "resolved",
@@ -65,6 +97,9 @@ export const cases = pgTable("cases", {
   sex: varchar("sex", { length: 20 }),
   project: text("project"),
   dateRange: varchar("date_range", { length: 200 }).notNull(),
+  caseType: caseTypeEnum("case_type").default("unpaid_wages").notNull(),
+  workDateStart: timestamp("work_date_start"),
+  workDateEnd: timestamp("work_date_end"),
   amountOwed: numeric("amount_owed", { precision: 12, scale: 2 }).notNull(),
   currency: varchar("currency", { length: 10 }).default("EUR").notNull(),
   contactAttempts: integer("contact_attempts").notNull(),
@@ -181,3 +216,19 @@ export const verificationTokens = pgTable(
   },
   (t) => [index("verification_tokens_email_code").on(t.email, t.code)]
 );
+
+export const caseTimelineEvents = pgTable("case_timeline_events", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  caseId: uuid("case_id").references(() => cases.id).notNull(),
+  workerId: uuid("worker_id").references(() => workers.id),
+  eventType: timelineEventTypeEnum("event_type").notNull(),
+  eventDate: timestamp("event_date").notNull(),
+  title: varchar("title", { length: 255 }),
+  description: text("description").notNull(),
+  direction: timelineDirectionEnum("direction").default("worker_to_company").notNull(),
+  labels: text("labels").array().default([]).notNull(),
+  isAutomatic: boolean("is_automatic").default(false).notNull(),
+  emailContent: text("email_content"),
+  responseReceived: boolean("response_received").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});

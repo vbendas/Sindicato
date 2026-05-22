@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Header from "@/app/components/Header";
-import Modal from "@/app/components/Modal";
 
 interface CaseCard {
   id: string;
@@ -40,8 +39,6 @@ export default function CompanyPage({
   const [slug, setSlug] = useState<string>("");
   const [casesList, setCasesList] = useState<CaseCard[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   useEffect(() => {
     params.then((p) => setSlug(p.company));
   }, [params]);
@@ -80,10 +77,10 @@ export default function CompanyPage({
 
   return (
     <>
-      <Header onRelateCase={() => setIsModalOpen(true)} />
+      <div className="fixed inset-0 pointer-events-none z-[60] grain-overlay" style={{ opacity: 0.45 }} />
+      <Header />
 
-      <div className="relative pt-24 pb-16">
-        <div className="fixed inset-0 pointer-events-none z-50 grain-overlay" style={{ opacity: 0.04 }} />
+      <div className="relative pt-24 pb-16 bg-sindicato-pine">
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -197,19 +194,18 @@ export default function CompanyPage({
               )}
 
               <div className="text-center">
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className="bg-sindicato-red text-sindicato-cream px-10 py-4 font-bold uppercase tracking-wider hover:bg-sindicato-red/90 transition-colors torn-edge font-button text-lg"
+                <Link
+                  href={`/file?company=${slug}`}
+                  className="bg-sindicato-red text-sindicato-cream px-10 py-4 font-bold uppercase tracking-wider hover:bg-sindicato-red/90 transition-colors torn-edge font-button text-lg inline-block"
                 >
                   Worked here? Report your case
-                </button>
+                </Link>
               </div>
             </>
           )}
         </div>
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
 }
