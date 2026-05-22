@@ -29,8 +29,8 @@ const tabs: { label: string; value: TabValue }[] = [
 ];
 
 const verticalStyles = {
-  remote: { badge: "bg-sindicato-bordeaux text-white", label: "REMOTE" },
-  gig: { badge: "bg-sindicato-bordeaux-light text-white", label: "GIG" },
+  remote: { badge: "bg-sindicato-bordeaux text-sindicato-cream", label: "REMOTE" },
+  gig: { badge: "bg-sindicato-bordeaux-light text-sindicato-cream", label: "GIG" },
 };
 
 function formatTimeAgo(dateStr: string): string {
@@ -114,7 +114,7 @@ export default function LiveCaseFeed() {
           className="text-center mb-12"
         >
           <div className="w-12 h-0.5 bg-white/20 mx-auto mb-4" />
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white uppercase font-[family-name:var(--font-barlow)] tracking-wide">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-cream uppercase font-[family-name:var(--font-barlow)] tracking-wide">
             Recent Cases
           </h2>
         </motion.div>
@@ -126,8 +126,8 @@ export default function LiveCaseFeed() {
               onClick={() => handleTabChange(tab.value)}
               className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] ${
                 activeTab === tab.value
-                  ? "bg-white/20 backdrop-blur-sm border border-white/30 text-white"
-                  : "bg-white/10 text-white/60 hover:bg-white/20"
+                  ? "bg-white/20 backdrop-blur-sm border border-white/30 text-sindicato-cream"
+                  : "bg-white/10 text-sindicato-cream/60 hover:bg-white/20"
               }`}
             >
               {tab.label}
@@ -138,20 +138,20 @@ export default function LiveCaseFeed() {
         {loading && cases.length === 0 && (
           <div className="text-center py-12">
             <div className="animate-spin w-8 h-8 border-2 border-white/30 border-t-white rounded-full mx-auto mb-4" />
-            <p className="text-white/40 text-sm">Loading cases...</p>
+            <p className="text-sindicato-cream/40 text-sm">Loading cases...</p>
           </div>
         )}
 
         {error && cases.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-white/40 text-sm">Unable to load recent cases. Please try again later.</p>
+            <p className="text-sindicato-cream/40 text-sm">Unable to load recent cases. Please try again later.</p>
           </div>
         )}
 
         {!loading && !error && cases.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-white/40 text-lg mb-2">No cases reported yet</p>
-            <p className="text-white/30 text-sm">Be the first to report your experience</p>
+            <p className="text-sindicato-cream/40 text-lg mb-2">No cases reported yet</p>
+            <p className="text-sindicato-cream/30 text-sm">Be the first to report your experience</p>
           </div>
         )}
 
@@ -180,7 +180,7 @@ export default function LiveCaseFeed() {
                         {verticalStyles[item.vertical].label}
                       </span>
                       {Number(item.amountOwed) > 0 && (
-                        <span className="text-white font-bold text-base font-[family-name:var(--font-jetbrains)] tracking-tight">
+                        <span className="text-sindicato-cream font-bold text-base font-[family-name:var(--font-jetbrains)] tracking-tight">
                           {item.currency === "EUR" ? "\u20AC" : item.currency === "USD" ? "$" : item.currency}{" "}
                           {Number(item.amountOwed).toLocaleString()}
                         </span>
@@ -188,25 +188,25 @@ export default function LiveCaseFeed() {
                     </div>
 
                     <div className="flex items-center gap-2 flex-wrap mb-2">
-                      <span className="text-white/80 text-sm font-medium">
+                      <span className="text-sindicato-cream/80 text-sm font-medium">
                         {item.displayName}
                       </span>
-                      <span className="text-white/20 text-sm">&bull;</span>
+                      <span className="text-sindicato-cream/20 text-sm">&bull;</span>
                       <Link
                         href={`/${item.vertical === "gig" ? "gig" : "workers"}/${item.company.slug}`}
                         onClick={(e) => e.stopPropagation()}
-                        className="text-white/60 text-sm hover:text-white transition-colors"
+                        className="text-sindicato-cream/60 text-sm hover:text-sindicato-cream transition-colors"
                       >
                         {item.company.name}
                       </Link>
                     </div>
 
-                    <p className="text-white/65 text-sm leading-relaxed">
+                    <p className="text-sindicato-cream/65 text-sm leading-relaxed">
                       {item.story}
                     </p>
 
                     <div className="mt-2 flex items-center justify-between">
-                      <span className="text-white/40 text-xs font-[family-name:var(--font-jetbrains)]">
+                      <span className="text-sindicato-cream/40 text-xs font-[family-name:var(--font-jetbrains)]">
                         {formatTimeAgo(item.createdAt)}
                       </span>
                       <span className="inline-flex items-center gap-1.5 bg-white/10 border border-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider font-[family-name:var(--font-jetbrains)]">
@@ -227,7 +227,7 @@ export default function LiveCaseFeed() {
           <div className="mt-[15px] text-center">
             <Link
               href="/cases"
-              className="inline-block bg-white/10 backdrop-blur-sm border border-white/30 px-6 py-3 text-white text-sm uppercase tracking-wider hover:bg-white/20 transition-all font-[family-name:var(--font-barlow)] font-bold"
+              className="inline-block bg-white/10 backdrop-blur-sm border border-white/30 px-6 py-3 text-sindicato-cream text-sm uppercase tracking-wider hover:bg-white/20 transition-all font-[family-name:var(--font-barlow)] font-bold"
             >
               View All Cases &rarr;
             </Link>

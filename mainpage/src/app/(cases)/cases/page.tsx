@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Header from "@/app/components/Header";
-import Modal from "@/app/components/Modal";
 import Footer from "@/app/sections/Footer";
 
 interface CaseCard {
@@ -55,7 +54,6 @@ export default function CasesPage() {
   });
   const [loading, setLoading] = useState(true);
   const [verticalFilter, setVerticalFilter] = useState<string>("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const fetchedRef = useRef(false);
 
   const fetchCases = useCallback(async (page: number = 1) => {
@@ -86,10 +84,10 @@ export default function CasesPage() {
 
   return (
     <>
-      <Header onRelateCase={() => setIsModalOpen(true)} scrolledBg="bg-sindicato-charcoal/70 backdrop-blur-md border-white/10" clerkBg="bg-sindicato-bordeaux" />
+      <div className="fixed inset-0 pointer-events-none z-[60] grain-overlay" style={{ opacity: 0.45 }} />
+      <Header scrolledBg="bg-sindicato-bordeaux/70 backdrop-blur-md border-white/10" clerkBg="bg-sindicato-charcoal text-sindicato-cream" />
 
-      <div className="relative pt-24 pb-16 bg-sindicato-charcoal min-h-screen">
-        <div className="fixed inset-0 pointer-events-none z-50 grain-overlay" style={{ opacity: 0.04 }} />
+      <div className="relative pt-24 pb-16 bg-sindicato-bordeaux min-h-screen">
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -98,11 +96,11 @@ export default function CasesPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <div className="w-12 h-0.5 bg-white/20 mx-auto mb-4" />
-            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white uppercase mb-4 font-[family-name:var(--font-barlow)] tracking-wide">
+            <div className="w-12 h-0.5 bg-white/20 mb-6 mx-auto" />
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-cream uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-2">
               Cases Wall
             </h1>
-            <p className="text-white/60 text-lg sm:text-xl max-w-2xl mx-auto">
+            <p className="text-sindicato-cream/40 text-sm font-[family-name:var(--font-jetbrains)]">
               Real stories from real workers
             </p>
           </motion.div>
@@ -114,8 +112,8 @@ export default function CasesPage() {
                 onClick={() => { setVerticalFilter(v); fetchedRef.current = false; }}
                 className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] ${
                   verticalFilter === v
-                    ? "bg-white/20 backdrop-blur-sm border border-white/30 text-white"
-                    : "bg-white/10 text-white/60 hover:bg-white/20"
+                    ? "bg-white/20 backdrop-blur-sm border border-white/30 text-sindicato-cream"
+                    : "bg-white/10 text-sindicato-cream/60 hover:bg-white/20"
                 }`}
               >
                 {v === "" ? "All" : v === "remote" ? "Remote Workers" : "Gig Workers"}
@@ -129,15 +127,15 @@ export default function CasesPage() {
             </div>
           ) : casesList.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-white/60 text-lg">
+              <p className="text-sindicato-cream/60 text-lg">
                 No cases reported yet. Be the first to share your story.
               </p>
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="mt-6 bg-sindicato-charcoal border border-white/30 text-white px-8 py-3 font-bold uppercase tracking-wider hover:bg-sindicato-charcoal/80 transition-all font-[family-name:var(--font-barlow)]"
+              <Link
+                href="/file"
+                className="mt-6 bg-sindicato-charcoal border border-white/30 text-sindicato-cream px-8 py-3 font-bold uppercase tracking-wider hover:bg-sindicato-charcoal/80 transition-all font-[family-name:var(--font-barlow)] inline-block"
               >
                 Relate a Case
-              </button>
+              </Link>
             </div>
           ) : (
             <>
@@ -148,16 +146,16 @@ export default function CasesPage() {
                       <div className="bg-white/10 backdrop-blur-sm border border-white/10 p-6 hover:border-white/25 transition-all flex flex-col">
                         <div className="flex items-start justify-between gap-4 mb-3">
                           <div>
-                            <p className="text-white font-bold text-lg">
+                            <p className="text-sindicato-cream font-bold text-lg">
                               {c.displayName}
                             </p>
-                            <p className="text-white/50 text-sm">
+                            <p className="text-sindicato-cream/50 text-sm">
                               {c.country}
                             </p>
                           </div>
                           {Number(c.amountOwed) > 0 && (
                             <div className="text-right shrink-0">
-                              <p className="text-white font-bold text-xl font-[family-name:var(--font-jetbrains)]">
+                              <p className="text-sindicato-cream font-bold text-xl font-[family-name:var(--font-jetbrains)]">
                                 {CURRENCY_SYMBOLS[c.currency] ?? c.currency}
                                 {c.amountOwed}
                               </p>
@@ -167,31 +165,31 @@ export default function CasesPage() {
 
                         <Link
                           href={`/${c.vertical === "gig" ? "gig" : "workers"}/${c.company.slug}`}
-                          className="text-white/60 text-sm font-semibold uppercase tracking-wider hover:text-white transition-colors mb-3 inline-block"
+                          className="text-sindicato-cream/60 text-sm font-semibold uppercase tracking-wider hover:text-sindicato-cream transition-colors mb-3 inline-block"
                           onClick={(e) => e.stopPropagation()}
                         >
                           {c.company.name}
                         </Link>
 
                         {c.project && (
-                          <p className="text-white/40 text-xs mb-3">
+                          <p className="text-sindicato-cream/40 text-xs mb-3">
                             {c.project}
                           </p>
                         )}
 
-                        <p className="text-white/60 text-sm flex-1 leading-relaxed">
+                        <p className="text-sindicato-cream/60 text-sm flex-1 leading-relaxed">
                           {c.story}
                         </p>
 
                         <div className="mt-4 pt-3 border-t border-white/10">
-                          <p className="text-white/30 text-xs">
+                          <p className="text-sindicato-cream/30 text-xs">
                             {new Date(c.createdAt).toLocaleDateString("en-US", {
                               year: "numeric",
                               month: "long",
                               day: "numeric",
                             })}
                           </p>
-                          <p className="text-white/20 text-[10px] font-[family-name:var(--font-jetbrains)] mt-1">
+                          <p className="text-sindicato-cream/20 text-[10px] font-[family-name:var(--font-jetbrains)] mt-1">
                             CASE #{c.id.slice(-8).toUpperCase()}
                           </p>
                         </div>
@@ -205,17 +203,17 @@ export default function CasesPage() {
                   <button
                     onClick={() => fetchCases(pagination.page - 1)}
                     disabled={pagination.page <= 1}
-                    className="bg-white/10 text-white px-6 py-2 text-sm font-bold uppercase tracking-wider hover:bg-white/20 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-[family-name:var(--font-barlow)]"
+                    className="bg-sindicato-charcoal text-sindicato-cream px-6 py-2 text-sm font-bold uppercase tracking-wider hover:bg-sindicato-charcoal/80 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-[family-name:var(--font-barlow)]"
                   >
                     Previous
                   </button>
-                  <span className="text-white/60 text-sm font-[family-name:var(--font-jetbrains)]">
+                  <span className="text-sindicato-cream/60 text-sm font-[family-name:var(--font-jetbrains)]">
                     Page {pagination.page} of {pagination.totalPages}
                   </span>
                   <button
                     onClick={() => fetchCases(pagination.page + 1)}
                     disabled={pagination.page >= pagination.totalPages}
-                    className="bg-white/10 text-white px-6 py-2 text-sm font-bold uppercase tracking-wider hover:bg-white/20 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-[family-name:var(--font-barlow)]"
+                    className="bg-sindicato-charcoal text-sindicato-cream px-6 py-2 text-sm font-bold uppercase tracking-wider hover:bg-sindicato-charcoal/80 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-[family-name:var(--font-barlow)]"
                   >
                     Next
                   </button>
@@ -225,8 +223,7 @@ export default function CasesPage() {
         </div>
       </div>
 
-      <Footer bg="bg-sindicato-charcoal" />
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <Footer bg="bg-sindicato-bordeaux" />
     </>
   );
 }

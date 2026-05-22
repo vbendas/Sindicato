@@ -8,8 +8,27 @@ export async function sendEmail(opts: {
   subject: string;
   html: string;
 }): Promise<void> {
+  // Sandbox mode: redirect all emails to a single verified recipient (Resend account owner)
+  const sandboxRecipient = process.env.RESEND_SANDBOX_RECIPIENT;
+  if (sandboxRecipient) {
+    const { error } = await resend.emails.send({
+      from: "Sindicato <onboarding@resend.dev>",
+      to: sandboxRecipient,
+      subject: `[→ ${opts.to}] ${opts.subject}`,
+      html: `<p style="color:#999;font-size:12px">Originally to: ${opts.to}</p><hr/>${opts.html}`,
+    });
+    if (error) throw new Error(`Resend error: ${error.message}`);
+    return;
+  }
+
+  // Dev fallback: log to console when no domain is configured
+  if (!process.env.EMAIL_FROM) {
+    console.log(`\n📧 [DEV EMAIL] To: ${opts.to}\nSubject: ${opts.subject}\n${opts.html.replace(/<[^>]+>/g, "").trim()}\n`);
+    return;
+  }
+
   const { error } = await resend.emails.send({
-    from: "Sindicato <noreply@sindicato.ai>",
+    from: process.env.EMAIL_FROM,
     to: opts.to,
     subject: opts.subject,
     html: opts.html,

@@ -4,7 +4,7 @@ export default function CasesLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-sindicato-black">
+    <div className="min-h-screen bg-sindicato-charcoal">
       {children}
     </div>
   );

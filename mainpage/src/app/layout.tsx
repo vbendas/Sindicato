@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import { Barlow_Condensed, Inter, JetBrains_Mono } from "next/font/google";
+import { Barlow_Condensed, Inter, JetBrains_Mono, Geist } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
@@ -34,7 +37,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${barlowCondensed.variable} ${inter.variable} ${jetbrainsMono.variable} antialiased`}
+      className={cn("antialiased", barlowCondensed.variable, inter.variable, jetbrainsMono.variable, "font-sans", geist.variable)}
     >
       <body className="font-[family-name:var(--font-inter)]">
         {children}

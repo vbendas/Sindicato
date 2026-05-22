@@ -53,12 +53,13 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
 
   return (
     <>
+      <div className="fixed inset-0 pointer-events-none z-[60] grain-overlay" style={{ opacity: 0.45 }} />
       <Header scrolledBg="bg-sindicato-pine/70 backdrop-blur-md border-white/5" />
       <main className="bg-sindicato-pine min-h-screen">
         <section className="pt-20 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
           <Link
             href={vertical === "remote" ? "/workers" : "/gig"}
-            className="text-white/40 hover:text-white text-xs uppercase tracking-wider transition-colors mb-6 inline-block font-[family-name:var(--font-barlow)] font-bold"
+            className="text-sindicato-cream/40 hover:text-sindicato-cream text-xs uppercase tracking-wider transition-colors mb-6 inline-block font-[family-name:var(--font-barlow)] font-bold"
           >
             &larr; Back to {vertical === "remote" ? "Remote Workers" : "Gig Workers"} Hub
           </Link>
@@ -68,48 +69,48 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-4">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-cream uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-4">
               {companyName}
             </h1>
 
             <div className="flex flex-wrap gap-6 mb-8">
               <div>
-                <span className="block text-white/30 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
+                <span className="block text-sindicato-cream/30 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
                   Total Cases
                 </span>
-                <span className="text-white text-2xl font-bold font-[family-name:var(--font-barlow)]">
+                <span className="text-sindicato-cream text-2xl font-bold font-[family-name:var(--font-barlow)]">
                   {cases.length}
                 </span>
               </div>
               <div>
-                <span className="block text-white/30 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
+                <span className="block text-sindicato-cream/30 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
                   Total Unpaid
                 </span>
-                <span className="text-white text-2xl font-bold font-[family-name:var(--font-barlow)]">
+                <span className="text-sindicato-cream text-2xl font-bold font-[family-name:var(--font-barlow)]">
                   ${totalOwed.toLocaleString()}
                 </span>
               </div>
               <div>
-                <span className="block text-white/30 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
+                <span className="block text-sindicato-cream/30 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
                   Vertical
                 </span>
-                <span className="text-white text-2xl font-bold font-[family-name:var(--font-barlow)]">
+                <span className="text-sindicato-cream text-2xl font-bold font-[family-name:var(--font-barlow)]">
                   {vertical === "remote" ? "Remote" : "Gig"}
                 </span>
               </div>
             </div>
 
             <div className="border-t border-white/10 pt-6">
-              <h2 className="text-lg font-bold text-white uppercase tracking-wider mb-4 font-[family-name:var(--font-barlow)]">
+              <h2 className="text-lg font-bold text-sindicato-cream uppercase tracking-wider mb-4 font-[family-name:var(--font-barlow)]">
                 Filed Cases
               </h2>
 
               {loading && (
-                <p className="text-white/40 text-sm">Loading cases...</p>
+                <p className="text-sindicato-cream/40 text-sm">Loading cases...</p>
               )}
 
               {!loading && cases.length === 0 && (
-                <p className="text-white/40 text-sm">No cases filed against this company yet.</p>
+                <p className="text-sindicato-cream/40 text-sm">No cases filed against this company yet.</p>
               )}
 
               <div className="space-y-3">
@@ -117,22 +118,22 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
                   <Link key={item.id} href={`/cases/${item.id}`}>
                     <div className="bg-white/5 border border-white/10 p-4 hover:bg-white/10 transition-colors">
                       <div className="flex items-start justify-between gap-4 mb-1">
-                        <span className="text-white font-medium text-sm">
+                        <span className="text-sindicato-cream font-medium text-sm">
                           {item.displayName}
                         </span>
-                        <span className="text-white/40 text-xs font-[family-name:var(--font-jetbrains)]">
+                        <span className="text-sindicato-cream/40 text-xs font-[family-name:var(--font-jetbrains)]">
                           {new Date(item.createdAt).toLocaleDateString()}
                         </span>
                       </div>
-                      <p className="text-white/60 text-sm line-clamp-2">
+                      <p className="text-sindicato-cream/60 text-sm line-clamp-2">
                         {item.story}
                       </p>
                       {Number(item.amountOwed) > 0 && (
                         <div className="mt-2">
-                          <span className="text-white font-bold text-sm font-[family-name:var(--font-jetbrains)]">
+                          <span className="text-sindicato-cream font-bold text-sm font-[family-name:var(--font-jetbrains)]">
                             {item.currency === "EUR" ? "\u20AC" : "$"}{Number(item.amountOwed).toLocaleString()}
                           </span>
-                          <span className="text-white/30 text-xs ml-2">unpaid</span>
+                          <span className="text-sindicato-cream/30 text-xs ml-2">unpaid</span>
                         </div>
                       )}
                     </div>

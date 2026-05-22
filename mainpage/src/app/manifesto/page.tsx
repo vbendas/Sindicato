@@ -20,6 +20,7 @@ const paragraphs = [
 export default function ManifestoPage() {
   return (
     <>
+      <div className="fixed inset-0 pointer-events-none z-[60] grain-overlay" style={{ opacity: 0.45 }} />
       <Header />
       <main className="bg-sindicato-bordeaux min-h-screen">
         <section className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto">
@@ -27,20 +28,14 @@ export default function ManifestoPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mb-16"
+            className="mb-16 text-center"
           >
-            <Link
-              href="/"
-              className="text-white/40 hover:text-white text-xs uppercase tracking-wider transition-colors mb-8 inline-block font-[family-name:var(--font-barlow)] font-bold"
-            >
-              &larr; Back
-            </Link>
-            <div className="w-12 h-0.5 bg-white/20 mb-6" />
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-2">
-              Sindicato Manifesto
+            <div className="w-12 h-0.5 bg-white/20 mb-6 mx-auto" />
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-cream uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-2">
+              MANIFESTO
             </h1>
-            <p className="text-white/40 text-sm font-[family-name:var(--font-jetbrains)]">
-              sindicato.report
+            <p className="text-sindicato-cream/40 text-sm font-[family-name:var(--font-jetbrains)]">
+              Exploitation is not a bug. It's a business model.
             </p>
           </motion.div>
 
@@ -58,7 +53,7 @@ export default function ManifestoPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.06, duration: 0.5 }}
-                className="text-white/75 text-sm sm:text-base leading-relaxed"
+                className="text-sindicato-cream/75 text-sm sm:text-base leading-relaxed"
               >
                 {p}
               </motion.p>
@@ -66,7 +61,7 @@ export default function ManifestoPage() {
           </motion.div>
 
           <div className="pt-16 border-t border-white/10 mt-16">
-            <p className="text-white/30 text-xs font-[family-name:var(--font-jetbrains)]">
+            <p className="text-sindicato-cream/30 text-xs font-[family-name:var(--font-jetbrains)]">
               Sindicato — sindicato.report
             </p>
           </div>

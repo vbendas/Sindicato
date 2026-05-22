@@ -3,6 +3,7 @@ import { cases, companies } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { success, error } from "@/lib/utils/api";
 import { redactName } from "@/lib/utils/redaction";
+import { auth } from "@/lib/auth";
 
 export async function GET(
   request: Request,
@@ -14,6 +15,7 @@ export async function GET(
     const [row] = await db
       .select({
         id: cases.id,
+        workerId: cases.workerId,
         displayName: cases.displayName,
         country: cases.country,
         ageRange: cases.ageRange,
@@ -45,6 +47,7 @@ export async function GET(
 
     const data = {
       id: row.id,
+      workerId: row.workerId,
       displayName: redactName(row.displayName),
       country: row.country,
       ageRange: row.ageRange,

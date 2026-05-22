@@ -95,8 +95,8 @@ export default function WhyItExists({ stats, activeVertical, onVerticalChange }:
           className="text-left sm:text-center mb-12"
         >
           <div className="w-12 h-0.5 bg-white/20 sm:mx-auto mb-4" />
-          <div className="sm:border-l-4 sm:border-sindicato-charcoal sm:pl-6 inline-block">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white uppercase font-[family-name:var(--font-barlow)] tracking-wide leading-tight">
+          <div className="inline-block">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-sindicato-cream uppercase font-[family-name:var(--font-barlow)] tracking-wide leading-tight">
               Why It<br className="sm:hidden" /> Exists
             </h2>
           </div>
@@ -109,8 +109,8 @@ export default function WhyItExists({ stats, activeVertical, onVerticalChange }:
               onClick={() => onVerticalChange(tab.value)}
               className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] ${
                 activeVertical === tab.value
-                  ? "bg-sindicato-bordeaux text-white shadow-sm"
-                  : "bg-white/10 text-white/60 hover:bg-white/20"
+                  ? "bg-sindicato-bordeaux text-sindicato-cream shadow-sm"
+                  : "bg-white/10 text-sindicato-cream/60 hover:bg-white/20"
               }`}
             >
               {tab.label}
@@ -131,17 +131,17 @@ export default function WhyItExists({ stats, activeVertical, onVerticalChange }:
                 }`}
               >
                 <div className={row.invert ? "order-2 md:order-2" : "order-2 md:order-1"}>
-                  <div className="text-6xl sm:text-7xl lg:text-8xl font-bold text-white font-[family-name:var(--font-barlow)] leading-none">
+                  <div className="text-6xl sm:text-7xl lg:text-8xl font-bold text-sindicato-cream font-[family-name:var(--font-barlow)] leading-none">
                     {row.stat}
                   </div>
-                  <div className="text-white/40 text-xs uppercase tracking-widest mt-2 font-[family-name:var(--font-jetbrains)]">
+                  <div className="text-sindicato-cream/40 text-xs uppercase tracking-widest mt-2 font-[family-name:var(--font-jetbrains)]">
                     {row.label}
                   </div>
                 </div>
                 <div className={`flex items-center ${
                   row.invert ? "order-1 md:order-1" : "order-1 md:order-2"
                 }`}>
-                  <p className="text-white/65 text-sm sm:text-base leading-relaxed">
+                  <p className="text-sindicato-cream/65 text-sm sm:text-base leading-relaxed">
                     {row.body}
                   </p>
                 </div>
@@ -152,7 +152,7 @@ export default function WhyItExists({ stats, activeVertical, onVerticalChange }:
 
           <div className="-mx-4 sm:-mx-6 lg:-mx-8 mt-10 sm:mt-12 bg-sindicato-charcoal px-4 sm:px-6 lg:px-8 pt-[15px] pb-[100px]">
             <div className="w-12 h-0.5 bg-white/20 mx-auto mb-6" />
-            <h3 className="text-xl sm:text-2xl font-bold text-white uppercase text-center mb-8 font-[family-name:var(--font-barlow)] tracking-wide">
+            <h3 className="text-xl sm:text-2xl font-bold text-sindicato-cream uppercase text-center mb-8 font-[family-name:var(--font-barlow)] tracking-wide">
               Our Commitment
             </h3>
             <motion.div
@@ -173,13 +173,13 @@ export default function WhyItExists({ stats, activeVertical, onVerticalChange }:
                     >
                       <div className="flex items-start gap-4">
                         <span className="w-6 h-6 rounded-full border border-white/30 flex items-center justify-center shrink-0 mt-0.5">
-                          <Check className="w-3 h-3 text-white/80" />
+                          <Check className="w-3 h-3 text-sindicato-cream/80" />
                         </span>
                         <div>
-                          <p className="text-white text-sm sm:text-base font-bold mb-1">
+                          <p className="text-sindicato-cream text-sm sm:text-base font-bold mb-1">
                             {item.title}
                           </p>
-                          <p className="text-white/60 text-xs sm:text-sm leading-relaxed">
+                          <p className="text-sindicato-cream/60 text-xs sm:text-sm leading-relaxed">
                             {item.body}
                           </p>
                         </div>

@@ -33,11 +33,11 @@ export default function HowItWorks() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white uppercase text-center mb-4 font-[family-name:var(--font-barlow)] tracking-wide"
+          className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-cream uppercase text-center mb-4 font-[family-name:var(--font-barlow)] tracking-wide"
         >
           How It Works
         </motion.h2>
-        <p className="text-white/45 text-sm sm:text-base text-center mb-16 sm:mb-20 font-[family-name:var(--font-jetbrains)] tracking-wider uppercase">
+        <p className="text-sindicato-cream/45 text-sm sm:text-base text-center mb-16 sm:mb-20 font-[family-name:var(--font-jetbrains)] tracking-wider uppercase">
           Three steps. Your terms, your timeline.
         </p>
 
@@ -59,7 +59,7 @@ export default function HowItWorks() {
                   transition={{ delay: index * 0.15, duration: 0.5 }}
                   className="w-12 h-12 rounded-full bg-sindicato-charcoal flex items-center justify-center shadow-md mb-5 relative z-10"
                 >
-                  <step.icon className="w-5 h-5 text-white" />
+                  <step.icon className="w-5 h-5 text-sindicato-cream" />
                 </motion.div>
 
                 <motion.span
@@ -67,7 +67,7 @@ export default function HowItWorks() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.15 + 0.1, duration: 0.5 }}
-                  className="text-lg font-bold text-white uppercase tracking-wider font-[family-name:var(--font-barlow)] mb-3"
+                  className="text-lg font-bold text-sindicato-cream uppercase tracking-wider font-[family-name:var(--font-barlow)] mb-3"
                 >
                   {step.title}
                 </motion.span>
@@ -77,7 +77,7 @@ export default function HowItWorks() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.15 + 0.2, duration: 0.5 }}
-                  className="text-white/60 text-sm leading-relaxed max-w-[260px] mx-auto"
+                  className="text-sindicato-cream/60 text-sm leading-relaxed max-w-[260px] mx-auto"
                 >
                   {step.description}
                 </motion.p>
@@ -101,13 +101,13 @@ export default function HowItWorks() {
               className="flex items-start gap-5 relative"
             >
               <div className="w-11 h-11 rounded-full bg-sindicato-charcoal flex items-center justify-center shrink-0 shadow-md relative z-10">
-                <step.icon className="w-4 h-4 text-white" />
+                <step.icon className="w-4 h-4 text-sindicato-cream" />
               </div>
               <div className="pt-1.5">
-                <span className="text-base font-bold text-white uppercase tracking-wider font-[family-name:var(--font-barlow)] block mb-1.5">
+                <span className="text-base font-bold text-sindicato-cream uppercase tracking-wider font-[family-name:var(--font-barlow)] block mb-1.5">
                   {step.title}
                 </span>
-                <p className="text-white/60 text-sm leading-relaxed">
+                <p className="text-sindicato-cream/60 text-sm leading-relaxed">
                   {step.description}
                 </p>
               </div>
