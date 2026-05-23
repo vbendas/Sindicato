@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { toBlob } from "html-to-image";
 import QRCode from "qrcode";
+import { toBlob, toPng } from "html-to-image";
 
 type ShareVariant = "company" | "case" | "event";
 
@@ -51,39 +51,6 @@ export default function InstagramStoryCard({
     setGenerating(true);
 
     try {
-      // Try with simplified CSS first to test if complex styles are causing issues
-      const originalCard = cardRef.current.innerHTML;
-      
-      // Temporarily simplify the card for testing
-      const originalClasses = cardRef.current.className;
-      const originalStyle = cardRef.current.style.cssText;
-      
-      // Remove complex CSS for testing
-      cardRef.current.className = "bg-white p-4";
-      cardRef.current.style.cssText = "";
-      
-      // Try generating image with simplified version
-      try {
-        const blob = await toBlob(cardRef.current, {
-          width: 1080,
-          height: 1920,
-          quality: 1,
-          pixelRatio: 1,
-          cacheBust: true,
-        });
-        if (blob && blob.size > 0) {
-          onImageGenerated?.(blob);
-          return;
-        }
-      } catch (simpleErr) {
-        console.error("Simplified CSS attempt failed:", simpleErr);
-      }
-      
-      // Restore original styles
-      cardRef.current.className = originalClasses;
-      cardRef.current.style.cssText = originalStyle;
-      
-      // Try with original complex CSS
       const blob = await toBlob(cardRef.current, {
         width: 1080,
         height: 1920,
@@ -91,23 +58,11 @@ export default function InstagramStoryCard({
         pixelRatio: 1,
         cacheBust: true,
       });
-      onImageGenerated?.(blob);
+      if (blob) {
+        onImageGenerated?.(blob);
+      }
     } catch (err) {
       console.error("Failed to generate Instagram story image:", err);
-      // Try fallback method using toPng
-      try {
-        const dataUrl = await toPng(cardRef.current, {
-          width: 1080,
-          height: 1920,
-          quality: 1,
-          pixelRatio: 1,
-          cacheBust: true,
-        });
-        const blob = new Blob([dataUrl.split(',')[1]], { type: 'image/png' });
-        onImageGenerated?.(blob);
-      } catch (fallbackErr) {
-        console.error("Fallback image generation also failed:", fallbackErr);
-      }
     } finally {
       setGenerating(false);
     }
@@ -117,8 +72,8 @@ export default function InstagramStoryCard({
     <>
       <div
         ref={cardRef}
-        className="fixed -left-[9999px] -top-[9999px]"
-        style={{ width: 1080, height: 1920 }}
+        className="fixed pointer-events-none"
+        style={{ width: 1080, height: 1920, left: 0, top: 0, visibility: "hidden" }}
       >
         <div
           className="relative w-full h-full flex flex-col items-center justify-between p-16 overflow-hidden"
