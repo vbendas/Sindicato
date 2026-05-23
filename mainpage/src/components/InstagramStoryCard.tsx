@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
-import { toBlob, toPng } from "html-to-image";
+import { toBlob } from "html-to-image";
 
 type ShareVariant = "company" | "case" | "event";
 
