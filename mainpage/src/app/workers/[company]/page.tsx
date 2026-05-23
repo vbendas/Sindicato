@@ -1,9 +1,62 @@
-"use client";
-
-import { useParams } from "next/navigation";
+import type { Metadata } from "next";
+import { db } from "@/lib/db/client";
+import { cases, companies } from "@/lib/db/schema";
+import { eq, and, count, sum, ilike } from "drizzle-orm";
 import CompanyPage from "@/app/sections/CompanyPage";
 
-export default function WorkersCompanyPage() {
-  const params = useParams<{ company: string }>();
-  return <CompanyPage slug={params.company} vertical="remote" />;
+interface PageProps {
+  params: Promise<{ company: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { company: slug } = await params;
+
+  const [result] = await db
+    .select({
+      total: count(),
+      companyName: companies.name,
+    })
+    .from(cases)
+    .innerJoin(companies, eq(cases.companyId, companies.id))
+    .where(and(eq(companies.slug, slug), eq(cases.status, "active")))
+    .groupBy(companies.name)
+    .limit(1);
+
+  const companyName = result?.companyName ?? slug;
+  const caseCount = result?.total ?? 0;
+
+  const title = `${companyName} — ${caseCount} worker cases on Sindicato`;
+  const description = `${caseCount} cases filed against ${companyName} by remote workers. Track wage theft reports and unpaid wages.`;
+  const url = `https://sindicato.app/workers/${slug}`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      type: "website",
+      siteName: "Sindicato",
+      images: [
+        {
+          url: "/og-default.png",
+          width: 1200,
+          height: 630,
+          alt: `Sindicato — ${companyName}`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/og-default.png"],
+    },
+  };
+}
+
+export default async function WorkersCompanyPage({ params }: PageProps) {
+  const { company } = await params;
+  return <CompanyPage slug={company} vertical="remote" />;
 }

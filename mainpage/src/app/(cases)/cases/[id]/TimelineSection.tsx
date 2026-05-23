@@ -34,7 +34,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ChevronRightIcon, PlusIcon, PencilIcon, Trash2Icon, Loader2Icon } from "lucide-react";
+import { ChevronRightIcon, PlusIcon, PencilIcon, Trash2Icon, Loader2Icon, Share2Icon, XIcon } from "lucide-react";
+import ShareButtons from "@/components/ShareButtons";
 
 interface TimelineEvent {
   id: string;
@@ -60,7 +61,7 @@ const DIRECTION_LABELS: Record<string, string> = {
 const DIRECTION_COLORS: Record<string, string> = {
   worker_to_company: "bg-blue-500/20 text-blue-300 border-blue-500/30",
   company_to_worker: "bg-amber-500/20 text-amber-300 border-amber-500/30",
-  system: "bg-white/10 text-sindicato-cream/50 border-white/20",
+  system: "bg-white/10 text-sindicato-warm-white/50 border-white/20",
 };
 
 const PRESET_LABELS = [
@@ -169,18 +170,18 @@ function EventForm({ initial, onSubmit, onCancel, loading }: EventFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <label className="text-xs text-sindicato-cream/60 uppercase tracking-wider">Date & Time</label>
+        <label className="text-xs text-sindicato-warm-white/60 uppercase tracking-wider">Date & Time</label>
         <input
           type="datetime-local"
           value={eventDate}
           onChange={(e) => setEventDate(e.target.value)}
-          className="w-full bg-white/5 border border-white/10 text-sindicato-cream p-2 text-sm"
+          className="w-full bg-white/5 border border-white/10 text-sindicato-warm-white p-2 text-sm"
           required
         />
       </div>
 
       <div className="space-y-2">
-        <label className="text-xs text-sindicato-cream/60 uppercase tracking-wider">Direction</label>
+        <label className="text-xs text-sindicato-warm-white/60 uppercase tracking-wider">Direction</label>
         <div className="flex gap-2">
           {(["worker_to_company", "company_to_worker"] as const).map((d) => (
             <button
@@ -189,8 +190,8 @@ function EventForm({ initial, onSubmit, onCancel, loading }: EventFormProps) {
               onClick={() => setDirection(d)}
               className={`flex-1 p-2 text-xs font-bold uppercase tracking-wider border transition-colors ${
                 direction === d
-                  ? "bg-white/20 border-white/40 text-sindicato-cream"
-                  : "bg-white/5 border-white/10 text-sindicato-cream/50 hover:bg-white/10"
+                  ? "bg-white/20 border-white/40 text-sindicato-warm-white"
+                  : "bg-white/5 border-white/10 text-sindicato-warm-white/50 hover:bg-white/10"
               }`}
             >
               {d === "worker_to_company" ? "Worker → Company" : "Company → Worker"}
@@ -200,29 +201,29 @@ function EventForm({ initial, onSubmit, onCancel, loading }: EventFormProps) {
       </div>
 
       <div className="space-y-2">
-        <label className="text-xs text-sindicato-cream/60 uppercase tracking-wider">Title</label>
+        <label className="text-xs text-sindicato-warm-white/60 uppercase tracking-wider">Title</label>
         <Input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="e.g. Messaged billing team on support chat"
-          className="bg-white/5 border-white/10 text-sindicato-cream"
+          className="bg-white/5 border-white/10 text-sindicato-warm-white"
           required
         />
       </div>
 
       <div className="space-y-2">
-        <label className="text-xs text-sindicato-cream/60 uppercase tracking-wider">Description</label>
+        <label className="text-xs text-sindicato-warm-white/60 uppercase tracking-wider">Description</label>
         <Textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Describe the interaction in detail..."
-          className="bg-white/5 border-white/10 text-sindicato-cream min-h-[100px]"
+          className="bg-white/5 border-white/10 text-sindicato-warm-white min-h-[100px]"
           required
         />
       </div>
 
       <div className="space-y-2">
-        <label className="text-xs text-sindicato-cream/60 uppercase tracking-wider">Labels</label>
+        <label className="text-xs text-sindicato-warm-white/60 uppercase tracking-wider">Labels</label>
         <div className="flex flex-wrap gap-1.5 mb-2">
           {PRESET_LABELS.map((label) => (
             <button
@@ -231,8 +232,8 @@ function EventForm({ initial, onSubmit, onCancel, loading }: EventFormProps) {
               onClick={() => toggleLabel(label)}
               className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 border transition-colors ${
                 labels.includes(label)
-                  ? "bg-white/20 border-white/40 text-sindicato-cream"
-                  : "bg-white/5 border-white/10 text-sindicato-cream/50 hover:bg-white/10"
+                  ? "bg-white/20 border-white/40 text-sindicato-warm-white"
+                  : "bg-white/5 border-white/10 text-sindicato-warm-white/50 hover:bg-white/10"
               }`}
             >
               {label}
@@ -244,7 +245,7 @@ function EventForm({ initial, onSubmit, onCancel, loading }: EventFormProps) {
             value={customLabel}
             onChange={(e) => setCustomLabel(e.target.value)}
             placeholder="Custom label..."
-            className="bg-white/5 border-white/10 text-sindicato-cream flex-1"
+            className="bg-white/5 border-white/10 text-sindicato-warm-white flex-1"
             onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustomLabel())}
           />
           <Button
@@ -253,7 +254,7 @@ function EventForm({ initial, onSubmit, onCancel, loading }: EventFormProps) {
             size="sm"
             onClick={addCustomLabel}
             disabled={!customLabel.trim()}
-            className="border-white/20 text-sindicato-cream/70"
+            className="border-white/20 text-sindicato-warm-white/70"
           >
             Add
           </Button>
@@ -261,12 +262,12 @@ function EventForm({ initial, onSubmit, onCancel, loading }: EventFormProps) {
         {labels.filter((l) => !PRESET_LABELS.includes(l)).length > 0 && (
           <div className="flex flex-wrap gap-1 mt-1">
             {labels.filter((l) => !PRESET_LABELS.includes(l)).map((l) => (
-              <Badge key={l} variant="outline" size="sm" className="text-sindicato-cream/70 border-white/20">
+              <Badge key={l} variant="outline" size="sm" className="text-sindicato-warm-white/70 border-white/20">
                 {l}
                 <button
                   type="button"
                   onClick={() => setLabels((prev) => prev.filter((x) => x !== l))}
-                  className="ml-1 text-sindicato-cream/40 hover:text-sindicato-cream"
+                  className="ml-1 text-sindicato-warm-white/40 hover:text-sindicato-warm-white"
                 >
                   ×
                 </button>
@@ -281,14 +282,14 @@ function EventForm({ initial, onSubmit, onCancel, loading }: EventFormProps) {
           type="button"
           variant="outline"
           onClick={onCancel}
-          className="border-white/20 text-sindicato-cream/70"
+          className="border-white/20 text-sindicato-warm-white/70"
         >
           Cancel
         </Button>
         <Button
           type="submit"
           disabled={loading || !description}
-          className="bg-white/20 text-sindicato-cream border border-white/30 hover:bg-white/30"
+          className="bg-white/20 text-sindicato-warm-white border border-white/30 hover:bg-white/30"
         >
           {loading ? (
             <Loader2Icon className="size-4 animate-spin" />
@@ -313,6 +314,7 @@ export default function TimelineSection({ caseId, workerId }: { caseId: string; 
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [sessionLoading, setSessionLoading] = useState(true);
+  const [sharingEvent, setSharingEvent] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/auth/session")
@@ -395,7 +397,7 @@ export default function TimelineSection({ caseId, workerId }: { caseId: string; 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2Icon className="size-6 text-sindicato-cream/40 animate-spin" />
+        <Loader2Icon className="size-6 text-sindicato-warm-white/40 animate-spin" />
       </div>
     );
   }
@@ -406,7 +408,7 @@ export default function TimelineSection({ caseId, workerId }: { caseId: string; 
         <p className="text-red-400 text-sm">{error}</p>
         <button
           onClick={fetchEvents}
-          className="mt-2 text-sindicato-cream/50 hover:text-sindicato-cream text-xs uppercase tracking-wider"
+          className="mt-2 text-sindicato-warm-white/50 hover:text-sindicato-warm-white text-xs uppercase tracking-wider"
         >
           Retry
         </button>
@@ -417,21 +419,21 @@ export default function TimelineSection({ caseId, workerId }: { caseId: string; 
   return (
     <div>
       <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
-        <h2 className="text-sindicato-cream font-bold text-lg font-[family-name:var(--font-barlow)] uppercase tracking-wider">
+        <h2 className="text-sindicato-warm-white font-bold text-lg font-[family-name:var(--font-barlow)] uppercase tracking-wider">
           Timeline
         </h2>
         {isOwner && (
           <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-            <DialogTrigger className="text-sindicato-cream/60 hover:text-sindicato-cream transition-colors">
+            <DialogTrigger className="text-sindicato-warm-white/60 hover:text-sindicato-warm-white transition-colors">
               <PlusIcon className="size-5" />
               <span className="sr-only">Add Event</span>
             </DialogTrigger>
-            <DialogContent className="bg-sindicato-slate border border-white/20 text-sindicato-cream max-w-md max-h-[90vh] overflow-y-auto">
+            <DialogContent className="bg-sindicato-slate border border-white/20 text-sindicato-warm-white max-w-md max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle className="text-sindicato-cream font-[family-name:var(--font-barlow)] uppercase tracking-wider">
+                <DialogTitle className="text-sindicato-warm-white font-[family-name:var(--font-barlow)] uppercase tracking-wider">
                   Add Timeline Event
                 </DialogTitle>
-                <DialogDescription className="text-sindicato-cream/50 text-xs">
+                <DialogDescription className="text-sindicato-warm-white/50 text-xs">
                   Record an interaction with the company.
                 </DialogDescription>
               </DialogHeader>
@@ -446,18 +448,18 @@ export default function TimelineSection({ caseId, workerId }: { caseId: string; 
       </div>
 
       {!isOwner && (
-        <p className="text-sindicato-cream/30 text-xs mb-4 italic">
+        <p className="text-sindicato-warm-white/30 text-xs mb-4 italic">
           Sign in to add events to your cases.
         </p>
       )}
 
       {events.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-sindicato-cream/40 text-sm mb-3">
+          <p className="text-sindicato-warm-white/40 text-sm mb-3">
             No timeline events yet.
           </p>
           {isOwner && (
-            <p className="text-sindicato-cream/30 text-xs">
+            <p className="text-sindicato-warm-white/30 text-xs">
               Start tracking your interactions with this company.
             </p>
           )}
@@ -471,25 +473,25 @@ export default function TimelineSection({ caseId, workerId }: { caseId: string; 
                 <TimelineHeader>
                   <TimelineSeparator className="bg-white/10 group-data-[orientation=vertical]/timeline:-left-7 group-data-[orientation=vertical]/timeline:h-[calc(100%-1.5rem-0.25rem)] group-data-[orientation=vertical]/timeline:translate-y-7" />
                   <div className="flex items-center gap-2 flex-wrap">
-                    <TimelineDate className="text-sindicato-cream/40">
+                    <TimelineDate className="text-sindicato-warm-white/40">
                       {formatDate(event.eventDate)}
                     </TimelineDate>
-                    <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 border ${DIRECTION_COLORS[event.direction] || "bg-white/10 text-sindicato-cream/60 border-white/20"}`}>
+                    <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 border ${DIRECTION_COLORS[event.direction] || "bg-white/10 text-sindicato-warm-white/60 border-white/20"}`}>
                       {DIRECTION_LABELS[event.direction] || event.direction}
                     </span>
                     {event.isAutomatic && (
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-white/10 text-sindicato-cream/50 border border-white/20">
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-white/10 text-sindicato-warm-white/50 border border-white/20">
                         AUTO
                       </span>
                     )}
                   </div>
-                  <TimelineTitle className="text-sm font-semibold text-sindicato-cream mt-1">
+                  <TimelineTitle className="text-sm font-semibold text-sindicato-warm-white mt-1">
                     {event.title || "Untitled Event"}
                   </TimelineTitle>
                   {event.labels.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-1">
                       {event.labels.map((label) => (
-                        <Badge key={label} variant="outline" size="xs" className="text-sindicato-cream/50 border-white/20">
+                        <Badge key={label} variant="outline" size="xs" className="text-sindicato-warm-white/50 border-white/20">
                           {label}
                         </Badge>
                       ))}
@@ -512,10 +514,20 @@ export default function TimelineSection({ caseId, workerId }: { caseId: string; 
                     <Collapsible className="group/collapsible">
                       <CollapsibleTrigger className="flex w-full">
                         <FrameHeader className="flex grow flex-row items-center justify-between gap-2">
-                          <span className="text-sindicato-cream/50 text-xs">
+                          <span className="text-sindicato-warm-white/50 text-xs">
                             {formatDateTime(event.eventDate)}
                           </span>
                           <div className="flex items-center gap-1">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSharingEvent(sharingEvent === event.id ? null : event.id);
+                              }}
+                              className="text-sindicato-warm-white/40 hover:text-sindicato-warm-white transition-colors p-0.5"
+                            >
+                              <Share2Icon className="size-3" />
+                            </button>
                             {isOwner && !event.isAutomatic && (
                               <>
                                 <button
@@ -524,7 +536,7 @@ export default function TimelineSection({ caseId, workerId }: { caseId: string; 
                                     e.stopPropagation();
                                     setEditingEvent(event);
                                   }}
-                                  className="text-sindicato-cream/40 hover:text-sindicato-cream transition-colors p-0.5"
+                                  className="text-sindicato-warm-white/40 hover:text-sindicato-warm-white transition-colors p-0.5"
                                 >
                                   <PencilIcon className="size-3" />
                                 </button>
@@ -540,21 +552,21 @@ export default function TimelineSection({ caseId, workerId }: { caseId: string; 
                                 </button>
                               </>
                             )}
-                            <ChevronRightIcon className="text-sindicato-cream/40 size-4 transition-transform duration-200 group-data-open/collapsible:rotate-90" />
+                            <ChevronRightIcon className="text-sindicato-warm-white/40 size-4 transition-transform duration-200 group-data-open/collapsible:rotate-90" />
                           </div>
                         </FrameHeader>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
                         <FramePanel className="bg-white/5 border-white/10">
-                          <p className="text-sindicato-cream/70 text-sm leading-relaxed whitespace-pre-wrap">
+                          <p className="text-sindicato-warm-white/70 text-sm leading-relaxed whitespace-pre-wrap">
                             {event.description}
                           </p>
                           {event.emailContent && (
                             <div className="mt-3 pt-3 border-t border-white/10">
-                              <p className="text-sindicato-cream/40 text-[10px] uppercase tracking-wider mb-1">
+                              <p className="text-sindicato-warm-white/40 text-[10px] uppercase tracking-wider mb-1">
                                 Email Content
                               </p>
-                              <p className="text-sindicato-cream/50 text-xs whitespace-pre-wrap">
+                              <p className="text-sindicato-warm-white/50 text-xs whitespace-pre-wrap">
                                 {event.emailContent}
                               </p>
                             </div>
@@ -563,6 +575,28 @@ export default function TimelineSection({ caseId, workerId }: { caseId: string; 
                       </CollapsibleContent>
                     </Collapsible>
                   </Frame>
+
+                  {/* Share popover */}
+                  {sharingEvent === event.id && (
+                    <div className="mt-3 bg-sindicato-slate border border-white/10 p-4 relative">
+                      <button
+                        onClick={() => setSharingEvent(null)}
+                        className="absolute top-3 right-3 text-sindicato-warm-white/30 hover:text-sindicato-warm-white transition-colors"
+                      >
+                        <XIcon className="size-4" />
+                      </button>
+                      <p className="text-sindicato-warm-white/40 text-[10px] uppercase tracking-widest mb-3 font-[family-name:var(--font-jetbrains)]">
+                        Share this event
+                      </p>
+                      <ShareButtons
+                        url={typeof window !== "undefined" ? window.location.origin + window.location.pathname : ""}
+                        title={`${event.title || "Timeline event"} — ${formatDate(event.eventDate)}`}
+                        description={event.description.slice(0, 200)}
+                        variant="event"
+                        stats={{ date: formatDate(event.eventDate) }}
+                      />
+                    </div>
+                  )}
                 </TimelineContent>
               </TimelineItem>
             );
@@ -572,12 +606,12 @@ export default function TimelineSection({ caseId, workerId }: { caseId: string; 
 
       {/* Edit Dialog */}
       <Dialog open={!!editingEvent} onOpenChange={(open) => !open && setEditingEvent(null)}>
-        <DialogContent className="bg-sindicato-slate border border-white/20 text-sindicato-cream max-w-md max-h-[90vh] overflow-y-auto">
+        <DialogContent className="bg-sindicato-slate border border-white/20 text-sindicato-warm-white max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-sindicato-cream font-[family-name:var(--font-barlow)] uppercase tracking-wider">
+            <DialogTitle className="text-sindicato-warm-white font-[family-name:var(--font-barlow)] uppercase tracking-wider">
               Edit Timeline Event
             </DialogTitle>
-            <DialogDescription className="text-sindicato-cream/50 text-xs">
+            <DialogDescription className="text-sindicato-warm-white/50 text-xs">
               Update the event details.
             </DialogDescription>
           </DialogHeader>
@@ -601,12 +635,12 @@ export default function TimelineSection({ caseId, workerId }: { caseId: string; 
 
       {/* Delete confirmation */}
       <Dialog open={!!confirmDelete} onOpenChange={(open) => !open && setConfirmDelete(null)}>
-        <DialogContent className="bg-sindicato-slate border border-white/20 text-sindicato-cream max-w-sm">
+        <DialogContent className="bg-sindicato-slate border border-white/20 text-sindicato-warm-white max-w-sm">
           <DialogHeader>
-            <DialogTitle className="text-sindicato-cream font-[family-name:var(--font-barlow)] uppercase tracking-wider">
+            <DialogTitle className="text-sindicato-warm-white font-[family-name:var(--font-barlow)] uppercase tracking-wider">
               Delete Event
             </DialogTitle>
-            <DialogDescription className="text-sindicato-cream/50 text-xs">
+            <DialogDescription className="text-sindicato-warm-white/50 text-xs">
               Are you sure you want to delete this timeline event? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
@@ -614,7 +648,7 @@ export default function TimelineSection({ caseId, workerId }: { caseId: string; 
             <Button
               variant="outline"
               onClick={() => setConfirmDelete(null)}
-              className="border-white/20 text-sindicato-cream/70"
+              className="border-white/20 text-sindicato-warm-white/70"
             >
               Cancel
             </Button>
