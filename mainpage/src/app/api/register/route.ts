@@ -8,6 +8,15 @@ import { emailSchema } from "@/lib/utils/schemas";
 import { success, error, getClientIp } from "@/lib/utils/api";
 import { z } from "zod";
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+}
+
 const registerSchema = z.object({
   email: emailSchema,
   code: z.string().length(6).regex(/^\d{6}$/),
@@ -19,7 +28,7 @@ const registerSchema = z.object({
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
-  const { allowed } = rateLimit(`register:${ip}`);
+  const { allowed } = await rateLimit(`register:${ip}`);
   if (!allowed) {
     return error("Too many requests", 429);
   }
@@ -38,7 +47,7 @@ export async function POST(request: NextRequest) {
 
   const { email, code, role, displayName, organization, tosVersion } = parsed.data;
 
-  const { allowed: emailAllowed } = rateLimit(`register-email:${email}`);
+  const { allowed: emailAllowed } = await rateLimit(`register-email:${email}`);
   if (!emailAllowed) {
     return error("Too many attempts. Please request a new code.", 429);
   }
@@ -105,13 +114,13 @@ export async function POST(request: NextRequest) {
       subject: `New ${role} registration: ${email}`,
       html: `
         <h1>New Platform Registration</h1>
-        <p><strong>Role:</strong> ${role}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Name:</strong> ${displayName}</p>
-        ${organization ? `<p><strong>Organization:</strong> ${organization}</p>` : ""}
-        <p><strong>TOS Version:</strong> ${tosVersion}</p>
-        <p><strong>IP:</strong> ${ip}</p>
-        <p>To approve, set <code>approval_status = 'approved'</code> in the <code>platform_accounts</code> table for id: ${account.id}</p>
+        <p><strong>Role:</strong> ${escapeHtml(role)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+        <p><strong>Name:</strong> ${escapeHtml(displayName)}</p>
+        ${organization ? `<p><strong>Organization:</strong> ${escapeHtml(organization)}</p>` : ""}
+        <p><strong>TOS Version:</strong> ${escapeHtml(tosVersion)}</p>
+        <p><strong>IP:</strong> ${escapeHtml(ip)}</p>
+        <p>To approve, set <code>approval_status = 'approved'</code> in the <code>platform_accounts</code> table for id: ${escapeHtml(account.id)}</p>
       `,
     });
   } catch (err) {

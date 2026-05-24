@@ -26,7 +26,7 @@ const checklistResultSchema = z.object({
 
 export async function POST(request: Request) {
   const ip = getClientIp(request);
-  const { allowed } = rateLimit(`ai-checklist:${ip}`);
+  const { allowed } = await rateLimit(`ai-checklist:${ip}`);
   if (!allowed) {
     return error("Rate limited. Please wait before trying again.", 429);
   }

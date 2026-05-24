@@ -7,7 +7,7 @@ const ALLOWED_PLATFORMS = ["x", "linkedin", "whatsapp", "facebook", "copy_link",
 
 export async function POST(request: Request) {
   const ip = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown";
-  const { allowed } = rateLimit(`track:${ip}`, 30, 60_000);
+  const { allowed } = await rateLimit(`track:${ip}`, 30, 60_000);
   if (!allowed) return error("Too many requests", 429);
 
   try {

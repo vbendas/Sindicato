@@ -1,40 +1,54 @@
-const attempts = new Map<string, { count: number; resetAt: number }>();
+import { Redis } from "@upstash/redis";
+
+const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+  ? new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    })
+  : null;
 
 const WINDOW_MS = 60 * 1000;
 const MAX_ATTEMPTS = 5;
-const CLEANUP_INTERVAL = 5 * 60 * 1000;
-let lastCleanup = Date.now();
 
-function cleanup() {
-  const now = Date.now();
-  if (now - lastCleanup < CLEANUP_INTERVAL) return;
-  lastCleanup = now;
-  for (const [key, entry] of attempts) {
-    if (now > entry.resetAt) {
-      attempts.delete(key);
-    }
-  }
-}
-
-export function rateLimit(
+export async function rateLimit(
   key: string,
   maxAttempts = MAX_ATTEMPTS,
   windowMs = WINDOW_MS
-): { allowed: boolean; retryAfterMs: number } {
-  cleanup();
+): Promise<{ allowed: boolean; retryAfterMs: number }> {
+  // In development or test, if Redis is not configured, allow all requests
+  const isDevOrTest = process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
+  if (!redis) {
+    if (isDevOrTest) {
+      // console.warn("Redis not configured - rate limiting disabled in development/test");
+      return { allowed: true, retryAfterMs: 0 };
+    } else {
+      console.warn("Redis not configured - rate limiting in fail-closed mode");
+      return { allowed: false, retryAfterMs: 60_000 };
+    }
+  }
 
-  const now = Date.now();
-  const entry = attempts.get(key);
+  try {
+    const now = Date.now();
+    const resetAt = await redis.get<number>(`rate_limit_reset_${key}`);
+    
+    if (!resetAt || now > resetAt) {
+      const newResetAt = now + windowMs;
+      await redis.setex(`rate_limit_reset_${key}`, Math.ceil(windowMs / 1000), newResetAt);
+      await redis.setex(`rate_limit_count_${key}`, Math.ceil(windowMs / 1000), 1);
+      return { allowed: true, retryAfterMs: 0 };
+    }
 
-  if (!entry || now > entry.resetAt) {
-    attempts.set(key, { count: 1, resetAt: now + windowMs });
+    const count = (await redis.get<number>(`rate_limit_count_${key}`)) || 0;
+    
+    if (count >= maxAttempts) {
+      return { allowed: false, retryAfterMs: resetAt - now };
+    }
+
+    await redis.incr(`rate_limit_count_${key}`);
+    return { allowed: true, retryAfterMs: 0 };
+  } catch (error) {
+    console.error("Rate limit error:", error);
+    // Allow requests if Redis fails
     return { allowed: true, retryAfterMs: 0 };
   }
-
-  if (entry.count >= maxAttempts) {
-    return { allowed: false, retryAfterMs: entry.resetAt - now };
-  }
-
-  entry.count += 1;
-  return { allowed: true, retryAfterMs: 0 };
 }

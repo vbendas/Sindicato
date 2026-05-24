@@ -1,9 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
+const { mockRateLimit } = vi.hoisted(() => {
+  return { mockRateLimit: vi.fn().mockResolvedValue({ allowed: true, retryAfterMs: 0 }) };
+});
+
 vi.mock("@/lib/ai/openrouter", () => ({
   callOpenRouter: vi.fn(),
   getWritingModel: vi.fn().mockReturnValue("test-model"),
   getReportModel: vi.fn().mockReturnValue("test-model"),
+}));
+
+vi.mock("@/lib/auth/rate-limit", () => ({
+  rateLimit: mockRateLimit,
 }));
 
 import { POST as writingPost } from "@/app/api/ai/writing-assistant/route";
@@ -24,6 +32,7 @@ function mockRequest(body: unknown, ip = "1.2.3.4") {
 describe("POST /api/ai/writing-assistant", () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    mockRateLimit.mockResolvedValue({ allowed: true, retryAfterMs: 0 });
   });
 
   it("rejects invalid input", async () => {
@@ -60,6 +69,7 @@ describe("POST /api/ai/writing-assistant", () => {
 describe("POST /api/ai/case-strength", () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    mockRateLimit.mockResolvedValue({ allowed: true, retryAfterMs: 0 });
   });
 
   it("rejects invalid input", async () => {

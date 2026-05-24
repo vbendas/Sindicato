@@ -1,6 +1,6 @@
 import { db } from "@/lib/db/client";
 import { cases, companies } from "@/lib/db/schema";
-import { eq, and, lt, sql } from "drizzle-orm";
+import { eq, and, lt, lte, or, isNull, sql } from "drizzle-orm";
 import { sendTemplateEmail } from "@/lib/email/send";
 import ResolutionFollowUp from "@/lib/email/templates/resolution-follow-up";
 import { success, error } from "@/lib/utils/api";
@@ -31,7 +31,10 @@ export async function GET(request: Request) {
         and(
           eq(cases.status, "active"),
           lt(cases.createdAt, thirtyDaysAgo),
-          sql`(${cases.lastFollowUpSentAt} IS NULL OR ${cases.lastFollowUpSentAt} < NOW() - INTERVAL '30 days')`
+          or(
+            isNull(cases.lastFollowUpSentAt),
+            lte(cases.lastFollowUpSentAt, thirtyDaysAgo)
+          )
         )
       );
 

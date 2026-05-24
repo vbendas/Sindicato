@@ -100,7 +100,7 @@ export default function PlatformCombobox({ value, onChange }: PlatformComboboxPr
                 onSelect={() => handleSelect(normalizeToSlug(search))}
                 className={`text-sindicato-bordeaux ${fileDropdownItemClass}`}
               >
-                Use "{search.trim()}"
+                Use &quot;{search.trim()}&quot;
               </CommandItem>
             )}
           </CommandList>

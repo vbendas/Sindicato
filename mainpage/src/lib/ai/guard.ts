@@ -30,9 +30,7 @@ export async function validateDomainScope(userMessage: string): Promise<DomainVa
     
     return result;
   } catch (error) {
-    console.error('Domain validation error:', error);
-    // If validation fails due to technical issues, we should be conservative and allow the query
-    // to prevent blocking legitimate requests
-    return { valid: true, reason: 'Validation temporarily unavailable, allowing query' };
+    console.error('Domain validation error - failing closed:', error);
+    return { valid: false, reason: 'Domain validation temporarily unavailable. Please try again later.' };
   }
 }

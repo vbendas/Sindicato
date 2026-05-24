@@ -343,8 +343,34 @@ export default function TimelineSection({ caseId, workerId }: { caseId: string; 
   }, [caseId]);
 
   useEffect(() => {
-    fetchEvents();
-  }, [fetchEvents]);
+    let isMounted = true;
+    
+    const loadEvents = async () => {
+      try {
+        const res = await fetch(`/api/cases/${caseId}/timeline`);
+        if (!res.ok) throw new Error("Failed to fetch events");
+        const json = await res.json();
+        if (isMounted) {
+          setEvents(json.data ?? []);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError("Failed to load timeline events");
+          console.error(err);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+    
+    loadEvents();
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [caseId]);
 
   const handleAdd = async (data: Parameters<EventFormProps["onSubmit"]>[0]) => {
     setFormLoading(true);

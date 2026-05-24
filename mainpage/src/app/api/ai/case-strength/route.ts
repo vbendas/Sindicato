@@ -30,7 +30,7 @@ const strengthResultSchema = z.object({
 
 export async function POST(request: Request) {
   const ip = getClientIp(request);
-  const { allowed } = rateLimit(`ai-strength:${ip}`);
+  const { allowed } = await rateLimit(`ai-strength:${ip}`);
   if (!allowed) {
     return error("Rate limited. Please wait before trying again.", 429);
   }

@@ -35,7 +35,7 @@ export default function ManifestoPage() {
               MANIFESTO
             </h1>
             <p className="text-sindicato-warm-white/40 text-sm font-[family-name:var(--font-jetbrains)]">
-              Exploitation is not a bug. It's a business model.
+              Exploitation is not a bug. It&apos;s a business model.
             </p>
           </motion.div>
 

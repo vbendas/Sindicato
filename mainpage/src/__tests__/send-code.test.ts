@@ -1,10 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { NextRequest } from "next/server";
 
-const { selectLimit, insertValues } = vi.hoisted(() => {
+const { selectLimit, insertValues, deleteWhere } = vi.hoisted(() => {
   const selectLimit = vi.fn().mockResolvedValue([]);
   const insertValues = vi.fn().mockResolvedValue(undefined);
-  return { selectLimit, insertValues };
+  const deleteWhere = vi.fn().mockResolvedValue(undefined);
+  return { selectLimit, insertValues, deleteWhere };
 });
 
 vi.mock("@/lib/db/client", () => ({
@@ -18,6 +19,9 @@ vi.mock("@/lib/db/client", () => ({
     }),
     insert: vi.fn().mockReturnValue({
       values: insertValues,
+    }),
+    delete: vi.fn().mockReturnValue({
+      where: deleteWhere,
     }),
   },
 }));
@@ -53,6 +57,7 @@ beforeEach(() => {
   });
   selectLimit.mockResolvedValue([]);
   insertValues.mockResolvedValue(undefined);
+  deleteWhere.mockResolvedValue(undefined);
   (sendEmail as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 });
 
@@ -130,8 +135,9 @@ describe("POST /api/auth/send-code", () => {
     expect(data.data.message).toBe(
       "If an account exists, a code has been sent."
     );
-    expect(insertValues).not.toHaveBeenCalled();
-    expect(sendEmail).not.toHaveBeenCalled();
+    expect(deleteWhere).toHaveBeenCalled();
+    expect(insertValues).toHaveBeenCalled(); // It should still insert a new token
+    expect(sendEmail).toHaveBeenCalled(); // And send the email
   });
 
   it("returns 500 when email sending fails", async () => {
