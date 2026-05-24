@@ -53,15 +53,15 @@ export default async function AccountPage() {
       <div className="fixed inset-0 pointer-events-none z-50 grain-overlay" style={{ opacity: 0.04 }} />
       <Header
         scrolledBg="bg-sindicato-charcoal/80 backdrop-blur-md border-white/10"
-        clerkBg="bg-sindicato-bordeaux text-sindicato-cream"
+        clerkBg="bg-sindicato-bordeaux text-sindicato-warm-white"
       />
       <div className="min-h-screen bg-sindicato-charcoal relative z-10 pt-24 pb-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
           <div className="mb-10">
-            <h1 className="text-3xl font-bold text-sindicato-cream font-[family-name:var(--font-barlow)] uppercase tracking-wider mb-1">
+            <h1 className="text-3xl font-bold text-sindicato-warm-white font-[family-name:var(--font-barlow)] uppercase tracking-wider mb-1">
               My Cases
             </h1>
-            <p className="text-sindicato-cream/60 text-sm">
+            <p className="text-sindicato-warm-white/60 text-sm">
               {session.user.email}
             </p>
           </div>

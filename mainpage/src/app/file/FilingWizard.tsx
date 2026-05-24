@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Header from "@/app/components/Header";
 import StepIndicator from "./components/StepIndicator";
-import EmailVerifyStep from "./components/EmailVerifyStep";
 import CaseDetailsStep from "./components/CaseDetailsStep";
 import TimelineStep from "./components/TimelineStep";
 import ReviewStep from "./components/ReviewStep";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
-export type Step = "verify" | "details" | "timeline" | "review";
+export type Step = "details" | "timeline" | "review";
 
 export interface CaseFormData {
   vertical: string;
@@ -22,7 +22,7 @@ export interface CaseFormData {
   workDateStart: Date | undefined;
   workDateEnd: Date | undefined;
   amountOwed: string;
-  contactAttempts: string;
+  currency: string;
   story: string;
   ageRange: string;
   sex: string;
@@ -30,6 +30,7 @@ export interface CaseFormData {
   optInSolicitor: boolean;
   optInCollective: boolean;
   optInCompanyNotify: boolean;
+  optInCompanyContact: boolean;
   attested: boolean;
 }
 
@@ -44,7 +45,7 @@ export interface TimelineEvent {
 export default function FilingWizard() {
   const searchParams = useSearchParams();
 
-  const [step, setStep] = useState<Step>("verify");
+  const [step, setStep] = useState<Step>("details");
   const [verifiedEmail, setVerifiedEmail] = useState("");
   const [workerId, setWorkerId] = useState("");
 
@@ -58,18 +59,31 @@ export default function FilingWizard() {
     workDateStart: undefined,
     workDateEnd: undefined,
     amountOwed: "",
-    contactAttempts: "",
+    currency: "USD",
     story: "",
     ageRange: "",
     sex: "",
     project: "",
-    optInSolicitor: false,
-    optInCollective: false,
+    optInSolicitor: true,
+    optInCollective: true,
     optInCompanyNotify: true,
+    optInCompanyContact: true,
     attested: false,
   });
 
   const [timelineEvents, setTimelineEvents] = useState<TimelineEvent[]>([]);
+
+  useEffect(() => {
+    fetch("/api/auth/session")
+      .then((r) => r.json())
+      .then((s) => {
+        if (s?.user) {
+          setVerifiedEmail(s.user.email ?? "");
+          setWorkerId(s.user.id ?? "");
+        }
+      })
+      .catch(() => {});
+  }, []);
 
 
   return (
@@ -77,28 +91,32 @@ export default function FilingWizard() {
       <div className="fixed inset-0 pointer-events-none z-50 grain-overlay" style={{ opacity: 0.45 }} />
       <Header
         scrolledBg="bg-sindicato-charcoal/80 backdrop-blur-md border-white/10"
-        clerkBg="bg-sindicato-bordeaux text-sindicato-cream"
+        clerkBg="bg-sindicato-bordeaux text-sindicato-warm-white"
       />
-      <div className="relative z-10 pt-24 pb-16 max-w-2xl mx-auto px-4 sm:px-6">
+      <div className="relative z-10 pt-24 pb-16 max-w-3xl mx-auto px-4 sm:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <div className="w-12 h-0.5 bg-white/20 mb-6 mx-auto" />
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-warm-white uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-2">
+            Report a Case
+          </h1>
+          <p className="text-sindicato-warm-white/40 text-sm font-[family-name:var(--font-jetbrains)]">
+            Your story deserves to be heard.
+          </p>
+        </motion.div>
+
         <StepIndicator currentStep={step} />
-        <AnimatePresence mode="wait">
-          {step === "verify" && (
-            <EmailVerifyStep
-              key="verify"
-              onSuccess={(email, id) => {
-                setVerifiedEmail(email);
-                setWorkerId(id);
-                setStep("details");
-              }}
-            />
-          )}
+        <TooltipProvider delay={400}>
+          <AnimatePresence mode="wait">
           {step === "details" && (
             <CaseDetailsStep
               key="details"
-              email={verifiedEmail}
               caseData={caseData}
               setCaseData={setCaseData}
-              onBack={() => setStep("verify")}
               onNext={() => setStep("timeline")}
             />
           )}
@@ -123,6 +141,7 @@ export default function FilingWizard() {
             />
           )}
         </AnimatePresence>
+        </TooltipProvider>
       </div>
     </div>
   );

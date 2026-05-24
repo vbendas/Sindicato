@@ -72,6 +72,20 @@ export async function POST(request: Request) {
       .map((d) => new Date(d!).toLocaleDateString("en-US", { month: "short", year: "numeric" }))
       .join(" – ") || "Not specified";
 
+    // Compute contactAttempts from timeline events
+    const contactAttempts = data.timelineEvents.length;
+    // Compute daysWithoutAnswer: days since the latest event without a response
+    let daysWithoutAnswer: number | null = null;
+    const unansweredEvents = data.timelineEvents.filter((ev) => !ev.responseReceived);
+    if (unansweredEvents.length > 0) {
+      const latest = new Date(
+        Math.max(...unansweredEvents.map((ev) => new Date(ev.eventDate).getTime()))
+      );
+      daysWithoutAnswer = Math.floor(
+        (Date.now() - latest.getTime()) / (1000 * 60 * 60 * 24)
+      );
+    }
+
     const [newCase] = await db
       .insert(cases)
       .values({
@@ -89,7 +103,7 @@ export async function POST(request: Request) {
         workDateEnd: data.workDateEnd ? new Date(data.workDateEnd) : null,
         amountOwed: data.amountOwed || "0",
         currency: data.currency,
-        contactAttempts: data.contactAttempts,
+        contactAttempts,
         story: data.story,
         email: data.email,
         translationLanguage: detectedLang,
@@ -131,7 +145,7 @@ export async function POST(request: Request) {
       caseId: newCase.id,
       eventType: "case_updated" as const,
       eventDate: new Date(),
-      description: `Case filed against ${company.name}. ${data.amountOwed ? `Amount owed: $${data.amountOwed} USD.` : ""}`,
+      description: `Case filed against ${company.name}. ${data.amountOwed ? `Amount owed: ${data.amountOwed} ${data.currency}.` : ""}`,
       responseReceived: false,
     }).catch((err) => console.error("Failed to log case filed event:", err));
 
@@ -178,7 +192,7 @@ export async function GET(request: Request) {
     if (companySlug) {
       conditions.push(eq(companies.slug, companySlug));
     }
-    if (vertical && (vertical === "remote" || vertical === "gig")) {
+    if (vertical) {
       conditions.push(eq(cases.vertical, vertical));
     }
 

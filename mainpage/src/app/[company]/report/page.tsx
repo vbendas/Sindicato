@@ -30,11 +30,11 @@ export default function CompanyReportPage({
   }, [slug]);
 
   return (
-    <div className="min-h-screen bg-sindicato-pine text-sindicato-cream flex items-center justify-center">
+    <div className="min-h-screen bg-sindicato-pine text-sindicato-warm-white flex items-center justify-center">
       <div className="fixed inset-0 pointer-events-none z-[60] grain-overlay" style={{ opacity: 0.45 }} />
       <div className="text-center">
         <h1 className="text-2xl font-bold mb-4">Data Report</h1>
-        <p className="text-sindicato-cream/60 mb-6">
+        <p className="text-sindicato-warm-white/60 mb-6">
           Report view for {slug} coming soon.
         </p>
         <Link

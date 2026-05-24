@@ -18,6 +18,7 @@ interface CaseCard {
   story: string;
   vertical: string;
   createdAt: string;
+  resolutionStatus: string;
   company: {
     name: string;
     slug: string;
@@ -85,11 +86,11 @@ export default function CasesPage() {
   return (
     <>
       <div className="fixed inset-0 pointer-events-none z-[60] grain-overlay" style={{ opacity: 0.45 }} />
-      <Header scrolledBg="bg-sindicato-bordeaux/70 backdrop-blur-md border-white/10" clerkBg="bg-sindicato-charcoal text-sindicato-cream" />
+      <Header scrolledBg="bg-sindicato-charcoal/70 backdrop-blur-md border-white/10" clerkBg="bg-sindicato-bordeaux text-sindicato-warm-white" />
 
-      <div className="relative pt-24 pb-16 bg-sindicato-bordeaux min-h-screen">
+      <div className="relative pt-24 pb-16 bg-sindicato-charcoal min-h-screen">
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative z-10 px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -181,17 +182,25 @@ export default function CasesPage() {
                           {c.story}
                         </p>
 
-                        <div className="mt-4 pt-3 border-t border-white/10">
-                          <p className="text-sindicato-cream/30 text-xs">
-                            {new Date(c.createdAt).toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            })}
-                          </p>
-                          <p className="text-sindicato-cream/20 text-[10px] font-[family-name:var(--font-jetbrains)] mt-1">
-                            CASE #{c.id.slice(-8).toUpperCase()}
-                          </p>
+                        <div className="mt-4 pt-3 border-t border-white/10 flex items-start justify-between gap-4">
+                          <div>
+                            <p className="text-sindicato-cream/30 text-xs">
+                              {new Date(c.createdAt).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              })}
+                            </p>
+                            <p className="text-sindicato-cream/20 text-[10px] font-[family-name:var(--font-jetbrains)] mt-1">
+                              CASE #{c.id.slice(-8).toUpperCase()}
+                            </p>
+                          </div>
+                          <span className="shrink-0 inline-flex items-center gap-1.5 bg-white/10 border border-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider font-[family-name:var(--font-jetbrains)]">
+                            <span className={`w-1.5 h-1.5 rounded-full ${c.resolutionStatus === "resolved" ? "bg-green-400" : "bg-red-400"}`} />
+                            <span className={c.resolutionStatus === "resolved" ? "text-green-400" : "text-red-400"}>
+                              {c.resolutionStatus === "resolved" ? "solved" : "unresolved"}
+                            </span>
+                          </span>
                         </div>
                       </div>
                     </Link>
@@ -223,7 +232,7 @@ export default function CasesPage() {
         </div>
       </div>
 
-      <Footer bg="bg-sindicato-bordeaux" />
+      <Footer bg="bg-sindicato-charcoal" />
     </>
   );
 }

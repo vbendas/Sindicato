@@ -4,9 +4,11 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Header from "../components/Header";
 import Footer from "../sections/Footer";
 import ShareButtons from "@/components/ShareButtons";
+import { useTrackPageview } from "@/hooks/useTrackPageview";
 
 interface CaseItem {
   id: string;
@@ -17,6 +19,7 @@ interface CaseItem {
   story: string;
   vertical: string;
   createdAt: string;
+  resolutionStatus: string;
   company: { name: string; slug: string };
 }
 
@@ -28,7 +31,11 @@ interface CompanyPageProps {
 export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
   const [cases, setCases] = useState<CaseItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [viewsTotal, setViewsTotal] = useState<number | null>(null);
   const pathname = usePathname();
+  const { data: session } = useSession();
+
+  useTrackPageview("company", slug);
 
   useEffect(() => {
     async function fetchData() {
@@ -45,6 +52,21 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
       }
     }
     fetchData();
+  }, [slug]);
+
+  useEffect(() => {
+    async function fetchViews() {
+      try {
+        const res = await fetch(`/api/metrics?type=company&id=${slug}`);
+        if (res.ok) {
+          const json = await res.json();
+          setViewsTotal(json.data?.viewsTotal ?? 0);
+        }
+      } catch {
+        // silent
+      }
+    }
+    fetchViews();
   }, [slug]);
 
   const companyName = cases.length > 0 ? cases[0].company.name : slug;
@@ -101,6 +123,14 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
                   {vertical === "remote" ? "Remote" : "Gig"}
                 </span>
               </div>
+              <div>
+                <span className="block text-sindicato-warm-white/30 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
+                  Total Views
+                </span>
+                <span className="text-sindicato-warm-white text-2xl font-bold font-[family-name:var(--font-barlow)]">
+                  {viewsTotal !== null ? viewsTotal.toLocaleString() : "—"}
+                </span>
+              </div>
             </div>
 
             {cases.length > 0 && (
@@ -115,6 +145,9 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
                   variant="company"
                   companyName={companyName}
                   stats={{ cases: cases.length, totalOwed: totalOwed.toLocaleString() }}
+                  entityType="company"
+                  entityId={slug}
+                  isAuth={!!session}
                 />
               </div>
             )}
@@ -137,10 +170,18 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
                   <Link key={item.id} href={`/cases/${item.id}`}>
                     <div className="bg-white/5 border border-white/10 p-4 hover:bg-white/10 transition-colors">
                       <div className="flex items-start justify-between gap-4 mb-1">
-                        <span className="text-sindicato-warm-white font-medium text-sm">
-                          {item.displayName}
-                        </span>
-                        <span className="text-sindicato-warm-white/40 text-xs font-[family-name:var(--font-jetbrains)]">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-sindicato-warm-white font-medium text-sm truncate">
+                            {item.displayName}
+                          </span>
+                          <span className="inline-flex items-center gap-1 bg-white/10 border border-white/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider font-[family-name:var(--font-jetbrains)] shrink-0">
+                            <span className={`w-1 h-1 rounded-full ${item.resolutionStatus === "resolved" ? "bg-green-400" : "bg-red-400"}`} />
+                            <span className={item.resolutionStatus === "resolved" ? "text-green-400" : "text-red-400"}>
+                              {item.resolutionStatus === "resolved" ? "solved" : "unresolved"}
+                            </span>
+                          </span>
+                        </div>
+                        <span className="text-sindicato-warm-white/40 text-xs font-[family-name:var(--font-jetbrains)] shrink-0">
                           {new Date(item.createdAt).toLocaleDateString()}
                         </span>
                       </div>

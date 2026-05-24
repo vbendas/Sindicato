@@ -65,10 +65,10 @@ describe("caseSubmissionSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects negative contact attempts", () => {
-    const data = { ...validCase, contactAttempts: -1 };
-    const result = caseSubmissionSchema.safeParse(data);
-    expect(result.success).toBe(false);
+  it("accepts missing contact attempts (computed from timeline)", () => {
+    const { contactAttempts, ...withoutContact } = validCase;
+    const result = caseSubmissionSchema.safeParse(withoutContact);
+    expect(result.success).toBe(true);
   });
 
   it("accepts zero contact attempts", () => {

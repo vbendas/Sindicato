@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { X, Copy, Check } from "lucide-react";
 import InstagramStoryCard from "./InstagramStoryCard";
+import { trackShareClick } from "@/lib/umami";
 
 function IconX({ className }: { className?: string }) {
   return (
@@ -59,7 +61,18 @@ interface ShareButtonsProps {
     country?: string;
     date?: string;
   };
+  caseType?: string;
+  displayName?: string;
+  dateRange?: string;
+  vertical?: string;
+  resolutionStatus?: string;
   className?: string;
+  entityType?: "company" | "case" | "timeline_event";
+  entityId?: string;
+  companyId?: string;
+  caseId?: string;
+  eventId?: string;
+  isAuth?: boolean;
 }
 
 function buildShareUrls(
@@ -84,7 +97,7 @@ function buildShareUrls(
   };
 }
 
-function openShare(url: string) {
+function openShare(url: string, platform?: string) {
   window.open(url, "_blank", "noopener,noreferrer,width=600,height=400");
 }
 
@@ -95,7 +108,18 @@ export default function ShareButtons({
   variant,
   companyName,
   stats,
+  caseType,
+  displayName,
+  dateRange,
+  vertical,
+  resolutionStatus,
   className,
+  entityType,
+  entityId,
+  companyId,
+  caseId,
+  eventId,
+  isAuth,
 }: ShareButtonsProps) {
   const [showInstagram, setShowInstagram] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -111,9 +135,21 @@ export default function ShareButtons({
   } else if (variant === "case" && stats?.amount && stats?.country && companyName) {
     improvedTitle = `A worker from ${stats.country} is owed ${stats.amount} by ${companyName}. Exploitation like this must end. Share to help!`;
     improvedDescription = `Read the full story of wage theft and exploitation. Share to support the worker and hold the company accountable.`;
+  } else if (variant === "case" && stats?.country && companyName) {
+    improvedTitle = `A worker from ${stats.country} is fighting against ${companyName}. Join the fight for fair treatment!`;
+    improvedDescription = `Learn about this case of workplace injustice. Share to spread awareness and support the worker.`;
+  } else if (variant === "case" && title) {
+    improvedTitle = `Important case: ${title}. Share to follow the story and help the worker get justice!`;
+    improvedDescription = `An important update in this case. Share to follow the story and support the worker.`;
   } else if (variant === "event" && title) {
     improvedTitle = `Important update in case #${title.split('-').pop()?.toUpperCase() || 'UNKNOWN'}: ${title}. Share to follow the story!`;
     improvedDescription = `An important update in this case. Share to follow the story and help the worker get justice.`;
+  } else if (variant === "company" && companyName) {
+    improvedTitle = `${companyName} has multiple cases filed against them. Help us demand accountability!`;
+    improvedDescription = `Workers are fighting for justice against ${companyName}. Share to spread awareness and support their cause.`;
+  } else if (title) {
+    improvedTitle = `${title}. Share to learn more and support the cause!`;
+    improvedDescription = `Read about this important issue and share to help make a difference.`;
   }
 
   const urls = buildShareUrls(url, improvedTitle, improvedDescription);
@@ -154,26 +190,44 @@ export default function ShareButtons({
       icon: IconX,
       url: urls.twitter,
       color: "hover:bg-white/10",
+      platformKey: "x",
     },
     {
       name: "LinkedIn",
       icon: IconLinkedin,
       url: urls.linkedin,
       color: "hover:bg-white/10",
+      platformKey: "linkedin",
     },
     {
       name: "Facebook",
       icon: IconFacebook,
       url: urls.facebook,
       color: "hover:bg-white/10",
+      platformKey: "facebook",
     },
     {
       name: "WhatsApp",
       icon: IconWhatsApp,
       url: urls.whatsapp,
       color: "hover:bg-white/10",
+      platformKey: "whatsapp",
     },
   ];
+
+  const handleShareClick = (platform: string) => {
+    if (entityType && entityId) {
+      trackShareClick({
+        entityType: entityType,
+        entityId: entityId,
+        companyId: companyId,
+        caseId: caseId,
+        eventId: eventId,
+        platform: platform as any,
+        isAuth: isAuth || false,
+      });
+    }
+  };
 
   return (
     <div className={className}>
@@ -182,7 +236,10 @@ export default function ShareButtons({
         {platforms.map((platform) => (
           <button
             key={platform.name}
-            onClick={() => openShare(platform.url)}
+            onClick={() => {
+              handleShareClick(platform.platformKey);
+              openShare(platform.url);
+            }}
             className={`flex items-center gap-1.5 text-sindicato-warm-white/60 hover:text-sindicato-warm-white transition-colors ${platform.color} px-3 py-1.5 border border-white/10 text-xs uppercase tracking-wider font-bold font-[family-name:var(--font-barlow)]`}
             title={`Share on ${platform.name}`}
           >
@@ -193,7 +250,10 @@ export default function ShareButtons({
 
         {/* Instagram */}
         <button
-          onClick={() => setShowInstagram(true)}
+          onClick={() => {
+            handleShareClick("instagram");
+            setShowInstagram(true);
+          }}
           className="flex items-center gap-1.5 text-sindicato-warm-white/60 hover:text-sindicato-warm-white transition-colors hover:bg-white/10 px-3 py-1.5 border border-white/10 text-xs uppercase tracking-wider font-bold font-[family-name:var(--font-barlow)]"
           title="Download Instagram Story"
         >
@@ -203,7 +263,10 @@ export default function ShareButtons({
 
         {/* Copy link */}
         <button
-          onClick={handleCopy}
+          onClick={() => {
+            handleShareClick("copy_link");
+            handleCopy();
+          }}
           className="flex items-center gap-1.5 text-sindicato-warm-white/60 hover:text-sindicato-warm-white transition-colors hover:bg-white/10 px-3 py-1.5 border border-white/10 text-xs uppercase tracking-wider font-bold font-[family-name:var(--font-barlow)]"
           title="Copy link"
         >
@@ -222,7 +285,7 @@ export default function ShareButtons({
       </div>
 
       {/* Instagram Story Card Modal */}
-      {showInstagram && (
+      {showInstagram && typeof document !== "undefined" && createPortal(
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm">
           <div className="relative bg-sindicato-charcoal border border-white/10 p-6 max-w-sm w-full mx-4">
             <button
@@ -247,6 +310,11 @@ export default function ShareButtons({
               description={description}
               companyName={companyName}
               stats={stats}
+              caseType={caseType}
+              displayName={displayName}
+              dateRange={dateRange}
+              vertical={vertical}
+              resolutionStatus={resolutionStatus}
               onImageGenerated={handleInstagramImageGenerated}
             />
 
@@ -256,7 +324,8 @@ export default function ShareButtons({
               </p>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

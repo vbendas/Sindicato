@@ -25,19 +25,19 @@ export function ThinkingBar({
         <button
           type="button"
           onClick={onClick}
-          className="flex items-center gap-1 text-sm transition-opacity hover:opacity-80 text-white"
+          className="flex items-center gap-1 text-sm transition-opacity hover:opacity-80 text-sindicato-warm-white"
         >
-          <TextShimmer className="font-medium text-white">{text}</TextShimmer>
-          <ChevronRight className="text-white/50 size-4" />
+          <TextShimmer className="font-medium text-sindicato-warm-white">{text}</TextShimmer>
+          <ChevronRight className="text-sindicato-warm-white/50 size-4" />
         </button>
       ) : (
-        <TextShimmer className="cursor-default font-medium text-white">{text}</TextShimmer>
+        <TextShimmer className="cursor-default font-medium text-sindicato-warm-white">{text}</TextShimmer>
       )}
       {onStop ? (
         <button
           onClick={onStop}
           type="button"
-          className="text-white/50 hover:text-white border-white/30 hover:border-white border-b border-dotted text-sm transition-colors"
+          className="text-sindicato-warm-white/50 hover:text-sindicato-warm-white border-white/30 hover:border-white border-b border-dotted text-sm transition-colors"
         >
           {stopLabel}
         </button>

@@ -46,7 +46,7 @@ export default function FeaturedCase() {
     <section className="bg-sindicato-charcoal py-16 sm:py-20 lg:py-24 lg:section-diagonal-bottom">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6 sm:mb-8 text-center sm:text-left">
-          <span className="text-sindicato-cream/30 text-xs font-bold tracking-[0.25em] uppercase font-[family-name:var(--font-jetbrains)]">
+          <span className="text-sindicato-warm-white/30 text-xs font-bold tracking-[0.25em] uppercase font-[family-name:var(--font-jetbrains)]">
             {`// FEATURED CASE #001`}
           </span>
         </div>
@@ -59,7 +59,7 @@ export default function FeaturedCase() {
         >
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
             <div>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-sindicato-cream uppercase tracking-wide font-[family-name:var(--font-barlow)]">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-sindicato-warm-white uppercase tracking-wide font-[family-name:var(--font-barlow)]">
                 {display.company.name}
               </h2>
             </div>
@@ -74,42 +74,42 @@ export default function FeaturedCase() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 mb-8">
             {Number(display.amountOwed) > 0 && (
               <div>
-                <span className="block text-sindicato-cream/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
+                <span className="block text-sindicato-warm-white/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
                   Amount
                 </span>
-                <span className="text-sindicato-cream text-2xl sm:text-3xl font-bold font-[family-name:var(--font-jetbrains)]">
+                <span className="text-sindicato-warm-white text-2xl sm:text-3xl font-bold font-[family-name:var(--font-jetbrains)]">
                   {display.currency === "USD" ? "$" : "\u20AC"}{Number(display.amountOwed).toLocaleString()}
                 </span>
               </div>
             )}
             <div>
-              <span className="block text-sindicato-cream/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
+              <span className="block text-sindicato-warm-white/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
                 Period
               </span>
-              <span className="text-sindicato-cream text-base sm:text-lg font-[family-name:var(--font-jetbrains)]">
+              <span className="text-sindicato-warm-white text-base sm:text-lg font-[family-name:var(--font-jetbrains)]">
                 Apr 9 – May 18, 2026
               </span>
             </div>
             <div>
-              <span className="block text-sindicato-cream/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
+              <span className="block text-sindicato-warm-white/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
                 Cases Filed
               </span>
-              <span className="text-sindicato-cream text-2xl sm:text-3xl font-bold font-[family-name:var(--font-jetbrains)]">
+              <span className="text-sindicato-warm-white text-2xl sm:text-3xl font-bold font-[family-name:var(--font-jetbrains)]">
                 3
               </span>
             </div>
             <div>
-              <span className="block text-sindicato-cream/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
+              <span className="block text-sindicato-warm-white/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
                 Workers for Legal Action
               </span>
-              <span className="text-sindicato-cream text-2xl sm:text-3xl font-bold font-[family-name:var(--font-jetbrains)]">
+              <span className="text-sindicato-warm-white text-2xl sm:text-3xl font-bold font-[family-name:var(--font-jetbrains)]">
                 2
               </span>
             </div>
           </div>
 
           <div className="border-t border-white/10 pt-6">
-            <p className="text-sindicato-cream/65 text-sm sm:text-base leading-relaxed mb-6 max-w-3xl">
+            <p className="text-sindicato-warm-white/65 text-sm sm:text-base leading-relaxed mb-6 max-w-3xl">
               A senior ML engineer documented wage theft through multiple AI training projects,
               complete with Hubstaff logs, AutoQA scores, and a documented retaliation sequence.
               This founding case established the pattern that Sindicato was built to expose.
@@ -117,7 +117,7 @@ export default function FeaturedCase() {
 
             <Link
               href={`/workers/${display.company.slug}`}
-              className="inline-flex items-center gap-2 text-sindicato-cream font-bold uppercase tracking-wider text-sm hover:text-sindicato-cream/80 transition-colors font-[family-name:var(--font-barlow)] group"
+              className="inline-flex items-center gap-2 text-sindicato-warm-white font-bold uppercase tracking-wider text-sm hover:text-sindicato-warm-white/80 transition-colors font-[family-name:var(--font-barlow)] group"
             >
               View Full Report
               <span className="transition-transform group-hover:translate-x-1">&rarr;</span>

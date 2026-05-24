@@ -16,18 +16,22 @@ function cleanup() {
   }
 }
 
-export function rateLimit(key: string): { allowed: boolean; retryAfterMs: number } {
+export function rateLimit(
+  key: string,
+  maxAttempts = MAX_ATTEMPTS,
+  windowMs = WINDOW_MS
+): { allowed: boolean; retryAfterMs: number } {
   cleanup();
 
   const now = Date.now();
   const entry = attempts.get(key);
 
   if (!entry || now > entry.resetAt) {
-    attempts.set(key, { count: 1, resetAt: now + WINDOW_MS });
+    attempts.set(key, { count: 1, resetAt: now + windowMs });
     return { allowed: true, retryAfterMs: 0 };
   }
 
-  if (entry.count >= MAX_ATTEMPTS) {
+  if (entry.count >= maxAttempts) {
     return { allowed: false, retryAfterMs: entry.resetAt - now };
   }
 

@@ -1,6 +1,6 @@
 # Sindicato
 
-Digital labor rights platform. Workers self-publish wage theft cases. Cases aggregate into per-company dashboards. Companies pay to access worker contacts and must sign a non-retaliation agreement first.
+Digital labor rights platform. Workers self-publish wage theft cases. Cases aggregate into per-company dashboards. Companies pay to access worker contacts. Worker identities stay anonymized until they choose to share.
 
 **Live at:** sindicato.report
 
@@ -16,7 +16,7 @@ Digital labor rights platform. Workers self-publish wage theft cases. Cases aggr
 - **Cloudflare Turnstile** — invisible human verification on submission
 - **OpenRouter** — AI routing (Kimi K2 Instant, DeepSeek R1, DeepSeek V3)
 - **CoinGate** — payments (company access fees, lawyer referral fees)
-- **@react-pdf/renderer** — non-retaliation agreement PDF generation
+- **@react-pdf/renderer** — PDF generation (case reports, cluster summaries)
 
 ---
 
@@ -75,14 +75,14 @@ src/
       auth/              NextAuth + send-code
       cron/              resolution followup
       payments/          CoinGate + NexaPay webhooks
-      company-access/    verification + non-retaliation flow
+      company-access/    verification + payment flow
   lib/
     db/                  Drizzle schema + client + queries
     auth/                NextAuth config + rate limiting
     ai/                  OpenRouter client + prompts + translation + clerk
     email/               Resend wrapper + React Email templates
     email/aliases.ts     Cloudflare Email Routing alias management
-    agreements/          Non-retaliation PDF generation + delivery
+    agreements/          PDF generation (case reports, cluster summaries)
     payments/            CoinGate + NexaPay clients
     scraper/             Company contact email scraper
     utils/               Redaction, Zod schemas, API helpers, Turnstile verify
@@ -94,7 +94,7 @@ src/
 
 **Anonymous aliases** — every case gets `case-{id}@sindicato.report`. Cloudflare forwards inbound mail to worker's real inbox. Worker replies show as sent FROM the alias. Real email never exposed. Alias can be disabled instantly via API.
 
-**Non-retaliation agreement** — auto-generated PDF on company payment. Sent to every accessed worker immediately. The company's transaction generates the worker's legal protection.
+**Anonymized access** — companies pay to access worker contact info. Workers are notified immediately and control whether their real identity is shared. The platform provides timestamped public evidence workers can use if retaliation occurs.
 
 **Verticals** — all company dashboards live under `/workers/[company]` or `/gig/[company]`. The `vertical` field on cases and companies determines routing.
 

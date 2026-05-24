@@ -1,15 +1,14 @@
 "use client";
 
-type Step = "verify" | "details" | "timeline" | "review";
+type Step = "details" | "timeline" | "review";
 
 const STEPS: { id: Step; label: string; number: number }[] = [
-  { id: "verify", label: "Verify", number: 1 },
-  { id: "details", label: "Your Case", number: 2 },
-  { id: "timeline", label: "Timeline", number: 3 },
-  { id: "review", label: "Review", number: 4 },
+  { id: "details", label: "Your Case", number: 1 },
+  { id: "timeline", label: "Timeline", number: 2 },
+  { id: "review", label: "Review", number: 3 },
 ];
 
-const STEP_ORDER: Step[] = ["verify", "details", "timeline", "review"];
+const STEP_ORDER: Step[] = ["details", "timeline", "review"];
 
 interface StepIndicatorProps {
   currentStep: Step;
@@ -19,23 +18,23 @@ export default function StepIndicator({ currentStep }: StepIndicatorProps) {
   const currentIndex = STEP_ORDER.indexOf(currentStep);
 
   return (
-    <div className="mb-8">
-      <div className="flex items-center justify-between">
+    <div className="mb-8 flex justify-center">
+      <div className="flex items-center justify-center gap-0">
         {STEPS.map((step, index) => {
           const isCompleted = index < currentIndex;
           const isActive = index === currentIndex;
           const isUpcoming = index > currentIndex;
 
           return (
-            <div key={step.id} className="flex items-center flex-1">
+            <div key={step.id} className="flex items-center">
               <div className="flex flex-col items-center gap-1.5 flex-shrink-0">
-                <div
-                  className={`w-7 h-7 flex items-center justify-center text-xs font-bold font-[family-name:var(--font-barlow)] transition-colors ${
-                    isCompleted || isActive
-                      ? "bg-sindicato-bordeaux text-sindicato-cream"
-                      : "bg-sindicato-charcoal/10 text-sindicato-charcoal/40"
-                  }`}
-                >
+                  <div
+                    className={`w-7 h-7 flex items-center justify-center text-xs font-bold font-[family-name:var(--font-barlow)] transition-colors ${
+                      isCompleted || isActive
+                        ? "bg-sindicato-warm-white text-sindicato-charcoal"
+                        : "bg-white/10 text-sindicato-warm-white/50"
+                    }`}
+                  >
                   {isCompleted ? (
                     <svg
                       className="w-3.5 h-3.5"
@@ -55,23 +54,23 @@ export default function StepIndicator({ currentStep }: StepIndicatorProps) {
                   )}
                 </div>
                 <span
-                  className={`text-xs uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold transition-colors hidden sm:block ${
-                    isUpcoming
-                      ? "text-sindicato-charcoal/40"
-                      : "text-sindicato-charcoal/70"
-                  }`}
-                >
+                    className={`text-xs uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold transition-colors hidden sm:block ${
+                      isUpcoming
+                        ? "text-sindicato-warm-white/40"
+                        : "text-sindicato-warm-white/70"
+                    }`}
+                  >
                   {step.label}
                 </span>
               </div>
               {index < STEPS.length - 1 && (
-                <div
-                  className={`h-px flex-1 mx-2 transition-colors ${
-                    index < currentIndex
-                      ? "bg-sindicato-bordeaux"
-                      : "bg-sindicato-charcoal/15"
-                  }`}
-                />
+                  <div
+                    className={`h-px w-12 sm:w-20 mx-3 transition-colors ${
+                      index < currentIndex
+                        ? "bg-sindicato-warm-white/60"
+                        : "bg-white/10"
+                    }`}
+                  />
               )}
             </div>
           );

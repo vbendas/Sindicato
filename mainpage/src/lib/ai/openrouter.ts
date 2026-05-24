@@ -39,7 +39,8 @@ export async function callOpenRouter(opts: {
     }
 
     const data = await response.json();
-    return data.choices[0].message.content;
+    const msg = data.choices[0].message;
+    return msg.content ?? msg.reasoning ?? "";
   } finally {
     clearTimeout(timeout);
   }
@@ -105,7 +106,8 @@ export async function callOpenRouterStream(opts: {
 
             try {
               const parsed = JSON.parse(jsonStr);
-              const content = parsed.choices?.[0]?.delta?.content;
+              const delta = parsed.choices?.[0]?.delta;
+              const content = delta?.content ?? delta?.reasoning ?? "";
               if (content) {
                 controller.enqueue(new TextEncoder().encode(content));
               }
@@ -134,5 +136,5 @@ export function getReportModel() {
 }
 
 export function getClerkModel() {
-  return process.env.CLERK_MODEL ?? "deepseek/deepseek-v3";
+  return process.env.CLERK_MODEL ?? "z-ai/glm-4.5-air:free";
 }

@@ -59,6 +59,10 @@ export const resolutionStatusEnum = pgEnum("resolution_status", [
 
 export const reportTypeEnum = pgEnum("report_type", ["lawyer", "company"]);
 
+export const platformRoleEnum = pgEnum("platform_role", ["lawyer", "company", "media"]);
+export const approvalStatusEnum = pgEnum("approval_status", ["pending", "approved", "rejected"]);
+
+// Deprecated: vertical is now varchar to support custom platform types
 export const verticalEnum = pgEnum("vertical", ["remote", "gig"]);
 
 export const workers = pgTable("workers", {
@@ -72,12 +76,30 @@ export const workers = pgTable("workers", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const platformAccounts = pgTable("platform_accounts", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  role: platformRoleEnum("role").notNull(),
+  displayName: varchar("display_name", { length: 255 }).notNull(),
+  organization: varchar("organization", { length: 255 }),
+  approvalStatus: approvalStatusEnum("approval_status").default("pending").notNull(),
+  tosAcceptedAt: timestamp("tos_accepted_at"),
+  tosVersion: varchar("tos_version", { length: 10 }),
+  emailVerified: boolean("email_verified").default(false).notNull(),
+  companyId: uuid("company_id").references(() => companies.id),
+  approvedAt: timestamp("approved_at"),
+  approvedBy: varchar("approved_by", { length: 255 }),
+  rejectionReason: text("rejection_reason"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const companies = pgTable("companies", {
   id: uuid("id").primaryKey().defaultRandom(),
   slug: varchar("slug", { length: 100 }).notNull().unique(),
   name: varchar("name", { length: 255 }).notNull(),
   website: varchar("website", { length: 255 }),
-  vertical: verticalEnum("vertical").notNull(),
+  vertical: varchar("vertical", { length: 50 }).notNull(),
   contactEmails: jsonb("contact_emails").$type<string[]>().default([]),
   resolutionEngaged: boolean("resolution_engaged").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -90,7 +112,7 @@ export const cases = pgTable("cases", {
     .references(() => companies.id)
     .notNull(),
 
-  vertical: verticalEnum("vertical").notNull(),
+  vertical: varchar("vertical", { length: 50 }).notNull(),
   displayName: varchar("display_name", { length: 100 }).notNull(),
   country: varchar("country", { length: 100 }),
   ageRange: varchar("age_range", { length: 20 }),
@@ -103,6 +125,7 @@ export const cases = pgTable("cases", {
   amountOwed: numeric("amount_owed", { precision: 12, scale: 2 }).notNull(),
   currency: varchar("currency", { length: 10 }).default("EUR").notNull(),
   contactAttempts: integer("contact_attempts").notNull(),
+  daysWithoutAnswer: integer("days_without_answer"),
   story: text("story").notNull(),
   storyTranslated: text("story_translated"),
   translationLanguage: varchar("translation_language", { length: 10 }),
@@ -111,9 +134,10 @@ export const cases = pgTable("cases", {
   aliasRuleId: varchar("alias_rule_id", { length: 255 }),
   aliasActive: boolean("alias_active").default(true).notNull(),
 
-  optInSolicitor: boolean("opt_in_solicitor").default(false).notNull(),
-  optInCollective: boolean("opt_in_collective").default(false).notNull(),
+  optInSolicitor: boolean("opt_in_solicitor").default(true).notNull(),
+  optInCollective: boolean("opt_in_collective").default(true).notNull(),
   optInCompanyNotify: boolean("opt_in_company_notify").default(true).notNull(),
+  optInCompanyContact: boolean("opt_in_company_contact").default(true).notNull(),
 
   email: varchar("email", { length: 255 }).notNull(),
 
@@ -185,12 +209,14 @@ export const dataAccessLogs = pgTable(
       .references(() => cases.id)
       .notNull(),
     accessorId: uuid("accessor_id")
-      .references(() => companyVerifications.id)
-      .notNull(),
+      .references(() => companyVerifications.id),
+    platformAccountId: uuid("platform_account_id")
+      .references(() => platformAccounts.id),
+    role: platformRoleEnum("role").notNull(),
     accessedAt: timestamp("accessed_at").defaultNow().notNull(),
     workerNotified: boolean("worker_notified").default(false).notNull(),
   },
-  (t) => [uniqueIndex("data_access_unique").on(t.caseId, t.accessorId)]
+  (t) => [uniqueIndex("data_access_unique").on(t.caseId, t.accessorId, t.platformAccountId)]
 );
 
 export const reports = pgTable("reports", {
@@ -230,5 +256,51 @@ export const caseTimelineEvents = pgTable("case_timeline_events", {
   isAutomatic: boolean("is_automatic").default(false).notNull(),
   emailContent: text("email_content"),
   responseReceived: boolean("response_received").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const entityMetricsSnapshots = pgTable(
+  "entity_metrics_snapshots",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    entityType: varchar("entity_type", { length: 50 }).notNull(),
+    entityId: varchar("entity_id", { length: 255 }).notNull(),
+    viewsTotal: integer("views_total").default(0).notNull(),
+    views24h: integer("views_24h").default(0).notNull(),
+    views7d: integer("views_7d").default(0).notNull(),
+    sharesTotal: integer("shares_total").default(0).notNull(),
+    visitorsTotal: integer("visitors_total").default(0).notNull(),
+    visitors24h: integer("visitors_24h").default(0).notNull(),
+    visitors7d: integer("visitors_7d").default(0).notNull(),
+    lastSyncedAt: timestamp("last_synced_at").defaultNow().notNull(),
+  },
+  (t) => [uniqueIndex("entity_metrics_type_id").on(t.entityType, t.entityId)]
+);
+
+export const shareClickEvents = pgTable(
+  "share_click_events",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    entityType: varchar("entity_type", { length: 50 }).notNull(),
+    entityId: varchar("entity_id", { length: 255 }).notNull(),
+    platform: varchar("platform", { length: 50 }).notNull(),
+    isAuthenticated: boolean("is_authenticated").default(false).notNull(),
+    companyId: varchar("company_id", { length: 255 }),
+    caseId: varchar("case_id", { length: 255 }),
+    eventId: varchar("event_id", { length: 255 }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [index("share_click_entity").on(t.entityType, t.entityId)]
+);
+
+export const auditLogs = pgTable("audit_logs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id").notNull(),
+  userRole: varchar("user_role", { length: 50 }).notNull(),
+  companyId: uuid("company_id"),
+  query: text("query").notNull(),
+  accessedContacts: boolean("accessed_contacts").notNull(),
+  success: boolean("success").notNull(),
+  reason: text("reason"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

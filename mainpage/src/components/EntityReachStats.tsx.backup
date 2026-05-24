@@ -1,0 +1,71 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+
+interface EntityReachStatsProps {
+  entityType: "company" | "case" | "timeline_event";
+  entityId: string;
+}
+
+interface MetricsData {
+  viewsTotal: number;
+  views24h: number;
+  views7d: number;
+  sharesTotal: number;
+  lastUpdatedAt: string | null;
+}
+
+export default function EntityReachStats({ entityType, entityId }: EntityReachStatsProps) {
+  const [metrics, setMetrics] = useState<MetricsData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/metrics?type=${entityType}&id=${entityId}`);
+        if (res.ok) {
+          const json = await res.json();
+          setMetrics(json.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch metrics:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMetrics();
+  }, [entityType, entityId]);
+
+  if (error) {
+    return null; // Could render an error component here
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center gap-4">
+        <Skeleton className="h-4 w-20" />
+        <Skeleton className="h-4 w-16" />
+        <Skeleton className="h-4 w-24" />
+      </div>
+    );
+  }
+
+  if (!metrics) {
+    return null;
+  }
+
+  const fmt = (n: number) => n.toLocaleString();
+
+  return (
+    <div className="flex items-center gap-4 text-xs text-sindicato-warm-white/60">
+      <span>{fmt(metrics.viewsTotal)} views</span>
+      {metrics.sharesTotal > 0 && <span>{fmt(metrics.sharesTotal)} shares</span>}
+      {metrics.views7d > 0 && metrics.views7d !== metrics.viewsTotal && (
+        <span>{fmt(metrics.views7d)} views in last 7 days</span>
+      )}
+    </div>
+  );
+}

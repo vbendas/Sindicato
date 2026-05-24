@@ -178,7 +178,11 @@ body {
 }
 
 .cases-page ::-webkit-scrollbar-thumb {
-  background: var(--charcoal);
+  background: var(--bordeaux);
+}
+
+.clerk-page ::-webkit-scrollbar-thumb {
+  background: var(--bordeaux);
 }
 
 /* shimmer animation for text-shimmer */

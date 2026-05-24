@@ -86,10 +86,10 @@ export default function VerticalHub({ vertical }: { vertical: "remote" | "gig" }
             transition={{ duration: 0.8 }}
             className="relative z-10 max-w-3xl mx-auto px-4 text-center py-16 sm:py-20"
           >
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-cream uppercase mb-4 leading-tight font-[family-name:var(--font-barlow)]">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-warm-white uppercase mb-4 leading-tight font-[family-name:var(--font-barlow)]">
               {cfg.title}
             </h1>
-            <p className="text-base sm:text-lg text-sindicato-cream/70 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-sindicato-warm-white/70 max-w-2xl mx-auto">
               {cfg.subtitle}
             </p>
           </motion.div>

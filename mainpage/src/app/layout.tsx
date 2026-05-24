@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Barlow_Condensed, Inter, JetBrains_Mono, Geist } from "next/font/google";
+import Script from "next/script";
+import { AuthProvider } from "@/components/AuthProvider";
+import { onUmamiLoaded } from "@/lib/umami";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +32,8 @@ export const metadata: Metadata = {
     "Workers report wage theft, unpaid work, and contractor exploitation. Together, our voices become impossible to silence.",
 };
 
+const umamiScript = process.env.NEXT_PUBLIC_UMAMI_URL && process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -40,7 +45,16 @@ export default function RootLayout({
       className={cn("antialiased", barlowCondensed.variable, inter.variable, jetbrainsMono.variable, "font-sans", geist.variable)}
     >
       <body className="font-[family-name:var(--font-inter)]">
-        {children}
+        {umamiScript && (
+          <Script
+            defer
+            src={process.env.NEXT_PUBLIC_UMAMI_URL}
+            data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+            strategy="afterInteractive"
+            onLoad={onUmamiLoaded}
+          />
+        )}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
