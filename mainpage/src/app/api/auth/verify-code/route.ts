@@ -14,7 +14,7 @@ const verifyCodeSchema = z.object({
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
-  const { allowed } = rateLimit(`verify-code:${ip}`);
+  const { allowed } = await rateLimit(`verify-code:${ip}`);
   if (!allowed) {
     return error("Too many requests", 429);
   }
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
   const { email, code } = parsed.data;
 
-  const { allowed: emailAllowed } = rateLimit(`verify-code-email:${email}`);
+  const { allowed: emailAllowed } = await rateLimit(`verify-code-email:${email}`);
   if (!emailAllowed) {
     return error("Too many attempts. Please request a new code.", 429);
   }

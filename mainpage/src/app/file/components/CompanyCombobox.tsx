@@ -118,7 +118,7 @@ export default function CompanyCombobox({ value, displayName, onChange }: Compan
                  }
                  className={`text-sindicato-bordeaux ${fileDropdownItemClass}`}
                >
-                 Use "{search.trim()}"
+                  Use &quot;{search.trim()}&quot;
                </CommandItem>
              )}
           </CommandList>

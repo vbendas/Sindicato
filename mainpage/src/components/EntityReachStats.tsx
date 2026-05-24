@@ -30,12 +30,12 @@ export default function EntityReachStats({ entityType, entityId, showVisitors = 
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!VALID_ENTITY_TYPES.includes(entityType)) {
-      setError("Invalid entity type");
-      return;
-    }
-
     const fetchMetrics = async () => {
+      if (!VALID_ENTITY_TYPES.includes(entityType)) {
+        setError("Invalid entity type");
+        return;
+      }
+      
       setLoading(true);
       try {
         const res = await fetch(`/api/metrics?type=${entityType}&id=${entityId}`);

@@ -1,6 +1,7 @@
 import { db } from "@/lib/db/client";
 import { cases, companies, entityMetricsSnapshots, dataAccessLogs, auditLogs } from "@/lib/db/schema";
-import { eq, ne, and, or, gt, gte, lt, lte, inArray, like, count, sum, asc, desc } from "drizzle-orm";
+import { eq, ne, and, or, gt, gte, lt, lte, inArray, like, count, sum, asc, desc, type SQL } from "drizzle-orm";
+import type { PgColumn } from "drizzle-orm/pg-core";
 import { error, getClientIp } from "@/lib/utils/api";
 import { rateLimit } from "@/lib/auth/rate-limit";
 import { callOpenRouter, callOpenRouterStream, getClerkModel } from "@/lib/ai/openrouter";
@@ -17,7 +18,13 @@ type Filter = {
   value: unknown;
 };
 
+function escapeLikeValue(value: string): string {
+  return value.replace(/%/g, "\\%").replace(/_/g, "\\_");
+}
+
 type QueryPlan = {
+  rejected?: boolean;
+  rejectionReason?: string | null;
   source?: "cases" | "metrics";
   aggregation: "count" | "sum" | "list" | "group_by" | "metrics";
   aggregationField?: string | null;
@@ -148,17 +155,17 @@ function buildDefaultFilters(plan: QueryPlan, userRole?: string, userCompanyId?:
   return extraFilters;
 }
 
-type DrizzleColumn = any;
+type DrizzleColumn = PgColumn;
 
-const DRIZZLE_OPERATORS: Record<string, (field: DrizzleColumn, value: unknown) => any> = {
+const DRIZZLE_OPERATORS: Record<string, (field: DrizzleColumn, value: unknown) => SQL> = {
   eq: (field, value) => eq(field, value),
   neq: (field, value) => ne(field, value),
   gt: (field, value) => gt(field, value),
   gte: (field, value) => gte(field, value),
   lt: (field, value) => lt(field, value),
   lte: (field, value) => lte(field, value),
-  in: (field, value) => inArray(field, value as any[]),
-  contains: (field, value) => like(field, `%${value}%`),
+  in: (field, value) => inArray(field, value as unknown[]),
+  contains: (field, value) => like(field, `%${escapeLikeValue(String(value))}%`),
 };
 
 async function parseQuery(userMessage: string): Promise<QueryPlan> {
@@ -172,8 +179,68 @@ async function parseQuery(userMessage: string): Promise<QueryPlan> {
   });
 
   const cleaned = raw.replace(/```(?:json)?\n?/gi, "").trim();
-  const plan = JSON.parse(cleaned) as QueryPlan;
-  return plan;
+  
+  try {
+    const plan = JSON.parse(cleaned) as QueryPlan;
+    return plan;
+  } catch (parseError) {
+    console.error("Failed to parse query plan:", cleaned);
+    throw new Error("AI returned invalid query plan. Please try rephrasing your question.");
+  }
+}
+
+function validateQueryPlan(plan: QueryPlan, fieldMap: Record<string, string>): { valid: boolean; error?: string } {
+  const validAggregations = ["count", "sum", "list", "group_by", "metrics"];
+  const validOperators = ["eq", "neq", "gt", "gte", "lt", "lte", "in", "contains"];
+  const validSources = ["cases", "metrics"];
+
+  if (!plan.aggregation || !validAggregations.includes(plan.aggregation)) {
+    return { valid: false, error: "Invalid aggregation type" };
+  }
+
+  if (plan.source && !validSources.includes(plan.source)) {
+    return { valid: false, error: "Invalid data source" };
+  }
+
+  if (plan.limit !== null && plan.limit !== undefined) {
+    if (typeof plan.limit !== "number" || plan.limit < 1 || plan.limit > 500) {
+      return { valid: false, error: "Limit must be between 1 and 500" };
+    }
+  }
+
+  for (const filter of plan.filters) {
+    if (!filter.field || typeof filter.field !== "string") {
+      return { valid: false, error: "Filter field must be a string" };
+    }
+
+    if (!validOperators.includes(filter.operator)) {
+      return { valid: false, error: `Invalid filter operator: ${filter.operator}` };
+    }
+
+    const mapped = fieldMap[filter.field];
+    if (!mapped) {
+      return { valid: false, error: `Unknown filter field: ${filter.field}` };
+    }
+
+    if (filter.operator === "in" && (!Array.isArray(filter.value) || filter.value.length > 50)) {
+      return { valid: false, error: "In operator requires an array with max 50 elements" };
+    }
+  }
+
+  if (plan.groupBy) {
+    const mapped = fieldMap[plan.groupBy];
+    if (!mapped) {
+      return { valid: false, error: `Unknown groupBy field: ${plan.groupBy}` };
+    }
+  }
+
+  if (plan.orderBy) {
+    if (plan.orderBy.direction !== "asc" && plan.orderBy.direction !== "desc") {
+      return { valid: false, error: "orderBy direction must be 'asc' or 'desc'" };
+    }
+  }
+
+  return { valid: true };
 }
 
 function resolveField(field: string, fieldMap: Record<string, string>): DrizzleColumn | null {
@@ -315,6 +382,7 @@ async function executeCasesPlan(plan: QueryPlan, fieldMap: Record<string, string
 
   if (plan.aggregation === "list") {
     const selectFields: Record<string, any> = {
+      id: cases.id,
       companyName: companies.name,
       companySlug: companies.slug,
       vertical: cases.vertical,
@@ -400,7 +468,7 @@ type Message = {
 
 export async function POST(request: Request) {
   const ip = getClientIp(request);
-  const rl = rateLimit(ip);
+  const rl = await rateLimit(ip);
   if (!rl.allowed) return error("Rate limit exceeded. Please wait before sending another query.", 429);
 
   try {
@@ -422,7 +490,7 @@ export async function POST(request: Request) {
 
     if (requestsContact && !isPrivileged) {
       await db.insert(auditLogs).values({
-        userId: session?.user?.id || "anonymous",
+        userId: session?.user?.id || "00000000-0000-0000-0000-000000000000",
         userRole: userRole || "anonymous",
         companyId: userCompanyId || null,
         query: message,
@@ -435,7 +503,16 @@ export async function POST(request: Request) {
 
     const plan = await parseQuery(message);
 
+    if (plan.rejected) {
+      return streamRejection(plan.rejectionReason || "This query is outside the scope of Sindicato's worker exploitation database.");
+    }
+
     if (!plan.aggregation) return error("Could not understand the query. Please rephrase.", 400);
+
+    const planValidation = validateQueryPlan(plan, fieldMap);
+    if (!planValidation.valid) {
+      return error(planValidation.error || "Invalid query plan", 400);
+    }
 
     const extraFilters = buildDefaultFilters(plan, userRole, userCompanyId);
 

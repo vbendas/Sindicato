@@ -32,7 +32,7 @@ async function collectEntities(): Promise<SyncEntity[]> {
     entities.push({ entityType: "company", entityId: c.id, path: buildEntityPath("company", c) });
   }
 
-  const allCases = await db.select({ id: cases.id }).from(cases);
+  const allCases = await db.select({ id: cases.id }).from(cases).where(eq(cases.status, "active"));
   for (const c of allCases) {
     entities.push({ entityType: "case", entityId: c.id, path: buildEntityPath("case", c) });
   }
@@ -78,8 +78,7 @@ const BATCH_DELAY_MS = 1000;
 export async function GET(req: NextRequest) {
   if (CRON_SECRET) {
     const authHeader = req.headers.get("Authorization");
-    const querySecret = req.nextUrl.searchParams.get("secret");
-    if (authHeader !== `Bearer ${CRON_SECRET}` && querySecret !== CRON_SECRET) {
+    if (authHeader !== `Bearer ${CRON_SECRET}`) {
       return Response.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
   }

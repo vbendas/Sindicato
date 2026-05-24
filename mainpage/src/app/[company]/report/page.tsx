@@ -24,10 +24,7 @@ export default function CompanyReportPage({
     params.then((p) => setSlug(p.company));
   }, [params]);
 
-  useEffect(() => {
-    if (!slug) return;
-    setLoading(false);
-  }, [slug]);
+
 
   return (
     <div className="min-h-screen bg-sindicato-pine text-sindicato-warm-white flex items-center justify-center">

@@ -14,7 +14,7 @@ function generateCode(): string {
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
-  const { allowed, retryAfterMs } = rateLimit(`send-code:${ip}`);
+  const { allowed, retryAfterMs } = await rateLimit(`send-code:${ip}`);
   if (!allowed) {
     return error("Too many requests", 429, { retryAfterMs });
   }
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
   const email = parsed.data;
 
-  const { allowed: emailAllowed } = rateLimit(`send-code-email:${email}`);
+  const { allowed: emailAllowed } = await rateLimit(`send-code-email:${email}`);
   if (!emailAllowed) {
     return error("Too many requests", 429);
   }

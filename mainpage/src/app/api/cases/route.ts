@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   const workerId = session.user.id;
 
   const ip = getClientIp(request);
-  const rl = rateLimit(ip);
+  const rl = await rateLimit(ip);
   if (!rl.allowed) {
     return error("Too many requests. Please try again later.", 429);
   }
@@ -54,6 +54,21 @@ export async function POST(request: Request) {
       .limit(1);
 
     if (!company) {
+      const companyRl = await rateLimit(`company-create:${workerId}`, 3, 3600_000);
+      if (!companyRl.allowed) {
+        return error("Company creation rate limit reached. Please try again later.", 429);
+      }
+
+      const slugRegex = /^[a-z0-9-]{1,100}$/;
+      if (!slugRegex.test(data.companySlug)) {
+        return error("Invalid company slug format", 400);
+      }
+
+      const nameRegex = /^[a-zA-Z0-9\s.,&'-]{1,255}$/;
+      if (!nameRegex.test(data.companyName)) {
+        return error("Invalid company name format", 400);
+      }
+
       [company] = await db
         .insert(companies)
         .values({
@@ -74,17 +89,6 @@ export async function POST(request: Request) {
 
     // Compute contactAttempts from timeline events
     const contactAttempts = data.timelineEvents.length;
-    // Compute daysWithoutAnswer: days since the latest event without a response
-    let daysWithoutAnswer: number | null = null;
-    const unansweredEvents = data.timelineEvents.filter((ev) => !ev.responseReceived);
-    if (unansweredEvents.length > 0) {
-      const latest = new Date(
-        Math.max(...unansweredEvents.map((ev) => new Date(ev.eventDate).getTime()))
-      );
-      daysWithoutAnswer = Math.floor(
-        (Date.now() - latest.getTime()) / (1000 * 60 * 60 * 24)
-      );
-    }
 
     const [newCase] = await db
       .insert(cases)
@@ -112,6 +116,7 @@ export async function POST(request: Request) {
         optInSolicitor: data.optInSolicitor,
         optInCollective: data.optInCollective,
         optInCompanyNotify: data.optInCompanyNotify,
+        optInCompanyContact: data.optInCompanyContact,
         status: "active",
       })
       .returning({ id: cases.id });

@@ -38,7 +38,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
         if (!email || !code) return null;
 
-        const { allowed } = rateLimit(`verify:${email}`);
+        const { allowed } = await rateLimit(`verify:${email}`);
         if (!allowed) return null;
 
         const [token] = await db
@@ -127,7 +127,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   ],
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60,
+    maxAge: 7 * 24 * 60 * 60,
   },
   pages: {
     signIn: "/auth/verify",

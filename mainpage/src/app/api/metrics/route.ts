@@ -15,7 +15,7 @@ const CACHE_TTL = 300;
 
 export async function GET(request: Request) {
   const ip = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown";
-  const { allowed } = rateLimit(`metrics:${ip}`, 60, 60_000);
+  const { allowed } = await rateLimit(`metrics:${ip}`, 60, 60_000);
   if (!allowed) return error("Too many requests", 429);
 
   const { searchParams } = new URL(request.url);

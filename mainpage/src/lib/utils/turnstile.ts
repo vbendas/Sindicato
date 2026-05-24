@@ -2,8 +2,8 @@ const TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/sit
 
 export async function verifyTurnstileToken(token: string): Promise<boolean> {
   if (!process.env.CF_TURNSTILE_SECRET) {
-    console.warn("Turnstile secret not configured — skipping verification");
-    return true;
+    console.error("Turnstile secret not configured — verification failing closed");
+    return false;
   }
 
   try {

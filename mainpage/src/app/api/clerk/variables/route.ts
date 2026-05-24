@@ -22,7 +22,7 @@ const SEXES = ["male", "female", "non-binary", "prefer not to say"];
 
 export async function GET(request: Request) {
   const ip = getClientIp(request);
-  const rl = rateLimit(ip);
+  const rl = await rateLimit(ip);
   if (!rl.allowed) {
     return error("Too many requests", 429);
   }
