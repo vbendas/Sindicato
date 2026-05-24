@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface CaseItem {
   id: string;
@@ -29,8 +30,8 @@ const tabs: { label: string; value: TabValue }[] = [
 ];
 
 const verticalStyles = {
-  remote: { badge: "bg-sindicato-bordeaux text-sindicato-cream", label: "REMOTE" },
-  gig: { badge: "bg-sindicato-bordeaux-light text-sindicato-cream", label: "GIG" },
+  remote: { badge: "bg-sindicato-bordeaux text-sindicato-warm-white", label: "REMOTE" },
+  gig: { badge: "bg-sindicato-bordeaux-light text-sindicato-warm-white", label: "GIG" },
 };
 
 function formatTimeAgo(dateStr: string): string {
@@ -57,6 +58,7 @@ export default function LiveCaseFeed() {
   const [isOverflowing, setIsOverflowing] = useState(false);
   const fetchedRef = useRef(false);
   const masonryRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const fetchCases = useCallback(async (tab: TabValue) => {
     try {
@@ -114,7 +116,7 @@ export default function LiveCaseFeed() {
           className="text-center mb-12"
         >
           <div className="w-12 h-0.5 bg-white/20 mx-auto mb-4" />
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-cream uppercase font-[family-name:var(--font-barlow)] tracking-wide">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-warm-white uppercase font-[family-name:var(--font-barlow)] tracking-wide">
             Recent Cases
           </h2>
         </motion.div>
@@ -126,8 +128,8 @@ export default function LiveCaseFeed() {
               onClick={() => handleTabChange(tab.value)}
               className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] ${
                 activeTab === tab.value
-                  ? "bg-white/20 backdrop-blur-sm border border-white/30 text-sindicato-cream"
-                  : "bg-white/10 text-sindicato-cream/60 hover:bg-white/20"
+                  ? "bg-white/20 backdrop-blur-sm border border-white/30 text-sindicato-warm-white"
+                  : "bg-white/10 text-sindicato-warm-white/60 hover:bg-white/20"
               }`}
             >
               {tab.label}
@@ -137,21 +139,21 @@ export default function LiveCaseFeed() {
 
         {loading && cases.length === 0 && (
           <div className="text-center py-12">
-            <div className="animate-spin w-8 h-8 border-2 border-white/30 border-t-white rounded-full mx-auto mb-4" />
-            <p className="text-sindicato-cream/40 text-sm">Loading cases...</p>
+            <div className="animate-spin w-8 h-8 border-2 border-white/30 border-t-sindicato-warm-white rounded-full mx-auto mb-4" />
+            <p className="text-sindicato-warm-white/40 text-sm">Loading cases...</p>
           </div>
         )}
 
         {error && cases.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-sindicato-cream/40 text-sm">Unable to load recent cases. Please try again later.</p>
+            <p className="text-sindicato-warm-white/40 text-sm">Unable to load recent cases. Please try again later.</p>
           </div>
         )}
 
         {!loading && !error && cases.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-sindicato-cream/40 text-lg mb-2">No cases reported yet</p>
-            <p className="text-sindicato-cream/30 text-sm">Be the first to report your experience</p>
+            <p className="text-sindicato-warm-white/40 text-lg mb-2">No cases reported yet</p>
+            <p className="text-sindicato-warm-white/30 text-sm">Be the first to report your experience</p>
           </div>
         )}
 
@@ -167,10 +169,13 @@ export default function LiveCaseFeed() {
           >
             <div ref={masonryRef} className="columns-1 md:columns-2 lg:columns-3 gap-6">
               {cases.map((item, index) => (
-                <Link key={item.id} href={`/cases/${item.id}`}>
-                  <div
-                    className="break-inside-avoid mb-5 bg-white/10 backdrop-blur-sm p-5 sm:p-6 border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/25 hover:-translate-y-1"
-                  >
+                <div
+                  key={item.id}
+                  onClick={() => router.push(`/cases/${item.id}`)}
+                  onKeyDown={(e) => { if (e.key === "Enter") router.push(`/cases/${item.id}`); }}
+                  role="presentation"
+                  className="break-inside-avoid mb-5 bg-white/10 backdrop-blur-sm p-5 sm:p-6 border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/25 hover:-translate-y-1 cursor-pointer"
+                >
                     <div className="flex items-start justify-between gap-4 mb-2">
                       <span
                         className={`text-[10px] px-2 py-0.5 font-bold uppercase tracking-wider ${
@@ -180,7 +185,7 @@ export default function LiveCaseFeed() {
                         {verticalStyles[item.vertical].label}
                       </span>
                       {Number(item.amountOwed) > 0 && (
-                        <span className="text-sindicato-cream font-bold text-base font-[family-name:var(--font-jetbrains)] tracking-tight">
+                        <span className="text-sindicato-warm-white font-bold text-base font-[family-name:var(--font-jetbrains)] tracking-tight">
                           {item.currency === "EUR" ? "\u20AC" : item.currency === "USD" ? "$" : item.currency}{" "}
                           {Number(item.amountOwed).toLocaleString()}
                         </span>
@@ -188,25 +193,25 @@ export default function LiveCaseFeed() {
                     </div>
 
                     <div className="flex items-center gap-2 flex-wrap mb-2">
-                      <span className="text-sindicato-cream/80 text-sm font-medium">
+                      <span className="text-sindicato-warm-white/80 text-sm font-medium">
                         {item.displayName}
                       </span>
-                      <span className="text-sindicato-cream/20 text-sm">&bull;</span>
+                      <span className="text-sindicato-warm-white/20 text-sm">&bull;</span>
                       <Link
                         href={`/${item.vertical === "gig" ? "gig" : "workers"}/${item.company.slug}`}
                         onClick={(e) => e.stopPropagation()}
-                        className="text-sindicato-cream/60 text-sm hover:text-sindicato-cream transition-colors"
+                        className="text-sindicato-warm-white/60 text-sm hover:text-sindicato-warm-white transition-colors"
                       >
                         {item.company.name}
                       </Link>
                     </div>
 
-                    <p className="text-sindicato-cream/65 text-sm leading-relaxed">
+                    <p className="text-sindicato-warm-white/65 text-sm leading-relaxed">
                       {item.story}
                     </p>
 
                     <div className="mt-2 flex items-center justify-between">
-                      <span className="text-sindicato-cream/40 text-xs font-[family-name:var(--font-jetbrains)]">
+                      <span className="text-sindicato-warm-white/40 text-xs font-[family-name:var(--font-jetbrains)]">
                         {formatTimeAgo(item.createdAt)}
                       </span>
                       <span className="inline-flex items-center gap-1.5 bg-white/10 border border-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider font-[family-name:var(--font-jetbrains)]">
@@ -217,7 +222,6 @@ export default function LiveCaseFeed() {
                       </span>
                     </div>
                   </div>
-                </Link>
               ))}
             </div>
           </div>
@@ -227,7 +231,7 @@ export default function LiveCaseFeed() {
           <div className="mt-[15px] text-center">
             <Link
               href="/cases"
-              className="inline-block bg-white/10 backdrop-blur-sm border border-white/30 px-6 py-3 text-sindicato-cream text-sm uppercase tracking-wider hover:bg-white/20 transition-all font-[family-name:var(--font-barlow)] font-bold"
+              className="inline-block bg-white/10 backdrop-blur-sm border border-white/30 px-6 py-3 text-sindicato-warm-white text-sm uppercase tracking-wider hover:bg-white/20 transition-all font-[family-name:var(--font-barlow)] font-bold"
             >
               View All Cases &rarr;
             </Link>

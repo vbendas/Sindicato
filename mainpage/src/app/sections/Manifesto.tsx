@@ -48,10 +48,10 @@ export default function Manifesto({ companies, activeVertical, onVerticalChange 
         transition={{ duration: 0.8 }}
         className="absolute top-11 sm:top-14 left-0 right-0 z-20 text-center px-4"
       >
-        <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-sindicato-cream mb-3 sm:mb-4">
+        <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-sindicato-warm-white mb-3 sm:mb-4">
           The Wall
         </h2>
-        <p className="text-sindicato-cream/60 text-sm sm:text-base lg:text-lg">
+        <p className="text-sindicato-warm-white/60 text-sm sm:text-base lg:text-lg">
           Companies ranked by reported cases
         </p>
       </motion.div>
@@ -84,8 +84,8 @@ export default function Manifesto({ companies, activeVertical, onVerticalChange 
                     onClick={() => onVerticalChange(tab.value)}
                     className={`px-4 py-2 text-sm font-bold uppercase tracking-wider transition-colors torn-edge font-button ${
                       activeVertical === tab.value
-                        ? "bg-sindicato-red text-sindicato-cream"
-                        : "bg-sindicato-cream/10 text-sindicato-cream/60 hover:bg-sindicato-cream/20"
+                        ? "bg-sindicato-red text-sindicato-warm-white"
+                        : "bg-sindicato-warm-white/10 text-sindicato-warm-white/60 hover:bg-sindicato-warm-white/20"
                     }`}
                   >
                     {tab.label}
@@ -108,53 +108,53 @@ export default function Manifesto({ companies, activeVertical, onVerticalChange 
                           : "bg-sindicato-black/80"
                       }`}
                     >
-                      <span className="text-4xl sm:text-5xl lg:text-6xl font-bold text-sindicato-cream/30 min-w-[60px] sm:min-w-[80px] text-center">
+                      <span className="text-4xl sm:text-5xl lg:text-6xl font-bold text-sindicato-warm-white/30 min-w-[60px] sm:min-w-[80px] text-center">
                         {index + 1}
                       </span>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-sindicato-cream truncate">
+                        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-sindicato-warm-white truncate">
                           {company.name}
                         </h3>
                       </div>
                       <div className="hidden sm:flex items-center gap-4 lg:gap-6 shrink-0">
                         <div className="text-right">
-                          <div className="text-lg sm:text-xl lg:text-2xl font-bold text-sindicato-cream">
+                          <div className="text-lg sm:text-xl lg:text-2xl font-bold text-sindicato-warm-white">
                             {company.totalUnpaid > 0 ? `€${company.totalUnpaid.toLocaleString()}` : "—"}
                           </div>
-                          <div className="text-sindicato-cream/50 text-xs sm:text-sm uppercase tracking-wider">
+                          <div className="text-sindicato-warm-white/50 text-xs sm:text-sm uppercase tracking-wider">
                             unpaid
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-lg sm:text-xl lg:text-2xl font-bold text-sindicato-cream">
+                          <div className="text-lg sm:text-xl lg:text-2xl font-bold text-sindicato-warm-white">
                             {company.unfairPracticeClaims > 0 ? company.unfairPracticeClaims : "—"}
                           </div>
-                          <div className="text-sindicato-cream/50 text-xs sm:text-sm uppercase tracking-wider">
+                          <div className="text-sindicato-warm-white/50 text-xs sm:text-sm uppercase tracking-wider">
                             unfair
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-lg sm:text-xl lg:text-2xl font-bold text-sindicato-cream">
+                          <div className="text-lg sm:text-xl lg:text-2xl font-bold text-sindicato-warm-white">
                             {company.retaliationClaims > 0 ? company.retaliationClaims : "—"}
                           </div>
-                          <div className="text-sindicato-cream/50 text-xs sm:text-sm uppercase tracking-wider">
+                          <div className="text-sindicato-warm-white/50 text-xs sm:text-sm uppercase tracking-wider">
                             retaliation
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-lg sm:text-xl lg:text-2xl font-bold text-sindicato-cream">
+                          <div className="text-lg sm:text-xl lg:text-2xl font-bold text-sindicato-warm-white">
                             {company.otherClaims > 0 ? company.otherClaims : "—"}
                           </div>
-                          <div className="text-sindicato-cream/50 text-xs sm:text-sm uppercase tracking-wider">
+                          <div className="text-sindicato-warm-white/50 text-xs sm:text-sm uppercase tracking-wider">
                             other
                           </div>
                         </div>
                       </div>
                       <div className="sm:hidden text-right shrink-0">
-                        <div className="text-xl font-bold text-sindicato-cream">
+                        <div className="text-xl font-bold text-sindicato-warm-white">
                           {company.caseCount}
                         </div>
-                        <div className="text-sindicato-cream/50 text-xs uppercase tracking-wider">
+                        <div className="text-sindicato-warm-white/50 text-xs uppercase tracking-wider">
                           cases
                         </div>
                       </div>
@@ -167,7 +167,7 @@ export default function Manifesto({ companies, activeVertical, onVerticalChange 
                     viewport={{ once: true }}
                     className="bg-sindicato-black/60 torn-edge p-8 sm:p-12 text-center"
                   >
-                    <p className="text-sindicato-cream/50 text-lg sm:text-xl">
+                    <p className="text-sindicato-warm-white/50 text-lg sm:text-xl">
                       No cases reported yet. Be the first.
                     </p>
                   </motion.div>
@@ -179,9 +179,9 @@ export default function Manifesto({ companies, activeVertical, onVerticalChange 
                     whileInView={{ opacity: 0.4 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.5 }}
-                    className="border-2 border-dashed border-sindicato-cream/20 rounded-sm p-4 sm:p-6 text-center"
+                    className="border-2 border-dashed border-sindicato-warm-white/20 rounded-sm p-4 sm:p-6 text-center"
                   >
-                    <p className="text-sindicato-cream/30 text-sm sm:text-base">
+                    <p className="text-sindicato-warm-white/30 text-sm sm:text-base">
                       More companies will appear as workers report cases
                     </p>
                   </motion.div>
@@ -206,7 +206,7 @@ export default function Manifesto({ companies, activeVertical, onVerticalChange 
                     : "bg-sindicato-black/80"
                 }`}
               >
-                <p className="text-xs sm:text-sm lg:text-base font-bold text-sindicato-cream text-center leading-snug">
+                <p className="text-xs sm:text-sm lg:text-base font-bold text-sindicato-warm-white text-center leading-snug">
                   {line.text}
                 </p>
               </motion.div>
@@ -214,7 +214,7 @@ export default function Manifesto({ companies, activeVertical, onVerticalChange 
           </div>
 
           <div className="mt-4 sm:mt-6 text-center">
-            <p className="text-sindicato-cream/30 text-xs sm:text-sm">
+            <p className="text-sindicato-warm-white/30 text-xs sm:text-sm">
               Data reflects self-reported claims from individual workers and has not been independently verified.
             </p>
           </div>

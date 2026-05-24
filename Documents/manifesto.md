@@ -48,7 +48,7 @@ It operates as a modern worker syndicate:
 
 Workers submit their case. It appears publicly on the Cases Wall — name partially redacted, story fully visible. Numbers aggregate on the company dashboard. Automated notifications inform the company each time a new case is filed. The totals grow. The pressure compounds.
 
-Companies that want to reach workers and resolve cases sign a non-retaliation agreement before receiving any contact information. That agreement legally protects every worker whose data is accessed. Workers are notified immediately each time their case is viewed. Labor law firms can access opted-in worker clusters for class action intake. No intermediation. Firms contact workers directly. Workers own their claims. Sindicato provides the platform, not the verdict.
+Companies that want to reach workers and resolve cases pay an access fee before receiving any contact information. Workers are notified immediately each time their case is viewed. Contact details are never shared without worker consent. Labor law firms can access opted-in worker clusters for class action intake. No intermediation. Firms contact workers directly. Workers own their claims. Sindicato provides the platform, not the verdict.
 
 Sindicato takes no money from investors, advertisers, companies listed on the platform, or attorneys. It runs on the voluntary support of workers, attorneys, journalists, and anyone who believes wage theft should have consequences. All surplus beyond operational costs goes to the Worker Support Fund: small claims filing fees covered, legal consultations provided, psychological support sessions funded. Workers pay nothing. Ever.
 

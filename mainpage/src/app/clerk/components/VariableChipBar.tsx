@@ -34,7 +34,7 @@ export default function VariableChipBar({ variables, values, labels, data, onCha
         />
       ))}
       {!allResolved && (
-        <span className="text-[10px] text-sindicato-cream/40 ml-1">
+        <span className="text-[10px] text-sindicato-warm-white/40 ml-1">
           Fill all variables to send
         </span>
       )}

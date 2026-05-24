@@ -31,10 +31,10 @@ export default function ManifestoPage() {
             className="mb-16 text-center"
           >
             <div className="w-12 h-0.5 bg-white/20 mb-6 mx-auto" />
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-cream uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-2">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-warm-white uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-2">
               MANIFESTO
             </h1>
-            <p className="text-sindicato-cream/40 text-sm font-[family-name:var(--font-jetbrains)]">
+            <p className="text-sindicato-warm-white/40 text-sm font-[family-name:var(--font-jetbrains)]">
               Exploitation is not a bug. It's a business model.
             </p>
           </motion.div>
@@ -53,7 +53,7 @@ export default function ManifestoPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.06, duration: 0.5 }}
-                className="text-sindicato-cream/75 text-sm sm:text-base leading-relaxed"
+                className="text-sindicato-warm-white/75 text-sm sm:text-base leading-relaxed"
               >
                 {p}
               </motion.p>
@@ -61,7 +61,7 @@ export default function ManifestoPage() {
           </motion.div>
 
           <div className="pt-16 border-t border-white/10 mt-16">
-            <p className="text-sindicato-cream/30 text-xs font-[family-name:var(--font-jetbrains)]">
+            <p className="text-sindicato-warm-white/30 text-xs font-[family-name:var(--font-jetbrains)]">
               Sindicato — sindicato.report
             </p>
           </div>

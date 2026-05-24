@@ -20,14 +20,14 @@ export default function DonatePage() {
           >
             <Link
               href="/"
-              className="text-sindicato-cream/40 hover:text-sindicato-cream text-xs uppercase tracking-wider transition-colors mb-6 inline-block font-[family-name:var(--font-barlow)] font-bold"
+              className="text-sindicato-warm-white/40 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors mb-6 inline-block font-[family-name:var(--font-barlow)] font-bold"
             >
               &larr; Back
             </Link>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-cream uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-4">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-warm-white uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-4">
               Support Sindicato
             </h1>
-            <p className="text-sindicato-cream/60 text-sm sm:text-base leading-relaxed">
+            <p className="text-sindicato-warm-white/60 text-sm sm:text-base leading-relaxed">
               No investors. No advertisers. No company money.
             </p>
           </motion.div>
@@ -39,10 +39,10 @@ export default function DonatePage() {
             transition={{ duration: 0.6 }}
             className="mb-12"
           >
-            <p className="text-sindicato-cream/80 text-base sm:text-lg leading-relaxed">
+            <p className="text-sindicato-warm-white/80 text-base sm:text-lg leading-relaxed">
               This platform has no investors. No advertisers. No company money. It runs because people who care about fair work choose to support it. Workers who got their voice back. Attorneys who believe in fair representation. People who think this matters.
             </p>
-            <p className="text-sindicato-cream/80 text-base sm:text-lg leading-relaxed mt-6">
+            <p className="text-sindicato-warm-white/80 text-base sm:text-lg leading-relaxed mt-6">
               If that&rsquo;s you, donate what you can. If it isn&rsquo;t, use the platform freely. It costs nothing and always will.
             </p>
           </motion.div>
@@ -54,14 +54,14 @@ export default function DonatePage() {
             transition={{ delay: 0.2, duration: 0.6 }}
             className="border border-white/10 p-8 sm:p-10"
           >
-            <p className="text-sindicato-cream/40 text-xs uppercase tracking-widest font-[family-name:var(--font-barlow)] font-bold mb-4">
+            <p className="text-sindicato-warm-white/40 text-xs uppercase tracking-widest font-[family-name:var(--font-barlow)] font-bold mb-4">
               Donation link coming soon
             </p>
-            <p className="text-sindicato-cream/50 text-sm leading-relaxed">
+            <p className="text-sindicato-warm-white/50 text-sm leading-relaxed">
               We&rsquo;re setting up our donation infrastructure. Check back shortly, or reach out at{" "}
               <a
                 href="mailto:hello@sindicato.report"
-                className="text-sindicato-cream/70 hover:text-sindicato-cream transition-colors underline underline-offset-2"
+                className="text-sindicato-warm-white/70 hover:text-sindicato-warm-white transition-colors underline underline-offset-2"
               >
                 hello@sindicato.report
               </a>
@@ -76,7 +76,7 @@ export default function DonatePage() {
             transition={{ delay: 0.4, duration: 0.6 }}
             className="mt-12 pt-8 border-t border-white/10"
           >
-            <p className="text-sindicato-cream/30 text-xs leading-relaxed">
+            <p className="text-sindicato-warm-white/30 text-xs leading-relaxed">
               Sindicato operates as a non-profit. Every euro beyond operational costs goes to the Worker Support Fund — covering small claims filing fees, legal consultations, and psychological support for workers who need it. Full financial transparency is published publicly.
             </p>
           </motion.div>

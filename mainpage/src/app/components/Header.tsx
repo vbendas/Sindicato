@@ -19,7 +19,7 @@ interface HeaderProps {
   navHoverColor?: string;
 }
 
-export default function Header({   scrolledBg = "bg-sindicato-bordeaux/70 backdrop-blur-md border-white/10", clerkBg = "bg-sindicato-charcoal text-sindicato-cream", navTextColor = "text-sindicato-cream/70", navHoverColor = "hover:text-sindicato-cream" }: HeaderProps) {
+export default function Header({   scrolledBg = "bg-sindicato-bordeaux/70 backdrop-blur-md border-white/10", clerkBg = "bg-sindicato-charcoal text-sindicato-warm-white", navTextColor = "text-sindicato-warm-white/70", navHoverColor = "hover:text-sindicato-warm-white" }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
   const [session, setSession] = useState<{ user?: { id?: string; email?: string } } | null>(null);
   const [sessionLoading, setSessionLoading] = useState(true);
@@ -99,8 +99,8 @@ export default function Header({   scrolledBg = "bg-sindicato-bordeaux/70 backdr
     setAuthError("");
   }
 
-  const inputClass = "w-full bg-white/5 border border-white/10 text-sindicato-cream p-2 text-sm focus:outline-none focus:border-white/30";
-  const btnClass = "w-full bg-white/10 text-sindicato-cream py-2 text-xs font-bold uppercase tracking-wider hover:bg-white/20 transition-colors disabled:opacity-50";
+  const inputClass = "w-full bg-white/5 border border-white/10 text-sindicato-warm-white p-2 text-sm focus:outline-none focus:border-white/30";
+  const btnClass = "w-full bg-white/10 text-sindicato-warm-white py-2 text-xs font-bold uppercase tracking-wider hover:bg-white/20 transition-colors disabled:opacity-50";
 
   return (
     <header
@@ -166,13 +166,13 @@ export default function Header({   scrolledBg = "bg-sindicato-bordeaux/70 backdr
                 <div className="absolute right-0 top-full pt-2 hidden group-hover:block min-w-[180px]">
                   <div className="bg-sindicato-charcoal border border-white/10 shadow-xl">
                     <div className="px-4 py-2 border-b border-white/10">
-                      <p className="text-sindicato-cream/40 text-[10px] font-[family-name:var(--font-jetbrains)] truncate">
+                      <p className="text-sindicato-warm-white/40 text-[10px] font-[family-name:var(--font-jetbrains)] truncate">
                         {session.user.email}
                       </p>
                     </div>
                     <Link
                       href="/account"
-                      className="block px-4 py-2 text-sindicato-cream/80 hover:text-sindicato-cream hover:bg-white/5 text-xs uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold transition-colors"
+                      className="block px-4 py-2 text-sindicato-warm-white/80 hover:text-sindicato-warm-white hover:bg-white/5 text-xs uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold transition-colors"
                     >
                       My Cases
                     </Link>
@@ -190,12 +190,12 @@ export default function Header({   scrolledBg = "bg-sindicato-bordeaux/70 backdr
                 <DialogTrigger className={`${clerkBg} px-4 lg:px-5 py-1.5 lg:py-2 text-xs lg:text-sm font-bold uppercase tracking-wider hover:opacity-80 transition-all font-[family-name:var(--font-barlow)] shadow-sm`}>
                   Sign In
                 </DialogTrigger>
-                <DialogContent className="bg-sindicato-slate border border-white/20 text-sindicato-cream max-w-sm">
+                <DialogContent className="bg-sindicato-slate border border-white/20 text-sindicato-warm-white max-w-sm">
                   <DialogHeader>
-                    <DialogTitle className="text-sindicato-cream font-[family-name:var(--font-barlow)] uppercase tracking-wider">
+                    <DialogTitle className="text-sindicato-warm-white font-[family-name:var(--font-barlow)] uppercase tracking-wider">
                       {subStep === "email" ? "Sign In" : "Check your email"}
                     </DialogTitle>
-                    <DialogDescription className="text-sindicato-cream/50 text-xs">
+                    <DialogDescription className="text-sindicato-warm-white/50 text-xs">
                       {subStep === "email"
                         ? "Enter your email to receive a one-time code."
                         : `We sent a 6-digit code to ${email}.`
@@ -239,7 +239,7 @@ export default function Header({   scrolledBg = "bg-sindicato-bordeaux/70 backdr
                         type="button"
                         onClick={handleSendCode}
                         disabled={authLoading}
-                        className="w-full text-center text-sindicato-cream/40 hover:text-sindicato-cream text-xs uppercase tracking-wider transition-colors"
+                        className="w-full text-center text-sindicato-warm-white/40 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors"
                       >
                         Resend code
                       </button>
@@ -253,7 +253,7 @@ export default function Header({   scrolledBg = "bg-sindicato-bordeaux/70 backdr
           <div className="md:hidden flex items-center gap-3">
             <Link
               href="/file"
-              className="bg-sindicato-charcoal text-sindicato-cream px-3 py-1.5 text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)]"
+              className="bg-sindicato-charcoal text-sindicato-warm-white px-3 py-1.5 text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)]"
             >
               Report
             </Link>

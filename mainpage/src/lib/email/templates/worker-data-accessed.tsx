@@ -43,9 +43,10 @@ export default function WorkerDataAccessed({
           </Text>
           <Text style={{ fontSize: 16, color: "#333" }}>
             This access is part of the resolution process. Your identity and
-            personal information remain protected under the non-retaliation
-            agreement signed by the company. Any form of retaliation is strictly
-            prohibited and will be treated as a serious violation.
+            personal information remain private unless you choose to share
+            them. Any form of retaliation violates our terms of service and
+            your public case on Sindicato serves as timestamped evidence that
+            can be used in legal proceedings.
           </Text>
           <Text style={{ fontSize: 16, color: "#333" }}>
             You can view your case status at any time:

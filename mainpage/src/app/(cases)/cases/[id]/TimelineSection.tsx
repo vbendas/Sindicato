@@ -35,6 +35,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ChevronRightIcon, PlusIcon, PencilIcon, Trash2Icon, Loader2Icon, Share2Icon, XIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
 import ShareButtons from "@/components/ShareButtons";
 
 interface TimelineEvent {
@@ -305,6 +306,7 @@ function EventForm({ initial, onSubmit, onCancel, loading }: EventFormProps) {
 }
 
 export default function TimelineSection({ caseId, workerId }: { caseId: string; workerId: string | null }) {
+  const { data: session } = useSession();
   const [events, setEvents] = useState<TimelineEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -512,50 +514,51 @@ export default function TimelineSection({ caseId, workerId }: { caseId: string; 
                 <TimelineContent className="mt-2">
                   <Frame stacked dense spacing="sm" className="bg-white/[0.03] border border-white/10">
                     <Collapsible className="group/collapsible">
-                      <CollapsibleTrigger className="flex w-full">
-                        <FrameHeader className="flex grow flex-row items-center justify-between gap-2">
+                      <FrameHeader className="flex grow flex-row items-center justify-between gap-2">
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSharingEvent(sharingEvent === event.id ? null : event.id);
+                            }}
+                            className="inline-flex items-center gap-1 text-sindicato-warm-white/40 hover:text-sindicato-warm-white transition-colors p-0.5"
+                          >
+                            <Share2Icon className="size-3" />
+                            <span className="text-[10px] uppercase tracking-wider">share</span>
+                          </button>
+                          {isOwner && !event.isAutomatic && (
+                            <>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditingEvent(event);
+                                }}
+                                className="text-sindicato-warm-white/40 hover:text-sindicato-warm-white transition-colors p-0.5"
+                              >
+                                <PencilIcon className="size-3" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setConfirmDelete(event.id);
+                                }}
+                                className="text-red-400/60 hover:text-red-400 transition-colors p-0.5"
+                              >
+                                <Trash2Icon className="size-3" />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                        <CollapsibleTrigger className="flex items-center gap-2">
                           <span className="text-sindicato-warm-white/50 text-xs">
                             {formatDateTime(event.eventDate)}
                           </span>
-                          <div className="flex items-center gap-1">
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSharingEvent(sharingEvent === event.id ? null : event.id);
-                              }}
-                              className="text-sindicato-warm-white/40 hover:text-sindicato-warm-white transition-colors p-0.5"
-                            >
-                              <Share2Icon className="size-3" />
-                            </button>
-                            {isOwner && !event.isAutomatic && (
-                              <>
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setEditingEvent(event);
-                                  }}
-                                  className="text-sindicato-warm-white/40 hover:text-sindicato-warm-white transition-colors p-0.5"
-                                >
-                                  <PencilIcon className="size-3" />
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setConfirmDelete(event.id);
-                                  }}
-                                  className="text-red-400/60 hover:text-red-400 transition-colors p-0.5"
-                                >
-                                  <Trash2Icon className="size-3" />
-                                </button>
-                              </>
-                            )}
-                            <ChevronRightIcon className="text-sindicato-warm-white/40 size-4 transition-transform duration-200 group-data-open/collapsible:rotate-90" />
-                          </div>
-                        </FrameHeader>
-                      </CollapsibleTrigger>
+                          <ChevronRightIcon className="text-sindicato-warm-white/40 size-4 transition-transform duration-200 group-data-open/collapsible:rotate-90" />
+                        </CollapsibleTrigger>
+                      </FrameHeader>
                       <CollapsibleContent>
                         <FramePanel className="bg-white/5 border-white/10">
                           <p className="text-sindicato-warm-white/70 text-sm leading-relaxed whitespace-pre-wrap">
@@ -594,6 +597,10 @@ export default function TimelineSection({ caseId, workerId }: { caseId: string; 
                         description={event.description.slice(0, 200)}
                         variant="event"
                         stats={{ date: formatDate(event.eventDate) }}
+                        entityType="timeline_event"
+                        entityId={event.id}
+                        eventId={event.id}
+                        isAuth={!!session}
                       />
                     </div>
                   )}

@@ -4,6 +4,11 @@ import { useState } from "react";
 import { Command, CommandInput, CommandList, CommandItem, CommandEmpty } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ChevronDownIcon } from "lucide-react";
+import {
+  fileDropdownCommandClass,
+  fileDropdownContentClass,
+  fileDropdownItemClass,
+} from "../fileFormStyles";
 
 const KNOWN_COMPANIES = [
   { slug: "uber", name: "Uber", vertical: "gig" },
@@ -66,7 +71,7 @@ export default function CompanyCombobox({ value, displayName, onChange }: Compan
   }
 
   const triggerClass =
-    "w-full bg-white border border-sindicato-charcoal/20 rounded-none text-sindicato-charcoal p-3 focus:border-sindicato-bordeaux focus:outline-none focus:ring-0 transition-colors text-sm flex items-center justify-between cursor-pointer hover:border-sindicato-charcoal/40";
+    "w-full bg-white/10 border border-white/20 rounded-none text-sindicato-warm-white p-3 focus:border-sindicato-warm-white/50 focus:outline-none focus:ring-0 transition-colors text-sm flex items-center justify-between cursor-pointer hover:border-white/40";
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -74,49 +79,48 @@ export default function CompanyCombobox({ value, displayName, onChange }: Compan
         className={triggerClass}
         aria-label="Select company"
       >
-        <span className={displayName ? "text-sindicato-charcoal" : "text-sindicato-charcoal/40"}>
+        <span className={displayName ? "text-sindicato-warm-white" : "text-sindicato-warm-white/40"}>
           {displayName || "Select company..."}
         </span>
-        <ChevronDownIcon className="w-4 h-4 text-sindicato-charcoal/40 flex-shrink-0" />
+        <ChevronDownIcon className="w-4 h-4 text-sindicato-warm-white/40 flex-shrink-0" />
       </PopoverTrigger>
       <PopoverContent
-        className="p-0 w-[--anchor-width] min-w-64"
+        className={`p-0 w-[--anchor-width] min-w-64 ${fileDropdownContentClass}`}
         align="start"
         side="bottom"
         sideOffset={2}
       >
-        <Command shouldFilter={false}>
+        <Command shouldFilter={false} className={fileDropdownCommandClass}>
           <CommandInput
             placeholder="Search companies..."
             value={search}
             onValueChange={setSearch}
+            className="text-sindicato-warm-white placeholder:text-sindicato-warm-white/30"
           />
           <CommandList>
-            <CommandEmpty>No companies found.</CommandEmpty>
+            <CommandEmpty className="text-sindicato-warm-white/60 py-4 text-center text-sm">No companies found.</CommandEmpty>
             {filtered.map((company) => (
-              <CommandItem
-                key={company.slug}
-                value={company.slug}
-                onSelect={() => handleSelect(company.slug, company.name)}
-                data-checked={value === company.slug}
-              >
-                {company.name}
-                <span className="ml-auto text-xs text-sindicato-charcoal/40 capitalize">
-                  {company.vertical}
-                </span>
-              </CommandItem>
+<CommandItem
+                 key={company.slug}
+                 value={company.slug}
+                 onSelect={() => handleSelect(company.slug, company.name)}
+                 data-checked={value === company.slug}
+                 className={`${fileDropdownItemClass} data-[checked=true]:bg-sindicato-bordeaux/30`}
+               >
+                 {company.name}
+               </CommandItem>
             ))}
-            {showCustom && (
-              <CommandItem
-                value={`custom:${search}`}
-                onSelect={() =>
-                  handleSelect(normalizeToSlug(search), search.trim())
-                }
-                className="text-sindicato-bordeaux"
-              >
-                Use &ldquo;{search.trim()}&rdquo;
-              </CommandItem>
-            )}
+{showCustom && (
+               <CommandItem
+                 value={`custom:${search}`}
+                 onSelect={() =>
+                   handleSelect(normalizeToSlug(search), search.trim())
+                 }
+                 className={`text-sindicato-bordeaux ${fileDropdownItemClass}`}
+               >
+                 Use "{search.trim()}"
+               </CommandItem>
+             )}
           </CommandList>
         </Command>
       </PopoverContent>

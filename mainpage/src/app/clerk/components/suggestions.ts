@@ -30,6 +30,33 @@ const STATIC_SUGGESTIONS: SuggestionItem[] = [
   { id: "top-countries", label: "Countries with most cases", template: "Which countries have the most reported cases?" },
 ];
 
+const LAWYER_SUGGESTIONS: SuggestionItem[] = [
+  { id: "lawyer-solicitor-optin", label: "Cases with solicitor opt-in by company", template: "List all cases with solicitor opt-in for {company}", templatePromptId: "lawyer-solicitor-optin" },
+  { id: "lawyer-solicitor-grouped", label: "Solicitor opt-in cases by type", template: "Cases with solicitor opt-in grouped by case type" },
+  { id: "lawyer-unresolved-contacts", label: "Unresolved cases with aliased contacts", template: "Show case numbers and aliased contacts for {company} unresolved cases", templatePromptId: "lawyer-unresolved-contacts" },
+  { id: "lawyer-collective-action", label: "Collective action candidates", template: "Collective action candidates: cases against {company} with same case type", templatePromptId: "lawyer-collective-action" },
+  { id: "lawyer-high-value", label: "Highest value unresolved cases", template: "What are the highest value unresolved cases with solicitor opt-in?" },
+  { id: "lawyer-recent", label: "Recent cases filed", template: "Show recent cases filed this month with solicitor opt-in" },
+];
+
+const COMPANY_SUGGESTIONS: SuggestionItem[] = [
+  { id: "company-my-cases", label: "Cases filed against my company", template: "List all cases filed against {company}", templatePromptId: "company-my-cases" },
+  { id: "company-unresolved-contacts", label: "Unresolved cases with contacts", template: "Show unresolved cases with contact aliases for {company}", templatePromptId: "company-unresolved-contacts" },
+  { id: "company-grouped-type", label: "Cases grouped by type", template: "Cases grouped by type for {company}", templatePromptId: "company-grouped-type" },
+  { id: "company-total-claimed", label: "Total amount claimed", template: "Total amount claimed against {company}", templatePromptId: "company-total-claimed" },
+  { id: "company-resolution-status", label: "Resolution status", template: "How many cases against {company} have been resolved?", templatePromptId: "company-resolution-status" },
+  { id: "company-timeline", label: "Recent case activity", template: "Show recent cases filed against {company} this month", templatePromptId: "company-timeline" },
+];
+
+const MEDIA_SUGGESTIONS: SuggestionItem[] = [
+  { id: "media-all-contacts", label: "Cases with aliased contacts", template: "All cases with contact aliases for {company}", templatePromptId: "media-all-contacts" },
+  { id: "media-by-country-type", label: "Cases by country and type", template: "Cases by country and case type" },
+  { id: "media-high-value", label: "Highest value unresolved cases", template: "What are the highest value unresolved cases?" },
+  { id: "media-recent-filed", label: "Recent cases this month", template: "Recent cases filed this month" },
+  { id: "media-company-trends", label: "Company case trends", template: "Which companies have the most cases this month?" },
+  { id: "media-demographics", label: "Demographic breakdown", template: "Demographic breakdown of workers filing cases" },
+];
+
 const TEMPLATE_MAP: Record<string, { template: string; variables: { name: string; label: string; dataSource: keyof Variables }[] }> = {
   "cases-by-company": {
     template: "How many cases have been filed against {company}?",
@@ -76,6 +103,46 @@ const TEMPLATE_MAP: Record<string, { template: string; variables: { name: string
       { name: "country", label: "Country", dataSource: "countries" },
     ],
   },
+  "lawyer-solicitor-optin": {
+    template: "List all cases with solicitor opt-in for {company}",
+    variables: [{ name: "company", label: "Company", dataSource: "companies" }],
+  },
+  "lawyer-unresolved-contacts": {
+    template: "Show case numbers and aliased contacts for {company} unresolved cases",
+    variables: [{ name: "company", label: "Company", dataSource: "companies" }],
+  },
+  "lawyer-collective-action": {
+    template: "Collective action candidates: cases against {company} with same case type",
+    variables: [{ name: "company", label: "Company", dataSource: "companies" }],
+  },
+  "company-my-cases": {
+    template: "List all cases filed against {company}",
+    variables: [{ name: "company", label: "Company", dataSource: "companies" }],
+  },
+  "company-unresolved-contacts": {
+    template: "Show unresolved cases with contact aliases for {company}",
+    variables: [{ name: "company", label: "Company", dataSource: "companies" }],
+  },
+  "company-grouped-type": {
+    template: "Cases grouped by type for {company}",
+    variables: [{ name: "company", label: "Company", dataSource: "companies" }],
+  },
+  "company-total-claimed": {
+    template: "Total amount claimed against {company}",
+    variables: [{ name: "company", label: "Company", dataSource: "companies" }],
+  },
+  "company-resolution-status": {
+    template: "How many cases against {company} have been resolved?",
+    variables: [{ name: "company", label: "Company", dataSource: "companies" }],
+  },
+  "company-timeline": {
+    template: "Show recent cases filed against {company} this month",
+    variables: [{ name: "company", label: "Company", dataSource: "companies" }],
+  },
+  "media-all-contacts": {
+    template: "All cases with contact aliases for {company}",
+    variables: [{ name: "company", label: "Company", dataSource: "companies" }],
+  },
 };
 
 const TEMPLATE_SUGGESTIONS: SuggestionItem[] = [
@@ -93,11 +160,21 @@ export function getTemplateDefinition(id: string) {
   return TEMPLATE_MAP[id] || null;
 }
 
-export function getSuggestionGroups(): SuggestionGroup[] {
-  return [
+export function getSuggestionGroups(role?: string | null): SuggestionGroup[] {
+  const groups: SuggestionGroup[] = [
     { name: "Popular questions", suggestions: STATIC_SUGGESTIONS },
     { name: "Query templates", suggestions: TEMPLATE_SUGGESTIONS },
   ];
+
+  if (role === "lawyer") {
+    groups.unshift({ name: "Legal resources", suggestions: LAWYER_SUGGESTIONS });
+  } else if (role === "company") {
+    groups.unshift({ name: "Company resources", suggestions: COMPANY_SUGGESTIONS });
+  } else if (role === "media") {
+    groups.unshift({ name: "Media & research resources", suggestions: MEDIA_SUGGESTIONS });
+  }
+
+  return groups;
 }
 
 export function filterSuggestions(groups: SuggestionGroup[], query: string): SuggestionGroup[] {

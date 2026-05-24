@@ -1,9 +1,11 @@
 import { db } from "@/lib/db/client";
-import { cases, companies } from "@/lib/db/schema";
-import { eq, ne, and, gt, gte, lt, lte, inArray, like, count, sum, asc, desc } from "drizzle-orm";
+import { cases, companies, entityMetricsSnapshots, dataAccessLogs, auditLogs } from "@/lib/db/schema";
+import { eq, ne, and, or, gt, gte, lt, lte, inArray, like, count, sum, asc, desc } from "drizzle-orm";
 import { error, getClientIp } from "@/lib/utils/api";
 import { rateLimit } from "@/lib/auth/rate-limit";
 import { callOpenRouter, callOpenRouterStream, getClerkModel } from "@/lib/ai/openrouter";
+import { validateDomainScope } from "@/lib/ai/guard";
+import { auth } from "@/lib/auth/auth";
 import {
   CLERK_QUERY_PLANNER_SYSTEM,
   CLERK_RESPONSE_SYSTEM,
@@ -16,7 +18,8 @@ type Filter = {
 };
 
 type QueryPlan = {
-  aggregation: "count" | "sum" | "list" | "group_by";
+  source?: "cases" | "metrics";
+  aggregation: "count" | "sum" | "list" | "group_by" | "metrics";
   aggregationField?: string | null;
   filters: Filter[];
   groupBy?: string | null;
@@ -30,30 +33,123 @@ type QueryResult = {
   summary: Record<string, unknown>;
 };
 
-const FIELD_MAP: Record<string, string> = {
-  company_name: "companies.name",
-  company: "companies.name",
-  vertical: "cases.vertical",
-  country: "cases.country",
-  ageRange: "cases.ageRange",
-  age_range: "cases.ageRange",
-  sex: "cases.sex",
-  project: "cases.project",
-  dateRange: "cases.dateRange",
-  date_range: "cases.dateRange",
-  caseType: "cases.caseType",
-  case_type: "cases.caseType",
-  amountOwed: "cases.amountOwed",
-  amount_owed: "cases.amountOwed",
-  currency: "cases.currency",
-  resolutionStatus: "cases.resolutionStatus",
-  resolution_status: "cases.resolutionStatus",
-};
+type ContactKeywords = "contact" | "alias" | "email" | "contact alias" | "aliased";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CONTACT_KEYWORDS: ContactKeywords[] = ["contact", "alias", "email", "contact alias", "aliased"];
+
+function mentionsContact(message: string): boolean {
+  return CONTACT_KEYWORDS.some(k => message.toLowerCase().includes(k));
+}
+
+function getFieldMap(isPrivileged: boolean, userRole?: string): Record<string, string> {
+  const map: Record<string, string> = {
+    company_name: "companies.name",
+    company: "companies.name",
+    company_id: "companies.id",
+    vertical: "cases.vertical",
+    country: "cases.country",
+    ageRange: "cases.ageRange",
+    age_range: "cases.ageRange",
+    sex: "cases.sex",
+    project: "cases.project",
+    dateRange: "cases.dateRange",
+    date_range: "cases.dateRange",
+    caseType: "cases.caseType",
+    case_type: "cases.caseType",
+    amountOwed: "cases.amountOwed",
+    amount_owed: "cases.amountOwed",
+    currency: "cases.currency",
+    resolutionStatus: "cases.resolutionStatus",
+    resolution_status: "cases.resolutionStatus",
+    created_at: "cases.createdAt",
+    createdAt: "cases.createdAt",
+    viewsTotal: "metrics.viewsTotal",
+    views_total: "metrics.viewsTotal",
+    views_24h: "metrics.views24h",
+    views7d: "metrics.views7d",
+    visitorsTotal: "metrics.visitorsTotal",
+    visitors_total: "metrics.visitorsTotal",
+    sharesTotal: "metrics.sharesTotal",
+    shares_total: "metrics.sharesTotal",
+    entityType: "metrics.entityType",
+    entity_type: "metrics.entityType",
+  };
+
+  if (isPrivileged) {
+    map.contactAlias = "cases.contactAlias";
+    map.contact_alias = "cases.contactAlias";
+  }
+
+  return map;
+}
+
+function validateContactAccess(
+  plan: QueryPlan,
+  userRole: string | undefined,
+  extraFilters: Filter[] = [],
+): { allowed: boolean; reason?: string } {
+  if (!userRole) {
+    return { allowed: false, reason: "Authentication required to access contact information." };
+  }
+
+  const allFilters = [...plan.filters, ...extraFilters];
+
+  const companyFilters = allFilters.filter(f =>
+    f.field === "company" || f.field === "company_name" || f.field === "company_id"
+  );
+
+  if (companyFilters.length === 0) {
+    return { allowed: false, reason: "Please specify which company's contacts you want to access. For example: 'Show unresolved case contacts for Acme Corp'." };
+  }
+
+  if (companyFilters.length > 1) {
+    return { allowed: false, reason: "You can only access contacts for one company at a time. Please specify a single company." };
+  }
+
+  if (userRole === "company" || userRole === "lawyer") {
+    const hasResolvedFilter = allFilters.some(f =>
+      (f.field === "resolution_status" || f.field === "resolutionStatus") &&
+      (f.value === "resolved" || f.value === "Resolved" || f.value === "active")
+    );
+
+    if (hasResolvedFilter) {
+      const roleLabel = userRole === "company" ? "Company representatives" : "Legal professionals";
+      return { allowed: false, reason: `${roleLabel} can only access unresolved case contacts.` };
+    }
+  }
+
+  return { allowed: true };
+}
+
+function buildDefaultFilters(plan: QueryPlan, userRole?: string, userCompanyId?: string | null): Filter[] {
+  const extraFilters: Filter[] = [];
+
+  if (userRole === "company" && userCompanyId) {
+    extraFilters.push({
+      field: "company_id",
+      operator: "eq",
+      value: userCompanyId,
+    });
+  }
+
+  if (userRole === "company" || userRole === "lawyer") {
+    const hasResolutionFilter = plan.filters.some(f =>
+      f.field === "resolution_status" || f.field === "resolutionStatus"
+    );
+    if (!hasResolutionFilter) {
+      extraFilters.push({
+        field: "resolution_status",
+        operator: "neq",
+        value: "resolved",
+      });
+    }
+  }
+
+  return extraFilters;
+}
+
 type DrizzleColumn = any;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const DRIZZLE_OPERATORS: Record<string, (field: DrizzleColumn, value: unknown) => any> = {
   eq: (field, value) => eq(field, value),
   neq: (field, value) => ne(field, value),
@@ -61,7 +157,6 @@ const DRIZZLE_OPERATORS: Record<string, (field: DrizzleColumn, value: unknown) =
   gte: (field, value) => gte(field, value),
   lt: (field, value) => lt(field, value),
   lte: (field, value) => lte(field, value),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   in: (field, value) => inArray(field, value as any[]),
   contains: (field, value) => like(field, `%${value}%`),
 };
@@ -76,51 +171,100 @@ async function parseQuery(userMessage: string): Promise<QueryPlan> {
     maxTokens: 1024,
   });
 
-  const cleaned = raw
-    .replace(/```(?:json)?\n?/gi, "")
-    .trim();
+  const cleaned = raw.replace(/```(?:json)?\n?/gi, "").trim();
   const plan = JSON.parse(cleaned) as QueryPlan;
   return plan;
 }
 
-function resolveField(field: string): DrizzleColumn | null {
-  const mapped = FIELD_MAP[field];
+function resolveField(field: string, fieldMap: Record<string, string>): DrizzleColumn | null {
+  const mapped = fieldMap[field];
   if (!mapped) return null;
 
   const [table, column] = mapped.split(".");
-  if (table === "cases") {
-    return cases[column as keyof typeof cases] as DrizzleColumn;
-  }
-  if (table === "companies") {
-    return companies[column as keyof typeof companies] as DrizzleColumn;
-  }
+  if (table === "cases") return cases[column as keyof typeof cases] as DrizzleColumn;
+  if (table === "companies") return companies[column as keyof typeof companies] as DrizzleColumn;
+  if (table === "metrics") return entityMetricsSnapshots[column as keyof typeof entityMetricsSnapshots] as DrizzleColumn;
   return null;
 }
 
-function buildFilters(plan: QueryPlan) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const baseConditions: any[] = [eq(cases.status, "active")];
+function buildFilters(plan: QueryPlan, fieldMap: Record<string, string>, extraFilters?: Filter[], forMetrics = false) {
+  const allFilters = [...plan.filters, ...(extraFilters || [])];
+  const baseConditions: any[] = forMetrics ? [] : [eq(cases.status, "active")];
 
-  for (const filter of plan.filters) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const drizzleField: any = resolveField(filter.field);
+  for (const filter of allFilters) {
+    const drizzleField: any = resolveField(filter.field, fieldMap);
     if (!drizzleField) continue;
 
     const operatorFn = DRIZZLE_OPERATORS[filter.operator];
     if (!operatorFn) continue;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const condition: any = operatorFn(drizzleField, filter.value);
-    if (condition) {
-      baseConditions.push(condition);
-    }
+    if (condition) baseConditions.push(condition);
   }
-
-  return and(...baseConditions);
+  return baseConditions.length > 0 ? and(...baseConditions) : undefined;
 }
 
-async function executePlan(plan: QueryPlan): Promise<QueryResult> {
-  const whereClause = buildFilters(plan);
+async function executeMetricsPlan(plan: QueryPlan, fieldMap: Record<string, string>): Promise<QueryResult> {
+  const whereClause = buildFilters(plan, fieldMap, undefined, true);
+
+  if (plan.aggregation === "metrics" || plan.aggregation === "list") {
+    const rows = await db
+      .select({
+        entityType: entityMetricsSnapshots.entityType,
+        entityId: entityMetricsSnapshots.entityId,
+        viewsTotal: entityMetricsSnapshots.viewsTotal,
+        views24h: entityMetricsSnapshots.views24h,
+        views7d: entityMetricsSnapshots.views7d,
+        visitorsTotal: entityMetricsSnapshots.visitorsTotal,
+        sharesTotal: entityMetricsSnapshots.sharesTotal,
+      })
+      .from(entityMetricsSnapshots)
+      .where(whereClause)
+      .limit(plan.limit || 20);
+
+    return { rows: rows as Record<string, unknown>[], summary: { type: "metrics" } };
+  }
+
+  if (plan.aggregation === "count") {
+    const [result] = await db
+      .select({ total: count() })
+      .from(entityMetricsSnapshots)
+      .where(whereClause);
+
+    return { rows: [], summary: { type: "count", value: result?.total ?? 0 } };
+  }
+
+  if (plan.aggregation === "group_by" && plan.groupBy) {
+    const groupField = resolveField(plan.groupBy, fieldMap);
+    if (!groupField) return { rows: [], summary: { error: "Invalid groupBy field" } };
+
+    const selectFields: Record<string, any> = {
+      [plan.groupBy]: groupField,
+      totalViews: sum(entityMetricsSnapshots.viewsTotal),
+      totalVisitors: sum(entityMetricsSnapshots.visitorsTotal),
+      totalShares: sum(entityMetricsSnapshots.sharesTotal),
+    };
+
+    let query: any = db
+      .select(selectFields)
+      .from(entityMetricsSnapshots)
+      .where(whereClause)
+      .groupBy(groupField);
+
+    if (plan.orderBy) {
+      const orderField = plan.orderBy.field === "totalViews" ? sum(entityMetricsSnapshots.viewsTotal) : groupField;
+      query = query.orderBy(plan.orderBy.direction === "desc" ? desc(orderField) : asc(orderField));
+    }
+
+    const rows = await query;
+    return { rows: rows as Record<string, unknown>[], summary: { type: "group_by", groupBy: plan.groupBy } };
+  }
+
+  return { rows: [], summary: { type: "count", value: 0 } };
+}
+
+async function executeCasesPlan(plan: QueryPlan, fieldMap: Record<string, string>, extraFilters?: Filter[]): Promise<QueryResult> {
+  const whereClause = buildFilters(plan, fieldMap, extraFilters, false);
 
   if (plan.aggregation === "count") {
     const [result] = await db
@@ -129,10 +273,7 @@ async function executePlan(plan: QueryPlan): Promise<QueryResult> {
       .innerJoin(companies, eq(cases.companyId, companies.id))
       .where(whereClause);
 
-    return {
-      rows: [],
-      summary: { type: "count", value: result?.total ?? 0 },
-    };
+    return { rows: [], summary: { type: "count", value: result?.total ?? 0 } };
   }
 
   if (plan.aggregation === "sum" && plan.aggregationField === "amountOwed") {
@@ -142,25 +283,18 @@ async function executePlan(plan: QueryPlan): Promise<QueryResult> {
       .innerJoin(companies, eq(cases.companyId, companies.id))
       .where(whereClause);
 
-    return {
-      rows: [],
-      summary: { type: "sum", field: "amountOwed", value: Number(result?.total ?? 0) },
-    };
+    return { rows: [], summary: { type: "sum", field: "amountOwed", value: Number(result?.total ?? 0) } };
   }
 
   if (plan.aggregation === "group_by" && plan.groupBy) {
-    const groupField = resolveField(plan.groupBy);
-    if (!groupField) {
-      return { rows: [], summary: { error: "Invalid groupBy field" } };
-    }
+    const groupField = resolveField(plan.groupBy, fieldMap);
+    if (!groupField) return { rows: [], summary: { error: "Invalid groupBy field" } };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const selectFields: Record<string, any> = {
       [plan.groupBy]: groupField,
       count: count(),
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let query: any = db
       .select(selectFields)
       .from(cases)
@@ -169,25 +303,18 @@ async function executePlan(plan: QueryPlan): Promise<QueryResult> {
       .groupBy(groupField);
 
     if (plan.orderBy) {
-      const orderField = plan.orderBy.field === "count"
-        ? count()
-        : groupField;
+      const orderField = plan.orderBy.field === "count" ? count() : groupField;
       query = query.orderBy(plan.orderBy.direction === "desc" ? desc(orderField) : asc(orderField));
     }
 
-    if (plan.limit) {
-      query = query.limit(plan.limit);
-    }
+    if (plan.limit) query = query.limit(plan.limit);
 
     const rows = await query;
-    return {
-      rows: rows as Record<string, unknown>[],
-      summary: { type: "group_by", groupBy: plan.groupBy },
-    };
+    return { rows: rows as Record<string, unknown>[], summary: { type: "group_by", groupBy: plan.groupBy } };
   }
 
   if (plan.aggregation === "list") {
-    const selectFields = {
+    const selectFields: Record<string, any> = {
       companyName: companies.name,
       companySlug: companies.slug,
       vertical: cases.vertical,
@@ -197,9 +324,13 @@ async function executePlan(plan: QueryPlan): Promise<QueryResult> {
       currency: cases.currency,
       dateRange: cases.dateRange,
       resolutionStatus: cases.resolutionStatus,
+      createdAt: cases.createdAt,
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (fieldMap.contactAlias) {
+      selectFields.contactAlias = cases.contactAlias;
+    }
+
     let query: any = db
       .select(selectFields)
       .from(cases)
@@ -207,91 +338,207 @@ async function executePlan(plan: QueryPlan): Promise<QueryResult> {
       .where(whereClause);
 
     if (plan.orderBy) {
-      const orderField = plan.orderBy.field === "company_name"
-        ? companies.name
-        : resolveField(plan.orderBy.field) ?? cases.createdAt;
+      const orderField = plan.orderBy.field === "company_name" ? companies.name : resolveField(plan.orderBy.field, fieldMap) ?? cases.createdAt;
       query = query.orderBy(plan.orderBy.direction === "desc" ? desc(orderField) : asc(orderField));
     }
 
-    if (plan.limit) {
-      query = query.limit(plan.limit);
-    }
+    if (plan.limit) query = query.limit(plan.limit);
 
     const rows = await query;
-    return {
-      rows: rows as Record<string, unknown>[],
-      summary: { type: "list" },
-    };
+    return { rows: rows as Record<string, unknown>[], summary: { type: "list" } };
   }
 
   return { rows: [], summary: { type: "count", value: 0 } };
+}
+
+async function executePlan(plan: QueryPlan, fieldMap: Record<string, string>, extraFilters?: Filter[]): Promise<QueryResult> {
+  if (plan.source === "metrics") return executeMetricsPlan(plan, fieldMap);
+  return executeCasesPlan(plan, fieldMap, extraFilters);
 }
 
 function formatResultsForLlm(plan: QueryPlan, result: QueryResult): string {
   const parts = [`Query: ${plan.summary}`];
 
   if (result.summary.type === "count") {
-    parts.push(`Result: ${String(result.summary.value)} case(s) found.`);
+    parts.push(`Result: ${String(result.summary.value)} record(s) found.`);
   } else if (result.summary.type === "sum") {
     parts.push(`Total unpaid: ${String(result.summary.value)}`);
-  } else if (result.summary.type === "group_by") {
-    parts.push(`Results grouped by ${String(result.summary.groupBy)}:`);
-    for (const row of result.rows) {
-      parts.push(`- ${String(row[plan.groupBy ?? ""])}: ${String(row.count)}`);
-    }
-  } else if (result.summary.type === "list") {
+  } else if (result.summary.type === "metrics" || result.summary.type === "list") {
     parts.push(`Results (${result.rows.length} rows):`);
     if (result.rows.length > 0) {
       parts.push(JSON.stringify(result.rows, null, 2));
+    }
+  } else if (result.summary.type === "group_by") {
+    parts.push(`Results grouped by ${String(result.summary.groupBy)}:`);
+    for (const row of result.rows) {
+      const key = String(row[plan.groupBy ?? ""]);
+      const values = Object.entries(row).filter(([k]) => k !== plan.groupBy).map(([k, v]) => `${k}: ${v}`).join(", ");
+      parts.push(`- ${key}: ${values}`);
     }
   }
 
   return parts.join("\n");
 }
 
+function streamRejection(message: string): Response {
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(encoder.encode(message));
+      controller.close();
+    },
+  });
+  return new Response(stream, {
+    headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-cache" },
+  });
+}
+
+type Message = {
+  role: "user" | "assistant";
+  content: string;
+};
+
 export async function POST(request: Request) {
   const ip = getClientIp(request);
   const rl = rateLimit(ip);
-  if (!rl.allowed) {
-    return error("Rate limit exceeded. Please wait before sending another query.", 429);
-  }
+  if (!rl.allowed) return error("Rate limit exceeded. Please wait before sending another query.", 429);
 
   try {
+    const session = await auth();
+    const userRole = session?.user?.role;
+    const userCompanyId = session?.user?.companyId;
+    const isApproved = session?.user?.approvalStatus === "approved";
+    const isPrivileged = !!(userRole && isApproved);
+
     const body = await request.json();
-    const { message } = body as { message: string };
+    const { message, history } = body as { message: string; history?: Message[] };
 
-    if (!message || typeof message !== "string" || message.trim().length === 0) {
-      return error("Message is required", 400);
-    }
+    if (!message || typeof message !== "string" || message.trim().length === 0) return error("Message is required", 400);
+    if (message.length > 2000) return error("Message too long (max 2000 characters)", 400);
 
-    if (message.length > 2000) {
-      return error("Message too long (max 2000 characters)", 400);
+    const fieldMap = getFieldMap(isPrivileged, userRole);
+
+    const requestsContact = mentionsContact(message);
+
+    if (requestsContact && !isPrivileged) {
+      await db.insert(auditLogs).values({
+        userId: session?.user?.id || "anonymous",
+        userRole: userRole || "anonymous",
+        companyId: userCompanyId || null,
+        query: message,
+        accessedContacts: true,
+        success: false,
+        reason: "Not authenticated or not approved",
+      });
+      return streamRejection("Contact information is only available to verified legal professionals, companies, and media/research partners. Please register through the appropriate channel to access this data.");
     }
 
     const plan = await parseQuery(message);
 
-    if (!plan.aggregation) {
-      return error("Could not understand the query. Please rephrase.", 400);
+    if (!plan.aggregation) return error("Could not understand the query. Please rephrase.", 400);
+
+    const extraFilters = buildDefaultFilters(plan, userRole, userCompanyId);
+
+    if (requestsContact) {
+      const [lastContactQuery] = await db
+        .select({ createdAt: auditLogs.createdAt })
+        .from(auditLogs)
+        .where(
+          and(
+            eq(auditLogs.userId, session!.user.id),
+            eq(auditLogs.success, true),
+            eq(auditLogs.accessedContacts, true)
+          )
+        )
+        .orderBy(desc(auditLogs.createdAt))
+        .limit(1);
+
+      if (lastContactQuery) {
+        const hoursSinceLastQuery = (Date.now() - new Date(lastContactQuery.createdAt).getTime()) / 3600000;
+        if (hoursSinceLastQuery < 24) {
+          const hoursLeft = Math.ceil(24 - hoursSinceLastQuery);
+          await db.insert(auditLogs).values({
+            userId: session!.user.id,
+            userRole: userRole!,
+            companyId: userCompanyId || null,
+            query: message,
+            accessedContacts: true,
+            success: false,
+            reason: "Rate limited",
+          });
+          return streamRejection(`Contact query rate limit reached. You can make one contact query per 24 hours. Please try again in approximately ${hoursLeft} hour(s).`);
+        }
+      }
+
+      const accessCheck = validateContactAccess(plan, userRole, extraFilters);
+      if (!accessCheck.allowed) {
+        await db.insert(auditLogs).values({
+          userId: session!.user.id,
+          userRole: userRole!,
+          companyId: userCompanyId || null,
+          query: message,
+          accessedContacts: true,
+          success: false,
+          reason: accessCheck.reason,
+        });
+        return streamRejection(accessCheck.reason!);
+      }
     }
 
-    const result = await executePlan(plan);
+    const validation = await validateDomainScope(message);
+    if (!validation.valid) {
+      return streamRejection(`I can only answer questions about Sindicato's worker exploitation data. ${validation.reason || "This query is outside the scope of the available data."}`);
+    }
 
+    const result = await executePlan(plan, fieldMap, extraFilters);
     const contextForLlm = formatResultsForLlm(plan, result);
+
+    if (requestsContact && result.rows.length > 0) {
+      const caseIds = result.rows
+        .map((r: any) => r.id || r.caseId)
+        .filter(Boolean);
+      if (caseIds.length > 0) {
+        try {
+          await db.insert(dataAccessLogs).values(
+            caseIds.map((caseId: string) => ({
+              caseId,
+              platformAccountId: session!.user.id,
+              role: userRole!,
+              workerNotified: false,
+            }))
+          );
+        } catch (logErr) {
+          console.error("Failed to log data access:", logErr);
+        }
+      }
+
+      await db.insert(auditLogs).values({
+        userId: session!.user.id,
+        userRole: userRole!,
+        companyId: userCompanyId || null,
+        query: message,
+        accessedContacts: true,
+        success: true,
+        reason: null,
+      });
+    }
+
+    const recentHistory = history?.slice(-5) || [];
+    const historyContext = recentHistory.length > 0
+      ? `Conversation history:\n${recentHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}\n\n`
+      : '';
 
     const model = getClerkModel();
     const stream = await callOpenRouterStream({
       model,
       systemPrompt: CLERK_RESPONSE_SYSTEM,
-      userPrompt: `User question: ${message}\n\nDatabase query results:\n${contextForLlm}\n\nFormat the answer in natural language.`,
+      userPrompt: `${historyContext}User question: ${message}\n\nDatabase query results:\n${contextForLlm}\n\nFormat the answer in natural language.`,
       temperature: 0.5,
       maxTokens: 2048,
     });
 
     return new Response(stream, {
-      headers: {
-        "Content-Type": "text/plain; charset=utf-8",
-        "Cache-Control": "no-cache",
-      },
+      headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-cache" },
     });
   } catch (err) {
     console.error("Error in clerk query:", err);

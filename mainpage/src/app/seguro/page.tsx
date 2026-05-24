@@ -40,10 +40,10 @@ export default function SeguroPage() {
             transition={{ duration: 0.6 }}
           >
             <div className="text-center mb-12">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-cream mb-4">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-warm-white mb-4">
                 Sua Segurança Vem Primeiro
               </h1>
-              <p className="text-sindicato-cream/60 text-lg max-w-2xl mx-auto">
+              <p className="text-sindicato-warm-white/60 text-lg max-w-2xl mx-auto">
                 Construímos esta plataforma para que nenhum trabalhador tenha que
                 escolher entre denunciar a exploração e se proteger.
               </p>
@@ -56,12 +56,12 @@ export default function SeguroPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
-                  className="bg-sindicato-cream/5 border border-sindicato-cream/10 p-6"
+                  className="bg-sindicato-warm-white/5 border border-sindicato-warm-white/10 p-6"
                 >
-                  <h3 className="text-sindicato-cream font-bold text-lg mb-3">
+                  <h3 className="text-sindicato-warm-white font-bold text-lg mb-3">
                     {item.pergunta}
                   </h3>
-                  <p className="text-sindicato-cream/60 leading-relaxed">
+                  <p className="text-sindicato-warm-white/60 leading-relaxed">
                     {item.resposta}
                   </p>
                 </motion.div>
@@ -71,11 +71,11 @@ export default function SeguroPage() {
             <div className="text-center">
               <Link
                 href="/file"
-                className="inline-block bg-sindicato-red text-sindicato-cream px-10 py-4 font-bold uppercase tracking-wider hover:bg-sindicato-red/90 transition-colors text-lg"
+                className="inline-block bg-sindicato-red text-sindicato-warm-white px-10 py-4 font-bold uppercase tracking-wider hover:bg-sindicato-red/90 transition-colors text-lg"
               >
                 Registre seu caso — é seguro
               </Link>
-              <p className="text-sindicato-cream/30 text-xs mt-4">
+              <p className="text-sindicato-warm-white/30 text-xs mt-4">
                 Sem necessidade de conta. Nenhum dado pessoal além do que você escolher compartilhar.
               </p>
             </div>

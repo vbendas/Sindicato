@@ -32,7 +32,7 @@ export default function SuggestionPanel({ groups, searchQuery, onSelect, onClose
       <div className="max-h-80 overflow-y-auto py-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:!bg-sindicato-moss-green [&::-webkit-scrollbar-track]:bg-transparent" style={{ scrollbarColor: '#4a5c3a transparent', scrollbarWidth: 'thin' }}>
         {groups.map((group) => (
           <div key={group.name}>
-            <div className="px-3 py-1.5 text-[10px] uppercase tracking-wider text-sindicato-cream/40 font-medium">
+            <div className="px-3 py-1.5 text-[10px] uppercase tracking-wider text-sindicato-warm-white/40 font-medium">
               {group.name}
             </div>
             {group.suggestions.map((s) =>
@@ -41,7 +41,7 @@ export default function SuggestionPanel({ groups, searchQuery, onSelect, onClose
                   key={s.id}
                   highlight={searchQuery}
                   onClick={() => onSelect(s)}
-                  className="text-sindicato-cream/70 hover:text-sindicato-cream hover:bg-white/10"
+                  className="text-sindicato-warm-white/70 hover:text-sindicato-warm-white hover:bg-white/10"
                 >
                   {s.label}
                 </PromptSuggestion>
@@ -49,7 +49,7 @@ export default function SuggestionPanel({ groups, searchQuery, onSelect, onClose
                 <button
                   key={s.id}
                   onClick={() => onSelect(s)}
-                  className="w-full text-left px-3 py-2 text-sm text-sindicato-cream/70 hover:text-sindicato-cream hover:bg-white/10 transition-colors cursor-pointer"
+                  className="w-full text-left px-3 py-2 text-sm text-sindicato-warm-white/70 hover:text-sindicato-warm-white hover:bg-white/10 transition-colors cursor-pointer"
                 >
                   {s.label}
                 </button>

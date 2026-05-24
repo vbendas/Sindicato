@@ -200,6 +200,7 @@ async function seed() {
       optInSolicitor: true,
       optInCollective: true,
       optInCompanyNotify: true,
+      optInCompanyContact: true,
       status: "active",
     });
   }

@@ -117,7 +117,7 @@ Community forks can operate independent platforms under AGPL-3.0 and are listed 
 - No advertising
 - No VC funding
 - Financial transparency — publish income and expenditure publicly
-- Non-retaliation protection in all communication flows
+- Anonymity and consent-based data sharing in all communication flows
 
 ### Design Direction
 
@@ -176,7 +176,7 @@ Workers self-publish their cases through the platform. The process has two stage
 
 **Clerk AI intake:** Alternative submission path via `/clerk` — conversational AI chat that guides workers through intake in their own language, then populates the submission form.
 
-**Consent for data release:** Worker agrees at submission time that their alias (not real email) may be shared with verified lawyers or companies who pay the access fee and sign the non-retaliation agreement. Workers are notified immediately each time their case is accessed.
+**Consent for data release:** Worker agrees at submission time that their alias (not real email) may be shared with verified lawyers or companies who pay the access fee. Workers are notified immediately each time their case is accessed. Real identity and contact details are only shared with explicit worker consent.
 
 ### 5.2 Anonymous Email Alias System
 
@@ -225,11 +225,11 @@ Public display of self-published worker testimony at `sindicato.report/cases`. E
 - Case status (active / resolved)
 - Original/translated testimony toggle (for non-English submissions)
 
-The alias proves real people stand behind each report while protecting their identity completely. Full name and real email are released only to verified paying parties who have signed the non-retaliation agreement.
+The alias proves real people stand behind each report while protecting their identity completely. Full name and real email are released only to verified paying parties and only with explicit worker consent.
 
 **Redaction rules:**
 
-| Field | Public Display | Unredacted (paid access, post-agreement) |
+| Field | Public Display | Unredacted (paid access, with worker consent) |
 |-------|---------------|------------------------------------------|
 | Name | `Vic*****` (first 3 chars + asterisks) | Full name |
 | Email | Never shown — alias only | Full real email |
@@ -275,9 +275,9 @@ Sindicato does not intermediate, host, or monitor any communication between part
 ### 5.6 Automated Notifications
 
 **To workers when their data is accessed:**
-> *"[Company name] has accessed your case information on Sindicato. Before receiving your information, they signed the attached Non-Retaliation Agreement. This agreement legally protects you from adverse action. You are under no obligation to respond."*
+> *"[Company name] has accessed your case information on Sindicato. Your identity remains private unless you choose to share it. You are under no obligation to respond. Your public case serves as timestamped evidence."*
 >
-> Non-retaliation agreement PDF automatically attached. Sent immediately upon data release.
+> Sent immediately upon data access.
 
 **To companies when new cases are filed:**
 Automated notification to company's scraped public contact email that a new case has been filed on their Sindicato dashboard, with link to their report page.
@@ -350,11 +350,11 @@ Before any company can access contributor data:
 1. Official company domain email required (no Gmail or personal addresses)
 2. Confirmation code sent to that official email — verifies actual company domain
 3. Employee full name and role captured
-4. Non-retaliation agreement terms presented
-5. Digital signature with timestamp and IP recorded
+4. Terms of service presented (no retaliation clause, data use restrictions)
+5. Digital acceptance with timestamp and IP recorded
 6. Payment processed via CoinGate
-7. Alias contact list released automatically
-8. Worker notification emails sent simultaneously with signed agreement PDF attached
+7. Alias contact list released automatically (real identities only with worker consent)
+8. Worker notification emails sent immediately upon access
 
 ---
 
@@ -421,7 +421,7 @@ Sindicato registers as an Associação in Portugal — simple structure, low reg
 | Human verification | Cloudflare Turnstile (invisible) |
 | AI | OpenRouter (Kimi K2, DeepSeek R1, DeepSeek V3) |
 | Payments | CoinGate (primary), NexaPay (backup) |
-| PDF generation | @react-pdf/renderer (non-retaliation agreements) |
+| PDF generation | @react-pdf/renderer (case reports, cluster summaries) |
 | Validation | Zod |
 | Hosting | Vercel |
 
@@ -460,7 +460,7 @@ Alias can be disabled instantly via API if worker reports harassment. Free tier 
 
 **Day 3 — Friday:** Writing assistant + translation pipeline update, Clerk AI chat interface, network hub homepage + vertical hub pages
 
-**Day 4 — Saturday:** CoinGate payment integration, company verification flow, non-retaliation agreement PDF generation + automated delivery
+**Day 4 — Saturday:** CoinGate payment integration, company verification flow, PDF generation (case reports, cluster summaries) + automated delivery
 
 **Day 5 — Sunday:** Vulnerable worker landing pages, Case #001 seed (Victor vs Alignerr/Labelbox), end-to-end flow test, compliance audit
 

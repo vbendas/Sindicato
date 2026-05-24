@@ -29,7 +29,7 @@
 | Email provider | **Resend** | Modern API, React email templates, free tier |
 | AI gateway | **OpenRouter** | Explicit in AI plan — single key, model routing |
 | Job scheduler | **node-cron + Vercel Cron** | For weekly emails, nightly pattern detection |
-| PDF generation | **React Email → PDF** | For cluster reports and non-retaliation agreements |
+| PDF generation | **React Email → PDF** | For cluster reports and case summaries |
 | File storage | **Vercel Blob** or **Cloudflare R2** | For generated PDFs |
 | Validation | **Zod** | TypeScript schema validation on API routes |
 | Payments | **Stripe** | Company resolution fees, lawyer referral fees |
@@ -50,7 +50,7 @@
 - **`workers`** table: id, email, display_name, phone (optional), email_verified, phone_verified, created_at, updated_at
 - **`companies`** table: id, slug (unique), name, public_email, website_url, logo_url, created_at
 - **`cases`** table: id, worker_id (FK), company_id (FK), display_name, country, projects, date_range, amount_owed, currency, contact_attempts, story, story_translated, translation_language, email, claim_types (jsonb), other_description, status (active/resolved/deleted), attestation, consent_legal, consent_collective, resolution_feedback, last_follow_up_sent_at, created_at, updated_at
-- **`company_verifications`** table: id, company_id, employee_name, employee_role, official_email, email_verified, non_retaliation_signed, signed_agreement_url, stripe_payment_id, created_at
+- **`company_verifications`** table: id, company_id, employee_name, employee_role, official_email, email_verified, terms_accepted, terms_acceptance_ip, stripe_payment_id, created_at
 - **`data_access_logs`** table: id, case_id, accessor_id (FK to company_verifications), accessed_at, worker_notified
 - **`reports`** table: id, company_id, report_type (lawyer/company), content, pdf_url, generated_at
 - Create Drizzle schema files, run initial migration against Neon
@@ -184,7 +184,7 @@ After Phase 0 is complete, these three tracks can run in parallel across differe
 - Company signup with official domain email only
 - Email verification code to official email
 - Capture employee name + role
-- Digital non-retaliation agreement with timestamp
+- Digital terms of service acceptance with timestamp and IP
 
 ### Task 3.2 — Stripe Integration
 - Create Stripe products: €200/worker contact (company), tiered lawyer fees
@@ -193,9 +193,9 @@ After Phase 0 is complete, these three tracks can run in parallel across differe
 - Payment triggers data access log + worker notification
 
 ### Task 3.3 — Data Access & Release
-- After payment + signed agreement: release unredacted contact list
+- After payment + terms acceptance: release unredacted contact list (only alias unless worker consented to share real identity)
 - Log every access in `data_access_logs`
-- Auto-send notification to every affected worker with attached signed non-retaliation PDF
+- Auto-send notification to every affected worker immediately upon access
 - Rate limit access endpoints
 
 ### Task 3.4 — AI Cluster Report Generation

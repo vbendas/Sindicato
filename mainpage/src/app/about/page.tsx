@@ -58,7 +58,7 @@ const sections: Section[] = [
       "Sindicato is a digital labor rights platform. Workers self-publish their cases — their own words, their own evidence, their own attestation. The platform aggregates individual reports into collective dashboards per company, quantifying the total number of affected workers, unpaid hours, and monetary debt owed.",
       "It operates as a modern worker syndicate:",
       "Workers submit their case. It appears publicly on the Cases Wall — name partially redacted, story fully visible. Numbers aggregate on the company dashboard. Automated notifications inform the company each time a new case is filed. The totals grow. The pressure compounds.",
-      "Companies that want to reach workers and resolve cases sign a non-retaliation agreement before receiving any contact information. That agreement legally protects every worker whose data is accessed. Workers are notified immediately each time their case is viewed. Labor law firms can access opted-in worker clusters for class action intake. No intermediation. Firms contact workers directly. Workers own their claims. Sindicato provides the platform, not the verdict.",
+      "Companies that want to reach workers and resolve cases pay an access fee before receiving any contact information. Workers are notified immediately each time their case is viewed. Contact details are never shared without worker consent. Labor law firms can access opted-in worker clusters for class action intake. No intermediation. Firms contact workers directly. Workers own their claims. Sindicato provides the platform, not the verdict.",
       "Sindicato takes no money from investors, advertisers, companies listed on the platform, or attorneys. It runs on the voluntary support of workers, attorneys, journalists, and anyone who believes wage theft should have consequences. All surplus beyond operational costs goes to the Worker Support Fund: small claims filing fees covered, legal consultations provided, psychological support sessions funded. Workers pay nothing. Ever.",
       "Sindicato never verifies, endorses, or asserts individual claims. Workers attest to their own words under their own legal responsibility. The platform is the bulletin board. Workers publish. Sindicato displays.",
     ],
@@ -108,10 +108,10 @@ export default function AboutPage() {
             className="mb-16 text-center"
           >
             <div className="w-12 h-0.5 bg-white/20 mb-6 mx-auto" />
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-cream uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-2">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-warm-white uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-2">
               About Sindicato
             </h1>
-            <p className="text-sindicato-cream/40 text-sm font-[family-name:var(--font-jetbrains)]">
+            <p className="text-sindicato-warm-white/40 text-sm font-[family-name:var(--font-jetbrains)]">
               One case. Many voices.
             </p>
           </motion.div>
@@ -125,7 +125,7 @@ export default function AboutPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05, duration: 0.6 }}
               >
-                <h2 className="text-xs uppercase tracking-widest text-sindicato-cream/30 font-[family-name:var(--font-barlow)] font-bold mb-6">
+                <h2 className="text-xs uppercase tracking-widest text-sindicato-warm-white/30 font-[family-name:var(--font-barlow)] font-bold mb-6">
                   {section.title}
                 </h2>
 
@@ -133,7 +133,7 @@ export default function AboutPage() {
                   {section.paragraphs.map((p, j) => (
                     <p
                       key={j}
-                      className="text-sindicato-cream/75 text-sm sm:text-base leading-relaxed"
+                      className="text-sindicato-warm-white/75 text-sm sm:text-base leading-relaxed"
                     >
                       {p}
                     </p>
@@ -144,7 +144,7 @@ export default function AboutPage() {
                       {section.list.map((item, j) => (
                         <p
                           key={j}
-                          className="text-sindicato-cream/70 text-sm sm:text-base leading-relaxed"
+                          className="text-sindicato-warm-white/70 text-sm sm:text-base leading-relaxed"
                         >
                           {item}
                         </p>
@@ -155,7 +155,7 @@ export default function AboutPage() {
                   {section.closing?.map((p, j) => (
                     <p
                       key={j}
-                      className="text-sindicato-cream/75 text-sm sm:text-base leading-relaxed"
+                      className="text-sindicato-warm-white/75 text-sm sm:text-base leading-relaxed"
                     >
                       {p}
                     </p>
@@ -169,10 +169,10 @@ export default function AboutPage() {
             ))}
 
             <div className="pt-8 border-t border-white/10">
-              <p className="text-sindicato-cream/30 text-xs font-[family-name:var(--font-jetbrains)]">
+              <p className="text-sindicato-warm-white/30 text-xs font-[family-name:var(--font-jetbrains)]">
                 Sindicato — sindicato.report
               </p>
-              <p className="text-sindicato-cream/20 text-xs mt-1 font-[family-name:var(--font-jetbrains)]">
+              <p className="text-sindicato-warm-white/20 text-xs mt-1 font-[family-name:var(--font-jetbrains)]">
                 Built from Case #001. Built for everyone after.
               </p>
             </div>

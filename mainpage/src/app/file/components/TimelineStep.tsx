@@ -79,13 +79,13 @@ export default function TimelineStep({
   }
 
   const labelClass =
-    "block text-sindicato-charcoal/70 mb-1.5 text-xs uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold";
+    "block text-sindicato-warm-white/70 mb-1.5 text-xs uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold";
   const inputClass =
-    "w-full bg-white border border-sindicato-charcoal/20 rounded-none text-sindicato-charcoal p-3 focus:border-sindicato-bordeaux focus:outline-none focus:ring-0 transition-colors text-sm";
+    "w-full bg-white/10 border border-white/20 rounded-none text-sindicato-warm-white p-3 focus:border-sindicato-warm-white/50 focus:outline-none focus:ring-0 transition-colors text-sm placeholder:text-sindicato-warm-white/30";
   const primaryBtnClass =
-    "w-full bg-sindicato-bordeaux text-sindicato-cream py-3 px-6 font-bold uppercase tracking-wider hover:bg-sindicato-bordeaux-dark transition-colors font-[family-name:var(--font-barlow)]";
+    "w-full bg-sindicato-bordeaux text-sindicato-warm-white py-3 px-6 font-bold uppercase tracking-wider hover:bg-sindicato-bordeaux-dark transition-colors font-[family-name:var(--font-barlow)]";
   const secondaryBtnClass =
-    "text-sindicato-charcoal/60 hover:text-sindicato-charcoal transition-colors text-sm uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold";
+    "text-sindicato-warm-white/60 hover:text-sindicato-warm-white transition-colors text-sm uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold";
 
   return (
     <motion.div
@@ -94,11 +94,11 @@ export default function TimelineStep({
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.2 }}
     >
-      <div className="bg-white border border-sindicato-charcoal/10 p-6 sm:p-8">
-        <h2 className="text-2xl font-bold text-sindicato-charcoal font-[family-name:var(--font-barlow)] uppercase tracking-wider mb-1">
+      <div className="bg-white/10 backdrop-blur-sm border border-white/10 p-6 sm:p-8">
+        <h2 className="text-2xl font-bold text-sindicato-warm-white font-[family-name:var(--font-barlow)] uppercase tracking-wider mb-1">
           Log your interactions
         </h2>
-        <p className="text-sindicato-charcoal/60 text-sm mb-8">
+        <p className="text-sindicato-warm-white/60 text-sm mb-8">
           Track every email, chat, and contact attempt with {companyDisplay}. This creates a verifiable paper trail.
         </p>
 
@@ -106,34 +106,34 @@ export default function TimelineStep({
         {events.length > 0 && (
           <div className="space-y-2 mb-6">
             {events.map((ev) => (
-              <div
-                key={ev.id}
-                className="border border-sindicato-charcoal/10 p-4 flex items-start gap-4"
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)] text-sindicato-bordeaux">
-                      {EVENT_TYPE_LABELS[ev.eventType] || ev.eventType}
-                    </span>
-                    <span className="text-sindicato-charcoal/30 text-xs">·</span>
-                    <span className="text-xs text-sindicato-charcoal/50">
-                      {format(ev.eventDate, "d MMM yyyy")}
-                    </span>
-                    {ev.responseReceived && (
-                      <>
-                        <span className="text-sindicato-charcoal/30 text-xs">·</span>
-                        <span className="text-xs text-sindicato-charcoal/50">Response received</span>
-                      </>
-                    )}
+                <div
+                  key={ev.id}
+                  className="border border-white/10 p-4 flex items-start gap-4"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)] text-sindicato-bordeaux">
+                        {EVENT_TYPE_LABELS[ev.eventType] || ev.eventType}
+                      </span>
+                      <span className="text-sindicato-warm-white/30 text-xs">·</span>
+                      <span className="text-xs text-sindicato-warm-white/50">
+                        {format(ev.eventDate, "d MMM yyyy")}
+                      </span>
+                      {ev.responseReceived && (
+                        <>
+                          <span className="text-sindicato-warm-white/30 text-xs">·</span>
+                          <span className="text-xs text-sindicato-warm-white/50">Response received</span>
+                        </>
+                      )}
+                    </div>
+                    <p className="text-sm text-sindicato-warm-white/80 line-clamp-2">
+                      {ev.description}
+                    </p>
                   </div>
-                  <p className="text-sm text-sindicato-charcoal/80 line-clamp-2">
-                    {ev.description}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleRemove(ev.id)}
-                  className="text-sindicato-charcoal/30 hover:text-sindicato-bordeaux transition-colors flex-shrink-0 mt-0.5"
+                  <button
+                    type="button"
+                    onClick={() => handleRemove(ev.id)}
+                    className="text-sindicato-warm-white/30 hover:text-sindicato-bordeaux transition-colors flex-shrink-0 mt-0.5"
                   aria-label="Remove event"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
@@ -208,7 +208,7 @@ export default function TimelineStep({
                   <button
                     type="button"
                     onClick={handleAddEvent}
-                    className="bg-sindicato-bordeaux text-sindicato-cream px-5 py-2 text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)] hover:bg-sindicato-bordeaux-dark transition-colors"
+                    className="bg-sindicato-bordeaux text-sindicato-warm-white px-5 py-2 text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)] hover:bg-sindicato-bordeaux-dark transition-colors"
                   >
                     Add
                   </button>
@@ -228,8 +228,8 @@ export default function TimelineStep({
         {/* Empty state or add button */}
         {!showForm && (
           events.length === 0 ? (
-            <div className="border border-dashed border-sindicato-charcoal/20 p-10 flex flex-col items-center justify-center gap-4 mb-8">
-              <div className="text-sindicato-charcoal/30">
+            <div className="border border-dashed border-white/20 p-10 flex flex-col items-center justify-center gap-4 mb-8">
+              <div className="text-sindicato-warm-white/30">
                 <svg className="w-10 h-10" fill="none" viewBox="0 0 40 40">
                   <rect x="8" y="6" width="24" height="28" stroke="currentColor" strokeWidth="1.5" />
                   <line x1="14" y1="14" x2="26" y2="14" stroke="currentColor" strokeWidth="1.5" />

@@ -525,7 +525,7 @@ function redactEmail(email) {
 }
 ```
 
-Applied server-side to all case data returned to public endpoints. Paid lead data endpoints return unredacted fields only after verifying: fee paid + non-retaliation agreement signed + verified company/lawyer account.
+Applied server-side to all case data returned to public endpoints. Paid lead data endpoints return unredacted fields only after verifying: fee paid + terms accepted + verified company/lawyer account + worker consent for real identity.
 
 ---
 

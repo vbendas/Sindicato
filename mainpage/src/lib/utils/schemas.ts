@@ -3,7 +3,7 @@ import { z } from "zod/v4";
 // Legacy schema kept for backward compatibility with any existing integrations
 export const caseSubmissionSchema = z
   .object({
-    vertical: z.enum(["remote", "gig"]),
+    vertical: z.string().min(1).max(50),
     displayName: z.string().min(1).max(100),
     country: z.string().max(100).optional(),
     ageRange: z.enum(["18-24", "25-34", "35-44", "45+"]).optional(),
@@ -15,7 +15,7 @@ export const caseSubmissionSchema = z
       { message: "Amount exceeds maximum allowed value" }
     ),
     currency: z.string().length(3).default("EUR"),
-    contactAttempts: z.coerce.number().int().min(0),
+    contactAttempts: z.coerce.number().int().min(0).optional(),
     story: z.string().min(1).max(10000).refine(
       (s) => {
         const words = s.trim().split(/\s+/).filter(Boolean).length;
@@ -40,7 +40,7 @@ export const timelineEventInputSchema = z.object({
 });
 
 export const caseSubmissionV2Schema = z.object({
-  vertical: z.enum(["remote", "gig"]),
+  vertical: z.string().min(1).max(50),
   caseType: z.enum(["unpaid_wages", "late_payment", "sudden_deactivation", "unfair_review", "predatory_practices", "harassment", "retaliation", "contract_violation", "data_privacy", "other"]).default("other"),
   displayName: z.string().min(1).max(100),
   companySlug: z.string().min(1).max(100),
@@ -59,7 +59,6 @@ export const caseSubmissionV2Schema = z.object({
     { message: "Amount exceeds maximum allowed value" }
   ),
   currency: z.string().length(3).default("USD"),
-  contactAttempts: z.coerce.number().int().min(0),
   story: z.string().min(1).max(10000).refine(
     (s) => {
       const words = s.trim().split(/\s+/).filter(Boolean).length;
@@ -68,9 +67,10 @@ export const caseSubmissionV2Schema = z.object({
     { message: "Story must be between 100 and 500 words" }
   ),
   email: z.email(),
-  optInSolicitor: z.coerce.boolean().default(false),
-  optInCollective: z.coerce.boolean().default(false),
+  optInSolicitor: z.coerce.boolean().default(true),
+  optInCollective: z.coerce.boolean().default(true),
   optInCompanyNotify: z.coerce.boolean().default(true),
+  optInCompanyContact: z.coerce.boolean().default(true),
   attested: z.literal(true, { message: "You must confirm that your account is truthful and based on your personal experience" }),
   timelineEvents: z.array(timelineEventInputSchema).default([]),
   turnstileToken: z.string().optional(),
