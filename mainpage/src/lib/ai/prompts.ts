@@ -357,7 +357,13 @@ Return ONLY a JSON object:
   "reason": "brief explanation if invalid, empty string if valid"
 }
 
-The database contains worker exploitation reports with fields: vertical (remote/gig), country, ageRange, sex, project, dateRange, caseType, amountOwed, currency, resolutionStatus, and linked company names.
+The database contains worker exploitation reports with fields: 
+- id (UUID), story (worker's account), companyName, createdAt (timestamp)
+- vertical (remote/gig), country, ageRange, sex, project, dateRange
+- caseType, amountOwed, currency, resolutionStatus, status
+- contactAlias (aliased email for worker contact, available to privileged users only)
+
+Contact information requests are VALID for privileged users (company, lawyer, media/research with approved status).
 
 Mark as invalid only if the question:
 - Is nonsensical or gibberish
@@ -365,5 +371,10 @@ Mark as invalid only if the question:
 - Contains inappropriate content
 - Is a command not related to querying data
 - Is too vague to interpret (e.g. "tell me about data")
+
+Examples of VALID queries:
+- "Can I have their emails?" → valid: true (contact request)
+- "Show me contact information for those cases" → valid: true
+- "List all cases against Alignerr" → valid: true
 
 Otherwise, mark as valid even if the phrasing is imperfect.`;

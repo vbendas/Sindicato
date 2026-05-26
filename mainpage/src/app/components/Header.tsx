@@ -17,9 +17,16 @@ interface HeaderProps {
   clerkBg?: string;
   navTextColor?: string;
   navHoverColor?: string;
+  onSessionChange?: () => void;
 }
 
-export default function Header({   scrolledBg = "bg-sindicato-bordeaux/70 backdrop-blur-md border-white/10", clerkBg = "bg-sindicato-charcoal text-sindicato-warm-white", navTextColor = "text-sindicato-warm-white/70", navHoverColor = "hover:text-sindicato-warm-white" }: HeaderProps) {
+export default function Header({ 
+  scrolledBg = "bg-sindicato-bordeaux/70 backdrop-blur-md border-white/10", 
+  clerkBg = "bg-sindicato-charcoal text-sindicato-warm-white", 
+  navTextColor = "text-sindicato-warm-white/70", 
+  navHoverColor = "hover:text-sindicato-warm-white",
+  onSessionChange
+}: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
   const [session, setSession] = useState<{ user?: { id?: string; email?: string } } | null>(null);
   const [sessionLoading, setSessionLoading] = useState(true);
@@ -85,6 +92,7 @@ export default function Header({   scrolledBg = "bg-sindicato-bordeaux/70 backdr
       setSession(s?.user ? s : null);
       setShowLogin(false);
       resetAuthForm();
+      onSessionChange?.();
     } catch {
       setAuthError("Verification failed. Please try again.");
     } finally {

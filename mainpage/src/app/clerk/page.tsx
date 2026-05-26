@@ -90,6 +90,18 @@ export default function ClerkPage() {
       .finally(() => setSessionLoading(false));
   }, []);
 
+  const refreshSession = useCallback(() => {
+    fetch("/api/auth/session")
+      .then((r) => r.json())
+      .then((s) => {
+        console.log('[Clerk] Session refreshed:', s);
+        setSession(s?.user ? s : null);
+      })
+      .catch((err) => {
+        console.error('[Clerk] Failed to refresh session:', err);
+      });
+  }, []);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setShowSuggestions(false);
@@ -486,9 +498,10 @@ export default function ClerkPage() {
       <div className="fixed inset-0 pointer-events-none z-[60] grain-overlay" style={{ opacity: 0.45 }} />
       <Header
         scrolledBg={showFullHeader ? "bg-sindicato-smoked-charcoal border-white/10" : "bg-transparent border-transparent"}
-        clerkBg={showFullHeader ? "bg-sindicato-bordeaux text-sindicato-warm-white" : "bg-transparent"}
+        clerkBg={showFullHeader ? "bg-sindicato-bordeaux text-sindicato-warm-white" : "bg-sindicato-smoked-charcoal text-sindicato-warm-white"}
         navTextColor={showFullHeader ? "text-sindicato-warm-white/70" : "text-sindicato-warm-white/70"}
         navHoverColor={showFullHeader ? "hover:text-sindicato-warm-white" : "hover:text-sindicato-warm-white"}
+        onSessionChange={refreshSession}
       />
       
 
