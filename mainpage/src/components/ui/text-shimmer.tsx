@@ -12,7 +12,7 @@ export type TextShimmerProps = {
 export function TextShimmer({
   as = "span",
   className,
-  duration = 4,
+  duration = 2,
   spread = 20,
   children,
   ...props
@@ -23,13 +23,20 @@ export function TextShimmer({
   return (
     <Component
       className={cn(
-        "bg-size-[200%_auto] bg-clip-text font-medium text-transparent",
-        "animate-[shimmer_4s_infinite_linear]",
+        "font-medium text-shimmer",
         className
       )}
       style={{
-        backgroundImage: `linear-gradient(to right, var(--muted-foreground) ${50 - dynamicSpread}%, var(--foreground) 50%, var(--muted-foreground) ${50 + dynamicSpread}%)`,
+        backgroundImage: `linear-gradient(to right, rgba(255, 255, 255, 0.3) ${50 - dynamicSpread}%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.3) ${50 + dynamicSpread}%)`,
+        backgroundSize: "200% 100%",
+        WebkitBackgroundClip: "text",
+        backgroundClip: "text",
+        WebkitTextFillColor: "transparent",
+        color: "transparent",
+        animationName: "shimmer",
         animationDuration: `${duration}s`,
+        animationTimingFunction: "linear",
+        animationIterationCount: "infinite",
       }}
       {...props}
     >

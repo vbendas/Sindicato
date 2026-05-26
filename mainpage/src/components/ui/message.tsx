@@ -52,9 +52,9 @@ const MessageContent = ({
   ...props
 }: MessageContentProps) => {
   const classNames = cn(
-    "rounded-[0.75rem] p-2 text-foreground bg-secondary prose break-words whitespace-normal",
+    "rounded-[0.75rem] p-3 text-foreground bg-secondary prose break-words whitespace-normal",
     className
-  )
+  );
 
   return markdown ? (
     <Markdown className={classNames} {...props}>
@@ -64,7 +64,7 @@ const MessageContent = ({
     <div className={classNames} {...props}>
       {children}
     </div>
-  )
+  );
 }
 
 export type MessageActionsProps = {

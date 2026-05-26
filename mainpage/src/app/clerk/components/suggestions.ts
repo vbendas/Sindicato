@@ -19,6 +19,8 @@ export interface Variables {
   sexes: { label: string; value: string }[];
   age_from: { label: string; value: string }[];
   age_to: { label: string; value: string }[];
+  date_from: { label: string; value: string }[];
+  date_to: { label: string; value: string }[];
 }
 
 const STATIC_SUGGESTIONS: SuggestionItem[] = [
@@ -28,6 +30,9 @@ const STATIC_SUGGESTIONS: SuggestionItem[] = [
   { id: "repeat-offenders", label: "Companies with the most cases", template: "Which companies have the most cases filed against them?" },
   { id: "cases-by-vertical", label: "Remote vs gig worker cases", template: "Compare the number of cases between remote and gig workers" },
   { id: "top-countries", label: "Countries with most cases", template: "Which countries have the most reported cases?" },
+  { id: "recent-cases-30-days", label: "Cases from last 30 days", template: "Show me cases filed in the last 30 days" },
+  { id: "recent-cases-this-month", label: "Cases from this month", template: "Show me cases filed this month" },
+  { id: "cases-by-date-range", label: "Cases in date range", template: "Show me cases filed between {date_from} and {date_to}", templatePromptId: "cases-by-date-range" },
 ];
 
 const LAWYER_SUGGESTIONS: SuggestionItem[] = [
@@ -37,6 +42,9 @@ const LAWYER_SUGGESTIONS: SuggestionItem[] = [
   { id: "lawyer-collective-action", label: "Collective action candidates", template: "Collective action candidates: cases against {company} with same case type", templatePromptId: "lawyer-collective-action" },
   { id: "lawyer-high-value", label: "Highest value unresolved cases", template: "What are the highest value unresolved cases with solicitor opt-in?" },
   { id: "lawyer-recent", label: "Recent cases filed", template: "Show recent cases filed this month with solicitor opt-in" },
+  { id: "lawyer-recent-30-days", label: "Cases from last 30 days", template: "Show cases with solicitor opt-in from the last 30 days" },
+  { id: "lawyer-date-range", label: "Cases in date range", template: "Show cases with solicitor opt-in between {date_from} and {date_to}", templatePromptId: "lawyer-date-range" },
+  { id: "lawyer-contact-unresolved", label: "Contact info for unresolved cases", template: "Show contact information for unresolved cases against {company}", templatePromptId: "lawyer-contact-unresolved" },
 ];
 
 const COMPANY_SUGGESTIONS: SuggestionItem[] = [
@@ -46,6 +54,9 @@ const COMPANY_SUGGESTIONS: SuggestionItem[] = [
   { id: "company-total-claimed", label: "Total amount claimed", template: "Total amount claimed against {company}", templatePromptId: "company-total-claimed" },
   { id: "company-resolution-status", label: "Resolution status", template: "How many cases against {company} have been resolved?", templatePromptId: "company-resolution-status" },
   { id: "company-timeline", label: "Recent case activity", template: "Show recent cases filed against {company} this month", templatePromptId: "company-timeline" },
+  { id: "company-recent-30-days", label: "Recent cases (last 30 days)", template: "Show cases filed against {company} in the last 30 days", templatePromptId: "company-recent-30-days" },
+  { id: "company-date-range", label: "Cases in date range", template: "Show cases filed against {company} between {date_from} and {date_to}", templatePromptId: "company-date-range" },
+  { id: "company-contact-unresolved", label: "Contact info for unresolved cases", template: "Show contact information for unresolved cases against {company}", templatePromptId: "company-contact-unresolved" },
 ];
 
 const MEDIA_SUGGESTIONS: SuggestionItem[] = [
@@ -55,6 +66,9 @@ const MEDIA_SUGGESTIONS: SuggestionItem[] = [
   { id: "media-recent-filed", label: "Recent cases this month", template: "Recent cases filed this month" },
   { id: "media-company-trends", label: "Company case trends", template: "Which companies have the most cases this month?" },
   { id: "media-demographics", label: "Demographic breakdown", template: "Demographic breakdown of workers filing cases" },
+  { id: "media-recent-30-days", label: "Recent cases (last 30 days)", template: "Show cases filed in the last 30 days" },
+  { id: "media-date-range", label: "Cases in date range", template: "Show cases filed between {date_from} and {date_to}", templatePromptId: "media-date-range" },
+  { id: "media-contact-all", label: "Contact info for cases", template: "Show contact information for cases against {company}", templatePromptId: "media-contact-all" },
 ];
 
 const TEMPLATE_MAP: Record<string, { template: string; variables: { name: string; label: string; dataSource: keyof Variables }[] }> = {
@@ -143,6 +157,51 @@ const TEMPLATE_MAP: Record<string, { template: string; variables: { name: string
     template: "All cases with contact aliases for {company}",
     variables: [{ name: "company", label: "Company", dataSource: "companies" }],
   },
+  "cases-by-date-range": {
+    template: "Show me cases filed between {date_from} and {date_to}",
+    variables: [
+      { name: "date_from", label: "From date", dataSource: "date_from" },
+      { name: "date_to", label: "To date", dataSource: "date_to" },
+    ],
+  },
+  "lawyer-date-range": {
+    template: "Show cases with solicitor opt-in between {date_from} and {date_to}",
+    variables: [
+      { name: "date_from", label: "From date", dataSource: "date_from" },
+      { name: "date_to", label: "To date", dataSource: "date_to" },
+    ],
+  },
+  "company-recent-30-days": {
+    template: "Show cases filed against {company} in the last 30 days",
+    variables: [{ name: "company", label: "Company", dataSource: "companies" }],
+  },
+  "company-date-range": {
+    template: "Show cases filed against {company} between {date_from} and {date_to}",
+    variables: [
+      { name: "company", label: "Company", dataSource: "companies" },
+      { name: "date_from", label: "From date", dataSource: "date_from" },
+      { name: "date_to", label: "To date", dataSource: "date_to" },
+    ],
+  },
+  "media-date-range": {
+    template: "Show cases filed between {date_from} and {date_to}",
+    variables: [
+      { name: "date_from", label: "From date", dataSource: "date_from" },
+      { name: "date_to", label: "To date", dataSource: "date_to" },
+    ],
+  },
+  "lawyer-contact-unresolved": {
+    template: "Show contact information for unresolved cases against {company}",
+    variables: [{ name: "company", label: "Company", dataSource: "companies" }],
+  },
+  "company-contact-unresolved": {
+    template: "Show contact information for unresolved cases against {company}",
+    variables: [{ name: "company", label: "Company", dataSource: "companies" }],
+  },
+  "media-contact-all": {
+    template: "Show contact information for cases against {company}",
+    variables: [{ name: "company", label: "Company", dataSource: "companies" }],
+  },
 };
 
 const TEMPLATE_SUGGESTIONS: SuggestionItem[] = [
@@ -154,6 +213,7 @@ const TEMPLATE_SUGGESTIONS: SuggestionItem[] = [
   { id: "cases-by-company-country", label: "Cross-reference company and country", template: TEMPLATE_MAP["cases-by-company-country"].template, templatePromptId: "cases-by-company-country" },
   { id: "cases-by-demographic", label: "Cases by gender and age range", template: TEMPLATE_MAP["cases-by-demographic"].template, templatePromptId: "cases-by-demographic" },
   { id: "cases-by-company-demographic", label: "Deep cross-reference (company, country, gender, age)", template: TEMPLATE_MAP["cases-by-company-demographic"].template, templatePromptId: "cases-by-company-demographic" },
+  { id: "cases-by-date-range", label: "Cases in specific date range", template: TEMPLATE_MAP["cases-by-date-range"].template, templatePromptId: "cases-by-date-range" },
 ];
 
 export function getTemplateDefinition(id: string) {
