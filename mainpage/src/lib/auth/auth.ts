@@ -68,7 +68,16 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           .where(eq(platformAccounts.email, email))
           .limit(1);
 
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[Auth] Authorize - checking platform account for:', email);
+          console.log('[Auth] Authorize - platformAccount found:', !!platformAccount);
+        }
+
         if (platformAccount) {
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[Auth] Authorize - treating as platform account');
+          }
+          
           await db
             .update(platformAccounts)
             .set({ emailVerified: true, updatedAt: new Date() })
@@ -84,7 +93,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             companyName = company?.name;
           }
 
-          return {
+          const user = {
             id: platformAccount.id,
             email: platformAccount.email,
             name: platformAccount.displayName,
@@ -93,6 +102,19 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             companyId: platformAccount.companyId || undefined,
             companyName,
           };
+
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[Auth] Authorize - returning platform user:', {
+              id: user.id,
+              email: user.email,
+              role: user.role,
+              approvalStatus: user.approvalStatus,
+              companyId: user.companyId,
+              companyName: user.companyName
+            });
+          }
+
+          return user;
         }
 
         let [worker] = await db
@@ -101,7 +123,14 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           .where(eq(workers.email, email))
           .limit(1);
 
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[Auth] Authorize - worker found:', !!worker);
+        }
+
         if (!worker) {
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[Auth] Authorize - creating new worker');
+          }
           [worker] = await db
             .insert(workers)
             .values({
@@ -117,11 +146,17 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             .where(eq(workers.id, worker.id));
         }
 
-        return {
+        const user = {
           id: worker.id,
           email: worker.email,
           name: worker.displayName,
         };
+
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[Auth] Authorize - returning worker:', user);
+        }
+
+        return user;
       },
     }),
   ],
@@ -135,6 +170,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   },
   callbacks: {
     async jwt({ token, user }) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[Auth] JWT callback - user:', user ? { id: user.id, email: user.email, role: user.role } : null);
+        console.log('[Auth] JWT callback - token before:', { id: token.id, email: token.email, role: token.role, companyId: token.companyId });
+      }
+      
       if (user) {
         token.id = user.id;
         token.email = user.email;
@@ -143,15 +183,73 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         if (user.companyId) token.companyId = user.companyId;
         if (user.companyName) token.companyName = user.companyName;
       }
+      
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[Auth] JWT callback - token after:', { id: token.id, email: token.email, role: token.role, companyId: token.companyId, companyName: token.companyName });
+      }
+      
       return token;
     },
     async session({ session, token }) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[Auth] Session callback - token:', {
+          id: token.id,
+          email: token.email,
+          role: token.role,
+          approvalStatus: token.approvalStatus,
+          companyId: token.companyId,
+          companyName: token.companyName
+        });
+      }
+      
       if (session.user) {
         session.user.id = token.id as string;
         if (token.role) session.user.role = token.role as "lawyer" | "company" | "media";
         if (token.approvalStatus) session.user.approvalStatus = token.approvalStatus as "pending" | "approved" | "rejected";
-        if (token.companyId) session.user.companyId = token.companyId as string;
-        if (token.companyName) session.user.companyName = token.companyName as string;
+        
+        // Fetch companyId from database if not in token (for existing sessions)
+        let companyId = token.companyId as string | undefined;
+        if (!companyId && token.id) {
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[Auth] Fetching companyId from database for user:', token.id);
+          }
+          const [account] = await db
+            .select({ companyId: platformAccounts.companyId })
+            .from(platformAccounts)
+            .where(eq(platformAccounts.id, token.id as string))
+            .limit(1);
+          companyId = account?.companyId || undefined;
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[Auth] Fetched companyId:', companyId);
+          }
+        }
+        
+        if (companyId) {
+          session.user.companyId = companyId;
+          // Fetch companyName from database
+          const [company] = await db
+            .select({ name: companies.name })
+            .from(companies)
+            .where(eq(companies.id, companyId))
+            .limit(1);
+          if (company) {
+            session.user.companyName = company.name;
+            if (process.env.NODE_ENV === 'development') {
+              console.log('[Auth] Fetched companyName:', company.name);
+            }
+          }
+        }
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[Auth] Final session.user:', {
+            id: session.user.id,
+            email: session.user.email,
+            role: session.user.role,
+            approvalStatus: session.user.approvalStatus,
+            companyId: session.user.companyId,
+            companyName: session.user.companyName
+          });
+        }
       }
       return session;
     },

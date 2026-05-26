@@ -1,7 +1,7 @@
 export interface TemplateVariable {
   name: string;
   label: string;
-  dataSource: "companies" | "countries" | "verticals" | "case_types" | "age_ranges" | "sexes" | "age_from" | "age_to";
+  dataSource: "companies" | "countries" | "verticals" | "case_types" | "age_ranges" | "sexes" | "age_from" | "age_to" | "date_from" | "date_to";
 }
 
 export interface TemplatePrompt {

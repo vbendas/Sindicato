@@ -37,7 +37,10 @@ type QueryPlan = {
 
 type QueryResult = {
   rows: Record<string, unknown>[];
-  summary: Record<string, unknown>;
+  summary: Record<string, unknown> & {
+    totalFetched?: number;
+    displayLimit?: number;
+  };
 };
 
 type ContactKeywords = "contact" | "alias" | "email" | "contact alias" | "aliased";
@@ -52,7 +55,9 @@ function getFieldMap(isPrivileged: boolean, userRole?: string): Record<string, s
   const map: Record<string, string> = {
     company_name: "companies.name",
     company: "companies.name",
+    companyName: "companies.name",
     company_id: "companies.id",
+    companyId: "companies.id",
     vertical: "cases.vertical",
     country: "cases.country",
     ageRange: "cases.ageRange",
@@ -68,6 +73,7 @@ function getFieldMap(isPrivileged: boolean, userRole?: string): Record<string, s
     currency: "cases.currency",
     resolutionStatus: "cases.resolutionStatus",
     resolution_status: "cases.resolutionStatus",
+    status: "cases.status",
     created_at: "cases.createdAt",
     createdAt: "cases.createdAt",
     viewsTotal: "metrics.viewsTotal",
@@ -101,6 +107,16 @@ function validateContactAccess(
 
   const allFilters = [...plan.filters, ...extraFilters];
 
+  console.log('[Contact Access Check]', {
+    userRole,
+    totalFilters: allFilters.length,
+    filters: allFilters.map(f => ({
+      field: f.field,
+      operator: f.operator,
+      value: f.value
+    }))
+  });
+
   const companyFilters = allFilters.filter(f =>
     f.field === "company" || f.field === "company_name" || f.field === "company_id"
   );
@@ -116,15 +132,29 @@ function validateContactAccess(
   if (userRole === "company" || userRole === "lawyer") {
     const hasResolvedFilter = allFilters.some(f =>
       (f.field === "resolution_status" || f.field === "resolutionStatus") &&
-      (f.value === "resolved" || f.value === "Resolved" || f.value === "active")
+      f.operator === "eq" &&
+      (f.value === "resolved" || f.value === "Resolved")
     );
 
     if (hasResolvedFilter) {
       const roleLabel = userRole === "company" ? "Company representatives" : "Legal professionals";
-      return { allowed: false, reason: `${roleLabel} can only access unresolved case contacts.` };
+      const reason = `${roleLabel} can only access unresolved case contacts.`;
+      
+      console.log('[Contact Access Denied]', {
+        userRole,
+        reason,
+        resolvedFilter: allFilters.find(f =>
+          (f.field === "resolution_status" || f.field === "resolutionStatus") &&
+          f.operator === "eq" &&
+          (f.value === "resolved" || f.value === "Resolved")
+        )
+      });
+      
+      return { allowed: false, reason };
     }
   }
 
+  console.log('[Contact Access Granted]', { userRole });
   return { allowed: true };
 }
 
@@ -168,12 +198,36 @@ const DRIZZLE_OPERATORS: Record<string, (field: DrizzleColumn, value: unknown) =
   contains: (field, value) => like(field, `%${escapeLikeValue(String(value))}%`),
 };
 
-async function parseQuery(userMessage: string): Promise<QueryPlan> {
+async function parseQuery(
+  userMessage: string, 
+  previousContext?: string,
+  userContext?: { role?: string; companyName?: string; approvalStatus?: string }
+): Promise<QueryPlan> {
   const model = getClerkModel();
+  
+  // Build user context string
+  let userContextStr = '';
+  if (userContext?.role) {
+    userContextStr = `\n\nUser context: The user is logged in as a ${userContext.role}`;
+    if (userContext.companyName) {
+      userContextStr += ` representing ${userContext.companyName}`;
+    }
+    if (userContext.approvalStatus) {
+      userContextStr += ` with ${userContext.approvalStatus} approval status`;
+    }
+    userContextStr += `. When they say "my company", "our cases", or "cases against us", they mean ${userContext.companyName || 'their company'}.`;
+    userContextStr += ` The backend will automatically filter by their company ID for company users, so you don't need to add a company filter in the query.`;
+  }
+  
+  // Build the full prompt with previous context and user context
+  const fullPrompt = previousContext 
+    ? `${userMessage}\n\n${previousContext}${userContextStr}\n\nIf the user references previous data (e.g., "those cases", "the results"), reuse the filters from the previous query.`
+    : `${userMessage}${userContextStr}`;
+  
   const raw = await callOpenRouter({
     model,
     systemPrompt: CLERK_QUERY_PLANNER_SYSTEM,
-    userPrompt: userMessage,
+    userPrompt: fullPrompt,
     temperature: 0.1,
     maxTokens: 1024,
   });
@@ -330,7 +384,7 @@ async function executeMetricsPlan(plan: QueryPlan, fieldMap: Record<string, stri
   return { rows: [], summary: { type: "count", value: 0 } };
 }
 
-async function executeCasesPlan(plan: QueryPlan, fieldMap: Record<string, string>, extraFilters?: Filter[]): Promise<QueryResult> {
+async function executeCasesPlan(plan: QueryPlan, fieldMap: Record<string, string>, extraFilters?: Filter[], requestsContact?: boolean): Promise<QueryResult> {
   const whereClause = buildFilters(plan, fieldMap, extraFilters, false);
 
   if (plan.aggregation === "count") {
@@ -393,9 +447,11 @@ async function executeCasesPlan(plan: QueryPlan, fieldMap: Record<string, string
       dateRange: cases.dateRange,
       resolutionStatus: cases.resolutionStatus,
       createdAt: cases.createdAt,
+      story: cases.story,
     };
-
-    if (fieldMap.contactAlias) {
+    
+    // Only include contactAlias when user explicitly requests contact information
+    if (requestsContact && fieldMap.contactAlias) {
       selectFields.contactAlias = cases.contactAlias;
     }
 
@@ -405,23 +461,39 @@ async function executeCasesPlan(plan: QueryPlan, fieldMap: Record<string, string
       .innerJoin(companies, eq(cases.companyId, companies.id))
       .where(whereClause);
 
+    // Always order by createdAt desc (most recent first) for list queries
     if (plan.orderBy) {
       const orderField = plan.orderBy.field === "company_name" ? companies.name : resolveField(plan.orderBy.field, fieldMap) ?? cases.createdAt;
       query = query.orderBy(plan.orderBy.direction === "desc" ? desc(orderField) : asc(orderField));
+    } else {
+      // Default ordering: most recent first
+      query = query.orderBy(desc(cases.createdAt));
     }
 
-    if (plan.limit) query = query.limit(plan.limit);
+    // Fetch up to 100 cases for .md download
+    const MAX_DOWNLOAD_LIMIT = 100;
+    const effectiveLimit = Math.min(plan.limit || MAX_DOWNLOAD_LIMIT, MAX_DOWNLOAD_LIMIT);
+    query = query.limit(effectiveLimit);
 
-    const rows = await query;
-    return { rows: rows as Record<string, unknown>[], summary: { type: "list" } };
+    const allRows = await query;
+    
+    // Return metadata about total vs displayed
+    return { 
+      rows: allRows as Record<string, unknown>[], 
+      summary: { 
+        type: "list",
+        totalFetched: allRows.length,
+        displayLimit: 20 // Will be enforced at response level
+      } 
+    };
   }
 
   return { rows: [], summary: { type: "count", value: 0 } };
 }
 
-async function executePlan(plan: QueryPlan, fieldMap: Record<string, string>, extraFilters?: Filter[]): Promise<QueryResult> {
+async function executePlan(plan: QueryPlan, fieldMap: Record<string, string>, extraFilters?: Filter[], requestsContact?: boolean): Promise<QueryResult> {
   if (plan.source === "metrics") return executeMetricsPlan(plan, fieldMap);
-  return executeCasesPlan(plan, fieldMap, extraFilters);
+  return executeCasesPlan(plan, fieldMap, extraFilters, requestsContact);
 }
 
 function formatResultsForLlm(plan: QueryPlan, result: QueryResult): string {
@@ -432,9 +504,17 @@ function formatResultsForLlm(plan: QueryPlan, result: QueryResult): string {
   } else if (result.summary.type === "sum") {
     parts.push(`Total unpaid: ${String(result.summary.value)}`);
   } else if (result.summary.type === "metrics" || result.summary.type === "list") {
-    parts.push(`Results (${result.rows.length} rows):`);
-    if (result.rows.length > 0) {
-      parts.push(JSON.stringify(result.rows, null, 2));
+    const totalFetched = result.summary.totalFetched || result.rows.length;
+    const DISPLAY_LIMIT = 20;
+    const displayRows = result.rows.slice(0, DISPLAY_LIMIT);
+    
+    parts.push(`Results (${totalFetched} total cases, showing ${displayRows.length} most recent):`);
+    if (displayRows.length > 0) {
+      parts.push(JSON.stringify(displayRows, null, 2));
+    }
+    
+    if (totalFetched > DISPLAY_LIMIT) {
+      parts.push(`\nNote: ${totalFetched - DISPLAY_LIMIT} additional cases are available in the downloadable .md file.`);
     }
   } else if (result.summary.type === "group_by") {
     parts.push(`Results grouped by ${String(result.summary.groupBy)}:`);
@@ -464,6 +544,7 @@ function streamRejection(message: string): Response {
 type Message = {
   role: "user" | "assistant";
   content: string;
+  queryResults?: string;
 };
 
 export async function POST(request: Request) {
@@ -501,13 +582,30 @@ export async function POST(request: Request) {
       return streamRejection("Contact information is only available to verified legal professionals, companies, and media/research partners. Please register through the appropriate channel to access this data.");
     }
 
-    const plan = await parseQuery(message);
+    // Extract previous query context from history
+    const recentHistoryForPlanner = history?.slice(-2) || [];
+    const previousQueryContext = recentHistoryForPlanner.length > 0
+      ? `Previous conversation context:\n${recentHistoryForPlanner.map(msg => 
+          `${msg.role}: ${msg.content.substring(0, 200)}`
+        ).join('\n')}`
+      : '';
+
+    // Build user context for query planner
+    const userContext = {
+      role: userRole,
+      companyName: session?.user?.companyName,
+      approvalStatus: session?.user?.approvalStatus
+    };
+
+    const plan = await parseQuery(message, previousQueryContext, userContext);
 
     if (plan.rejected) {
       return streamRejection(plan.rejectionReason || "This query is outside the scope of Sindicato's worker exploitation database.");
     }
 
-    if (!plan.aggregation) return error("Could not understand the query. Please rephrase.", 400);
+    if (!plan.aggregation) {
+      return error("Could not understand the query. Please rephrase.", 400);
+    }
 
     const planValidation = validateQueryPlan(plan, fieldMap);
     if (!planValidation.valid) {
@@ -567,8 +665,30 @@ export async function POST(request: Request) {
       return streamRejection(`I can only answer questions about Sindicato's worker exploitation data. ${validation.reason || "This query is outside the scope of the available data."}`);
     }
 
-    const result = await executePlan(plan, fieldMap, extraFilters);
-    const contextForLlm = formatResultsForLlm(plan, result);
+    const result = await executePlan(plan, fieldMap, extraFilters, requestsContact);
+    let contextForLlm = formatResultsForLlm(plan, result);
+
+    // Check if current results are empty and we have previous results in history
+    if (result.rows.length === 0 && history && history.length > 0) {
+      // Look for previous assistant messages with queryResults
+      const previousAssistantMsg = history
+        .filter(msg => msg.role === 'assistant' && msg.queryResults)
+        .pop();
+      
+      if (previousAssistantMsg?.queryResults) {
+        try {
+          const previousResults = JSON.parse(previousAssistantMsg.queryResults);
+          if (previousResults.rows && previousResults.rows.length > 0) {
+            // Use previous results instead
+            result.rows = previousResults.rows;
+            result.summary = previousResults.summary;
+            contextForLlm = formatResultsForLlm(plan, result);
+          }
+        } catch (e) {
+          console.error('Failed to parse previous query results:', e);
+        }
+      }
+    }
 
     if (requestsContact && result.rows.length > 0) {
       const caseIds = result.rows
@@ -600,21 +720,87 @@ export async function POST(request: Request) {
       });
     }
 
+    const truncateResults = (results: string, maxLength = 2000): string => {
+      if (results.length <= maxLength) return results;
+      return results.substring(0, maxLength) + "... [truncated]";
+    };
+
     const recentHistory = history?.slice(-5) || [];
     const historyContext = recentHistory.length > 0
-      ? `Conversation history:\n${recentHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}\n\n`
+      ? `Previous conversation:\n${recentHistory.map(msg => {
+          const role = msg.role === 'user' ? 'User' : 'Assistant';
+          const results = msg.queryResults 
+            ? `\nRaw data: ${truncateResults(msg.queryResults)}` 
+            : '';
+          return `${role}: ${msg.content}${results}`;
+        }).join('\n\n')}\n\n`
       : '';
 
     const model = getClerkModel();
     const stream = await callOpenRouterStream({
       model,
       systemPrompt: CLERK_RESPONSE_SYSTEM,
-      userPrompt: `${historyContext}User question: ${message}\n\nDatabase query results:\n${contextForLlm}\n\nFormat the answer in natural language.`,
+      userPrompt: `${historyContext}Current question: ${message}\n\nCurrent database query results:\n${contextForLlm}\n\nInstructions: \n1. Answer the current question using the current database results\n2. If the user references previous data (e.g., "those cases", "the results"), use the conversation history and raw data from previous queries\n3. When listing cases, always include case IDs\n4. Format the answer in natural language with proper markdown tables`,
       temperature: 0.5,
       maxTokens: 2048,
     });
 
-    return new Response(stream, {
+    // Ensure contextForLlm is never empty
+    const safeContextForLlm = contextForLlm && contextForLlm.trim().length > 0 
+      ? contextForLlm 
+      : "No database results available.";
+
+    console.log("[API] Preparing to send response");
+    console.log("[API] Query plan:", plan);
+    console.log("[API] Result rows count:", result.rows.length);
+    console.log("[API] Context for LLM length:", safeContextForLlm.length);
+
+    // Create a combined stream that sends raw results first, then the AI response
+    const encoder = new TextEncoder();
+    const combinedStream = new ReadableStream({
+      async start(controller) {
+        // ALWAYS send raw results marker for consistency
+        const rawResultsMarker = `__RAW_RESULTS__${JSON.stringify(result)}__END_RAW_RESULTS__`;
+        controller.enqueue(encoder.encode(rawResultsMarker));
+        console.log("[API] Raw results marker size:", rawResultsMarker.length, "bytes");
+        console.log("[API] Result rows:", result.rows.length);
+        if (result.rows.length > 0) {
+          const firstRow = result.rows[0] as any;
+          const lastRow = result.rows[result.rows.length - 1] as any;
+          console.log("[API] First row story length:", firstRow.story?.length || 0);
+          console.log("[API] Last row story length:", lastRow.story?.length || 0);
+        }
+        
+        // Then stream the AI response
+        const reader = stream.getReader();
+        let aiChunksSent = 0;
+        let totalAiBytes = 0;
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+              console.log("[API] AI stream complete, chunks sent:", aiChunksSent, "total bytes:", totalAiBytes);
+              break;
+            }
+            aiChunksSent++;
+            totalAiBytes += value.length;
+            controller.enqueue(value);
+          }
+        } catch (streamError) {
+          console.error("[API] Error streaming AI response:", streamError);
+          controller.enqueue(encoder.encode("An error occurred while generating the response."));
+        } finally {
+          reader.releaseLock();
+          controller.close();
+        }
+      }
+    });
+
+    return new Response(combinedStream, {
+      headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-cache" },
+    });
+
+    return new Response(combinedStream, {
       headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-cache" },
     });
   } catch (err) {

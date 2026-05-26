@@ -257,6 +257,21 @@ export default function Header({   scrolledBg = "bg-sindicato-bordeaux/70 backdr
             >
               Report
             </Link>
+            {session?.user ? (
+              <Link
+                href="/account"
+                className={`${clerkBg} px-3 py-1.5 text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)]`}
+              >
+                Account
+              </Link>
+            ) : (
+              <button
+                onClick={() => setShowLogin(true)}
+                className={`${clerkBg} px-3 py-1.5 text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)]`}
+              >
+                Sign In
+              </button>
+            )}
           </div>
         </div>
       </div>

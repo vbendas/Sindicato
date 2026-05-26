@@ -40,7 +40,8 @@ export async function callOpenRouter(opts: {
 
     const data = await response.json();
     const msg = data.choices[0].message;
-    return msg.content ?? msg.reasoning ?? "";
+    const content = msg.content ?? msg.reasoning ?? "";
+    return content;
   } finally {
     clearTimeout(timeout);
   }

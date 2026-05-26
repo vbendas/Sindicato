@@ -53,6 +53,17 @@ export async function GET(request: Request) {
         value: r.country,
       }));
 
+    // Generate date options for date range filtering (last 24 months)
+    const dateOptions = [];
+    const currentDate = new Date();
+    for (let i = 0; i < 24; i++) {
+      const date = new Date(currentDate);
+      date.setMonth(date.getMonth() - i);
+      const monthYear = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      const isoDate = date.toISOString().split('T')[0];
+      dateOptions.push({ label: monthYear, value: isoDate });
+    }
+
     return success({
       companies: companiesList,
       countries: countriesList,
@@ -65,6 +76,8 @@ export async function GET(request: Request) {
       sexes: SEXES.map((s) => ({ label: s, value: s })),
       age_from: AGE_RANGES.map((a) => ({ label: a, value: a.split("-")[0] })),
       age_to: AGE_RANGES.map((a) => ({ label: a, value: a.split("-")[1] })),
+      date_from: dateOptions,
+      date_to: dateOptions,
     });
   } catch (err) {
     console.error("Error fetching variables:", err);

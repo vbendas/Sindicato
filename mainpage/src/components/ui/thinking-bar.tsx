@@ -1,8 +1,7 @@
 "use client"
 
-import { TextShimmer } from "@/components/ui/text-shimmer"
 import { cn } from "@/lib/utils"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, Loader2 } from "lucide-react"
 
 type ThinkingBarProps = {
   className?: string
@@ -14,24 +13,28 @@ type ThinkingBarProps = {
 
 export function ThinkingBar({
   className,
-  text = "Thinking",
+  text = "Analyzing data",
   onStop,
   stopLabel = "Answer now",
   onClick,
 }: ThinkingBarProps) {
   return (
-    <div className={cn("flex w-full items-center justify-between", className)}>
+    <div className={cn("flex w-full items-center justify-between gap-3", className)}>
       {onClick ? (
         <button
           type="button"
           onClick={onClick}
-          className="flex items-center gap-1 text-sm transition-opacity hover:opacity-80 text-sindicato-warm-white"
+          className="flex items-center gap-2 text-sm transition-opacity hover:opacity-80 text-sindicato-warm-white"
         >
-          <TextShimmer className="font-medium text-sindicato-warm-white">{text}</TextShimmer>
+          <Loader2 className="size-4 animate-spin text-sindicato-warm-white/70" />
+          <span className="font-medium">{text}</span>
           <ChevronRight className="text-sindicato-warm-white/50 size-4" />
         </button>
       ) : (
-        <TextShimmer className="cursor-default font-medium text-sindicato-warm-white">{text}</TextShimmer>
+        <div className="flex items-center gap-2">
+          <Loader2 className="size-4 animate-spin text-sindicato-warm-white/70" />
+          <span className="font-medium text-sindicato-warm-white">{text}</span>
+        </div>
       )}
       {onStop ? (
         <button
