@@ -1,8 +1,18 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { StickToBottom } from "use-stick-to-bottom"
-import { createContext, useContext, useEffect, useState } from "react"
+import dynamic from "next/dynamic"
+import { createContext, useContext } from "react"
+
+const StickToBottom = dynamic(
+  () => import("use-stick-to-bottom").then((mod) => mod.StickToBottom),
+  { ssr: false }
+)
+
+const StickToBottomContent = dynamic(
+  () => import("use-stick-to-bottom").then((mod) => mod.StickToBottom.Content),
+  { ssr: false }
+)
 
 const ChatContainerContext = createContext(false)
 
@@ -26,33 +36,23 @@ function ChatContainerRoot({
   className,
   ...props
 }: ChatContainerRootProps) {
-  const [isMounted, setIsMounted] = useState(false)
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  if (!isMounted) {
-    return (
-      <ChatContainerContext.Provider value={false}>
+  return (
+    <ChatContainerContext.Provider value={true}>
+      {typeof window === "undefined" ? (
         <div className={cn("flex overflow-y-auto", className)} {...props}>
           {children}
         </div>
-      </ChatContainerContext.Provider>
-    )
-  }
-
-  return (
-    <ChatContainerContext.Provider value={true}>
-      <StickToBottom
-        className={cn("flex overflow-y-auto", className)}
-        resize="smooth"
-        initial="instant"
-        role="log"
-        {...props}
-      >
-        {children}
-      </StickToBottom>
+      ) : (
+        <StickToBottom
+          className={cn("flex overflow-y-auto", className)}
+          resize="smooth"
+          initial="instant"
+          role="log"
+          {...props}
+        >
+          {children}
+        </StickToBottom>
+      )}
     </ChatContainerContext.Provider>
   )
 }
@@ -64,7 +64,7 @@ function ChatContainerContent({
 }: ChatContainerContentProps) {
   const isMounted = useContext(ChatContainerContext)
 
-  if (!isMounted) {
+  if (!isMounted || typeof window === "undefined") {
     return (
       <div className={cn("flex w-full flex-col", className)} {...props}>
         {children}
@@ -73,12 +73,12 @@ function ChatContainerContent({
   }
 
   return (
-    <StickToBottom.Content
+    <StickToBottomContent
       className={cn("flex w-full flex-col", className)}
       {...props}
     >
       {children}
-    </StickToBottom.Content>
+    </StickToBottomContent>
   )
 }
 
