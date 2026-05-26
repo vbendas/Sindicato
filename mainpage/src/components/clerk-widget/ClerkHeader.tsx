@@ -2,7 +2,6 @@
 
 import { ArrowLeft, X, Minus, Maximize2 } from "lucide-react";
 import { useClerkWidget, type ClerkMode } from "./ClerkWidgetProvider";
-import { cn } from "@/lib/utils";
 
 const MODE_TITLES: Record<ClerkMode, string> = {
   home: "Sindicato Clerk",
@@ -21,7 +20,7 @@ export function ClerkHeader({ onExpand }: ClerkHeaderProps) {
   const showBack = activeMode !== "home";
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-sindicato-smoked-charcoal shrink-0">
+    <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-sindicato-smoked-charcoal/80 backdrop-blur-xl shrink-0">
       <div className="flex items-center gap-2 min-w-0">
         {showBack ? (
           <button

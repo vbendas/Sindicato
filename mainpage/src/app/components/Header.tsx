@@ -139,12 +139,6 @@ export default function Header({
             >
               About Us
             </Link>
-            <Link
-              href="/clerk"
-              className={`${navTextColor} ${navHoverColor} transition-colors uppercase tracking-wider text-xs lg:text-sm font-[family-name:var(--font-barlow)] font-bold relative after:absolute after:bottom-[-2px] after:left-0 after:h-[1px] after:w-0 after:bg-white/50 after:transition-all hover:after:w-full`}
-            >
-              Clerk
-            </Link>
           </nav>
 
           <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 shrink-0">

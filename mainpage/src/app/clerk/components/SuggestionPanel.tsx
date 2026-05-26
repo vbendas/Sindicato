@@ -27,7 +27,7 @@ export default function SuggestionPanel({ groups, searchQuery, onSelect, onClose
   return (
     <div
       ref={panelRef}
-      className="absolute left-0 right-0 bottom-full mb-1 z-50 bg-sindicato-smoked-charcoal border border-white/10 shadow-xl rounded-[0.75rem] overflow-hidden"
+      className="absolute left-0 right-0 bottom-full mb-2 z-50 bg-sindicato-smoked-charcoal/90 backdrop-blur-2xl border border-white/10 shadow-2xl shadow-black/30 rounded-3xl overflow-hidden"
     >
       <div className="max-h-80 overflow-y-auto py-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:!bg-sindicato-moss-green [&::-webkit-scrollbar-track]:bg-transparent" style={{ scrollbarColor: '#4a5c3a transparent', scrollbarWidth: 'thin' }}>
         {groups.map((group) => (

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { getSuggestionGroups } from "./suggestions";
 
 interface WelcomeScreenProps {
@@ -18,7 +19,7 @@ export default function WelcomeScreen({ onSuggestionClick, role }: WelcomeScreen
       transition={{ duration: 0.6 }}
       className="flex flex-col items-center justify-center h-full text-center px-6"
     >
-      <div className="w-20 h-0.5 bg-sindicato-cream/20 mb-8" />
+      <div className="w-16 h-1 bg-sindicato-cream/10 rounded-full mb-8" />
       
       <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-warm-white uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-4">
         Clerk
@@ -28,12 +29,22 @@ export default function WelcomeScreen({ onSuggestionClick, role }: WelcomeScreen
         Ask questions about worker exploitation data
       </p>
       
+      <div className="relative size-[125px] rounded-full overflow-hidden border-2 border-black bg-sindicato-bordeaux mb-10">
+        <Image
+          src="/clerk.png"
+          alt="Clerk"
+          fill
+          className="object-cover"
+          sizes="125px"
+        />
+      </div>
+      
       <div className="flex flex-wrap gap-3 justify-center mb-8">
         {popularSuggestions.slice(0, 4).map((suggestion) => (
           <button
             key={suggestion.id}
             onClick={() => onSuggestionClick(suggestion.label)}
-            className="px-4 py-2 bg-sindicato-smoked-charcoal border border-white/10 rounded-full text-sindicato-warm-white/70 hover:text-sindicato-warm-white hover:bg-white/10 transition-all font-[family-name:var(--font-jetbrains)] text-xs"
+            className="px-5 py-2.5 bg-sindicato-smoked-charcoal/60 backdrop-blur-xl border border-white/10 rounded-full text-sindicato-warm-white/70 hover:text-sindicato-warm-white hover:bg-white/10 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 transition-all duration-200 font-[family-name:var(--font-jetbrains)] text-xs"
           >
             {suggestion.label}
           </button>

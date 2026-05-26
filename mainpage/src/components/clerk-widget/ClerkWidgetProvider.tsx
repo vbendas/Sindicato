@@ -44,6 +44,8 @@ type ClerkWidgetContextType = {
   sessionLoading: boolean;
   showProactive: boolean;
   dismissProactive: () => void;
+  pendingQuery: string | null;
+  setPendingQuery: (query: string | null) => void;
 };
 
 const ClerkWidgetContext = createContext<ClerkWidgetContextType | null>(null);
@@ -83,11 +85,21 @@ export function ClerkWidgetProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<ClerkWidgetContextType["session"]>(null);
   const [sessionLoading, setSessionLoading] = useState(true);
   const [showProactive, setShowProactive] = useState(false);
+  const [pendingQuery, setPendingQuery] = useState<string | null>(null);
   const proactiveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     persistMessages(messages);
   }, [messages]);
+
+  const fetchSession = useCallback(() => {
+    setSessionLoading(true);
+    fetch("/api/auth/session")
+      .then((r) => r.json())
+      .then((s) => setSession(s?.user ? s : null))
+      .catch(() => setSession(null))
+      .finally(() => setSessionLoading(false));
+  }, []);
 
   useEffect(() => {
     fetch("/api/auth/session")
@@ -99,12 +111,12 @@ export function ClerkWidgetProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const alreadyWelcomed = localStorage.getItem(WELCOMED_KEY);
+    const alreadyWelcomed = sessionStorage.getItem(WELCOMED_KEY);
     if (alreadyWelcomed) return;
 
     proactiveTimerRef.current = setTimeout(() => {
       setShowProactive(true);
-      localStorage.setItem(WELCOMED_KEY, "true");
+      sessionStorage.setItem(WELCOMED_KEY, "true");
 
       setTimeout(() => {
         setShowProactive(false);
@@ -119,16 +131,20 @@ export function ClerkWidgetProvider({ children }: { children: ReactNode }) {
   const openWidget = useCallback(() => {
     setIsOpen(true);
     setShowProactive(false);
-  }, []);
+    fetchSession();
+  }, [fetchSession]);
 
   const closeWidget = useCallback(() => {
     setIsOpen(false);
   }, []);
 
   const toggleWidget = useCallback(() => {
-    setIsOpen((prev) => !prev);
+    setIsOpen((prev) => {
+      if (!prev) fetchSession();
+      return !prev;
+    });
     setShowProactive(false);
-  }, []);
+  }, [fetchSession]);
 
   const dismissProactive = useCallback(() => {
     setShowProactive(false);
@@ -178,6 +194,8 @@ export function ClerkWidgetProvider({ children }: { children: ReactNode }) {
         sessionLoading,
         showProactive,
         dismissProactive,
+        pendingQuery,
+        setPendingQuery,
       }}
     >
       {children}

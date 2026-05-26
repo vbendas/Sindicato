@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Barlow_Condensed, Inter, JetBrains_Mono, Geist } from "next/font/google";
 import Script from "next/script";
 import { AuthProvider } from "@/components/AuthProvider";
+import { ClerkWidgetProvider, ClerkBubble, ClerkPanel } from "@/components/clerk-widget";
 import { onUmamiLoaded } from "@/lib/umami";
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -54,7 +55,13 @@ export default function RootLayout({
             onLoad={onUmamiLoaded}
           />
         )}
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <ClerkWidgetProvider>
+            {children}
+            <ClerkBubble />
+            <ClerkPanel />
+          </ClerkWidgetProvider>
+        </AuthProvider>
       </body>
     </html>
   );

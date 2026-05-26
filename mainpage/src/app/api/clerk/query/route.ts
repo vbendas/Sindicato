@@ -10,6 +10,7 @@ import { auth } from "@/lib/auth/auth";
 import {
   CLERK_QUERY_PLANNER_SYSTEM,
   CLERK_RESPONSE_SYSTEM,
+  CLERK_RESPONSE_CONCISE,
 } from "@/lib/ai/prompts";
 
 type Filter = {
@@ -561,6 +562,7 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     const { message, history } = body as { message: string; history?: Message[] };
+    const responseMode = request.headers.get("X-Response-Mode") || "full";
 
     if (!message || typeof message !== "string" || message.trim().length === 0) return error("Message is required", 400);
     if (message.length > 2000) return error("Message too long (max 2000 characters)", 400);
@@ -737,9 +739,10 @@ export async function POST(request: Request) {
       : '';
 
     const model = getClerkModel();
+    const responsePrompt = responseMode === "concise" ? CLERK_RESPONSE_CONCISE : CLERK_RESPONSE_SYSTEM;
     const stream = await callOpenRouterStream({
       model,
-      systemPrompt: CLERK_RESPONSE_SYSTEM,
+      systemPrompt: responsePrompt,
       userPrompt: `${historyContext}Current question: ${message}\n\nCurrent database query results:\n${contextForLlm}\n\nInstructions: \n1. Answer the current question using the current database results\n2. If the user references previous data (e.g., "those cases", "the results"), use the conversation history and raw data from previous queries\n3. When listing cases, always include case IDs\n4. Format the answer in natural language with proper markdown tables`,
       temperature: 0.5,
       maxTokens: 2048,
