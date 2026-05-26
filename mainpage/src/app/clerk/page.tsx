@@ -32,7 +32,29 @@ export default function ClerkPage() {
     document.documentElement.classList.add("clerk-page");
     return () => document.documentElement.classList.remove("clerk-page");
   }, []);
-  const [messages, setMessages] = useState<Message[]>([]);
+
+  const WIDGET_STORAGE_KEY = "clerk-widget-state";
+
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const raw = sessionStorage.getItem(WIDGET_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        return parsed["query-chat"] || [];
+      }
+    } catch {}
+    return [];
+  });
+
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(WIDGET_STORAGE_KEY);
+      const parsed = raw ? JSON.parse(raw) : {};
+      parsed["query-chat"] = messages;
+      sessionStorage.setItem(WIDGET_STORAGE_KEY, JSON.stringify(parsed));
+    } catch {}
+  }, [messages]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showShimmer, setShowShimmer] = useState(false);
@@ -219,6 +241,7 @@ export default function ClerkPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-Response-Mode": "full",
         },
         body: JSON.stringify({
           message: input,
@@ -511,7 +534,7 @@ export default function ClerkPage() {
           {messages.length === 0 ? (
             <div className="h-full flex flex-col">
               {isPendingApproval && (
-                <div className="bg-yellow-500/10 border-b border-yellow-500/30 px-4 py-3 text-center">
+                <div className="mx-4 mt-3 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl px-4 py-3 text-center">
                   <p className="text-yellow-400 text-sm">
                     Your account is pending approval. You can explore public data while you wait.
                     Contact information will be available once your account is approved.
@@ -519,7 +542,7 @@ export default function ClerkPage() {
                 </div>
               )}
               {isRejected && (
-                <div className="bg-red-500/10 border-b border-red-500/30 px-4 py-3 text-center">
+                <div className="mx-4 mt-3 bg-red-500/10 border border-red-500/20 rounded-2xl px-4 py-3 text-center">
                   <p className="text-red-400 text-sm">
                     Your account request was not approved. You can still explore public data.
                   </p>
@@ -547,23 +570,23 @@ export default function ClerkPage() {
               <ChatContainerContent>
                 {messages.map((msg, index) => (
                   msg.role === "user" ? (
-                    <Message key={index} className="mb-4 justify-end">
-                      <MessageContent className="bg-sindicato-cream text-sindicato-charcoal rounded-2xl rounded-tr-sm px-4 py-3 max-w-[80%]">
+                    <Message key={index} className="mb-4 justify-end items-center">
+                      <MessageContent className="bg-sindicato-cream text-sindicato-charcoal rounded-3xl px-5 py-3 max-w-[80%] shadow-md shadow-black/10">
                         {msg.content}
                       </MessageContent>
-                      <MessageAvatar src="/images/handfinal.png" alt="You" fallback="👤" className="ml-3" />
+                      <MessageAvatar src="/clerk-avatar.png" alt="You" fallback="👤" className="ml-3 size-20 border-2 border-black bg-sindicato-pine" />
                     </Message>
                   ) : (
-                    <Message key={index} className="mb-4">
-                      <MessageAvatar src="/board-clerk.png" alt="Clerk AI" fallback="🤖" className="mr-3" />
+                    <Message key={index} className="mb-4 items-center">
+                      <MessageAvatar src="/clerk.png" alt="Clerk AI" fallback="🤖" className="mr-3 size-20 border-2 border-black bg-sindicato-bordeaux" />
                       {showShimmer && isLoading && index === messages.length - 1 ? (
-                        <div className="ml-3 flex items-center px-4 py-3 max-w-[80%] rounded-2xl rounded-tl-sm bg-sindicato-smoked-charcoal border border-white/10">
+                        <div className="ml-3 flex items-center px-5 py-3 max-w-[80%] rounded-3xl bg-sindicato-smoked-charcoal/80 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/20">
                           <TextShimmer className="font-medium text-sindicato-warm-white">Analyzing data</TextShimmer>
                         </div>
                       ) : (
                         <div className="flex flex-col max-w-[80%]">
                           <MessageContent 
-                            className={`ml-3 rounded-2xl rounded-tl-sm px-4 py-3 text-sindicato-warm-white bg-sindicato-smoked-charcoal border border-white/10 ${
+                            className={`ml-3 rounded-3xl px-5 py-3 text-sindicato-warm-white bg-sindicato-smoked-charcoal/80 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/20 ${
                               msg.content.includes("can only answer questions about Sindicato's worker exploitation data") 
                                 ? 'bg-red-500/20 border border-red-500/30' 
                                 : ''
@@ -576,7 +599,7 @@ export default function ClerkPage() {
                           <button
                             onClick={() => handleDownloadMarkdown(msg.content, index)}
                             disabled={isDownloading}
-                            className="ml-3 mt-1 flex items-center gap-1 text-xs text-sindicato-warm-white/40 hover:text-sindicato-warm-white/70 disabled:text-sindicato-warm-white/20 disabled:cursor-not-allowed transition-colors self-start"
+                            className="ml-3 mt-2 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs text-sindicato-warm-white/40 hover:text-sindicato-warm-white/70 disabled:text-sindicato-warm-white/20 disabled:cursor-not-allowed transition-all self-start bg-white/5 hover:bg-white/10 border border-white/5"
                           >
                             {isDownloading ? (
                               <>
@@ -603,10 +626,10 @@ export default function ClerkPage() {
         </div>
         
         {/* Input area - fixed at bottom */}
-        <div className="border-t border-white/10 bg-sindicato-smoked-charcoal/95 backdrop-blur-sm">
+        <div className="border-t border-white/5 bg-sindicato-smoked-charcoal/60 backdrop-blur-2xl">
           {!session && (
             <div className="px-4 pt-2 pb-0">
-              <div className="border border-white/10 bg-white/5 px-4 py-2 text-center">
+              <div className="border border-white/10 bg-white/5 px-4 py-2.5 text-center rounded-2xl">
                 <p className="text-xs text-sindicato-warm-white/50">
                   <Link href="/register?role=lawyer" className="underline hover:text-sindicato-warm-white">Legal professionals</Link>
                   {" · "}
@@ -619,7 +642,7 @@ export default function ClerkPage() {
               </div>
             </div>
           )}
-          <div className="relative px-4 pt-1 pb-2">
+          <div className="relative px-4 pt-1.5 pb-3">
             {panelVisible && (
               <SuggestionPanel
                 groups={filteredGroups}
@@ -634,7 +657,7 @@ export default function ClerkPage() {
               onSubmit={handleSubmit}
               isLoading={isLoading}
               disabled={isLoading}
-              className="w-full bg-sindicato-smoked-charcoal border-sindicato-smoked-charcoal shadow-lg p-2"
+              className="w-full bg-white/5 border-white/10 shadow-xl shadow-black/20 p-2"
             >
               <div className="flex items-center gap-2">
                 <PromptInputTextarea

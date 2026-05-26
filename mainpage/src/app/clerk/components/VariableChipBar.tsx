@@ -23,7 +23,7 @@ export default function VariableChipBar({ variables, values, labels, data, onCha
   const allResolved = variables.every((v) => values[v.name]);
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5 px-2 pb-2">
+    <div className="flex flex-wrap items-center gap-2 px-2 pb-2 pt-1">
       {variables.map((v) => (
         <VariableSelector
           key={v.name}
