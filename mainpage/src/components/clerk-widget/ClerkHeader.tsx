@@ -2,13 +2,7 @@
 
 import { ArrowLeft, X, Minus, Maximize2 } from "lucide-react";
 import { useClerkWidget, type ClerkMode } from "./ClerkWidgetProvider";
-
-const MODE_TITLES: Record<ClerkMode, string> = {
-  home: "Sindicato Clerk",
-  "kb-chat": "Ask a Question",
-  "query-chat": "Query Data",
-  contact: "Contact Sindicato",
-};
+import { useT } from "@/lib/i18n";
 
 type ClerkHeaderProps = {
   onExpand?: () => void;
@@ -16,8 +10,16 @@ type ClerkHeaderProps = {
 
 export function ClerkHeader({ onExpand }: ClerkHeaderProps) {
   const { activeMode, setActiveMode, closeWidget } = useClerkWidget();
+  const t = useT();
 
   const showBack = activeMode !== "home";
+
+  const modeTitles: Record<ClerkMode, string> = {
+    home: t("clerk.header.titleHome"),
+    "kb-chat": t("clerk.header.titleKb"),
+    "query-chat": t("clerk.header.titleQuery"),
+    contact: t("clerk.header.titleContact"),
+  };
 
   return (
     <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-sindicato-smoked-charcoal/80 backdrop-blur-xl shrink-0">
@@ -37,7 +39,7 @@ export function ClerkHeader({ onExpand }: ClerkHeaderProps) {
           </div>
         )}
         <h2 className="text-sm font-medium text-sindicato-warm-white truncate font-[family-name:var(--font-barlow)] tracking-wide">
-          {MODE_TITLES[activeMode]}
+          {modeTitles[activeMode]}
         </h2>
       </div>
 
@@ -46,7 +48,7 @@ export function ClerkHeader({ onExpand }: ClerkHeaderProps) {
           <button
             onClick={onExpand}
             className="size-7 rounded-full flex items-center justify-center text-sindicato-warm-white/40 hover:text-sindicato-warm-white hover:bg-white/10 transition-colors"
-            title="Open in full page"
+            title={t("clerk.header.expand")}
           >
             <Maximize2 size={14} />
           </button>
@@ -54,14 +56,14 @@ export function ClerkHeader({ onExpand }: ClerkHeaderProps) {
         <button
           onClick={closeWidget}
           className="size-7 rounded-full flex items-center justify-center text-sindicato-warm-white/40 hover:text-sindicato-warm-white hover:bg-white/10 transition-colors"
-          title="Minimize"
+          title={t("clerk.header.minimize")}
         >
           <Minus size={14} />
         </button>
         <button
           onClick={closeWidget}
           className="size-7 rounded-full flex items-center justify-center text-sindicato-warm-white/40 hover:text-sindicato-warm-white hover:bg-white/10 transition-colors"
-          title="Close"
+          title={t("clerk.header.close")}
         >
           <X size={14} />
         </button>

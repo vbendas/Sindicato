@@ -4,15 +4,7 @@ import { useState, useRef } from "react";
 import { Send, Paperclip, X, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-const CATEGORIES = [
-  { value: "general", label: "General Inquiry" },
-  { value: "legal", label: "Legal" },
-  { value: "press", label: "Press / Media" },
-  { value: "partnership", label: "Partnership" },
-  { value: "bug", label: "Report a Bug" },
-  { value: "other", label: "Other" },
-];
+import { useT } from "@/lib/i18n";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ALLOWED_TYPES = [
@@ -24,6 +16,7 @@ const ALLOWED_TYPES = [
 ];
 
 export function ClerkContactForm() {
+  const t = useT();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [category, setCategory] = useState("");
@@ -35,6 +28,15 @@ export function ClerkContactForm() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const CATEGORIES = [
+    { value: "general", label: t("clerk.contact.categoryGeneral") },
+    { value: "legal", label: t("clerk.contact.categoryLegal") },
+    { value: "press", label: t("clerk.contact.categoryPress") },
+    { value: "partnership", label: t("clerk.contact.categoryPartnership") },
+    { value: "bug", label: t("clerk.contact.categoryBug") },
+    { value: "other", label: t("clerk.contact.categoryOther") },
+  ];
 
   const [touched, setTouched] = useState({
     name: false,
@@ -51,12 +53,12 @@ export function ClerkContactForm() {
       return;
     }
     if (!ALLOWED_TYPES.includes(f.type)) {
-      setFileError("Allowed: PDF, DOC, DOCX, PNG, JPG");
+      setFileError(t("clerk.contact.fileErrorTypes"));
       setFile(null);
       return;
     }
     if (f.size > MAX_FILE_SIZE) {
-      setFileError("Max file size: 5MB");
+      setFileError(t("clerk.contact.fileErrorSize"));
       setFile(null);
       return;
     }
@@ -100,7 +102,7 @@ export function ClerkContactForm() {
 
       setSuccess(true);
     } catch (err) {
-      setError((err as Error).message || "Something went wrong. Please try again.");
+      setError((err as Error).message || t("clerk.contact.errorGeneric"));
     } finally {
       setIsLoading(false);
     }
@@ -111,10 +113,10 @@ export function ClerkContactForm() {
       <div className="h-full flex flex-col items-center justify-center px-6">
         <CheckCircle2 size={40} className="text-green-400 mb-3" />
         <p className="text-sm text-sindicato-warm-white/90 text-center font-medium">
-          Message sent!
+          {t("clerk.contact.successTitle")}
         </p>
         <p className="text-xs text-sindicato-warm-white/50 text-center mt-1">
-          We&apos;ll get back to you soon.
+          {t("clerk.contact.successBody")}
         </p>
         <button
           onClick={() => {
@@ -129,7 +131,7 @@ export function ClerkContactForm() {
           }}
           className="mt-4 text-xs text-sindicato-warm-white/40 hover:text-sindicato-warm-white/70 transition-colors"
         >
-          Send another message
+          {t("clerk.contact.sendAnother")}
         </button>
       </div>
     );
@@ -140,7 +142,7 @@ export function ClerkContactForm() {
       <div className="flex-1 p-4 space-y-3">
         <div>
           <label className="text-xs text-sindicato-warm-white/50 block mb-1">
-            Name *
+            {t("clerk.contact.nameLabel")} *
           </label>
           <input
             type="text"
@@ -153,16 +155,16 @@ export function ClerkContactForm() {
                 ? "border-red-500/50"
                 : "border-white/10 focus:border-white/20 focus:bg-white/[0.07]"
             )}
-            placeholder="Your name"
+            placeholder={t("clerk.contact.namePlaceholder")}
           />
           {touched.name && !name.trim() && (
-            <p className="text-[10px] text-red-400 mt-0.5">Required</p>
+            <p className="text-[10px] text-red-400 mt-0.5">{t("clerk.contact.required")}</p>
           )}
         </div>
 
         <div>
           <label className="text-xs text-sindicato-warm-white/50 block mb-1">
-            Email *
+            {t("clerk.contact.emailLabel")} *
           </label>
           <input
             type="email"
@@ -175,19 +177,19 @@ export function ClerkContactForm() {
                 ? "border-red-500/50"
                 : "border-white/10 focus:border-white/20 focus:bg-white/[0.07]"
             )}
-            placeholder="you@email.com"
+            placeholder={t("clerk.contact.emailPlaceholder")}
           />
           {touched.email && !email.trim() && (
-            <p className="text-[10px] text-red-400 mt-0.5">Required</p>
+            <p className="text-[10px] text-red-400 mt-0.5">{t("clerk.contact.required")}</p>
           )}
           {touched.email && email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && (
-            <p className="text-[10px] text-red-400 mt-0.5">Invalid email</p>
+            <p className="text-[10px] text-red-400 mt-0.5">{t("clerk.contact.invalidEmail")}</p>
           )}
         </div>
 
         <div>
           <label className="text-xs text-sindicato-warm-white/50 block mb-1">
-            Subject *
+            {t("clerk.contact.subjectLabel")} *
           </label>
           <select
             value={category}
@@ -201,7 +203,7 @@ export function ClerkContactForm() {
             )}
           >
             <option value="" className="bg-sindicato-charcoal">
-              Select a category
+              {t("clerk.contact.selectCategory")}
             </option>
             {CATEGORIES.map((c) => (
               <option key={c.value} value={c.value} className="bg-sindicato-charcoal">
@@ -210,27 +212,27 @@ export function ClerkContactForm() {
             ))}
           </select>
           {touched.category && !category && (
-            <p className="text-[10px] text-red-400 mt-0.5">Required</p>
+            <p className="text-[10px] text-red-400 mt-0.5">{t("clerk.contact.required")}</p>
           )}
         </div>
 
         <div>
           <label className="text-xs text-sindicato-warm-white/50 block mb-1">
-            Case reference{" "}
-            <span className="text-sindicato-warm-white/30">(optional)</span>
+            {t("clerk.contact.caseRefLabel")}{" "}
+            <span className="text-sindicato-warm-white/30">{t("clerk.contact.caseRefOptional")}</span>
           </label>
           <input
             type="text"
             value={caseRef}
             onChange={(e) => setCaseRef(e.target.value)}
             className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 focus:border-white/20 focus:bg-white/[0.07] text-sm text-sindicato-warm-white placeholder:text-sindicato-warm-white/30 outline-none transition-all duration-200"
-            placeholder="e.g., case-abc123"
+            placeholder={t("clerk.contact.caseRefPlaceholder")}
           />
         </div>
 
         <div>
           <label className="text-xs text-sindicato-warm-white/50 block mb-1">
-            Message *
+            {t("clerk.contact.messageLabel")} *
           </label>
           <textarea
             value={message}
@@ -243,17 +245,17 @@ export function ClerkContactForm() {
                 ? "border-red-500/50"
                 : "border-white/10 focus:border-white/20 focus:bg-white/[0.07]"
             )}
-            placeholder="How can we help?"
+            placeholder={t("clerk.contact.messagePlaceholder")}
           />
           {touched.message && !message.trim() && (
-            <p className="text-[10px] text-red-400 mt-0.5">Required</p>
+            <p className="text-[10px] text-red-400 mt-0.5">{t("clerk.contact.required")}</p>
           )}
         </div>
 
         <div>
           <label className="text-xs text-sindicato-warm-white/50 block mb-1">
-            Attachment{" "}
-            <span className="text-sindicato-warm-white/30">(optional, max 5MB)</span>
+            {t("clerk.contact.attachmentLabel")}{" "}
+            <span className="text-sindicato-warm-white/30">{t("clerk.contact.attachmentOptional")}</span>
           </label>
           <input
             ref={fileInputRef}
@@ -286,7 +288,7 @@ export function ClerkContactForm() {
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-dashed border-white/10 hover:border-white/20 hover:bg-white/[0.07] text-xs text-sindicato-warm-white/40 hover:text-sindicato-warm-white/60 transition-all duration-200 w-full"
             >
               <Paperclip size={12} />
-              Attach a file (PDF, DOC, PNG, JPG)
+              {t("clerk.contact.attachFile")}
             </button>
           )}
           {fileError && (
@@ -311,12 +313,12 @@ export function ClerkContactForm() {
           {isLoading ? (
             <div className="flex items-center gap-2">
               <div className="w-3.5 h-3.5 border-2 border-sindicato-warm-white/30 border-t-sindicato-warm-white rounded-full animate-spin" />
-              Sending...
+              {t("clerk.contact.sending")}
             </div>
           ) : (
             <div className="flex items-center gap-2">
               <Send size={14} />
-              Send message
+              {t("clerk.contact.sendMessage")}
             </div>
           )}
         </Button>

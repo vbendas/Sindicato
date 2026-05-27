@@ -304,3 +304,18 @@ export const auditLogs = pgTable("audit_logs", {
   reason: text("reason"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const companySummaries = pgTable("company_summaries", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  companyId: uuid("company_id")
+    .references(() => companies.id)
+    .notNull()
+    .unique(),
+  summary: text("summary").notNull(),
+  commonIssues: jsonb("common_issues").$type<string[]>().default([]),
+  resolutionRate: varchar("resolution_rate", { length: 20 }),
+  engagementPattern: varchar("engagement_pattern", { length: 50 }),
+  keyInsight: text("key_insight"),
+  generatedAt: timestamp("generated_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+});

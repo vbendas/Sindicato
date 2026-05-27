@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
+import { useT } from "@/lib/i18n";
 
 interface HeroProps {
   caseCount?: number;
@@ -9,6 +10,7 @@ interface HeroProps {
 }
 
 export default function Hero({ caseCount = 0, companyCount = 0 }: HeroProps) {
+  const t = useT();
   const { scrollYProgress } = useScroll();
   const fistOpacity = useTransform(scrollYProgress, [0, 0.4], [0.65, 0]);
   const fistY = useTransform(scrollYProgress, [0, 0.4], [225, 625]);
@@ -29,7 +31,7 @@ export default function Hero({ caseCount = 0, companyCount = 0 }: HeroProps) {
               transition={{ duration: 0.6 }}
               className="text-sindicato-warm-white/30 text-xs sm:text-sm font-bold tracking-[0.3em] uppercase font-[family-name:var(--font-jetbrains)]"
             >
-              Sindicato Case #001
+              {t("hero.caseLabel")}
             </motion.span>
           </div>
 
@@ -40,10 +42,10 @@ export default function Hero({ caseCount = 0, companyCount = 0 }: HeroProps) {
             className="text-center"
           >
             <span className="text-6xl sm:text-7xl md:text-8xl lg:text-[8rem] xl:text-[9rem] font-black text-sindicato-warm-white uppercase leading-[0.85] font-[family-name:var(--font-barlow)] tracking-wide block">
-              Wage Theft
+              {t("hero.titleMain")}
             </span>
             <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-sindicato-warm-white/90 uppercase leading-[1.1] font-[family-name:var(--font-barlow)] tracking-wider mt-2 sm:mt-3 block">
-              Is Not a Mistake. <span className="text-sindicato-warm-white text-outline">It&apos;s a Policy.</span>
+              {t("hero.titleSub1")} <span className="text-sindicato-warm-white text-outline">{t("hero.titleSub2")}</span>
             </span>
           </motion.h1>
 
@@ -53,8 +55,7 @@ export default function Hero({ caseCount = 0, companyCount = 0 }: HeroProps) {
             transition={{ delay: 0.9, duration: 0.8 }}
             className="text-base sm:text-lg md:text-xl text-sindicato-warm-white/65 mt-6 sm:mt-8 leading-relaxed text-center"
           >
-            One worker was exploited. One case became a platform.<br />
-            Dozens of voices are about to become impossible to ignore.
+            {t("hero.subtitle")}
           </motion.p>
 
           <motion.div
@@ -67,13 +68,13 @@ export default function Hero({ caseCount = 0, companyCount = 0 }: HeroProps) {
               href="/file"
               className="bg-sindicato-charcoal text-sindicato-warm-white px-10 sm:px-12 py-3.5 sm:py-4 text-base sm:text-lg font-bold uppercase tracking-wider hover:bg-sindicato-charcoal/80 transition-all font-[family-name:var(--font-barlow)] shadow-md hover:shadow-lg active:scale-[0.98]"
             >
-              File a Report
+              {t("hero.ctaFileReport")}
             </Link>
             <Link
               href="#feed"
               className="text-sindicato-warm-white/65 hover:text-sindicato-warm-white transition-colors text-base sm:text-lg uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold"
             >
-              See the Record &rarr;
+              {t("hero.ctaSeeRecord")} &rarr;
             </Link>
           </motion.div>
         </div>
@@ -107,7 +108,7 @@ export default function Hero({ caseCount = 0, companyCount = 0 }: HeroProps) {
         className="absolute bottom-8 sm:bottom-10 left-0 right-0 z-10 text-center"
       >
         <p className="text-sindicato-warm-white/45 text-xs sm:text-sm font-[family-name:var(--font-jetbrains)] tracking-widest">
-          #{String(caseCount).padStart(3, "0")} CASES FILED &middot; {companyCount}{" "}COMPANIES EXPOSED &middot; ALL WORKER-REPORTED
+          #{String(caseCount).padStart(3, "0")} {t("hero.statsCasesFiled")} &middot; {companyCount}{" "}{t("hero.statsCompaniesExposed")} &middot; {t("hero.statsWorkerReported")}
         </p>
       </motion.div>
     </section>

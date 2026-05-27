@@ -133,7 +133,7 @@ export function getTranslationModel() {
 }
 
 export function getReportModel() {
-  return process.env.REPORT_MODEL ?? "deepseek/deepseek-v3";
+  return process.env.REPORT_MODEL ?? "deepseek/deepseek-chat";
 }
 
 export function getClerkModel() {

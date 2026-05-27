@@ -17,21 +17,23 @@ import {
 import { Message, MessageAvatar, MessageContent } from "@/components/ui/message";
 import { TextShimmer } from "@/components/ui/text-shimmer";
 import { useClerkWidget } from "./ClerkWidgetProvider";
-
-const KB_WELCOME: string =
-  "Ask me anything about Sindicato — what it is, how it works, why it exists, or how to use the platform.";
-
-const KB_SUGGESTIONS = [
-  "What is Sindicato?",
-  "How do I file a case?",
-  "Who can access the data?",
-  "How is my privacy protected?",
-  "What is the manifesto about?",
-];
+import { useT, useLocale } from "@/lib/i18n";
 
 export function ClerkKBChat() {
   const { messages, addMessage, updateLastMessage } = useClerkWidget();
+  const t = useT();
+  const { locale } = useLocale();
   const modeMessages = messages["kb-chat"];
+
+  const KB_WELCOME = t("clerk.kb.welcome");
+
+  const KB_SUGGESTIONS = [
+    t("clerk.kb.suggestion1"),
+    t("clerk.kb.suggestion2"),
+    t("clerk.kb.suggestion3"),
+    t("clerk.kb.suggestion4"),
+    t("clerk.kb.suggestion5"),
+  ];
 
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -55,23 +57,23 @@ export function ClerkKBChat() {
       const res = await fetch("/api/clerk/knowledge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question }),
+        body: JSON.stringify({ question, locale }),
         signal: controller.signal,
       });
 
       if (!res.ok) throw new Error("KB request failed");
 
       const data = await res.json();
-      updateLastMessage("kb-chat", data.answer || "I couldn't find an answer to that. Try contacting Sindicato directly.");
+      updateLastMessage("kb-chat", data.answer || t("clerk.kb.fallbackAnswer"));
     } catch (err) {
       if ((err as Error).name !== "AbortError") {
-        updateLastMessage("kb-chat", "Sorry, I couldn't process that right now. Please try again.");
+        updateLastMessage("kb-chat", t("clerk.kb.errorAnswer"));
       }
     } finally {
       setIsLoading(false);
       abortRef.current = null;
     }
-  }, [input, isLoading, addMessage, updateLastMessage]);
+  }, [input, isLoading, addMessage, updateLastMessage, t, locale]);
 
   return (
     <div className="h-full flex flex-col">
