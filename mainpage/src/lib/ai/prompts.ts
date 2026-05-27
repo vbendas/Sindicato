@@ -92,21 +92,66 @@ Contact attempts: ${data.contactAttempts}
 ${data.story}
 --- END WORKER STORY ---`;
 
-export const COMPANY_SUMMARY_SYSTEM = `You are a case analyst for Sindicato. You will receive all cases filed against a specific company. Generate a concise 2-3 sentence summary of the overall situation with that company: what happened, how many workers are affected, common patterns, and the current status. Be factual and neutral. Do not speculate.`;
+export const COMPANY_SUMMARY_SYSTEM = `You are a case analyst for Sindicato. Analyze all cases filed against a company and generate a structured JSON report.
+
+Return ONLY valid JSON with this exact structure:
+{
+  "summary": "2-3 sentence overview of the situation, what happened, how many workers affected, and overall pattern",
+  "commonIssues": ["case_type_1", "case_type_2"],
+  "resolutionRate": "X%",
+  "engagementPattern": "one_of: ignoring|slow_response|retaliation|engaged|no_response",
+  "keyInsight": "One sentence highlighting the most important behavioral pattern or concern"
+}
+
+Guidelines:
+- Be factual and neutral, base conclusions only on the data provided
+- For commonIssues, list the top 2-3 most common case types from: unpaid_wages, late_payment, sudden_deactivation, unfair_review, predatory_practices, harassment, retaliation, contract_violation, data_privacy, other
+- For resolutionRate, calculate the percentage of cases with status "resolved"
+- For engagementPattern:
+  * "ignoring" = company shows no response to most cases (low contact attempts, high days without answer)
+  * "slow_response" = company responds but takes very long (avg >30 days without answer)
+  * "retaliation" = multiple cases mention retaliation, deactivation, or threats after complaints
+  * "engaged" = company actively resolves cases with reasonable response times
+  * "no_response" = no contact attempts recorded in most cases
+- For keyInsight, identify patterns like:
+  * Retaliation after complaints
+  * Systematic wage theft across projects
+  * Sudden deactivation patterns
+  * Lack of response to legal notices
+  * High volume of similar complaints
+- Do not speculate beyond the evidence
+- Keep language clear and accessible`;
 
 export const COMPANY_SUMMARY_USER = (data: {
   companyName: string;
   vertical: string;
   totalCases: number;
   totalOwed: string;
-  cases: { story: string; amountOwed: string; dateRange: string }[];
-}) => `Generate a summary for ${data.companyName} (${data.vertical}):
+  resolvedCount: number;
+  cases: {
+    story: string;
+    amountOwed: string;
+    dateRange: string;
+    caseType: string;
+    resolutionStatus: string;
+    contactAttempts: number;
+    daysWithoutAnswer: number | null;
+  }[];
+}) => `Analyze cases for ${data.companyName} (${data.vertical}):
 
 Total cases: ${data.totalCases}
 Total unpaid: ${data.totalOwed}
+Resolved: ${data.resolvedCount} of ${data.totalCases}
 
 --- BEGIN CASES ---
-${data.cases.map((c, i) => `Case ${i + 1}: ${c.dateRange} | $${c.amountOwed} | ${c.story.slice(0, 300)}`).join("\n\n")}
+${data.cases.map((c, i) => `Case ${i + 1}:
+Type: ${c.caseType}
+Status: ${c.resolutionStatus}
+Date: ${c.dateRange}
+Amount: $${c.amountOwed}
+Contact attempts: ${c.contactAttempts}
+Days without answer: ${c.daysWithoutAnswer ?? 'N/A'}
+Story: ${c.story.slice(0, 400)}`).join("\n\n")}
 --- END CASES ---`;
 
 export const CASE_STRENGTH_USER = (caseData: {

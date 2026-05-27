@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useT } from "@/lib/i18n";
 
 interface VerticalStats {
   totalCases: number;
@@ -16,27 +17,29 @@ interface VerticalNetworkCardsProps {
   };
 }
 
-const verticalConfig = {
-  remote: {
-    title: "Remote Platform",
-    description: "Data annotators, translators, freelancers, and remote platform workers",
-    href: "/workers",
-  },
-  gig: {
-    title: "Gig Delivery",
-    description: "Delivery workers from Uber, Glovo, DoorDash, Just Eat, and other platforms",
-    href: "/gig",
-  },
-};
-
 export default function VerticalNetworkCards({ verticals }: VerticalNetworkCardsProps) {
+  const t = useT();
+
+  const verticalConfig = {
+    remote: {
+      title: t("network.remoteTitle"),
+      description: t("network.remoteDescription"),
+      href: "/workers",
+    },
+    gig: {
+      title: t("network.gigTitle"),
+      description: t("network.gigDescription"),
+      href: "/gig",
+    },
+  };
+
   const hasData = verticals && typeof verticals.remote !== "undefined";
 
   if (!hasData) {
     return (
       <section className="bg-sindicato-bordeaux py-24 sm:py-28">
         <div className="max-w-5xl mx-auto px-4 text-center">
-          <p className="text-sindicato-warm-white/40">Loading networks...</p>
+          <p className="text-sindicato-warm-white/40">{t("network.loading")}</p>
         </div>
       </section>
     );
@@ -52,7 +55,7 @@ export default function VerticalNetworkCards({ verticals }: VerticalNetworkCards
           transition={{ duration: 0.6 }}
           className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-warm-white uppercase text-center mb-14 font-[family-name:var(--font-barlow)] tracking-wide"
         >
-          The Network
+          {t("network.title")}
         </motion.h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
@@ -84,7 +87,7 @@ export default function VerticalNetworkCards({ verticals }: VerticalNetworkCards
                           {stats?.totalCases ?? 0}
                         </div>
                         <div className="text-sindicato-warm-white/40 text-xs uppercase tracking-wider font-[family-name:var(--font-jetbrains)]">
-                          Cases
+                          {t("network.statCases")}
                         </div>
                       </div>
                       <div className="text-center">
@@ -92,7 +95,7 @@ export default function VerticalNetworkCards({ verticals }: VerticalNetworkCards
                           &euro;{(stats?.totalUnpaid ?? 0).toLocaleString()}
                         </div>
                         <div className="text-sindicato-warm-white/40 text-xs uppercase tracking-wider font-[family-name:var(--font-jetbrains)]">
-                          Unpaid
+                          {t("network.statUnpaid")}
                         </div>
                       </div>
                       <div className="text-center">
@@ -100,14 +103,14 @@ export default function VerticalNetworkCards({ verticals }: VerticalNetworkCards
                           {stats?.activeCompanies ?? 0}
                         </div>
                         <div className="text-sindicato-warm-white/40 text-xs uppercase tracking-wider font-[family-name:var(--font-jetbrains)]">
-                          Companies
+                          {t("network.statCompanies")}
                         </div>
                       </div>
                     </div>
 
                     <div className="text-center">
                       <span className="inline-block border border-white/30 text-sindicato-warm-white px-6 py-2.5 text-sm font-bold uppercase tracking-wider transition-all hover:bg-white/10 font-[family-name:var(--font-barlow)]">
-                        Enter {config.title} Hub &rarr;
+                        {t("network.enterHub", { title: config.title })} &rarr;
                       </span>
                     </div>
                   </Link>

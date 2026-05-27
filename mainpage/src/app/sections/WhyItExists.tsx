@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import Counter from "../components/Counter";
 import { useInView } from "../hooks/useInView";
+import { useT } from "@/lib/i18n";
 
 interface Stats {
   totalCases: number;
@@ -19,41 +20,42 @@ interface WhyItExistsProps {
   onVerticalChange: (vertical: string) => void;
 }
 
-const tabs = [
-  { label: "All Networks", value: "all" },
-  { label: "Remote Workers", value: "remote" },
-  { label: "Gig Workers", value: "gig" },
-];
-
-const commitments = [
-  {
-    title: "No money. No strings. No business.",
-    body: "Sindicato takes no money from investors, advertisers, or any company listed on this platform. Ever. It runs on the voluntary support of workers, attorneys, journalists, and anyone who believes wage theft should have consequences. No pressure. No commercialisation. No business. Community built for community."
-  },
-  {
-    title: "Workers pay nothing. Ever.",
-    body: "Every tool, every case filing, every communication channel is free for workers. No subscriptions. No hidden fees. No pay-to-play."
-  },
-  {
-    title: "Non-profit. Full financial transparency.",
-    body: "Every dollar that comes in and goes out is published. No black boxes. No executive bonuses. No shareholder expectations."
-  },
-  {
-    title: "Workers own their claims. We amplify their voices.",
-    body: "We provide the platform, not the verdict. Workers control their story, their identity, and their legal strategy at every step."
-  },
-  {
-    title: "Legal protection built in.",
-    body: "Your case is public on the platform. Your identity is not. Personal data and email routing stay anonymized until you decide to share them. Companies and attorneys can read your story but never see your name unless you choose to reveal it. If someone retaliates against you for speaking up, your public case on Sindicato is timestamped evidence you can use. You control your data. You control who sees you."
-  },
-  {
-    title: "Identity is a choice.",
-    body: "Workers choose when and if to share their identity or contact details. Anonymity is never a barrier to filing a case."
-  },
-];
-
 export default function WhyItExists({ stats, activeVertical, onVerticalChange }: WhyItExistsProps) {
+  const t = useT();
   const { ref, isInView } = useInView();
+
+  const tabs = [
+    { label: t("whyItExists.tabAll"), value: "all" },
+    { label: t("whyItExists.tabRemote"), value: "remote" },
+    { label: t("whyItExists.tabGig"), value: "gig" },
+  ];
+
+  const commitments = [
+    {
+      title: t("whyItExists.commitment1Title"),
+      body: t("whyItExists.commitment1Body"),
+    },
+    {
+      title: t("whyItExists.commitment2Title"),
+      body: t("whyItExists.commitment2Body"),
+    },
+    {
+      title: t("whyItExists.commitment3Title"),
+      body: t("whyItExists.commitment3Body"),
+    },
+    {
+      title: t("whyItExists.commitment4Title"),
+      body: t("whyItExists.commitment4Body"),
+    },
+    {
+      title: t("whyItExists.commitment5Title"),
+      body: t("whyItExists.commitment5Body"),
+    },
+    {
+      title: t("whyItExists.commitment6Title"),
+      body: t("whyItExists.commitment6Body"),
+    },
+  ];
 
   const slowDuration = 4000;
 
@@ -62,24 +64,24 @@ export default function WhyItExists({ stats, activeVertical, onVerticalChange }:
       stat: (
         <Counter target={stats.totalCases} isInView={isInView} duration={slowDuration} />
       ),
-      label: "cases filed",
-      body: "Every case adds to a permanent public record. Individual complaints get ignored. A thousand individual complaints become a movement that regulators and attorneys cannot ignore.",
+      label: t("whyItExists.statCasesLabel"),
+      body: t("whyItExists.statCasesBody"),
       invert: false,
     },
     {
       stat: (
         <Counter target={stats.totalUnpaid} isInView={isInView} duration={slowDuration} prefix="$" />
       ),
-      label: "unpaid wages documented",
-      body: "This is not hypothetical money. These are hours worked, tasks completed, and promises broken. Every dollar represents time stolen from workers who showed up and delivered.",
+      label: t("whyItExists.statUnpaidLabel"),
+      body: t("whyItExists.statUnpaidBody"),
       invert: true,
     },
     {
       stat: (
         <Counter target={stats.activeCompanies} isInView={isInView} duration={slowDuration} />
       ),
-      label: "companies exposed",
-      body: "Behind every number is a company policy. Wage theft is not a mistake — it is a business decision. We make those decisions visible so workers can organize around shared patterns.",
+      label: t("whyItExists.statCompaniesLabel"),
+      body: t("whyItExists.statCompaniesBody"),
       invert: false,
     },
   ];
@@ -97,7 +99,7 @@ export default function WhyItExists({ stats, activeVertical, onVerticalChange }:
           <div className="w-12 h-0.5 bg-white/20 sm:mx-auto mb-4" />
           <div className="inline-block">
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-sindicato-warm-white uppercase font-[family-name:var(--font-barlow)] tracking-wide leading-tight">
-              Why It<br className="sm:hidden" /> Exists
+              {t("whyItExists.title")}
             </h2>
           </div>
         </motion.div>
@@ -153,7 +155,7 @@ export default function WhyItExists({ stats, activeVertical, onVerticalChange }:
           <div className="-mx-4 sm:-mx-6 lg:-mx-8 mt-10 sm:mt-12 bg-sindicato-charcoal px-4 sm:px-6 lg:px-8 pt-[15px] pb-[100px]">
             <div className="w-12 h-0.5 bg-white/20 mx-auto mb-6" />
             <h3 className="text-xl sm:text-2xl font-bold text-sindicato-warm-white uppercase text-center mb-8 font-[family-name:var(--font-barlow)] tracking-wide">
-              Our Commitment
+              {t("whyItExists.commitmentTitle")}
             </h3>
             <motion.div
               initial={{ opacity: 0, y: 20 }}

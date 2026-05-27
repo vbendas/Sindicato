@@ -2,29 +2,32 @@
 
 import { motion } from "framer-motion";
 import { FileText, ShieldCheck, Eye } from "lucide-react";
-
-const steps = [
-  {
-    number: 1,
-    title: "Document",
-    icon: FileText,
-    description: "What happened, when, and what you were owed. Names, dates, amounts. Whatever you remember. We never edit your words. They stay yours.",
-  },
-  {
-    number: 2,
-    title: "Report",
-    icon: ShieldCheck,
-    description: "Your story joins others from the same company. On the public record, visible to everyone. One complaint is a whisper. A stack of them becomes a pattern no one can ignore.",
-  },
-  {
-    number: 3,
-    title: "Expose",
-    icon: Eye,
-    description: "Patterns go public. Attorneys review the cases. When a collective action takes shape, workers present their evidence directly. The platform connects. The workers decide.",
-  },
-];
+import { useT } from "@/lib/i18n";
 
 export default function HowItWorks() {
+  const t = useT();
+
+  const steps = [
+    {
+      number: 1,
+      title: t("howItWorks.step1Title"),
+      icon: FileText,
+      description: t("howItWorks.step1Description"),
+    },
+    {
+      number: 2,
+      title: t("howItWorks.step2Title"),
+      icon: ShieldCheck,
+      description: t("howItWorks.step2Description"),
+    },
+    {
+      number: 3,
+      title: t("howItWorks.step3Title"),
+      icon: Eye,
+      description: t("howItWorks.step3Description"),
+    },
+  ];
+
   return (
     <section className="bg-sindicato-bordeaux py-28 sm:py-32 lg:py-36">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -35,10 +38,10 @@ export default function HowItWorks() {
           transition={{ duration: 0.6 }}
           className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-warm-white uppercase text-center mb-4 font-[family-name:var(--font-barlow)] tracking-wide"
         >
-          How It Works
+          {t("howItWorks.title")}
         </motion.h2>
         <p className="text-sindicato-warm-white/45 text-sm sm:text-base text-center mb-16 sm:mb-20 font-[family-name:var(--font-jetbrains)] tracking-wider uppercase">
-          Three steps. Your terms, your timeline.
+          {t("howItWorks.subtitle")}
         </p>
 
         {/* Desktop: horizontal stepped layout */}

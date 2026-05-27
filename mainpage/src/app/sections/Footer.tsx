@@ -1,10 +1,16 @@
-import Link from "next/link";
+"use client";
+
+import { useT } from "@/lib/i18n";
+import { LocalizedLink } from "@/lib/i18n/navigation";
+import LanguageSelector from "@/components/LanguageSelector";
 
 interface FooterProps {
   bg?: string;
 }
 
 export default function Footer({ bg = "bg-sindicato-bordeaux" }: FooterProps) {
+  const t = useT();
+
   return (
     <footer className={bg}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
@@ -16,15 +22,15 @@ export default function Footer({ bg = "bg-sindicato-bordeaux" }: FooterProps) {
           </div>
 
           <div className="flex items-center gap-6">
-            <Link href="/manifesto" className="text-sindicato-warm-white/60 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] font-bold">
-              Manifesto
-            </Link>
-            <Link href="/cases" className="text-sindicato-warm-white/60 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] font-bold">
-              Cases
-            </Link>
-            <Link href="/donate" className="text-sindicato-warm-white/60 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] font-bold">
-              Donate
-            </Link>
+            <LocalizedLink href="/manifesto" className="text-sindicato-warm-white/60 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] font-bold">
+              {t("common.manifesto")}
+            </LocalizedLink>
+            <LocalizedLink href="/cases" className="text-sindicato-warm-white/60 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] font-bold">
+              {t("common.cases")}
+            </LocalizedLink>
+            <LocalizedLink href="/donate" className="text-sindicato-warm-white/60 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] font-bold">
+              {t("common.donate")}
+            </LocalizedLink>
             <a
               href="https://discord.gg/sindicato"
               target="_blank"
@@ -50,15 +56,15 @@ export default function Footer({ bg = "bg-sindicato-bordeaux" }: FooterProps) {
 
         <div className="border-t border-white/10 pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-sindicato-warm-white/40 text-[10px] sm:text-xs text-center sm:text-left">
-            &copy; 2026 Sindicato. Workers own their claims. We provide the platform, not the verdict.
+            &copy; 2026 Sindicato. {t("footer.tagline")}
           </p>
           <div className="flex items-center gap-4">
+            <LanguageSelector />
             <span className="text-sindicato-warm-white/30 text-[10px] font-[family-name:var(--font-jetbrains)]">
-              BUILT IN PUBLIC
+              {t("footer.builtInPublic")}
             </span>
           </div>
         </div>
-
 
       </div>
     </footer>

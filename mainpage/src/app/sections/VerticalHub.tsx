@@ -9,6 +9,7 @@ import WhyItExists from "../sections/WhyItExists";
 import LiveCaseFeed from "../sections/LiveCaseFeed";
 import CTAs from "../sections/CTAs";
 import Footer from "../sections/Footer";
+import { useT } from "@/lib/i18n";
 
 interface Company {
   name: string;
@@ -35,18 +36,8 @@ const defaultStats: Stats = {
   companies: [],
 };
 
-const content = {
-  remote: {
-    title: "Remote Workers",
-    subtitle: "Data annotators, translators, freelancers, and platform workers. Your work powers AI. Your voice deserves to be heard.",
-  },
-  gig: {
-    title: "Gig Delivery Workers",
-    subtitle: "Delivery drivers and couriers from Uber, Glovo, DoorDash, Just Eat, and more. Your labor moves cities. Your rights should move too.",
-  },
-};
-
 export default function VerticalHub({ vertical }: { vertical: "remote" | "gig" }) {
+  const t = useT();
   const [stats, setStats] = useState<Stats>(defaultStats);
   const [activeVertical, setActiveVertical] = useState<string>(vertical);
   const fetchedRef = useRef(false);
@@ -72,8 +63,6 @@ export default function VerticalHub({ vertical }: { vertical: "remote" | "gig" }
     }
   }, [fetchStats, vertical]);
 
-  const cfg = content[vertical];
-
   return (
     <>
       <div className="fixed inset-0 pointer-events-none z-[60] grain-overlay" style={{ opacity: 0.45 }} />
@@ -87,10 +76,10 @@ export default function VerticalHub({ vertical }: { vertical: "remote" | "gig" }
             className="relative z-10 max-w-3xl mx-auto px-4 text-center py-16 sm:py-20"
           >
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-warm-white uppercase mb-4 leading-tight font-[family-name:var(--font-barlow)]">
-              {cfg.title}
+              {t(`verticalHub.${vertical}Title`)}
             </h1>
             <p className="text-base sm:text-lg text-sindicato-warm-white/70 max-w-2xl mx-auto">
-              {cfg.subtitle}
+              {t(`verticalHub.${vertical}Subtitle`)}
             </p>
           </motion.div>
         </section>

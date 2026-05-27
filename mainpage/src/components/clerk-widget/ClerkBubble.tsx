@@ -6,11 +6,13 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useClerkWidget } from "./ClerkWidgetProvider";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n";
 
 export function ClerkBubble() {
   const { isOpen, toggleWidget, showProactive, dismissProactive, openWidget } =
     useClerkWidget();
   const pathname = usePathname();
+  const t = useT();
 
   if (pathname === "/clerk") return null;
 
@@ -33,13 +35,13 @@ export function ClerkBubble() {
                 <X size={10} />
               </button>
               <p className="text-sm text-sindicato-warm-white/90 leading-snug">
-                Hi! I&apos;m the Sindicato Clerk. Ask me anything or explore our data.
+                {t("clerk.bubble.proactive")}
               </p>
               <button
                 onClick={openWidget}
                 className="mt-2 text-xs text-sindicato-warm-white/50 hover:text-sindicato-warm-white transition-colors"
               >
-                Open chat
+                {t("clerk.bubble.openChat")}
               </button>
             </div>
           </motion.div>
@@ -59,7 +61,7 @@ export function ClerkBubble() {
         )}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.95 }}
-        aria-label={isOpen ? "Close chat" : "Open chat"}
+        aria-label={isOpen ? t("common.close") : t("clerk.bubble.openChat")}
       >
         <AnimatePresence mode="wait" initial={false}>
           {isOpen ? (
