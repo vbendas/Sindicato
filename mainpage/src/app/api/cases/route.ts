@@ -10,6 +10,7 @@ import { verifyTurnstileToken } from "@/lib/utils/turnstile";
 import { notifyCompanyNewCase } from "@/lib/email/notifications";
 import { createCaseAlias } from "@/lib/email/aliases";
 import { auth } from "@/lib/auth";
+import { translateToEnglish } from "@/lib/ai/translate";
 
 export async function POST(request: Request) {
   // Require authenticated session
@@ -81,7 +82,15 @@ export async function POST(request: Request) {
 
     const detectedLang = franc(data.story, { minLength: 50 });
 
-    // Build dateRange string for backward compat
+    let storyTranslated: string | null = null;
+    if (detectedLang !== "eng" && detectedLang !== "und") {
+      try {
+        storyTranslated = await translateToEnglish(data.story, detectedLang);
+      } catch (err) {
+        console.error("Auto-translation failed:", err);
+      }
+    }
+
     const dateRange = [data.workDateStart, data.workDateEnd]
       .filter(Boolean)
       .map((d) => new Date(d!).toLocaleDateString("en-US", { month: "short", year: "numeric" }))
@@ -109,6 +118,7 @@ export async function POST(request: Request) {
         currency: data.currency,
         contactAttempts,
         story: data.story,
+        storyTranslated,
         email: data.email,
         translationLanguage: detectedLang,
         attested: true,

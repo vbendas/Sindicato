@@ -12,6 +12,7 @@ import {
   CLERK_RESPONSE_SYSTEM,
   CLERK_RESPONSE_CONCISE,
 } from "@/lib/ai/prompts";
+import { isValidLocale, localeNames } from "@/lib/i18n/config";
 
 type Filter = {
   field: string;
@@ -561,7 +562,7 @@ export async function POST(request: Request) {
     const isPrivileged = !!(userRole && isApproved);
 
     const body = await request.json();
-    const { message, history } = body as { message: string; history?: Message[] };
+    const { message, history, locale } = body as { message: string; history?: Message[]; locale?: string };
     const responseMode = request.headers.get("X-Response-Mode") || "full";
 
     if (!message || typeof message !== "string" || message.trim().length === 0) return error("Message is required", 400);
@@ -740,10 +741,17 @@ export async function POST(request: Request) {
 
     const model = getClerkModel();
     const responsePrompt = responseMode === "concise" ? CLERK_RESPONSE_CONCISE : CLERK_RESPONSE_SYSTEM;
+    
+    let localeInstruction = "";
+    if (locale && isValidLocale(locale) && locale !== "en") {
+      const langName = localeNames[locale];
+      localeInstruction = `\n\nIMPORTANT: Respond entirely in ${langName}. All narrative text, summaries, explanations, and table headers should be in ${langName}. Keep case IDs, company names, and technical identifiers unchanged.`;
+    }
+    
     const stream = await callOpenRouterStream({
       model,
-      systemPrompt: responsePrompt,
-      userPrompt: `${historyContext}Current question: ${message}\n\nCurrent database query results:\n${contextForLlm}\n\nInstructions: \n1. Answer the current question using the current database results\n2. If the user references previous data (e.g., "those cases", "the results"), use the conversation history and raw data from previous queries\n3. When listing cases, always include case IDs\n4. Format the answer in natural language with proper markdown tables`,
+      systemPrompt: responsePrompt + localeInstruction,
+      userPrompt: `${historyContext}Current question: ${message}\n\nCurrent database query results:\n${contextForLlm}\n\nInstructions: \n1. Answer the current question using the current database results\n2. If the user references previous data (e.g., "those cases", "the results"), use the conversation history and raw data from previous queries\n3. When listing cases, always include case IDs\n4. Format the answer in natural language with proper markdown tables${localeInstruction}`,
       temperature: 0.5,
       maxTokens: 2048,
     });

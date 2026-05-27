@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useT } from "@/lib/i18n";
 
 interface CaseData {
   id: string;
@@ -15,6 +16,7 @@ interface CaseData {
 }
 
 export default function FeaturedCase() {
+  const t = useT();
   const [caseData, setCaseData] = useState<CaseData | null>(null);
 
   useEffect(() => {
@@ -47,7 +49,7 @@ export default function FeaturedCase() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6 sm:mb-8 text-center sm:text-left">
           <span className="text-sindicato-warm-white/30 text-xs font-bold tracking-[0.25em] uppercase font-[family-name:var(--font-jetbrains)]">
-            {`// FEATURED CASE #001`}
+            {t("featuredCase.label")}
           </span>
         </div>
         <motion.div
@@ -66,7 +68,7 @@ export default function FeaturedCase() {
             <span className="inline-flex items-center gap-1.5 bg-white/10 border border-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider font-[family-name:var(--font-jetbrains)] shrink-0">
               <span className={`w-1.5 h-1.5 rounded-full ${display.resolutionStatus === "resolved" ? "bg-green-400" : "bg-red-400"}`} />
               <span className={display.resolutionStatus === "resolved" ? "text-green-400" : "text-red-400"}>
-                {display.resolutionStatus === "resolved" ? "solved" : "unresolved"}
+                {display.resolutionStatus === "resolved" ? t("featuredCase.statusSolved") : t("featuredCase.statusUnresolved")}
               </span>
             </span>
           </div>
@@ -75,7 +77,7 @@ export default function FeaturedCase() {
             {Number(display.amountOwed) > 0 && (
               <div>
                 <span className="block text-sindicato-warm-white/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
-                  Amount
+                  {t("featuredCase.amountLabel")}
                 </span>
                 <span className="text-sindicato-warm-white text-2xl sm:text-3xl font-bold font-[family-name:var(--font-jetbrains)]">
                   {display.currency === "USD" ? "$" : "\u20AC"}{Number(display.amountOwed).toLocaleString()}
@@ -84,15 +86,15 @@ export default function FeaturedCase() {
             )}
             <div>
               <span className="block text-sindicato-warm-white/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
-                Period
+                {t("featuredCase.periodLabel")}
               </span>
               <span className="text-sindicato-warm-white text-base sm:text-lg font-[family-name:var(--font-jetbrains)]">
-                Apr 9 – May 18, 2026
+                {display.dateRange}
               </span>
             </div>
             <div>
               <span className="block text-sindicato-warm-white/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
-                Cases Filed
+                {t("featuredCase.casesFiledLabel")}
               </span>
               <span className="text-sindicato-warm-white text-2xl sm:text-3xl font-bold font-[family-name:var(--font-jetbrains)]">
                 3
@@ -100,7 +102,7 @@ export default function FeaturedCase() {
             </div>
             <div>
               <span className="block text-sindicato-warm-white/40 text-xs uppercase tracking-wider mb-1 font-[family-name:var(--font-jetbrains)]">
-                Workers for Legal Action
+                {t("featuredCase.workersLegalLabel")}
               </span>
               <span className="text-sindicato-warm-white text-2xl sm:text-3xl font-bold font-[family-name:var(--font-jetbrains)]">
                 2
@@ -110,16 +112,14 @@ export default function FeaturedCase() {
 
           <div className="border-t border-white/10 pt-6">
             <p className="text-sindicato-warm-white/65 text-sm sm:text-base leading-relaxed mb-6 max-w-3xl">
-              A senior ML engineer documented wage theft through multiple AI training projects,
-              complete with Hubstaff logs, AutoQA scores, and a documented retaliation sequence.
-              This founding case established the pattern that Sindicato was built to expose.
+              {t("featuredCase.description")}
             </p>
 
             <Link
               href={`/workers/${display.company.slug}`}
               className="inline-flex items-center gap-2 text-sindicato-warm-white font-bold uppercase tracking-wider text-sm hover:text-sindicato-warm-white/80 transition-colors font-[family-name:var(--font-barlow)] group"
             >
-              View Full Report
+              {t("featuredCase.viewReport")}
               <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
             </Link>
           </div>

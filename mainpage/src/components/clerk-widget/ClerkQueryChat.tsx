@@ -17,16 +17,17 @@ import {
 import { Message, MessageAvatar, MessageContent } from "@/components/ui/message";
 import { TextShimmer } from "@/components/ui/text-shimmer";
 import { useClerkWidget } from "./ClerkWidgetProvider";
-import SuggestionPanel from "@/app/clerk/components/SuggestionPanel";
-import VariableChipBar from "@/app/clerk/components/VariableChipBar";
+import SuggestionPanel from "@/app/[lang]/clerk/components/SuggestionPanel";
+import VariableChipBar from "@/app/[lang]/clerk/components/VariableChipBar";
 import {
   getSuggestionGroups,
   filterSuggestions,
   getTemplateDefinition,
-} from "@/app/clerk/components/suggestions";
-import type { SuggestionItem, Variables } from "@/app/clerk/components/suggestions";
-import type { TemplateVariable } from "@/app/clerk/prompts";
+} from "@/app/[lang]/clerk/components/suggestions";
+import type { SuggestionItem, Variables } from "@/app/[lang]/clerk/components/suggestions";
+import type { TemplateVariable } from "@/app/[lang]/clerk/prompts";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/lib/i18n";
 
 export function ClerkQueryChat() {
   const {
@@ -37,6 +38,7 @@ export function ClerkQueryChat() {
     pendingQuery,
     setPendingQuery,
   } = useClerkWidget();
+  const { locale } = useLocale();
   const modeMessages = messages["query-chat"];
 
   const [input, setInput] = useState("");
@@ -191,6 +193,7 @@ export function ClerkQueryChat() {
         body: JSON.stringify({
           message: currentInput,
           history: currentHistory,
+          locale,
         }),
         signal: controller.signal,
       });

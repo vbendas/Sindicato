@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useT } from "@/lib/i18n";
 
 interface HeaderProps {
   scrolledBg?: string;
@@ -27,6 +28,7 @@ export default function Header({
   navHoverColor = "hover:text-sindicato-warm-white",
   onSessionChange
 }: HeaderProps) {
+  const t = useT();
   const [scrolled, setScrolled] = useState(false);
   const [session, setSession] = useState<{ user?: { id?: string; email?: string } } | null>(null);
   const [sessionLoading, setSessionLoading] = useState(true);
@@ -65,12 +67,12 @@ export default function Header({
       });
       const data = await res.json();
       if (!res.ok) {
-        setAuthError(data.error || "Failed to send code.");
+        setAuthError(data.error || t("header.errorSendCode"));
         return;
       }
       setSubStep("code");
     } catch {
-      setAuthError("Network error. Please try again.");
+      setAuthError(t("header.errorNetwork"));
     } finally {
       setAuthLoading(false);
     }
@@ -84,7 +86,7 @@ export default function Header({
     try {
       const result = await signIn("credentials", { email, code, redirect: false });
       if (result?.error) {
-        setAuthError("Invalid or expired code. Please try again.");
+        setAuthError(t("header.errorInvalidCode"));
         return;
       }
       const res = await fetch("/api/auth/session");
@@ -94,7 +96,7 @@ export default function Header({
       resetAuthForm();
       onSessionChange?.();
     } catch {
-      setAuthError("Verification failed. Please try again.");
+      setAuthError(t("header.errorVerification"));
     } finally {
       setAuthLoading(false);
     }
@@ -125,25 +127,25 @@ export default function Header({
               href="/"
               className={`${navTextColor} ${navHoverColor} transition-colors uppercase tracking-wider text-xs lg:text-sm font-[family-name:var(--font-barlow)] font-bold relative after:absolute after:bottom-[-2px] after:left-0 after:h-[1px] after:w-0 after:bg-white/50 after:transition-all hover:after:w-full`}
             >
-              Home
+              {t("header.navHome")}
             </Link>
             <Link
               href="/manifesto"
               className={`${navTextColor} ${navHoverColor} transition-colors uppercase tracking-wider text-xs lg:text-sm font-[family-name:var(--font-barlow)] font-bold relative after:absolute after:bottom-[-2px] after:left-0 after:h-[1px] after:w-0 after:bg-white/50 after:transition-all hover:after:w-full`}
             >
-              Manifesto
+              {t("header.navManifesto")}
             </Link>
             <Link
               href="/about"
               className={`${navTextColor} ${navHoverColor} transition-colors uppercase tracking-wider text-xs lg:text-sm font-[family-name:var(--font-barlow)] font-bold relative after:absolute after:bottom-[-2px] after:left-0 after:h-[1px] after:w-0 after:bg-white/50 after:transition-all hover:after:w-full`}
             >
-              About Us
+              {t("header.navAbout")}
             </Link>
           </nav>
 
           <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 shrink-0">
             <span className={`text-lg sm:text-xl lg:text-2xl font-bold tracking-widest uppercase font-[family-name:var(--font-labor-union)] ${navTextColor}`}>
-              SINDICATO
+              {t("header.brand")}
             </span>
           </Link>
 
@@ -152,18 +154,18 @@ export default function Header({
               href="/file"
               className={`${navTextColor} ${navHoverColor} transition-colors uppercase tracking-wider text-xs lg:text-sm font-[family-name:var(--font-barlow)] font-bold relative after:absolute after:bottom-[-2px] after:left-0 after:h-[1px] after:w-0 after:bg-white/50 after:transition-all hover:after:w-full`}
             >
-              Report a Case
+              {t("header.navReport")}
             </Link>
             <Link
               href="/cases"
               className={`${navTextColor} ${navHoverColor} transition-colors uppercase tracking-wider text-xs lg:text-sm font-[family-name:var(--font-barlow)] font-bold relative after:absolute after:bottom-[-2px] after:left-0 after:h-[1px] after:w-0 after:bg-white/50 after:transition-all hover:after:w-full`}
             >
-              View Cases
+              {t("header.navCases")}
             </Link>
             {session?.user ? (
               <div className="relative group">
                 <button className={`${clerkBg} px-4 lg:px-5 py-1.5 lg:py-2 text-xs lg:text-sm font-bold uppercase tracking-wider hover:opacity-80 transition-all font-[family-name:var(--font-barlow)] shadow-sm`}>
-                  Account
+                  {t("header.account")}
                 </button>
                 <div className="absolute right-0 top-full pt-2 hidden group-hover:block min-w-[180px]">
                   <div className="bg-sindicato-charcoal border border-white/10 shadow-xl">
@@ -176,13 +178,13 @@ export default function Header({
                       href="/account"
                       className="block px-4 py-2 text-sindicato-warm-white/80 hover:text-sindicato-warm-white hover:bg-white/5 text-xs uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold transition-colors"
                     >
-                      My Cases
+                      {t("header.myCases")}
                     </Link>
                     <button
                       onClick={() => signOut()}
                       className="w-full text-left px-4 py-2 text-red-400/80 hover:text-red-400 hover:bg-white/5 text-xs uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold transition-colors"
                     >
-                      Logout
+                      {t("header.logout")}
                     </button>
                   </div>
                 </div>
@@ -190,17 +192,17 @@ export default function Header({
             ) : (
               <Dialog open={showLogin} onOpenChange={(o) => { setShowLogin(o); if (!o) resetAuthForm(); }}>
                 <DialogTrigger className={`${clerkBg} px-4 lg:px-5 py-1.5 lg:py-2 text-xs lg:text-sm font-bold uppercase tracking-wider hover:opacity-80 transition-all font-[family-name:var(--font-barlow)] shadow-sm`}>
-                  Sign In
+                  {t("header.signIn")}
                 </DialogTrigger>
                 <DialogContent className="bg-sindicato-slate border border-white/20 text-sindicato-warm-white max-w-sm">
                   <DialogHeader>
                     <DialogTitle className="text-sindicato-warm-white font-[family-name:var(--font-barlow)] uppercase tracking-wider">
-                      {subStep === "email" ? "Sign In" : "Check your email"}
+                      {subStep === "email" ? t("header.signInTitle") : t("header.checkEmailTitle")}
                     </DialogTitle>
                     <DialogDescription className="text-sindicato-warm-white/50 text-xs">
                       {subStep === "email"
-                        ? "Enter your email to receive a one-time code."
-                        : `We sent a 6-digit code to ${email}.`
+                        ? t("header.signInDescription")
+                        : t("header.checkEmailDescription", { email })
                       }
                     </DialogDescription>
                   </DialogHeader>
@@ -211,13 +213,13 @@ export default function Header({
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="you@example.com"
+                        placeholder={t("header.emailPlaceholder")}
                         className={inputClass}
                         required
                       />
                       {authError && <p className="text-xs text-red-400">{authError}</p>}
                       <button type="submit" disabled={authLoading || !email} className={btnClass}>
-                        {authLoading ? "Sending..." : "Send Code"}
+                        {authLoading ? t("header.sending") : t("header.sendCode")}
                       </button>
                     </form>
                   ) : (
@@ -229,13 +231,13 @@ export default function Header({
                         maxLength={6}
                         value={code}
                         onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-                        placeholder="123456"
+                        placeholder={t("header.codePlaceholder")}
                         className={`${inputClass} text-center font-mono text-2xl tracking-[0.5em] h-14`}
                         required
                       />
                       {authError && <p className="text-xs text-red-400">{authError}</p>}
                       <button type="submit" disabled={authLoading || code.length !== 6} className={btnClass}>
-                        {authLoading ? "Verifying..." : "Verify"}
+                        {authLoading ? t("header.verifying") : t("header.verify")}
                       </button>
                       <button
                         type="button"
@@ -243,7 +245,7 @@ export default function Header({
                         disabled={authLoading}
                         className="w-full text-center text-sindicato-warm-white/40 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors"
                       >
-                        Resend code
+                        {t("header.resendCode")}
                       </button>
                     </form>
                   )}
@@ -257,21 +259,21 @@ export default function Header({
               href="/file"
               className="bg-sindicato-charcoal text-sindicato-warm-white px-3 py-1.5 text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)]"
             >
-              Report
+              {t("header.mobileReport")}
             </Link>
             {session?.user ? (
               <Link
                 href="/account"
                 className={`${clerkBg} px-3 py-1.5 text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)]`}
               >
-                Account
+                {t("header.account")}
               </Link>
             ) : (
               <button
                 onClick={() => setShowLogin(true)}
                 className={`${clerkBg} px-3 py-1.5 text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)]`}
               >
-                Sign In
+                {t("header.signIn")}
               </button>
             )}
           </div>

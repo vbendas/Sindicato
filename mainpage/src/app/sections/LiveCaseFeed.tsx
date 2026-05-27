@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useT } from "@/lib/i18n";
 
 interface CaseItem {
   id: string;
@@ -23,17 +24,6 @@ interface CaseItem {
 
 type TabValue = "all" | "remote" | "gig";
 
-const tabs: { label: string; value: TabValue }[] = [
-  { label: "All Networks", value: "all" },
-  { label: "Remote", value: "remote" },
-  { label: "Gig", value: "gig" },
-];
-
-const verticalStyles = {
-  remote: { badge: "bg-sindicato-bordeaux text-sindicato-warm-white", label: "REMOTE" },
-  gig: { badge: "bg-sindicato-bordeaux-light text-sindicato-warm-white", label: "GIG" },
-};
-
 function formatTimeAgo(dateStr: string): string {
   const now = Date.now();
   const date = new Date(dateStr).getTime();
@@ -51,6 +41,19 @@ function formatTimeAgo(dateStr: string): string {
 const MASONRY_MAX_HEIGHT = 1380;
 
 export default function LiveCaseFeed() {
+  const t = useT();
+
+  const tabs: { label: string; value: TabValue }[] = [
+    { label: t("liveFeed.tabAll"), value: "all" },
+    { label: t("liveFeed.tabRemote"), value: "remote" },
+    { label: t("liveFeed.tabGig"), value: "gig" },
+  ];
+
+  const verticalStyles = {
+    remote: { badge: "bg-sindicato-bordeaux text-sindicato-warm-white", label: t("liveFeed.badgeRemote") },
+    gig: { badge: "bg-sindicato-bordeaux-light text-sindicato-warm-white", label: t("liveFeed.badgeGig") },
+  };
+
   const [activeTab, setActiveTab] = useState<TabValue>("all");
   const [cases, setCases] = useState<CaseItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -117,7 +120,7 @@ export default function LiveCaseFeed() {
         >
           <div className="w-12 h-0.5 bg-white/20 mx-auto mb-4" />
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-warm-white uppercase font-[family-name:var(--font-barlow)] tracking-wide">
-            Recent Cases
+            {t("liveFeed.title")}
           </h2>
         </motion.div>
 
@@ -140,20 +143,20 @@ export default function LiveCaseFeed() {
         {loading && cases.length === 0 && (
           <div className="text-center py-12">
             <div className="animate-spin w-8 h-8 border-2 border-white/30 border-t-sindicato-warm-white rounded-full mx-auto mb-4" />
-            <p className="text-sindicato-warm-white/40 text-sm">Loading cases...</p>
+            <p className="text-sindicato-warm-white/40 text-sm">{t("liveFeed.loading")}</p>
           </div>
         )}
 
         {error && cases.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-sindicato-warm-white/40 text-sm">Unable to load recent cases. Please try again later.</p>
+            <p className="text-sindicato-warm-white/40 text-sm">{t("liveFeed.error")}</p>
           </div>
         )}
 
         {!loading && !error && cases.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-sindicato-warm-white/40 text-lg mb-2">No cases reported yet</p>
-            <p className="text-sindicato-warm-white/30 text-sm">Be the first to report your experience</p>
+            <p className="text-sindicato-warm-white/40 text-lg mb-2">{t("liveFeed.emptyTitle")}</p>
+            <p className="text-sindicato-warm-white/30 text-sm">{t("liveFeed.emptySubtitle")}</p>
           </div>
         )}
 
@@ -217,7 +220,7 @@ export default function LiveCaseFeed() {
                       <span className="inline-flex items-center gap-1.5 bg-white/10 border border-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider font-[family-name:var(--font-jetbrains)]">
                         <span className={`w-1.5 h-1.5 rounded-full ${item.resolutionStatus === "resolved" ? "bg-green-400" : "bg-red-400"}`} />
                         <span className={item.resolutionStatus === "resolved" ? "text-green-400" : "text-red-400"}>
-                          {item.resolutionStatus === "resolved" ? "solved" : "unresolved"}
+                          {item.resolutionStatus === "resolved" ? t("liveFeed.statusSolved") : t("liveFeed.statusUnresolved")}
                         </span>
                       </span>
                     </div>
@@ -233,7 +236,7 @@ export default function LiveCaseFeed() {
               href="/cases"
               className="inline-block bg-white/10 backdrop-blur-sm border border-white/30 px-6 py-3 text-sindicato-warm-white text-sm uppercase tracking-wider hover:bg-white/20 transition-all font-[family-name:var(--font-barlow)] font-bold"
             >
-              View All Cases &rarr;
+              {t("liveFeed.viewAll")} &rarr;
             </Link>
           </div>
         )}
