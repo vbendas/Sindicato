@@ -1,14 +1,20 @@
+"use client";
+
+import { useT } from "@/lib/i18n";
+
 export default function ManifestoStrip() {
+  const t = useT();
+
   const items = [
-    "Voices United",
-    "Strength in Numbers",
-    "Open Source",
-    "Non-Profit",
-    "Anonymized & Safe",
-    "Bridges to Legal",
-    "Companies That Solve",
-    "Every Case Counts",
-    "Public Record",
+    t("manifestoStrip.item1"),
+    t("manifestoStrip.item2"),
+    t("manifestoStrip.item3"),
+    t("manifestoStrip.item4"),
+    t("manifestoStrip.item5"),
+    t("manifestoStrip.item6"),
+    t("manifestoStrip.item7"),
+    t("manifestoStrip.item8"),
+    t("manifestoStrip.item9"),
   ];
 
   const flatItems = [...Array(8)].flatMap((_, groupIndex) =>

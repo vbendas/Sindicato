@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { findKBMatch } from "@/lib/clerk/knowledge-base";
 import { callOpenRouter, getClerkModel } from "@/lib/ai/openrouter";
+import { translateStory } from "@/lib/ai/translate";
+import { isValidLocale } from "@/lib/i18n/config";
 
 const CLERK_KB_SYSTEM = `You are the Sindicato Clerk, a helpful assistant for the Sindicato platform.
 You answer questions about what Sindicato is, how it works, its mission, and how to use the platform.
@@ -49,6 +51,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const question = body.question?.trim();
+    const locale = body.locale;
 
     if (!question) {
       return NextResponse.json({ error: "Question is required" }, { status: 400 });
@@ -57,7 +60,13 @@ export async function POST(req: NextRequest) {
     const match = findKBMatch(question);
 
     if (match.confidence === "high") {
-      return NextResponse.json({ answer: match.answer, source: "static" });
+      let answer = match.answer;
+      if (locale && isValidLocale(locale) && locale !== "en") {
+        try {
+          answer = await translateStory(answer, "en", locale);
+        } catch {}
+      }
+      return NextResponse.json({ answer, source: "static" });
     }
 
     try {
@@ -70,17 +79,35 @@ export async function POST(req: NextRequest) {
       });
 
       if (aiAnswer && aiAnswer.trim()) {
-        return NextResponse.json({ answer: aiAnswer, source: "ai" });
+        let answer = aiAnswer;
+        if (locale && isValidLocale(locale) && locale !== "en") {
+          try {
+            answer = await translateStory(aiAnswer, "en", locale);
+          } catch {}
+        }
+        return NextResponse.json({ answer, source: "ai" });
       }
     } catch {}
 
     if (match.confidence === "low") {
-      return NextResponse.json({ answer: match.answer, source: "static" });
+      let answer = match.answer;
+      if (locale && isValidLocale(locale) && locale !== "en") {
+        try {
+          answer = await translateStory(answer, "en", locale);
+        } catch {}
+      }
+      return NextResponse.json({ answer, source: "static" });
+    }
+
+    let fallbackAnswer = "I'm not sure about that. I can help with questions about Sindicato, how to file cases, data access, privacy, and the platform's mission. For other questions, try the **Contact Sindicato** option to reach the team directly.";
+    if (locale && isValidLocale(locale) && locale !== "en") {
+      try {
+        fallbackAnswer = await translateStory(fallbackAnswer, "en", locale);
+      } catch {}
     }
 
     return NextResponse.json({
-      answer:
-        "I'm not sure about that. I can help with questions about Sindicato, how to file cases, data access, privacy, and the platform's mission. For other questions, try the **Contact Sindicato** option to reach the team directly.",
+      answer: fallbackAnswer,
       source: "fallback",
     });
   } catch {

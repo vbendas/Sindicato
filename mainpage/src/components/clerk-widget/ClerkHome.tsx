@@ -10,6 +10,7 @@ import {
 import Image from "next/image";
 import { useClerkWidget } from "./ClerkWidgetProvider";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n";
 
 type QuickAction = {
   icon: React.ReactNode;
@@ -20,6 +21,7 @@ type QuickAction = {
 
 export function ClerkHome() {
   const { setActiveMode, session } = useClerkWidget();
+  const t = useT();
 
   const isAuthenticated = !!session?.user;
   const isWorker = isAuthenticated && !session?.user?.role;
@@ -27,30 +29,30 @@ export function ClerkHome() {
   const actions: QuickAction[] = [
     {
       icon: <MessageCircle size={18} />,
-      label: "Ask a question",
-      description: "About Sindicato, how it works",
+      label: t("clerk.home.actionAsk"),
+      description: t("clerk.home.actionAskDesc"),
       action: () => setActiveMode("kb-chat"),
     },
     {
       icon: <FileText size={18} />,
-      label: "File a case",
-      description: "Report exploitation",
+      label: t("clerk.home.actionFile"),
+      description: t("clerk.home.actionFileDesc"),
       action: () => {
         window.location.href = "/file";
       },
     },
     {
       icon: <Database size={18} />,
-      label: "Query data",
-      description: "Explore worker exploitation data",
+      label: t("clerk.home.actionQuery"),
+      description: t("clerk.home.actionQueryDesc"),
       action: () => {
         window.location.href = "/clerk";
       },
     },
     {
       icon: <Mail size={18} />,
-      label: "Contact Sindicato",
-      description: "Get in touch with the team",
+      label: t("clerk.home.actionContact"),
+      description: t("clerk.home.actionContactDesc"),
       action: () => setActiveMode("contact"),
     },
   ];
@@ -58,8 +60,8 @@ export function ClerkHome() {
   if (isWorker) {
     actions.push({
       icon: <FolderOpen size={18} />,
-      label: "My cases",
-      description: "Check your filed cases",
+      label: t("clerk.home.actionMyCases"),
+      description: t("clerk.home.actionMyCasesDesc"),
       action: () => {
         window.location.href = "/account";
       },
@@ -80,7 +82,7 @@ export function ClerkHome() {
             />
           </div>
           <p className="text-sm text-sindicato-warm-white/90 font-medium">
-            How can I help you?
+            {t("clerk.home.greeting")}
           </p>
         </div>
 
