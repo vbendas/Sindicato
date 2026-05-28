@@ -22,7 +22,11 @@
     "previous": "Zurück",
     "viewAll": "Alle anzeigen",
     "learnMore": "Mehr erfahren",
-    "copied": "Kopiert"
+    "copied": "Kopiert",
+    "views": "Aufrufe",
+    "visitors": "Besucher",
+    "shares": "Teilungen",
+    "copyLink": "Link kopieren"
   },
   "footer": {
     "tagline": "Arbeitende besitzen ihre Ansprüche. Wir stellen die Plattform, nicht das Urteil.",
@@ -236,7 +240,8 @@
     "contactAttempts": "Kontaktversuche",
     "notFound": "Fall nicht gefunden",
     "notFoundBody": "Dieser Fall wurde möglicherweise entfernt oder existiert nicht.",
-    "backToCases": "Zurück zur Fallübersicht"
+    "backToCases": "Zurück zur Fallübersicht",
+    "case": "FALL"
   },
   "timelineSection": {
     "title": "Zeitstrahl",
@@ -278,7 +283,13 @@
     "editDialogDescription": "Ereignisdetails aktualisieren.",
     "deleteDialogTitle": "Ereignis löschen",
     "deleteDialogDescription": "Bist du sicher, dass du dieses Zeitstrahl-Ereignis löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.",
-    "errorLoad": "Zeitstrahl-Ereignisse konnten nicht geladen werden"
+    "errorLoad": "Zeitstrahl-Ereignisse konnten nicht geladen werden",
+    "eventTitleStartedWorking": "Hat bei {company} angefangen zu arbeiten",
+    "eventTitleCaseFiled": "Fall gegen {company} eingereicht",
+    "eventTitleEmailAccessed": "E-Mail-Zugriffsanfrage",
+    "eventTitleCompanyResponse": "Antwort des Unternehmens",
+    "eventTitleWorkerResponse": "Antwort des Arbeiters",
+    "eventTitleResolution": "Fall gelöst"
   },
   "fileCase": {
     "title": "Fall melden",
@@ -530,7 +541,8 @@
       "title": "Clerk",
       "subtitle": "Frag nach Daten zur Ausbeutung von Arbeitenden",
       "hint": "Versuch nach Fallsummen, Unternehmensstatistiken oder Demografie der Arbeitenden zu fragen"
-    }
+    },
+    "name": "Sachbearbeiter"
   },
   "about": {
     "title": "Über Sindicato",

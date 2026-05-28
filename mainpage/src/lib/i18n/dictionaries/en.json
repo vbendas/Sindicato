@@ -22,7 +22,11 @@
     "previous": "Previous",
     "viewAll": "View All",
     "learnMore": "Learn More",
-    "copied": "Copied"
+    "copied": "Copied",
+    "views": "views",
+    "visitors": "visitors",
+    "shares": "shares",
+    "copyLink": "Copy Link"
   },
   "footer": {
     "tagline": "Workers own their claims. We provide the platform, not the verdict.",
@@ -231,6 +235,7 @@
     "reported": "Reported",
     "shareThisCase": "Share this case",
     "caseRecord": "CASE RECORD",
+    "case": "CASE",
     "project": "Project",
     "dateRange": "Date Range",
     "contactAttempts": "Contact Attempts",
@@ -278,7 +283,13 @@
     "editDialogDescription": "Update the event details.",
     "deleteDialogTitle": "Delete Event",
     "deleteDialogDescription": "Are you sure you want to delete this timeline event? This action cannot be undone.",
-    "errorLoad": "Failed to load timeline events"
+    "errorLoad": "Failed to load timeline events",
+    "eventTitleStartedWorking": "Started working on {company}",
+    "eventTitleCaseFiled": "Case filed against {company}",
+    "eventTitleEmailAccessed": "Email access requested",
+    "eventTitleCompanyResponse": "Company response",
+    "eventTitleWorkerResponse": "Worker response",
+    "eventTitleResolution": "Case resolved"
   },
   "fileCase": {
     "title": "Report a Case",
@@ -414,6 +425,7 @@
     "45+": "45+"
   },
   "clerk": {
+    "name": "Clerk",
     "home": {
       "greeting": "How can I help you?",
       "actionAsk": "Ask a question",

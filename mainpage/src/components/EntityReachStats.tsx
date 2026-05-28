@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Eye, Users, Share2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useT } from "@/lib/i18n";
 
 interface EntityReachStatsProps {
   entityType: "company" | "case" | "timeline_event";
@@ -25,6 +26,7 @@ interface MetricsData {
 const VALID_ENTITY_TYPES = ["company", "case", "timeline_event"] as const;
 
 export default function EntityReachStats({ entityType, entityId, showVisitors = true, variant = "default" }: EntityReachStatsProps) {
+  const t = useT();
   const [metrics, setMetrics] = useState<MetricsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -78,18 +80,18 @@ export default function EntityReachStats({ entityType, entityId, showVisitors = 
     <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 ${isCompact ? "text-[10px]" : "text-xs"} text-sindicato-warm-white/60`}>
       <span className="inline-flex items-center gap-1">
         <Eye className={iconSize} />
-        {fmt(metrics.viewsTotal)} views
+        {fmt(metrics.viewsTotal)} {t("common.views")}
       </span>
       {showVisitors && metrics.visitorsTotal > 0 && (
         <span className="inline-flex items-center gap-1">
           <Users className={iconSize} />
-          {fmt(metrics.visitorsTotal)} visitors
+          {fmt(metrics.visitorsTotal)} {t("common.visitors")}
         </span>
       )}
       {metrics.sharesTotal > 0 && (
         <span className="inline-flex items-center gap-1">
           <Share2 className={iconSize} />
-          {fmt(metrics.sharesTotal)} shares
+          {fmt(metrics.sharesTotal)} {t("common.shares")}
         </span>
       )}
     </div>

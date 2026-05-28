@@ -57,13 +57,13 @@ export async function GET(request: Request) {
     // Fetch cases with expanded data
     let companyCases;
     try {
-      // Fetch only the columns that work reliably
       companyCases = await db
         .select({
           story: cases.story,
           amountOwed: cases.amountOwed,
           dateRange: cases.dateRange,
           contactAttempts: cases.contactAttempts,
+          resolutionStatus: cases.resolutionStatus,
         })
         .from(cases)
         .where(and(eq(cases.companyId, company.id), eq(cases.status, "active")))
@@ -71,11 +71,9 @@ export async function GET(request: Request) {
       
       console.log(`Fetched ${companyCases.length} cases`);
       
-      // Add default values for enum fields that cause query issues
       companyCases = companyCases.map((c) => ({
         ...c,
         caseType: "unpaid_wages" as const,
-        resolutionStatus: "none" as const,
         daysWithoutAnswer: null as number | null,
       }));
     } catch (dbError) {

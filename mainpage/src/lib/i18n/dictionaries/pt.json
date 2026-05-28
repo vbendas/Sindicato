@@ -22,7 +22,11 @@
     "previous": "Anterior",
     "viewAll": "Ver Todos",
     "learnMore": "Saiba Mais",
-    "copied": "Copiado"
+    "copied": "Copiado",
+    "views": "visualizações",
+    "visitors": "visitantes",
+    "shares": "compartilhamentos",
+    "copyLink": "Copiar link"
   },
   "footer": {
     "tagline": "Os trabalhadores são donos das suas reivindicações. Nós fornecemos a plataforma, não o veredito.",
@@ -236,7 +240,8 @@
     "contactAttempts": "Tentativas de Contato",
     "notFound": "Caso Não Encontrado",
     "notFoundBody": "Este caso pode ter sido removido ou não existe.",
-    "backToCases": "Voltar ao Mural de Casos"
+    "backToCases": "Voltar ao Mural de Casos",
+    "case": "CASO"
   },
   "timelineSection": {
     "title": "Linha do Tempo",
@@ -278,7 +283,13 @@
     "editDialogDescription": "Atualize os detalhes do evento.",
     "deleteDialogTitle": "Excluir Evento",
     "deleteDialogDescription": "Tem certeza de que deseja excluir este evento da linha do tempo? Esta ação não pode ser desfeita.",
-    "errorLoad": "Falha ao carregar eventos da linha do tempo"
+    "errorLoad": "Falha ao carregar eventos da linha do tempo",
+    "eventTitleStartedWorking": "Começou a trabalhar em {company}",
+    "eventTitleCaseFiled": "Caso registrado contra {company}",
+    "eventTitleEmailAccessed": "Solicitação de acesso ao email",
+    "eventTitleCompanyResponse": "Resposta da empresa",
+    "eventTitleWorkerResponse": "Resposta do trabalhador",
+    "eventTitleResolution": "Caso resolvido"
   },
   "fileCase": {
     "title": "Registrar um Caso",
@@ -530,7 +541,8 @@
       "title": "Clerk",
       "subtitle": "Faça perguntas sobre dados de exploração de trabalhadores",
       "hint": "Tente perguntar sobre totais de casos, estatísticas de empresas ou perfil demográfico dos trabalhadores"
-    }
+    },
+    "name": "Escrivão"
   },
   "about": {
     "title": "Sobre o Sindicato",

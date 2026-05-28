@@ -22,7 +22,11 @@
     "previous": "ቀዳሚ",
     "viewAll": "ሁሉንም ይመልከቱ",
     "learnMore": "ተጨማሪ ይወቁ",
-    "copied": "ተቀድቷል"
+    "copied": "ተቀድቷል",
+    "views": "እይታዎች",
+    "visitors": "ጎብኚዎች",
+    "shares": "ማጋራቶች",
+    "copyLink": "አገናኝ ቅዳ"
   },
   "footer": {
     "tagline": "ሠራተኞች የራሳቸውን ጥያቄዎች ይይዛሉ። እኛ መድረኩን እናቀርባለን፣ ውሳኔውን አይደለም።",
@@ -236,7 +240,8 @@
     "contactAttempts": "የእውቂያ ሙከራዎች",
     "notFound": "ጉዳይ አልተገኘም",
     "notFoundBody": "ይህ ጉዳይ ተወግዶ ወይም ላይኖር ይችላል።",
-    "backToCases": "ወደ ጉዳዮች ግድግዳ ተመለስ"
+    "backToCases": "ወደ ጉዳዮች ግድግዳ ተመለስ",
+    "case": "ጉዳይ"
   },
   "timelineSection": {
     "title": "የጊዜ መስመር",
@@ -278,7 +283,13 @@
     "editDialogDescription": "የክስተቱን ዝርዝሮች ያዘምኑ።",
     "deleteDialogTitle": "ክስተት ሰርዝ",
     "deleteDialogDescription": "ይህን የጊዜ መስመር ክስተት ለመሰረዝ እርግጠኛ ነዎት? ይህ ድርጊት ሊቀለበስ አይችልም።",
-    "errorLoad": "የጊዜ መስመር ክስተቶችን መጫን አልተሳካም"
+    "errorLoad": "የጊዜ መስመር ክስተቶችን መጫን አልተሳካም",
+    "eventTitleStartedWorking": "በ{company} ላይ ሥራ ጀመረ",
+    "eventTitleCaseFiled": "በ{company} ላይ ጉዳይ ተመዝግቧል",
+    "eventTitleEmailAccessed": "የኢሜይል መዳረሻ ጥያቄ",
+    "eventTitleCompanyResponse": "የኩባንያ ምላሽ",
+    "eventTitleWorkerResponse": "የሠራተኛ ምላሽ",
+    "eventTitleResolution": "ጉዳይ ተፈትቷል"
   },
   "fileCase": {
     "title": "ጉዳይ ያስታውቁ",
@@ -530,7 +541,8 @@
       "title": "Clerk",
       "subtitle": "ስለ ሠራተኛ ብዝበዛ መረጃ ጥያቄዎችን ይጠይቁ",
       "hint": "ስለ ጉዳይ ድምሮች፣ የኩባንያ ስታቲስቲክስ፣ ወይም የሠራተኛ ዲሞግራፊክስ ለመጠየቅ ይሞክሩ"
-    }
+    },
+    "name": "ጸሐፊ"
   },
   "about": {
     "title": "ስለ Sindicato",

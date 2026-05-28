@@ -22,7 +22,11 @@
     "previous": "Iliyotangulia",
     "viewAll": "Ona Zote",
     "learnMore": "Jifunze Zaidi",
-    "copied": "Imenakiliwa"
+    "copied": "Imenakiliwa",
+    "views": "maoni",
+    "visitors": "wageni",
+    "shares": "kushiriki",
+    "copyLink": "Nakili kiungo"
   },
   "footer": {
     "tagline": "Wafanyakazi wanamiliki madai yao. Sisi tunatoa jukwaa, si uamuzi.",
@@ -236,7 +240,8 @@
     "contactAttempts": "Majaribio ya Mawasiliano",
     "notFound": "Kesi Haijapatikana",
     "notFoundBody": "Kesi hii inaweza kuwa imeondolewa au haipo.",
-    "backToCases": "Rudi kwenye Ukuta wa Kesi"
+    "backToCases": "Rudi kwenye Ukuta wa Kesi",
+    "case": "KESI"
   },
   "timelineSection": {
     "title": "Muda",
@@ -278,7 +283,13 @@
     "editDialogDescription": "Sasisha maelezo ya tukio.",
     "deleteDialogTitle": "Futa Tukio",
     "deleteDialogDescription": "Una uhakika unataka kufuta tukio hili la muda? Kitendo hiki hakiwezi kutenduliwa.",
-    "errorLoad": "Imeshindwa kupakia matukio ya muda"
+    "errorLoad": "Imeshindwa kupakia matukio ya muda",
+    "eventTitleStartedWorking": "Alianza kufanya kazi katika {company}",
+    "eventTitleCaseFiled": "Kesi imesajiliwa dhidi ya {company}",
+    "eventTitleEmailAccessed": "Ombi la ufikiaji wa barua pepe",
+    "eventTitleCompanyResponse": "Jibu la kampuni",
+    "eventTitleWorkerResponse": "Jibu la mfanyakazi",
+    "eventTitleResolution": "Kesi imetatuliwa"
   },
   "fileCase": {
     "title": "Ripoti Kesi",
@@ -530,7 +541,8 @@
       "title": "Karani",
       "subtitle": "Uliza maswali kuhusu data ya unyanyasaji wa wafanyakazi",
       "hint": "Jaribu kuuliza kuhusu jumla ya kesi, takwimu za kampuni, au idadi ya wafanyakazi"
-    }
+    },
+    "name": "Karani"
   },
   "about": {
     "title": "Kuhusu Sindicato",

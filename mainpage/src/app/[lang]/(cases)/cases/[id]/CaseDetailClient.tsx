@@ -213,7 +213,7 @@ export default function CaseDetailClient({
                   <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
                     <div className="flex items-center gap-3">
                       <span className="text-sindicato-warm-white/30 text-[10px] font-bold uppercase tracking-widest font-[family-name:var(--font-jetbrains)]">
-                        CASE RECORD #{caseData.id.slice(-8).toUpperCase()}
+                        {t("caseDetail.caseRecord")} #{caseData.id.slice(-8).toUpperCase()}
                       </span>
                       <EntityReachStats entityType="case" entityId={caseId} showVisitors={false} variant="compact" />
                     </div>
@@ -284,18 +284,10 @@ export default function CaseDetailClient({
                   </div>
 
                   <div className="border-t border-white/10 pt-6">
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="mb-3">
                       <p className="text-sindicato-warm-white/40 text-xs uppercase tracking-wider">
                         {t("caseDetail.story")}
                       </p>
-                      {(caseData.storyTranslated || (locale !== 'en' && storyTranslation)) && (
-                        <button
-                          onClick={() => setShowTranslated(!showTranslated)}
-                          className="text-sindicato-warm-white/50 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors"
-                        >
-                          {showTranslated ? t("caseDetail.showOriginal") : t("caseDetail.showTranslation")}
-                        </button>
-                      )}
                     </div>
                     {showTranslated && isStoryTranslating && (
                       <div className="flex items-center gap-2 mb-2">
@@ -306,15 +298,33 @@ export default function CaseDetailClient({
                       </div>
                     )}
                     {showTranslated && storyTranslation && !isStoryTranslating && (
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="inline-flex items-center gap-1 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-blue-400 font-[family-name:var(--font-jetbrains)]">
-                          {t("caseDetail.machineTranslated")}
-                        </span>
-                        {caseData.translationLanguage && (
-                          <span className="text-sindicato-warm-white/30 text-[10px]">
-                            {t("caseDetail.translatedFrom", { language: localeNames[caseData.translationLanguage as Locale] || caseData.translationLanguage })}
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="inline-flex items-center gap-1 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-blue-400 font-[family-name:var(--font-jetbrains)]">
+                            {t("caseDetail.machineTranslated")}
                           </span>
-                        )}
+                          {caseData.translationLanguage && (
+                            <span className="text-sindicato-warm-white/30 text-[10px]">
+                              {t("caseDetail.translatedFrom", { language: localeNames[caseData.translationLanguage as Locale] || caseData.translationLanguage })}
+                            </span>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => setShowTranslated(!showTranslated)}
+                          className="text-sindicato-warm-white/50 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors"
+                        >
+                          {t("caseDetail.showOriginal")}
+                        </button>
+                      </div>
+                    )}
+                    {!showTranslated && (caseData.storyTranslated || storyTranslation) && (
+                      <div className="flex items-center justify-end mb-2">
+                        <button
+                          onClick={() => setShowTranslated(!showTranslated)}
+                          className="text-sindicato-warm-white/50 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors"
+                        >
+                          {t("caseDetail.showTranslation")}
+                        </button>
                       </div>
                     )}
                     <div className="border-l-2 border-white/10 pl-4">
@@ -327,14 +337,14 @@ export default function CaseDetailClient({
                   <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/10">
                     <p className="text-sindicato-warm-white/30 text-xs">
                       {t("caseDetail.reported")}{" "}
-                      {new Date(caseData.createdAt).toLocaleDateString("en-US", {
+                      {new Date(caseData.createdAt).toLocaleDateString(locale, {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
                       })}
                     </p>
                     <p className="text-sindicato-warm-white/20 text-[10px] font-[family-name:var(--font-jetbrains)]">
-                      CASE #{caseData.id.slice(-8).toUpperCase()}
+                      {t("caseDetail.case")} #{caseData.id.slice(-8).toUpperCase()}
                     </p>
                   </div>
 
@@ -363,7 +373,7 @@ export default function CaseDetailClient({
 
                 {/* Right Column: Timeline */}
                 <ScrollableColumn className="bg-white/5 backdrop-blur-sm border border-white/10 p-6 sm:p-8 pb-16 sm:pb-20" innerClassName="pl-8">
-                  <TimelineSection caseId={caseId} workerId={caseData.workerId} />
+                  <TimelineSection caseId={caseId} workerId={caseData.workerId} companyName={caseData.company?.name} />
                 </ScrollableColumn>
               </div>
             </motion.div>

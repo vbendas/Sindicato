@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import Header from "@/app/components/Header";
 import Footer from "@/app/sections/Footer";
-import { useT } from "@/lib/i18n";
+import { useT, useLocale } from "@/lib/i18n";
 
 interface CaseCard {
   id: string;
@@ -43,6 +43,7 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
 
 export default function CasesPage() {
   const t = useT();
+  const { locale } = useLocale();
   
   useEffect(() => {
     document.documentElement.classList.add("cases-page");
@@ -188,7 +189,7 @@ export default function CasesPage() {
                         <div className="mt-4 pt-3 border-t border-white/10 flex items-start justify-between gap-4">
                           <div>
                             <p className="text-sindicato-cream/30 text-xs">
-                              {new Date(c.createdAt).toLocaleDateString("en-US", {
+                              {new Date(c.createdAt).toLocaleDateString(locale, {
                                 year: "numeric",
                                 month: "long",
                                 day: "numeric",

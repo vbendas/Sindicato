@@ -12,8 +12,24 @@ vi.mock("@/lib/email/notifications", () => ({
   notifyCompanyNewCase: vi.fn().mockResolvedValue(undefined),
 }));
 
+vi.mock("@/lib/email/aliases", () => ({
+  createCaseAlias: vi.fn().mockResolvedValue("test-alias"),
+}));
+
 vi.mock("franc", () => ({
   franc: vi.fn().mockReturnValue("eng"),
+}));
+
+vi.mock("@/lib/auth", () => ({
+  auth: vi.fn().mockResolvedValue({ user: { id: "user-1", email: "test@example.com" } }),
+}));
+
+vi.mock("@/lib/utils/turnstile", () => ({
+  verifyTurnstileToken: vi.fn().mockResolvedValue(true),
+}));
+
+vi.mock("@/lib/auth/rate-limit", () => ({
+  rateLimit: vi.fn().mockResolvedValue({ allowed: true, retryAfterMs: 0 }),
 }));
 
 import { POST, GET } from "@/app/api/cases/route";
@@ -22,16 +38,14 @@ import { db } from "@/lib/db/client";
 const validBody = {
   vertical: "remote",
   displayName: "Worker",
+  companyName: "Acme Corp",
   country: "Brazil",
   project: "CC Review",
-  dateRange: "Jan 2024 - Mar 2024",
   amountOwed: "5000",
   currency: "BRL",
-  contactAttempts: 3,
   story: Array.from({ length: 100 }, (_, i) => `word${i}`).join(" "),
   email: "worker@example.com",
   companySlug: "acme",
-  attestation: true,
   optInSolicitor: false,
   optInCollective: false,
   optInCompanyNotify: true,
@@ -85,8 +99,8 @@ describe("POST /api/cases", () => {
     expect(json.ok).toBe(false);
   });
 
-  it("accepts contactAttempts as string (coerced to number)", async () => {
-    const mockCompany = { id: "company-1", slug: "acme", name: "Acme Corp" };
+  it("accepts optInSolicitor as string (coerced to boolean)", async () => {
+    const mockCompany = { id: "company-1", slug: "acme", name: "Acme Corp", contactEmails: [] };
     const mockCase = { id: "case-2" };
 
     (db.select as ReturnType<typeof vi.fn>).mockImplementation(() => ({
@@ -98,13 +112,25 @@ describe("POST /api/cases", () => {
       }),
     }));
 
-    (db.insert as ReturnType<typeof vi.fn>).mockImplementation(() => ({
-      values: vi.fn().mockReturnValue({
-        returning: vi.fn().mockResolvedValue([mockCase]),
+    (db.insert as ReturnType<typeof vi.fn>)
+      .mockReturnValueOnce({
+        values: vi.fn().mockReturnValue({
+          returning: vi.fn().mockResolvedValue([mockCase]),
+        }),
+      })
+      .mockReturnValue({
+        values: vi.fn().mockReturnValue({
+          catch: vi.fn().mockResolvedValue(undefined),
+        }),
+      });
+
+    (db.update as ReturnType<typeof vi.fn>).mockImplementation(() => ({
+      set: vi.fn().mockReturnValue({
+        where: vi.fn().mockResolvedValue(undefined),
       }),
     }));
 
-    const req = mockRequest({ ...validBody, contactAttempts: "5" });
+    const req = mockRequest({ ...validBody, optInSolicitor: "true" });
     const res = await POST(req);
     expect(res.status).toBe(201);
   });

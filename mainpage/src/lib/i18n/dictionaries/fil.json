@@ -22,7 +22,11 @@
     "previous": "Nakaraan",
     "viewAll": "Tingnan Lahat",
     "learnMore": "Matuto Pa",
-    "copied": "Nakopya"
+    "copied": "Nakopya",
+    "views": "mga panonood",
+    "visitors": "mga bisita",
+    "shares": "mga pagbabahagi",
+    "copyLink": "Kopyahin ang link"
   },
   "footer": {
     "tagline": "Ang mga manggagawa ang may-ari ng kanilang mga reklamo. Kami ang nagbibigay ng plataporma, hindi ng hatol.",
@@ -236,7 +240,8 @@
     "contactAttempts": "Mga Pagtatangkang Makipag-ugnayan",
     "notFound": "Hindi Nahanap ang Kaso",
     "notFoundBody": "Maaaring tinanggal ang kasong ito o hindi ito umiiral.",
-    "backToCases": "Bumalik sa Pader ng mga Kaso"
+    "backToCases": "Bumalik sa Pader ng mga Kaso",
+    "case": "KASO"
   },
   "timelineSection": {
     "title": "Timeline",
@@ -278,7 +283,13 @@
     "editDialogDescription": "I-update ang mga detalye ng kaganapan.",
     "deleteDialogTitle": "Burahin ang Kaganapan",
     "deleteDialogDescription": "Sigurado ka bang gusto mong burahin ang timeline event na ito? Hindi na ito mababawi.",
-    "errorLoad": "Nabigong i-load ang mga timeline event"
+    "errorLoad": "Nabigong i-load ang mga timeline event",
+    "eventTitleStartedWorking": "Nagsimulang magtrabaho sa {company}",
+    "eventTitleCaseFiled": "Kaso na nairehistro laban sa {company}",
+    "eventTitleEmailAccessed": "Kahilingan sa pag-access sa email",
+    "eventTitleCompanyResponse": "Tugon ng kumpanya",
+    "eventTitleWorkerResponse": "Tugon ng manggagawa",
+    "eventTitleResolution": "Nalutas ang kaso"
   },
   "fileCase": {
     "title": "Mag-ulat ng Kaso",
@@ -530,7 +541,8 @@
       "title": "Clerk",
       "subtitle": "Magtanong tungkol sa data ng pang-aabuso sa manggagawa",
       "hint": "Subukang magtanong tungkol sa kabuuang kaso, istatistika ng kumpanya, o demographics ng manggagawa"
-    }
+    },
+    "name": "Klerk"
   },
   "about": {
     "title": "Tungkol sa Sindicato",

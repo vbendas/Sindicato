@@ -22,7 +22,11 @@
     "previous": "Precedente",
     "viewAll": "Vedi Tutti",
     "learnMore": "Scopri di Più",
-    "copied": "Copiato"
+    "copied": "Copiato",
+    "views": "visualizzazioni",
+    "visitors": "visitatori",
+    "shares": "condivisioni",
+    "copyLink": "Copia link"
   },
   "footer": {
     "tagline": "I lavoratori sono proprietari delle proprie segnalazioni. Noi forniamo la piattaforma, non il verdetto.",
@@ -236,7 +240,8 @@
     "contactAttempts": "Tentativi di Contatto",
     "notFound": "Caso Non Trovato",
     "notFoundBody": "Questo caso potrebbe essere stato rimosso o non esiste.",
-    "backToCases": "Torna al Muro dei Casi"
+    "backToCases": "Torna al Muro dei Casi",
+    "case": "CASO"
   },
   "timelineSection": {
     "title": "Cronologia",
@@ -278,7 +283,13 @@
     "editDialogDescription": "Aggiorna i dettagli dell'evento.",
     "deleteDialogTitle": "Elimina Evento",
     "deleteDialogDescription": "Sei sicuro di voler eliminare questo evento della cronologia? L'azione non può essere annullata.",
-    "errorLoad": "Caricamento degli eventi della cronologia fallito"
+    "errorLoad": "Caricamento degli eventi della cronologia fallito",
+    "eventTitleStartedWorking": "Ha iniziato a lavorare presso {company}",
+    "eventTitleCaseFiled": "Caso registrato contro {company}",
+    "eventTitleEmailAccessed": "Richiesta di accesso all'email",
+    "eventTitleCompanyResponse": "Risposta dell'azienda",
+    "eventTitleWorkerResponse": "Risposta del lavoratore",
+    "eventTitleResolution": "Caso risolto"
   },
   "fileCase": {
     "title": "Segnala un Caso",
@@ -530,7 +541,8 @@
       "title": "Clerk",
       "subtitle": "Fai domande sui dati dello sfruttamento dei lavoratori",
       "hint": "Prova a chiedere informazioni su totali dei casi, statistiche aziendali o dati demografici dei lavoratori"
-    }
+    },
+    "name": "Cancelliere"
   },
   "about": {
     "title": "Chi È Sindicato",

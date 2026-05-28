@@ -1,7 +1,17 @@
 import { render } from "@react-email/components";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resendInstance: Resend | null = null;
+
+function getResend(): Resend {
+  if (!resendInstance) {
+    if (!process.env.RESEND_API_KEY) {
+      throw new Error("RESEND_API_KEY environment variable is not set");
+    }
+    resendInstance = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resendInstance;
+}
 
 export async function sendEmail(opts: {
   to: string;
@@ -11,7 +21,7 @@ export async function sendEmail(opts: {
   // Sandbox mode: redirect all emails to a single verified recipient (Resend account owner)
   const sandboxRecipient = process.env.RESEND_SANDBOX_RECIPIENT;
   if (sandboxRecipient) {
-    const { error } = await resend.emails.send({
+    const { error } = await getResend().emails.send({
       from: "Sindicato <onboarding@resend.dev>",
       to: sandboxRecipient,
       subject: `[→ ${opts.to}] ${opts.subject}`,
@@ -27,7 +37,7 @@ export async function sendEmail(opts: {
     return;
   }
 
-  const { error } = await resend.emails.send({
+  const { error } = await getResend().emails.send({
     from: process.env.EMAIL_FROM,
     to: opts.to,
     subject: opts.subject,

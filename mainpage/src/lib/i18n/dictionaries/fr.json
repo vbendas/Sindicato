@@ -22,7 +22,11 @@
     "previous": "Précédent",
     "viewAll": "Tout voir",
     "learnMore": "En savoir plus",
-    "copied": "Copié"
+    "copied": "Copié",
+    "views": "vues",
+    "visitors": "visiteurs",
+    "shares": "partages",
+    "copyLink": "Copier le lien"
   },
   "footer": {
     "tagline": "Les travailleurs sont propriétaires de leurs réclamations. Nous fournissons la plateforme, pas le verdict.",
@@ -236,7 +240,8 @@
     "contactAttempts": "Tentatives de contact",
     "notFound": "Dossier introuvable",
     "notFoundBody": "Ce dossier a peut-être été supprimé ou n'existe pas.",
-    "backToCases": "Retour au mur des dossiers"
+    "backToCases": "Retour au mur des dossiers",
+    "case": "CAS"
   },
   "timelineSection": {
     "title": "Chronologie",
@@ -278,7 +283,13 @@
     "editDialogDescription": "Mettez à jour les détails de l'événement.",
     "deleteDialogTitle": "Supprimer l'événement",
     "deleteDialogDescription": "Êtes-vous sûr de vouloir supprimer cet événement ? Cette action est irréversible.",
-    "errorLoad": "Échec du chargement des événements de la chronologie"
+    "errorLoad": "Échec du chargement des événements de la chronologie",
+    "eventTitleStartedWorking": "A commencé à travailler chez {company}",
+    "eventTitleCaseFiled": "Cas enregistré contre {company}",
+    "eventTitleEmailAccessed": "Demande d'accès à l'email",
+    "eventTitleCompanyResponse": "Réponse de l'entreprise",
+    "eventTitleWorkerResponse": "Réponse du travailleur",
+    "eventTitleResolution": "Cas résolu"
   },
   "fileCase": {
     "title": "Signaler un cas",
@@ -530,7 +541,8 @@
       "title": "Clerk",
       "subtitle": "Posez des questions sur les données d'exploitation des travailleurs",
       "hint": "Essayez de demander les totaux de dossiers, les statistiques d'entreprises ou la démographie des travailleurs"
-    }
+    },
+    "name": "Greffier"
   },
   "about": {
     "title": "À propos de Sindicato",

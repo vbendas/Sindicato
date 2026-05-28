@@ -810,10 +810,6 @@ export async function POST(request: Request) {
     return new Response(combinedStream, {
       headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-cache" },
     });
-
-    return new Response(combinedStream, {
-      headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-cache" },
-    });
   } catch (err) {
     console.error("Error in clerk query:", err);
     return error("Failed to process query. Please try again.", 500);

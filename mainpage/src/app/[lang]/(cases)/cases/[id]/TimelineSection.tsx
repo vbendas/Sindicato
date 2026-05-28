@@ -36,6 +36,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ChevronRightIcon, PlusIcon, PencilIcon, Trash2Icon, Loader2Icon, Share2Icon, XIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
+import type { Session } from "next-auth";
 import ShareButtons from "@/components/ShareButtons";
 import { useT, useLocale } from "@/lib/i18n";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -61,6 +62,34 @@ const DIRECTION_COLORS: Record<string, string> = {
   system: "bg-white/10 text-sindicato-warm-white/50 border-white/20",
 };
 
+function getEventTitle(event: TimelineEvent, companyName: string, t: (key: string, params?: Record<string, string>) => string): string {
+  // Map event types to translation keys
+  const titleMap: Record<string, string> = {
+    "case_updated": "timelineSection.eventTitleCaseFiled",
+    "email_sent": "timelineSection.eventTitleEmailAccessed",
+    "resolved": "timelineSection.eventTitleResolution",
+  };
+  
+  // Check if title starts with 'Started working on'
+  if (event.title?.startsWith("Started working on")) {
+    return t("timelineSection.eventTitleStartedWorking", { company: companyName });
+  }
+  
+  // Check if title starts with 'Case filed against'
+  if (event.title?.startsWith("Case filed against")) {
+    return t("timelineSection.eventTitleCaseFiled", { company: companyName });
+  }
+  
+  // Check if we have a translation key for this event type
+  const translationKey = titleMap[event.eventType];
+  if (translationKey) {
+    return t(translationKey, { company: companyName });
+  }
+  
+  // Fallback to event title or untitled
+  return event.title || t("timelineSection.untitled");
+}
+
 const EVENT_TYPES = [
   "email_sent",
   "no_response",
@@ -74,18 +103,18 @@ const EVENT_TYPES = [
   "other",
 ] as const;
 
-function formatDate(dateStr: string) {
+function formatDate(dateStr: string, locale: string) {
   const d = new Date(dateStr);
-  return d.toLocaleDateString("en-US", {
+  return d.toLocaleDateString(locale, {
     year: "numeric",
     month: "short",
     day: "numeric",
   });
 }
 
-function formatDateTime(dateStr: string) {
+function formatDateTime(dateStr: string, locale: string) {
   const d = new Date(dateStr);
-  return d.toLocaleString("en-US", {
+  return d.toLocaleString(locale, {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -312,6 +341,7 @@ function TimelineEventItem({
   setEditingEvent,
   setConfirmDelete,
   session,
+  companyName,
 }: {
   event: TimelineEvent;
   index: number;
@@ -320,7 +350,8 @@ function TimelineEventItem({
   setSharingEvent: (id: string | null) => void;
   setEditingEvent: (event: TimelineEvent | null) => void;
   setConfirmDelete: (id: string | null) => void;
-  session: any;
+  session: Session | null;
+  companyName?: string;
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -349,7 +380,7 @@ function TimelineEventItem({
         <TimelineSeparator className="bg-white/10 group-data-[orientation=vertical]/timeline:-left-7 group-data-[orientation=vertical]/timeline:h-[calc(100%-1.5rem-0.25rem)] group-data-[orientation=vertical]/timeline:translate-y-7" />
         <div className="flex items-center gap-2 flex-wrap">
           <TimelineDate className="text-sindicato-warm-white/40">
-            {formatDate(event.eventDate)}
+            {formatDate(event.eventDate, locale)}
           </TimelineDate>
           <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 border ${DIRECTION_COLORS[event.direction] || "bg-white/10 text-sindicato-warm-white/60 border-white/20"}`}>
             {DIRECTION_LABELS[event.direction] || event.direction}
@@ -361,7 +392,7 @@ function TimelineEventItem({
           )}
         </div>
         <TimelineTitle className="text-sm font-semibold text-sindicato-warm-white mt-1">
-          {event.title || t("timelineSection.untitled")}
+          {getEventTitle(event, companyName || "", t)}
         </TimelineTitle>
         {event.labels.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-1">
@@ -427,7 +458,7 @@ function TimelineEventItem({
               </div>
               <CollapsibleTrigger className="flex items-center gap-2">
                 <span className="text-sindicato-warm-white/50 text-xs">
-                  {formatDateTime(event.eventDate)}
+                  {formatDateTime(event.eventDate, locale)}
                 </span>
                 <ChevronRightIcon className="text-sindicato-warm-white/40 size-4 transition-transform duration-200 group-data-open/collapsible:rotate-90" />
               </CollapsibleTrigger>
@@ -481,10 +512,10 @@ function TimelineEventItem({
             </p>
             <ShareButtons
               url={typeof window !== "undefined" ? window.location.origin + window.location.pathname : ""}
-              title={`${event.title || "Timeline event"} — ${formatDate(event.eventDate)}`}
+              title={`${event.title || "Timeline event"} — ${formatDate(event.eventDate, locale)}`}
               description={event.description.slice(0, 200)}
               variant="event"
-              stats={{ date: formatDate(event.eventDate) }}
+              stats={{ date: formatDate(event.eventDate, locale) }}
               entityType="timeline_event"
               entityId={event.id}
               eventId={event.id}
@@ -497,7 +528,7 @@ function TimelineEventItem({
   );
 }
 
-export default function TimelineSection({ caseId, workerId }: { caseId: string; workerId: string | null }) {
+export default function TimelineSection({ caseId, workerId, companyName }: { caseId: string; workerId: string | null; companyName?: string }) {
   const t = useT();
   const { data: session } = useSession();
   const [events, setEvents] = useState<TimelineEvent[]>([]);

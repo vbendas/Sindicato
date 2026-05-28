@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { X, Copy, Check } from "lucide-react";
 import InstagramStoryCard from "./InstagramStoryCard";
 import { trackShareClick } from "@/lib/umami";
+import { useT } from "@/lib/i18n";
 
 function IconX({ className }: { className?: string }) {
   return (
@@ -124,6 +125,7 @@ export default function ShareButtons({
   const [showInstagram, setShowInstagram] = useState(false);
   const [copied, setCopied] = useState(false);
   const [instagramGenerated, setInstagramGenerated] = useState(false);
+  const t = useT();
 
   // Generate improved text based on variant
   let improvedTitle = title || "";
@@ -268,17 +270,17 @@ export default function ShareButtons({
             handleCopy();
           }}
           className="flex items-center gap-1.5 text-sindicato-warm-white/60 hover:text-sindicato-warm-white transition-colors hover:bg-white/10 px-3 py-1.5 border border-white/10 text-xs uppercase tracking-wider font-bold font-[family-name:var(--font-barlow)]"
-          title="Copy link"
+          title={t("common.copyLink")}
         >
           {copied ? (
             <>
               <Check className="size-3.5 text-green-400" />
-              <span className="text-green-400">Copied</span>
+              <span className="text-green-400">{t("common.copied")}</span>
             </>
           ) : (
             <>
               <Copy className="size-3.5" />
-              <span>Copy Link</span>
+              <span>{t("common.copyLink")}</span>
             </>
           )}
         </button>

@@ -22,7 +22,11 @@
     "previous": "السابق",
     "viewAll": "عرض الكل",
     "learnMore": "اعرف المزيد",
-    "copied": "تم النسخ"
+    "copied": "تم النسخ",
+    "views": "مشاهدات",
+    "visitors": "زوار",
+    "shares": "مشاركات",
+    "copyLink": "نسخ الرابط"
   },
   "footer": {
     "tagline": "العمّال يملكون مطالبهم. نحن نوفّر المنصة، لا الحكم.",
@@ -236,7 +240,8 @@
     "contactAttempts": "محاولات التواصل",
     "notFound": "القضية غير موجودة",
     "notFoundBody": "قد تكون هذه القضية حُذفت أو غير موجودة.",
-    "backToCases": "العودة إلى جدار القضايا"
+    "backToCases": "العودة إلى جدار القضايا",
+    "case": "قضية"
   },
   "timelineSection": {
     "title": "الجدول الزمني",
@@ -278,7 +283,13 @@
     "editDialogDescription": "حدّث تفاصيل الحدث.",
     "deleteDialogTitle": "حذف الحدث",
     "deleteDialogDescription": "هل أنت متأكد من حذف حدث الجدول الزمني هذا؟ لا يمكن التراجع عن هذا الإجراء.",
-    "errorLoad": "فشل تحميل أحداث الجدول الزمني"
+    "errorLoad": "فشل تحميل أحداث الجدول الزمني",
+    "eventTitleStartedWorking": "بدأ العمل في {company}",
+    "eventTitleCaseFiled": "تم تسجيل القضية ضد {company}",
+    "eventTitleEmailAccessed": "طلب الوصول إلى البريد الإلكتروني",
+    "eventTitleCompanyResponse": "رد الشركة",
+    "eventTitleWorkerResponse": "رد العامل",
+    "eventTitleResolution": "تم حل القضية"
   },
   "fileCase": {
     "title": "بلّغ عن قضية",
@@ -530,7 +541,8 @@
       "title": "الموظف",
       "subtitle": "اطرح أسئلة عن بيانات استغلال العمّال",
       "hint": "جرّب السؤال عن إجماليات القضايا أو إحصاءات الشركات أو الديموغرافيا العمّالية"
-    }
+    },
+    "name": "كاتب"
   },
   "about": {
     "title": "عن Sindicato",

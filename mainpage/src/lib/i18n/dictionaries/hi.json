@@ -22,7 +22,11 @@
     "previous": "पिछला",
     "viewAll": "सभी देखें",
     "learnMore": "और जानें",
-    "copied": "कॉपी हो गया"
+    "copied": "कॉपी हो गया",
+    "views": "दृश्य",
+    "visitors": "आगंतुक",
+    "shares": "शेयर",
+    "copyLink": "लिंक कॉपी करें"
   },
   "footer": {
     "tagline": "श्रमिकों के अपने दावे हैं। हम मंच प्रदान करते हैं, फैसला नहीं।",
@@ -236,7 +240,8 @@
     "contactAttempts": "संपर्क प्रयास",
     "notFound": "मामला नहीं मिला",
     "notFoundBody": "यह मामला हटा दिया गया हो सकता है या मौजूद नहीं है।",
-    "backToCases": "मामलों की दीवार पर वापस"
+    "backToCases": "मामलों की दीवार पर वापस",
+    "case": "मामला"
   },
   "timelineSection": {
     "title": "समयरेखा",
@@ -278,7 +283,13 @@
     "editDialogDescription": "इवेंट विवरण अपडेट करें।",
     "deleteDialogTitle": "इवेंट हटाएं",
     "deleteDialogDescription": "क्या आप वाकई इस समयरेखा इवेंट को हटाना चाहते हैं? यह कार्रवाई पूर्ववत नहीं की जा सकती।",
-    "errorLoad": "समयरेखा इवेंट लोड करने में विफल"
+    "errorLoad": "समयरेखा इवेंट लोड करने में विफल",
+    "eventTitleStartedWorking": "{company} में काम करना शुरू किया",
+    "eventTitleCaseFiled": "{company} के खिलाफ मामला दर्ज",
+    "eventTitleEmailAccessed": "ईमेल एक्सेस अनुरोध",
+    "eventTitleCompanyResponse": "कंपनी की प्रतिक्रिया",
+    "eventTitleWorkerResponse": "श्रमिक की प्रतिक्रिया",
+    "eventTitleResolution": "मामला सुलझा"
   },
   "fileCase": {
     "title": "मामला रिपोर्ट करें",
@@ -530,7 +541,8 @@
       "title": "क्लर्क",
       "subtitle": "श्रमिक शोषण डेटा के बारे में सवाल पूछें",
       "hint": "मामला कुल, कंपनी आंकड़े या श्रमिक जनसांख्यिकी के बारे में पूछने का प्रयास करें"
-    }
+    },
+    "name": "लिपिक"
   },
   "about": {
     "title": "सिंडिकेटो के बारे में",

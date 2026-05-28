@@ -22,7 +22,11 @@
     "previous": "Anterior",
     "viewAll": "Ver Todos",
     "learnMore": "Más Información",
-    "copied": "Copiado"
+    "copied": "Copiado",
+    "views": "vistas",
+    "visitors": "visitantes",
+    "shares": "compartidos",
+    "copyLink": "Copiar enlace"
   },
   "footer": {
     "tagline": "Los trabajadores son dueños de sus reclamos. Nosotros proporcionamos la plataforma, no el veredicto.",
@@ -236,7 +240,8 @@
     "contactAttempts": "Intentos de Contacto",
     "notFound": "Caso No Encontrado",
     "notFoundBody": "Este caso puede haber sido eliminado o no existe.",
-    "backToCases": "Volver al Muro de Casos"
+    "backToCases": "Volver al Muro de Casos",
+    "case": "CASO"
   },
   "timelineSection": {
     "title": "Cronología",
@@ -278,7 +283,13 @@
     "editDialogDescription": "Actualiza los detalles del evento.",
     "deleteDialogTitle": "Eliminar Evento",
     "deleteDialogDescription": "¿Estás seguro de que quieres eliminar este evento de la cronología? Esta acción no se puede deshacer.",
-    "errorLoad": "Error al cargar los eventos de la cronología"
+    "errorLoad": "Error al cargar los eventos de la cronología",
+    "eventTitleStartedWorking": "Comenzó a trabajar en {company}",
+    "eventTitleCaseFiled": "Caso presentado contra {company}",
+    "eventTitleEmailAccessed": "Solicitud de acceso al correo",
+    "eventTitleCompanyResponse": "Respuesta de la empresa",
+    "eventTitleWorkerResponse": "Respuesta del trabajador",
+    "eventTitleResolution": "Caso resuelto"
   },
   "fileCase": {
     "title": "Reportar un Caso",
@@ -530,7 +541,8 @@
       "title": "Clerk",
       "subtitle": "Haz preguntas sobre datos de explotación laboral",
       "hint": "Intenta preguntar sobre totales de casos, estadísticas de empresas o demografía de trabajadores"
-    }
+    },
+    "name": "Escribano"
   },
   "about": {
     "title": "Sobre Sindicato",

@@ -22,7 +22,11 @@
     "previous": "Trước",
     "viewAll": "Xem tất cả",
     "learnMore": "Tìm hiểu thêm",
-    "copied": "Đã sao chép"
+    "copied": "Đã sao chép",
+    "views": "lượt xem",
+    "visitors": "khách truy cập",
+    "shares": "chia sẻ",
+    "copyLink": "Sao chép liên kết"
   },
   "footer": {
     "tagline": "Người lao động sở hữu khiếu nại của mình. Chúng tôi cung cấp nền tảng, không phải phán quyết.",
@@ -236,7 +240,8 @@
     "contactAttempts": "Số lần liên hệ",
     "notFound": "Không tìm thấy vụ việc",
     "notFoundBody": "Vụ việc này có thể đã bị xóa hoặc không tồn tại.",
-    "backToCases": "Quay lại tường vụ việc"
+    "backToCases": "Quay lại tường vụ việc",
+    "case": "VỤ VIỆC"
   },
   "timelineSection": {
     "title": "Dòng thời gian",
@@ -278,7 +283,13 @@
     "editDialogDescription": "Cập nhật chi tiết sự kiện.",
     "deleteDialogTitle": "Xóa sự kiện",
     "deleteDialogDescription": "Bạn có chắc muốn xóa sự kiện dòng thời gian này? Hành động này không thể hoàn tác.",
-    "errorLoad": "Không thể tải sự kiện dòng thời gian"
+    "errorLoad": "Không thể tải sự kiện dòng thời gian",
+    "eventTitleStartedWorking": "Bắt đầu làm việc tại {company}",
+    "eventTitleCaseFiled": "Vụ việc được ghi nhận chống lại {company}",
+    "eventTitleEmailAccessed": "Yêu cầu truy cập email",
+    "eventTitleCompanyResponse": "Phản hồi của công ty",
+    "eventTitleWorkerResponse": "Phản hồi của người lao động",
+    "eventTitleResolution": "Vụ việc đã giải quyết"
   },
   "fileCase": {
     "title": "Báo cáo vụ việc",
@@ -530,7 +541,8 @@
       "title": "Clerk",
       "subtitle": "Đặt câu hỏi về dữ liệu bóc lột người lao động",
       "hint": "Thử hỏi về tổng số vụ việc, thống kê công ty, hoặc nhân khẩu học người lao động"
-    }
+    },
+    "name": "Thư ký"
   },
   "about": {
     "title": "Về Sindicato",
