@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+<<<<<<<< HEAD:mainpage/src/proxy.ts
 import { auth } from "@/lib/auth/auth";
 import { locales, defaultLocale } from "@/lib/i18n/config";
 import { detectLocale } from "@/lib/i18n/detect-locale";
@@ -13,16 +14,40 @@ const API_PUBLIC_PREFIXES = ["/api/auth", "/api/ai", "/api/metrics", "/api/stats
 const ALLOWED_ORIGINS = [
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
 ].filter(Boolean);
+========
+import { locales, defaultLocale } from "@/lib/i18n/config";
+import { detectLocale } from "@/lib/i18n/detect-locale";
+
+const PROTECTED_ROUTES = ["/account", "/file"];
+>>>>>>>> d597996f5a2dbe3edae61a08d6c9c462cecbf9d6:mainpage/src/middleware.ts
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (request.method === "OPTIONS") {
-    const response = new NextResponse(null, { status: 204 });
-    addCorsHeaders(response, request);
+  const pathnameHasLocale = locales.some(
+    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+  );
+
+  if (!pathnameHasLocale) {
+    const localeCookie = request.cookies.get("NEXT_LOCALE")?.value;
+
+    if (localeCookie && locales.includes(localeCookie as typeof locales[number])) {
+      const url = request.nextUrl.clone();
+      url.pathname = `/${localeCookie}${pathname}`;
+      return NextResponse.redirect(url);
+    }
+
+    const acceptLanguage = request.headers.get("accept-language");
+    const detectedLocale = detectLocale(acceptLanguage);
+
+    const url = request.nextUrl.clone();
+    url.pathname = `/${defaultLocale}${pathname}`;
+    const response = NextResponse.redirect(url);
+    response.headers.set("X-Suggested-Locale", detectedLocale);
     return response;
   }
 
+<<<<<<<< HEAD:mainpage/src/proxy.ts
   const isApiRoute = pathname.startsWith("/api/");
 
   if (isApiRoute) {
@@ -45,6 +70,25 @@ export async function proxy(request: NextRequest) {
           { status: 401 }
         );
       }
+========
+  const pathnameWithoutLocale = pathname.replace(
+    new RegExp(`^/(${locales.join("|")})`),
+    ""
+  ) || "/";
+
+  const isProtectedRoute = PROTECTED_ROUTES.some(
+    (prefix) => pathnameWithoutLocale === prefix || pathnameWithoutLocale.startsWith(`${prefix}/`)
+  );
+
+  const response = NextResponse.next();
+
+  if (isProtectedRoute) {
+    const sessionCookie = request.cookies.get("next-auth.session-token")?.value;
+    if (!sessionCookie) {
+      const signInUrl = new URL("/auth/verify", request.url);
+      signInUrl.searchParams.set("callbackUrl", pathnameWithoutLocale);
+      return NextResponse.redirect(signInUrl);
+>>>>>>>> d597996f5a2dbe3edae61a08d6c9c462cecbf9d6:mainpage/src/middleware.ts
     }
 
     if (!["GET", "HEAD", "OPTIONS"].includes(request.method)) {
@@ -60,6 +104,7 @@ export async function proxy(request: NextRequest) {
     return response;
   }
 
+<<<<<<<< HEAD:mainpage/src/proxy.ts
   const pathnameHasLocale = locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
@@ -98,37 +143,13 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+========
+>>>>>>>> d597996f5a2dbe3edae61a08d6c9c462cecbf9d6:mainpage/src/middleware.ts
   return response;
-}
-
-function addSecurityHeaders(response: NextResponse) {
-  response.headers.set("X-Content-Type-Options", "nosniff");
-  response.headers.set("X-Frame-Options", "DENY");
-  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  response.headers.set(
-    "Permissions-Policy",
-    "camera=(), microphone=(), geolocation=()"
-  );
-  response.headers.set(
-    "Strict-Transport-Security",
-    "max-age=31536000; includeSubDomains"
-  );
-}
-
-function addCorsHeaders(response: NextResponse, request: NextRequest) {
-  const origin = request.headers.get("origin");
-  if (origin && ALLOWED_ORIGINS.includes(origin)) {
-    response.headers.set("Access-Control-Allow-Origin", origin);
-    response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Forwarded-For");
-    response.headers.set("Access-Control-Max-Age", "86400");
-    response.headers.set("Access-Control-Allow-Credentials", "true");
-  }
 }
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|public/|.*\\..*).*)",
-    "/api/:path*",
+    "/((?!_next/static|_next/image|favicon.ico|public/|api/|.*\\..*).*)",
   ],
 };

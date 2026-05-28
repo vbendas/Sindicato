@@ -34,6 +34,12 @@ export const localeFlags: Record<Locale, string> = {
   ar: '🇸🇦',
 };
 
+export const rtlLocales: readonly Locale[] = ['ar'];
+
+export function isRTLLocale(locale: Locale): boolean {
+  return rtlLocales.includes(locale);
+}
+
 export function isValidLocale(locale: string): locale is Locale {
   return locales.includes(locale as Locale);
 }

@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Barlow_Condensed, Inter, JetBrains_Mono, Geist } from "next/font/google";
+import { Barlow_Condensed, Inter, JetBrains_Mono, Geist, Noto_Sans_Arabic, Noto_Sans_Devanagari, Noto_Sans_Ethiopic } from "next/font/google";
 import Script from "next/script";
 import { AuthProvider } from "@/components/AuthProvider";
 import { ClerkWidgetProvider, ClerkBubble, ClerkPanel } from "@/components/clerk-widget";
+import LanguageSuggestionBanner from "@/components/LanguageSuggestionBanner";
 import { onUmamiLoaded } from "@/lib/umami";
 import { LocaleProvider } from "@/lib/i18n/locale-provider";
 import { getDictionary } from "@/lib/i18n/dictionaries";
-import { locales, defaultLocale, type Locale } from "@/lib/i18n/config";
+import { locales, defaultLocale, isRTLLocale, type Locale } from "@/lib/i18n/config";
 import "../globals.css";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +29,24 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
   variable: "--font-jetbrains",
+});
+
+const notoSansArabic = Noto_Sans_Arabic({
+  subsets: ["arabic"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-noto-arabic",
+});
+
+const notoSansDevanagari = Noto_Sans_Devanagari({
+  subsets: ["devanagari"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-noto-devanagari",
+});
+
+const notoSansEthiopic = Noto_Sans_Ethiopic({
+  subsets: ["ethiopic"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-noto-ethiopic",
 });
 
 export async function generateMetadata({
@@ -73,11 +92,28 @@ export default async function RootLayout({
   const { lang } = await params;
   const locale = (locales.includes(lang as Locale) ? lang : "en") as Locale;
   const dictionary = await getDictionary(locale);
+  const isRTL = isRTLLocale(locale);
+
+  const needsArabicFont = locale === "ar";
+  const needsDevanagariFont = locale === "hi" || locale === "ne";
+  const needsEthiopicFont = locale === "am";
 
   return (
     <html
       lang={locale}
-      className={cn("antialiased", barlowCondensed.variable, inter.variable, jetbrainsMono.variable, "font-sans", geist.variable)}
+      dir={isRTL ? "rtl" : "ltr"}
+      data-suggested-locale=""
+      className={cn(
+        "antialiased",
+        barlowCondensed.variable,
+        inter.variable,
+        jetbrainsMono.variable,
+        "font-sans",
+        geist.variable,
+        needsArabicFont && notoSansArabic.variable,
+        needsDevanagariFont && notoSansDevanagari.variable,
+        needsEthiopicFont && notoSansEthiopic.variable
+      )}
     >
       <body className="font-[family-name:var(--font-inter)]">
         {umamiScript && (
@@ -92,6 +128,7 @@ export default async function RootLayout({
         <LocaleProvider locale={locale} dictionary={dictionary}>
           <AuthProvider>
             <ClerkWidgetProvider>
+              <LanguageSuggestionBanner />
               {children}
               <ClerkBubble />
               <ClerkPanel />
