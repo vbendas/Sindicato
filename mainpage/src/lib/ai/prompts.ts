@@ -228,7 +228,7 @@ Rules:
 - For list queries, ALWAYS include the id field in the fields array
 - When user asks for "stories", "what happened", or "details", include the story field
 - If the user references previous data (e.g., "those cases", "the results"), reuse the filters from the previous query
-- When grouping, specify the groupBy field
+- When grouping, specify the groupBy field (single string for one dimension, array of 2 strings for two dimensions)
 - For metrics aggregation, use "metrics" as the aggregation type
 - If the user asks about topics outside the database scope, return JSON with "rejected": true and "rejectionReason" explaining why
 
@@ -298,11 +298,25 @@ Return ONLY valid JSON with this exact structure:
   "filters": [
     { "field": "field_name", "operator": "eq" | "neq" | "gt" | "gte" | "lt" | "lte" | "in" | "contains", "value": any }
   ],
-  "groupBy": "field_name" | null,
+  "groupBy": "field_name" | ["field_name_1", "field_name_2"] | null,
   "orderBy": { "field": "field_name", "direction": "asc" | "desc" } | null,
   "limit": number | null,
   "summary": "brief 1-sentence restatement of what the user is asking"
 }
+
+MULTI-DIMENSIONAL GROUPING:
+- When the user asks for data broken down by TWO dimensions (e.g., "cases type per country", "case types by company"), use an array for groupBy with exactly 2 fields
+- The first field becomes the primary grouping (X-axis in charts), the second becomes the secondary grouping (stacked/colored series)
+- Maximum 2 groupBy fields allowed
+- NEVER use numeric fields (amountOwed, viewsTotal, visitorsTotal, sharesTotal) in groupBy — these should only be used with aggregation (sum/count)
+- If the user asks for 3+ dimensions (e.g., "case type x amount x time"), reject with a helpful suggestion to break it into separate queries
+- Examples:
+  - "cases type per country" → groupBy: ["country", "caseType"]
+  - "case types by company" → groupBy: ["company_name", "caseType"]
+  - "resolution status by country" → groupBy: ["country", "resolutionStatus"]
+  - "age range by sex" → groupBy: ["sex", "ageRange"]
+  - "case type x amount owed x timestamp" → REJECT with: "This query involves 3 dimensions which is too complex. Try breaking it down: 'cases by type and country', 'total amount owed by case type', or 'cases over time by country'"
+  - "group by amount owed" → REJECT with: "Cannot group by numeric fields like amount owed. Instead, try 'total amount owed by case type' or 'average amount by country'"
 
 Examples:
 - "How many cases against Uber Eats in Ireland?" → { "rejected": false, "rejectionReason": null, "source": "cases", "aggregation": "count", "filters": [{ "field": "company_name", "operator": "eq", "value": "Uber Eats" }, { "field": "country", "operator": "eq", "value": "Ireland" }] }
@@ -318,7 +332,12 @@ Examples:
 - "Give me the stories for those cases" (with previous Alignerr query) → { "rejected": false, "rejectionReason": null, "source": "cases", "aggregation": "list", "filters": [{ "field": "company_name", "operator": "eq", "value": "Alignerr" }], "summary": "Stories and details for Alignerr cases" }
 - "Show me the IDs and stories" (with previous country query) → Re-query with same filters, include id and story fields
 - "What are the details of those cases?" → Re-query with same filters, include all available fields including story
-- "Tell me more about them" (with no previous context) → { "rejected": true, "rejectionReason": "Could you please specify which cases or data you'd like to know more about?", "source": null, "aggregation": null, "aggregationField": null, "filters": [], "groupBy": null, "orderBy": null, "limit": null, "summary": "Ambiguous query rejected" }`;
+- "Tell me more about them" (with no previous context) → { "rejected": true, "rejectionReason": "Could you please specify which cases or data you'd like to know more about?", "source": null, "aggregation": null, "aggregationField": null, "filters": [], "groupBy": null, "orderBy": null, "limit": null, "summary": "Ambiguous query rejected" }
+- "Cases type per country" → { "rejected": false, "rejectionReason": null, "source": "cases", "aggregation": "group_by", "groupBy": ["country", "caseType"], "filters": [], "summary": "Case types grouped by country" }
+- "Resolution status by company for gig workers" → { "rejected": false, "rejectionReason": null, "source": "cases", "aggregation": "group_by", "groupBy": ["company_name", "resolutionStatus"], "filters": [{ "field": "vertical", "operator": "eq", "value": "gig" }], "summary": "Resolution status by company for gig workers" }
+- "Age range distribution by sex" → { "rejected": false, "rejectionReason": null, "source": "cases", "aggregation": "group_by", "groupBy": ["sex", "ageRange"], "filters": [], "summary": "Age range distribution grouped by sex" }
+- "Case type by amount owed by country" → { "rejected": true, "rejectionReason": "This query involves 3 dimensions which is too complex for a single visualization. Try breaking it down into separate queries like: 'cases by type and country', 'total amount owed by case type', or 'average amount owed by country'.", "source": null, "aggregation": null, "aggregationField": null, "filters": [], "groupBy": null, "orderBy": null, "limit": null, "summary": "3-dimension query rejected" }
+- "Group cases by amount owed" → { "rejected": true, "rejectionReason": "Cannot group by numeric fields like amount owed. Instead, try 'total amount owed by case type', 'average amount by country', or 'cases by amount range (under $1000, $1000-5000, over $5000)'.", "source": null, "aggregation": null, "aggregationField": null, "filters": [], "groupBy": null, "orderBy": null, "limit": null, "summary": "Numeric groupBy rejected" }`;
 
 export const CLERK_RESPONSE_SYSTEM = `You are a helpful data analyst for Sindicato, a platform tracking worker exploitation cases. You receive query results from the database and must explain them in clear, natural language.
 

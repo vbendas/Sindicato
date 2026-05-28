@@ -21,6 +21,7 @@ import type { SuggestionItem, Variables } from "./components/suggestions";
 import type { TemplateVariable } from "./prompts";
 import Link from "next/link";
 import { useLocale } from "@/lib/i18n";
+import { ClerkChart } from "@/components/clerk/ClerkChart";
 
 type Message = {
   role: "user" | "assistant";
@@ -599,6 +600,13 @@ export default function ClerkPage() {
                           >
                             {msg.content}
                           </MessageContent>
+                          {msg.content && !msg.content.includes("can only answer") && !msg.content.includes("Request was canceled") && !msg.content.includes("An error occurred") && msg.queryResults && (
+                            <ClerkChart
+                              queryResults={msg.queryResults}
+                              compact={false}
+                              className="ml-3 mt-3"
+                            />
+                          )}
 {msg.content && !msg.content.includes("can only answer") && !msg.content.includes("Request was canceled") && !msg.content.includes("An error occurred") && (msg.content.includes("|") || msg.content.includes("- ")) && (
                           <button
                             onClick={() => handleDownloadMarkdown(msg.content, index)}

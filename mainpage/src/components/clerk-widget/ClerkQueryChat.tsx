@@ -28,6 +28,7 @@ import type { SuggestionItem, Variables } from "@/app/[lang]/clerk/components/su
 import type { TemplateVariable } from "@/app/[lang]/clerk/prompts";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
+import { ClerkChart } from "@/components/clerk/ClerkChart";
 
 export function ClerkQueryChat() {
   const {
@@ -463,6 +464,17 @@ export function ClerkQueryChat() {
                       >
                         {msg.content}
                       </MessageContent>
+                      {msg.content &&
+                        !msg.content.includes("can only answer") &&
+                        !msg.content.includes("Request was canceled") &&
+                        !msg.content.includes("An error occurred") &&
+                        msg.queryResults && (
+                          <ClerkChart
+                            queryResults={msg.queryResults}
+                            compact={true}
+                            className="ml-2 mt-2"
+                          />
+                        )}
                       {msg.content &&
                         !msg.content.includes("can only answer") &&
                         !msg.content.includes("Request was canceled") &&

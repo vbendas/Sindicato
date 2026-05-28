@@ -31,7 +31,7 @@ type QueryPlan = {
   aggregation: "count" | "sum" | "list" | "group_by" | "metrics";
   aggregationField?: string | null;
   filters: Filter[];
-  groupBy?: string | null;
+  groupBy?: string | string[] | null;
   orderBy?: { field: string; direction: "asc" | "desc" } | null;
   limit?: number | null;
   summary: string;
@@ -284,9 +284,19 @@ function validateQueryPlan(plan: QueryPlan, fieldMap: Record<string, string>): {
   }
 
   if (plan.groupBy) {
-    const mapped = fieldMap[plan.groupBy];
-    if (!mapped) {
-      return { valid: false, error: `Unknown groupBy field: ${plan.groupBy}` };
+    const groupByFields = Array.isArray(plan.groupBy) ? plan.groupBy : [plan.groupBy];
+    if (groupByFields.length > 2) {
+      return { valid: false, error: "Maximum 2 groupBy fields allowed. For complex queries with 3+ dimensions, try breaking them into separate queries (e.g., 'cases by country and type', then 'total amount by type')." };
+    }
+    const numericFields = ["amountOwed", "amount_owed", "viewsTotal", "views_total", "views24h", "views7d", "visitorsTotal", "visitors_total", "sharesTotal", "shares_total"];
+    for (const field of groupByFields) {
+      const mapped = fieldMap[field];
+      if (!mapped) {
+        return { valid: false, error: `Unknown groupBy field: ${field}` };
+      }
+      if (numericFields.includes(field)) {
+        return { valid: false, error: `Cannot group by numeric field '${field}'. Use aggregation (sum/count) instead, or group by categorical fields like country, caseType, company_name.` };
+      }
     }
   }
 
@@ -358,24 +368,32 @@ async function executeMetricsPlan(plan: QueryPlan, fieldMap: Record<string, stri
   }
 
   if (plan.aggregation === "group_by" && plan.groupBy) {
-    const groupField = resolveField(plan.groupBy, fieldMap);
-    if (!groupField) return { rows: [], summary: { error: "Invalid groupBy field" } };
+    const groupByFields = Array.isArray(plan.groupBy) ? plan.groupBy : [plan.groupBy];
+    const resolvedFields = groupByFields.map(f => ({ name: f, field: resolveField(f, fieldMap) }));
+    
+    if (resolvedFields.some(f => !f.field)) {
+      return { rows: [], summary: { error: "Invalid groupBy field" } };
+    }
 
     const selectFields: Record<string, any> = {
-      [plan.groupBy]: groupField,
       totalViews: sum(entityMetricsSnapshots.viewsTotal),
       totalVisitors: sum(entityMetricsSnapshots.visitorsTotal),
       totalShares: sum(entityMetricsSnapshots.sharesTotal),
     };
+    for (const { name, field } of resolvedFields) {
+      selectFields[name] = field;
+    }
+
+    const drizzleGroupFields = resolvedFields.map(f => f.field!);
 
     let query: any = db
       .select(selectFields)
       .from(entityMetricsSnapshots)
       .where(whereClause)
-      .groupBy(groupField);
+      .groupBy(...drizzleGroupFields);
 
     if (plan.orderBy) {
-      const orderField = plan.orderBy.field === "totalViews" ? sum(entityMetricsSnapshots.viewsTotal) : groupField;
+      const orderField = plan.orderBy.field === "totalViews" ? sum(entityMetricsSnapshots.viewsTotal) : resolvedFields[0].field!;
       query = query.orderBy(plan.orderBy.direction === "desc" ? desc(orderField) : asc(orderField));
     }
 
@@ -410,23 +428,31 @@ async function executeCasesPlan(plan: QueryPlan, fieldMap: Record<string, string
   }
 
   if (plan.aggregation === "group_by" && plan.groupBy) {
-    const groupField = resolveField(plan.groupBy, fieldMap);
-    if (!groupField) return { rows: [], summary: { error: "Invalid groupBy field" } };
+    const groupByFields = Array.isArray(plan.groupBy) ? plan.groupBy : [plan.groupBy];
+    const resolvedFields = groupByFields.map(f => ({ name: f, field: resolveField(f, fieldMap) }));
+    
+    if (resolvedFields.some(f => !f.field)) {
+      return { rows: [], summary: { error: "Invalid groupBy field" } };
+    }
 
     const selectFields: Record<string, any> = {
-      [plan.groupBy]: groupField,
       count: count(),
     };
+    for (const { name, field } of resolvedFields) {
+      selectFields[name] = field;
+    }
 
+    const drizzleGroupFields = resolvedFields.map(f => f.field!);
+    
     let query: any = db
       .select(selectFields)
       .from(cases)
       .innerJoin(companies, eq(cases.companyId, companies.id))
       .where(whereClause)
-      .groupBy(groupField);
+      .groupBy(...drizzleGroupFields);
 
     if (plan.orderBy) {
-      const orderField = plan.orderBy.field === "count" ? count() : groupField;
+      const orderField = plan.orderBy.field === "count" ? count() : resolvedFields[0].field!;
       query = query.orderBy(plan.orderBy.direction === "desc" ? desc(orderField) : asc(orderField));
     }
 
@@ -519,11 +545,15 @@ function formatResultsForLlm(plan: QueryPlan, result: QueryResult): string {
       parts.push(`\nNote: ${totalFetched - DISPLAY_LIMIT} additional cases are available in the downloadable .md file.`);
     }
   } else if (result.summary.type === "group_by") {
-    parts.push(`Results grouped by ${String(result.summary.groupBy)}:`);
+    const groupByFields = Array.isArray(plan.groupBy) ? plan.groupBy : (plan.groupBy ? [plan.groupBy] : []);
+    parts.push(`Results grouped by ${groupByFields.join(", ")}:`);
     for (const row of result.rows) {
-      const key = String(row[plan.groupBy ?? ""]);
-      const values = Object.entries(row).filter(([k]) => k !== plan.groupBy).map(([k, v]) => `${k}: ${v}`).join(", ");
-      parts.push(`- ${key}: ${values}`);
+      const keys = groupByFields.map(f => String(row[f] ?? "Unknown")).join(" / ");
+      const values = Object.entries(row)
+        .filter(([k]) => !groupByFields.includes(k))
+        .map(([k, v]) => `${k}: ${v}`)
+        .join(", ");
+      parts.push(`- ${keys}: ${values}`);
     }
   }
 
@@ -668,7 +698,20 @@ export async function POST(request: Request) {
       return streamRejection(`I can only answer questions about Sindicato's worker exploitation data. ${validation.reason || "This query is outside the scope of the available data."}`);
     }
 
-    const result = await executePlan(plan, fieldMap, extraFilters, requestsContact);
+    let result;
+    try {
+      result = await executePlan(plan, fieldMap, extraFilters, requestsContact);
+    } catch (execError) {
+      console.error("[Query Execution Error]", {
+        query: message,
+        plan,
+        error: execError instanceof Error ? execError.message : execError,
+      });
+      return error(
+        "Failed to execute the query. The database might not support this type of analysis. Try simplifying your question or breaking it into smaller parts.",
+        400
+      );
+    }
     let contextForLlm = formatResultsForLlm(plan, result);
 
     // Check if current results are empty and we have previous results in history
