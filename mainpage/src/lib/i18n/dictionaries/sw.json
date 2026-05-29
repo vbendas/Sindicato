@@ -289,6 +289,8 @@
     "eventTitleEmailAccessed": "Ombi la ufikiaji wa barua pepe",
     "eventTitleCompanyResponse": "Jibu la kampuni",
     "eventTitleWorkerResponse": "Jibu la mfanyakazi",
+    "eventTitleCompanyReply": "Jibu la kampuni",
+    "eventTitleWorkerReply": "Jibu la mfanyakazi",
     "eventTitleResolution": "Kesi imetatuliwa"
   },
   "fileCase": {
@@ -425,6 +427,7 @@
     "45+": "45+"
   },
   "clerk": {
+    "name": "Karani",
     "home": {
       "greeting": "Ninawezaje kukusaidia?",
       "actionAsk": "Uliza swali",

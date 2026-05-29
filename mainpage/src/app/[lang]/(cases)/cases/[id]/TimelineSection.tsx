@@ -68,6 +68,8 @@ function getEventTitle(event: TimelineEvent, companyName: string, t: (key: strin
     "case_updated": "timelineSection.eventTitleCaseFiled",
     "email_sent": "timelineSection.eventTitleEmailAccessed",
     "resolved": "timelineSection.eventTitleResolution",
+    "company_response": "timelineSection.eventTitleCompanyResponse",
+    "worker_response": "timelineSection.eventTitleWorkerResponse",
   };
   
   // Check if title starts with 'Started working on'
@@ -78,6 +80,20 @@ function getEventTitle(event: TimelineEvent, companyName: string, t: (key: strin
   // Check if title starts with 'Case filed against'
   if (event.title?.startsWith("Case filed against")) {
     return t("timelineSection.eventTitleCaseFiled", { company: companyName });
+  }
+  
+  // Check if title matches known hardcoded titles
+  if (event.title === "Company Response") {
+    return t("timelineSection.eventTitleCompanyResponse");
+  }
+  if (event.title === "Email Access Requested") {
+    return t("timelineSection.eventTitleEmailAccessed");
+  }
+  if (event.title === "Company Reply") {
+    return t("timelineSection.eventTitleCompanyReply");
+  }
+  if (event.title === "Worker Reply") {
+    return t("timelineSection.eventTitleWorkerReply");
   }
   
   // Check if we have a translation key for this event type

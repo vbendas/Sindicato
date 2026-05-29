@@ -289,6 +289,8 @@
     "eventTitleEmailAccessed": "Yêu cầu truy cập email",
     "eventTitleCompanyResponse": "Phản hồi của công ty",
     "eventTitleWorkerResponse": "Phản hồi của người lao động",
+    "eventTitleCompanyReply": "Phản hồi của công ty",
+    "eventTitleWorkerReply": "Phản hồi của người lao động",
     "eventTitleResolution": "Vụ việc đã giải quyết"
   },
   "fileCase": {
@@ -425,6 +427,7 @@
     "45+": "45+"
   },
   "clerk": {
+    "name": "Thư ký",
     "home": {
       "greeting": "Tôi có thể giúp gì cho bạn?",
       "actionAsk": "Đặt câu hỏi",

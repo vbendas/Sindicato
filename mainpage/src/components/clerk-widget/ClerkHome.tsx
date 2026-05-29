@@ -75,7 +75,7 @@ export function ClerkHome() {
           <div className="relative size-[125px] rounded-full overflow-hidden border-2 border-black bg-sindicato-bordeaux mb-3">
             <Image
               src="/clerk.png"
-              alt="Clerk"
+              alt={t("clerk.name")}
               fill
               className="object-cover"
               sizes="125px"

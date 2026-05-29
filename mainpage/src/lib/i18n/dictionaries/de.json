@@ -289,6 +289,8 @@
     "eventTitleEmailAccessed": "E-Mail-Zugriffsanfrage",
     "eventTitleCompanyResponse": "Antwort des Unternehmens",
     "eventTitleWorkerResponse": "Antwort des Arbeiters",
+    "eventTitleCompanyReply": "Antwort des Unternehmens",
+    "eventTitleWorkerReply": "Antwort des Arbeiters",
     "eventTitleResolution": "Fall gelöst"
   },
   "fileCase": {
@@ -425,6 +427,7 @@
     "45+": "45+"
   },
   "clerk": {
+    "name": "Gerichtsdiener",
     "home": {
       "greeting": "Wie kann ich dir helfen?",
       "actionAsk": "Frage stellen",

@@ -27,7 +27,7 @@ import {
 import type { SuggestionItem, Variables } from "@/app/[lang]/clerk/components/suggestions";
 import type { TemplateVariable } from "@/app/[lang]/clerk/prompts";
 import { cn } from "@/lib/utils";
-import { useLocale } from "@/lib/i18n";
+import { useLocale, useT } from "@/lib/i18n";
 import { ClerkChart } from "@/components/clerk/ClerkChart";
 
 export function ClerkQueryChat() {
@@ -40,6 +40,7 @@ export function ClerkQueryChat() {
     setPendingQuery,
   } = useClerkWidget();
   const { locale } = useLocale();
+  const t = useT();
   const modeMessages = messages["query-chat"];
 
   const [input, setInput] = useState("");
@@ -432,7 +433,7 @@ export function ClerkQueryChat() {
                   <Message key={index} className="mb-3">
                     <MessageAvatar
                       src="/clerk.png"
-                      alt="Clerk"
+                      alt={t("clerk.name")}
                       fallback="🤖"
                       className="mr-2 size-6 border-2 border-black bg-sindicato-bordeaux"
                     />
@@ -446,7 +447,7 @@ export function ClerkQueryChat() {
                   <Message key={index} className="mb-3">
                     <MessageAvatar
                       src="/clerk.png"
-                      alt="Clerk"
+                      alt={t("clerk.name")}
                       fallback="🤖"
                       className="mr-2 size-6 border-2 border-black bg-sindicato-bordeaux"
                     />

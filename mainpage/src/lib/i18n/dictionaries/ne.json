@@ -289,6 +289,8 @@
     "eventTitleEmailAccessed": "इमेल पहुँच अनुरोध",
     "eventTitleCompanyResponse": "कम्पनीको प्रतिक्रिया",
     "eventTitleWorkerResponse": "श्रमिकको प्रतिक्रिया",
+    "eventTitleCompanyReply": "कम्पनीको प्रतिक्रिया",
+    "eventTitleWorkerReply": "श्रमिकको प्रतिक्रिया",
     "eventTitleResolution": "मुद्दा समाधान भयो"
   },
   "fileCase": {
@@ -425,6 +427,7 @@
     "45+": "45+"
   },
   "clerk": {
+    "name": "कर्मचारी",
     "home": {
       "greeting": "म तपाईंलाई कसरी मद्दत गर्न सक्छु?",
       "actionAsk": "प्रश्न सोध्नुहोस्",

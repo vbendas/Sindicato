@@ -117,7 +117,7 @@ export function ClerkKBChat() {
                   <Message key={i} className="mb-3 items-center">
                     <MessageAvatar
                       src="/clerk.png"
-                      alt="Clerk"
+                      alt={t("clerk.name")}
                       fallback="🤖"
                       className="mr-2 size-[54px] border-2 border-black bg-sindicato-bordeaux"
                     />
@@ -131,7 +131,7 @@ export function ClerkKBChat() {
                   <Message key={i} className="mb-3 items-center">
                     <MessageAvatar
                       src="/clerk.png"
-                      alt="Clerk"
+                      alt={t("clerk.name")}
                       fallback="🤖"
                       className="mr-2 size-[54px] border-2 border-black bg-sindicato-bordeaux"
                     />

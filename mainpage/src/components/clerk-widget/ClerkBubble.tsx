@@ -87,7 +87,7 @@ export function ClerkBubble() {
               <div className="absolute top-0 -left-3.5 -right-4.5 h-[calc(100%+32px)]" style={{ marginLeft: '-1px' }}>
                 <Image
                   src="/clerk.png"
-                  alt="Clerk"
+                  alt={t("clerk.name")}
                   fill
                   className="object-contain"
                   sizes="64px"

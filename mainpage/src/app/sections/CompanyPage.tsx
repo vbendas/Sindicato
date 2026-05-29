@@ -9,7 +9,8 @@ import Header from "../components/Header";
 import Footer from "../sections/Footer";
 import ShareButtons from "@/components/ShareButtons";
 import { useTrackPageview } from "@/hooks/useTrackPageview";
-import { useT } from "@/lib/i18n";
+import { useT, useLocale } from "@/lib/i18n";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface CaseItem {
   id: string;
@@ -31,6 +32,7 @@ interface CompanyPageProps {
 
 export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
   const t = useT();
+  const { locale } = useLocale();
   const [cases, setCases] = useState<CaseItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewsTotal, setViewsTotal] = useState<number | null>(null);
@@ -44,6 +46,27 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
   const [summaryLoading, setSummaryLoading] = useState(false);
   const pathname = usePathname();
   const { data: session } = useSession();
+
+  // Translate summary text
+  const { 
+    translatedText: summaryTranslation, 
+    isTranslating: isSummaryTranslating,
+    displayText: displaySummary 
+  } = useTranslation(
+    summary?.summary,
+    undefined,
+    locale !== 'en'
+  );
+
+  const { 
+    translatedText: keyInsightTranslation, 
+    isTranslating: isKeyInsightTranslating,
+    displayText: displayKeyInsight 
+  } = useTranslation(
+    summary?.keyInsight,
+    undefined,
+    locale !== 'en'
+  );
 
   useTrackPageview("company", slug);
 
@@ -191,14 +214,46 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
                   </div>
                 </div>
 
+                {isSummaryTranslating && (
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-3 h-3 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin" />
+                    <span className="text-blue-400 text-[10px] uppercase tracking-wider">
+                      {t("common.translating")}
+                    </span>
+                  </div>
+                )}
+
+                {summaryTranslation && !isSummaryTranslating && (
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="inline-flex items-center gap-1 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-blue-400 font-[family-name:var(--font-jetbrains)]">
+                      {t("caseDetail.machineTranslated")}
+                    </span>
+                  </div>
+                )}
+
                 <p className="text-sindicato-warm-white/80 text-sm leading-relaxed mb-4">
-                  {summary.summary}
+                  {displaySummary}
                 </p>
 
                 {summary.keyInsight && (
                   <div className="mb-4 p-3 bg-white/5 border-l-2 border-sindicato-bordeaux rounded">
+                    {isKeyInsightTranslating && (
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-3 h-3 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin" />
+                        <span className="text-blue-400 text-[10px] uppercase tracking-wider">
+                          {t("common.translating")}
+                        </span>
+                      </div>
+                    )}
+                    {keyInsightTranslation && !isKeyInsightTranslating && (
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="inline-flex items-center gap-1 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-blue-400 font-[family-name:var(--font-jetbrains)]">
+                          {t("caseDetail.machineTranslated")}
+                        </span>
+                      </div>
+                    )}
                     <p className="text-sindicato-warm-white/90 text-sm italic">
-                      {summary.keyInsight}
+                      {displayKeyInsight}
                     </p>
                   </div>
                 )}

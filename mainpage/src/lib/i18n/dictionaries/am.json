@@ -289,6 +289,8 @@
     "eventTitleEmailAccessed": "የኢሜይል መዳረሻ ጥያቄ",
     "eventTitleCompanyResponse": "የኩባንያ ምላሽ",
     "eventTitleWorkerResponse": "የሠራተኛ ምላሽ",
+    "eventTitleCompanyReply": "የኩባንያ ምላሽ",
+    "eventTitleWorkerReply": "የሠራተኛ ምላሽ",
     "eventTitleResolution": "ጉዳይ ተፈትቷል"
   },
   "fileCase": {
@@ -425,6 +427,7 @@
     "45+": "45+"
   },
   "clerk": {
+    "name": "ጸሐፊ",
     "home": {
       "greeting": "እንዴት ልርዳዎ?",
       "actionAsk": "ጥያቄ ይጠይቁ",

@@ -289,6 +289,8 @@
     "eventTitleEmailAccessed": "Demande d'accès à l'email",
     "eventTitleCompanyResponse": "Réponse de l'entreprise",
     "eventTitleWorkerResponse": "Réponse du travailleur",
+    "eventTitleCompanyReply": "Réponse de l'entreprise",
+    "eventTitleWorkerReply": "Réponse du travailleur",
     "eventTitleResolution": "Cas résolu"
   },
   "fileCase": {
@@ -425,6 +427,7 @@
     "45+": "45+"
   },
   "clerk": {
+    "name": "Greffier",
     "home": {
       "greeting": "Comment puis-je vous aider ?",
       "actionAsk": "Poser une question",

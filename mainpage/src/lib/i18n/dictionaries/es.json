@@ -285,10 +285,12 @@
     "deleteDialogDescription": "¿Estás seguro de que quieres eliminar este evento de la cronología? Esta acción no se puede deshacer.",
     "errorLoad": "Error al cargar los eventos de la cronología",
     "eventTitleStartedWorking": "Comenzó a trabajar en {company}",
-    "eventTitleCaseFiled": "Caso presentado contra {company}",
+    "eventTitleCaseFiled": "Caso registrado contra {company}",
     "eventTitleEmailAccessed": "Solicitud de acceso al correo",
     "eventTitleCompanyResponse": "Respuesta de la empresa",
     "eventTitleWorkerResponse": "Respuesta del trabajador",
+    "eventTitleCompanyReply": "Respuesta de la empresa",
+    "eventTitleWorkerReply": "Respuesta del trabajador",
     "eventTitleResolution": "Caso resuelto"
   },
   "fileCase": {
@@ -425,6 +427,7 @@
     "45+": "45+"
   },
   "clerk": {
+    "name": "Escribano",
     "home": {
       "greeting": "¿Cómo puedo ayudarte?",
       "actionAsk": "Hacer una pregunta",

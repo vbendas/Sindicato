@@ -289,6 +289,8 @@
     "eventTitleEmailAccessed": "Email access requested",
     "eventTitleCompanyResponse": "Company response",
     "eventTitleWorkerResponse": "Worker response",
+    "eventTitleCompanyReply": "Company reply",
+    "eventTitleWorkerReply": "Worker reply",
     "eventTitleResolution": "Case resolved"
   },
   "fileCase": {

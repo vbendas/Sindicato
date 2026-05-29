@@ -286,9 +286,11 @@
     "errorLoad": "समयरेखा इवेंट लोड करने में विफल",
     "eventTitleStartedWorking": "{company} में काम करना शुरू किया",
     "eventTitleCaseFiled": "{company} के खिलाफ मामला दर्ज",
-    "eventTitleEmailAccessed": "ईमेल एक्सेस अनुरोध",
+    "eventTitleEmailAccessed": "ईमेल पहुंच अनुरोध",
     "eventTitleCompanyResponse": "कंपनी की प्रतिक्रिया",
     "eventTitleWorkerResponse": "श्रमिक की प्रतिक्रिया",
+    "eventTitleCompanyReply": "कंपनी की प्रतिक्रिया",
+    "eventTitleWorkerReply": "श्रमिक की प्रतिक्रिया",
     "eventTitleResolution": "मामला सुलझा"
   },
   "fileCase": {
@@ -425,6 +427,7 @@
     "45+": "45+"
   },
   "clerk": {
+    "name": "लिपिक",
     "home": {
       "greeting": "मैं आपकी कैसे मदद कर सकता हूं?",
       "actionAsk": "सवाल पूछें",

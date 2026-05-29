@@ -289,6 +289,8 @@
     "eventTitleEmailAccessed": "Kahilingan sa pag-access sa email",
     "eventTitleCompanyResponse": "Tugon ng kumpanya",
     "eventTitleWorkerResponse": "Tugon ng manggagawa",
+    "eventTitleCompanyReply": "Tugon ng kumpanya",
+    "eventTitleWorkerReply": "Tugon ng manggagawa",
     "eventTitleResolution": "Nalutas ang kaso"
   },
   "fileCase": {
@@ -425,6 +427,7 @@
     "45+": "45+"
   },
   "clerk": {
+    "name": "Kawani",
     "home": {
       "greeting": "Paano kita matutulungan?",
       "actionAsk": "Magtanong",
