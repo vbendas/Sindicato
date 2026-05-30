@@ -305,6 +305,29 @@ export const auditLogs = pgTable("audit_logs", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const caseTags = pgTable(
+  "case_tags",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    caseId: uuid("case_id")
+      .references(() => cases.id)
+      .notNull(),
+    timelineEventId: uuid("timeline_event_id").references(
+      () => caseTimelineEvents.id
+    ),
+    category: varchar("category", { length: 50 }).notNull(),
+    tagName: varchar("tag_name", { length: 100 }).notNull(),
+    confidence: integer("confidence").notNull(),
+    sourceText: text("source_text"),
+    workerOverride: varchar("worker_override", { length: 20 }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [
+    index("case_tags_case_id").on(t.caseId),
+    index("case_tags_case_category").on(t.caseId, t.category),
+  ]
+);
+
 export const companySummaries = pgTable("company_summaries", {
   id: uuid("id").primaryKey().defaultRandom(),
   companyId: uuid("company_id")

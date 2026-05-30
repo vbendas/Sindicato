@@ -731,5 +731,42 @@
   },
   "languageSelector": {
     "language": "Ngôn ngữ"
+  },
+  "tags": {
+    "categories": {
+      "payment_structure": "Vấn đề thanh toán",
+      "quality_review": "Chất lượng / Đánh giá",
+      "communication": "Giao tiếp / Tương tác",
+      "project_lifecycle": "Vòng đời dự án",
+      "worker_action": "Hành động người lao động / Biện pháp khắc phục"
+    },
+    "hourly_payment_not_honored": "Điều khoản thanh toán theo giờ không được tuân thủ",
+    "pertask_payment_not_honored": "Điều khoản thanh toán theo nhiệm vụ không được tuân thủ",
+    "completion_payment_not_honored": "Thanh toán khi hoàn thành không được tuân thủ",
+    "approval_condition_retroactive": "Điều kiện phê duyệt áp dụng hồi tố",
+    "retroactive_term_change": "Thay đổi điều khoản hồi tố",
+    "payment_cap_limit": "Giới hạn thanh toán",
+    "no_feedback_provided": "Không có phản hồi",
+    "undefined_quality_standard": "Tiêu chuẩn chất lượng chưa xác định",
+    "post_hoc_quality_claim": "Khiếu nại chất lượng sau sự kiện",
+    "tasks_removed_deleted": "Nhiệm vụ bị xóa / gỡ bỏ",
+    "ignored_messages": "Tin nhắn bị bỏ qua",
+    "channel_lockout": "Khóa kênh",
+    "support_deflection": "Chuyển hướng hỗ trợ",
+    "alias_management": "Quản lý bí danh",
+    "project_paused_ended": "Dự án tạm dừng / kết thúc đột ngột",
+    "project_deleted_dashboard": "Dự án bị xóa khỏi bảng điều khiển",
+    "task_allocation_dropped": "Phân bổ nhiệm vụ bị giảm",
+    "constructive_termination": "Chấm dứt mang tính xây dựng",
+    "dlse_filing_indicated": "Nộp đơn DLSE được chỉ ra",
+    "legal_counsel_sought": "Tìm kiếm tư vấn pháp lý",
+    "collective_action_interest": "Quan tâm đến hành động tập thể",
+    "public_documentation": "Tài liệu công khai",
+    "aiConfidence": "AI: {confidence}% tin cậy",
+    "workerConfirmed": "Xác nhận bởi người lao động",
+    "workerRejected": "Từ chối bởi người lao động",
+    "generateTags": "Tạo thẻ",
+    "generatingTags": "Đang phân tích...",
+    "aiTags": "Mẫu do AI phát hiện"
   }
 }

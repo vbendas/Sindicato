@@ -139,3 +139,7 @@ export function getReportModel() {
 export function getClerkModel() {
   return process.env.CLERK_MODEL ?? "z-ai/glm-4.5-air:free";
 }
+
+export function getTagModel() {
+  return process.env.TAG_MODEL ?? "openai/gpt-oss-120b:free";
+}

@@ -730,5 +730,42 @@
   },
   "languageSelector": {
     "language": "Language"
+  },
+  "tags": {
+    "categories": {
+      "payment_structure": "Payment Issues",
+      "quality_review": "Quality / Review",
+      "communication": "Communication / Engagement",
+      "project_lifecycle": "Project Lifecycle",
+      "worker_action": "Worker Action / Remedy"
+    },
+    "hourly_payment_not_honored": "Hourly payment terms not honored",
+    "pertask_payment_not_honored": "Per-task payment terms not honored",
+    "completion_payment_not_honored": "Completion-based payment not honored",
+    "approval_condition_retroactive": "Approval condition imposed retroactively",
+    "retroactive_term_change": "Retroactive term change",
+    "payment_cap_limit": "Payment cap / limit",
+    "no_feedback_provided": "No feedback provided",
+    "undefined_quality_standard": "Undefined quality standard",
+    "post_hoc_quality_claim": "Post-hoc quality claim",
+    "tasks_removed_deleted": "Tasks removed / deleted",
+    "ignored_messages": "Ignored messages",
+    "channel_lockout": "Channel lockout",
+    "support_deflection": "Support deflection",
+    "alias_management": "Alias management",
+    "project_paused_ended": "Project paused / ended abruptly",
+    "project_deleted_dashboard": "Project deleted from dashboard",
+    "task_allocation_dropped": "Task allocation dropped",
+    "constructive_termination": "Constructive termination",
+    "dlse_filing_indicated": "DLSE filing indicated",
+    "legal_counsel_sought": "Legal counsel sought",
+    "collective_action_interest": "Collective action interest",
+    "public_documentation": "Public documentation",
+    "aiConfidence": "AI: {confidence}% confident",
+    "workerConfirmed": "Worker confirmed",
+    "workerRejected": "Worker rejected",
+    "generateTags": "Generate Tags",
+    "generatingTags": "Analyzing...",
+    "aiTags": "AI-Detected Patterns"
   }
 }

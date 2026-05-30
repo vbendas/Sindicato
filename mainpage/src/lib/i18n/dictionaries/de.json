@@ -731,5 +731,42 @@
   },
   "languageSelector": {
     "language": "Sprache"
+  },
+  "tags": {
+    "categories": {
+      "payment_structure": "Zahlungsprobleme",
+      "quality_review": "Qualität / Überprüfung",
+      "communication": "Kommunikation / Engagement",
+      "project_lifecycle": "Projektlebenszyklus",
+      "worker_action": "Maßnahme der Arbeitenden / Abhilfe"
+    },
+    "hourly_payment_not_honored": "Stundenlohnbedingungen nicht eingehalten",
+    "pertask_payment_not_honored": "Aufgabenbasierte Zahlungsbedingungen nicht eingehalten",
+    "completion_payment_not_honored": "Abschlussbasierte Zahlung nicht eingehalten",
+    "approval_condition_retroactive": "Genehmigungsbedingung rückwirkend auferlegt",
+    "retroactive_term_change": "Rückwirkende Änderung der Bedingungen",
+    "payment_cap_limit": "Zahlungsobergrenze",
+    "no_feedback_provided": "Kein Feedback gegeben",
+    "undefined_quality_standard": "Undefinierter Qualitätsstandard",
+    "post_hoc_quality_claim": "Nachträglicher Qualitätsanspruch",
+    "tasks_removed_deleted": "Aufgaben entfernt / gelöscht",
+    "ignored_messages": "Ignorierte Nachrichten",
+    "channel_lockout": "Kanal-Sperre",
+    "support_deflection": "Support-Abweisung",
+    "alias_management": "Alias-Verwaltung",
+    "project_paused_ended": "Projekt pausiert / abrupt beendet",
+    "project_deleted_dashboard": "Projekt aus Dashboard gelöscht",
+    "task_allocation_dropped": "Aufgabenvergabe reduziert",
+    "constructive_termination": "Konstruktive Kündigung",
+    "dlse_filing_indicated": "DLSE-Einreichung angezeigt",
+    "legal_counsel_sought": "Rechtsberatung gesucht",
+    "collective_action_interest": "Interesse an Sammelklage",
+    "public_documentation": "Öffentliche Dokumentation",
+    "aiConfidence": "KI: {confidence}% sicher",
+    "workerConfirmed": "Von Arbeitenden bestätigt",
+    "workerRejected": "Von Arbeitenden abgelehnt",
+    "generateTags": "Tags generieren",
+    "generatingTags": "Analyse läuft...",
+    "aiTags": "KI-erkannte Muster"
   }
 }

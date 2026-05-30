@@ -4,6 +4,7 @@ import { eq, and, asc } from "drizzle-orm";
 import { success, error } from "@/lib/utils/api";
 import { auth } from "@/lib/auth";
 import { timelineEventInputSchema } from "@/lib/utils/schemas";
+import { generateCaseTags } from "@/lib/ai/generate-tags";
 
 export async function GET(
   request: Request,
@@ -82,6 +83,11 @@ export async function POST(
         responseReceived: data.responseReceived,
       })
       .returning();
+
+    // Re-generate AI tags (fire-and-forget)
+    generateCaseTags(caseId).catch((err) =>
+      console.error("Failed to regenerate case tags:", err)
+    );
 
     return success(event, 201);
   } catch (err) {

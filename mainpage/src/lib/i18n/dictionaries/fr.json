@@ -731,5 +731,42 @@
   },
   "languageSelector": {
     "language": "Langue"
+  },
+  "tags": {
+    "categories": {
+      "payment_structure": "Problèmes de paiement",
+      "quality_review": "Qualité / Révision",
+      "communication": "Communication / Engagement",
+      "project_lifecycle": "Cycle de vie du projet",
+      "worker_action": "Action du travailleur / Recours"
+    },
+    "hourly_payment_not_honored": "Conditions de paiement horaire non respectées",
+    "pertask_payment_not_honored": "Conditions de paiement par tâche non respectées",
+    "completion_payment_not_honored": "Paiement à la réalisation non respecté",
+    "approval_condition_retroactive": "Condition d'approbation imposée rétroactivement",
+    "retroactive_term_change": "Modification rétroactive des conditions",
+    "payment_cap_limit": "Plafond / limite de paiement",
+    "no_feedback_provided": "Aucun retour fourni",
+    "undefined_quality_standard": "Standard de qualité non défini",
+    "post_hoc_quality_claim": "Réclamation de qualité a posteriori",
+    "tasks_removed_deleted": "Tâches supprimées / retirées",
+    "ignored_messages": "Messages ignorés",
+    "channel_lockout": "Verrouillage du canal",
+    "support_deflection": "Détournement du support",
+    "alias_management": "Gestion des alias",
+    "project_paused_ended": "Projet suspendu / terminé abruptement",
+    "project_deleted_dashboard": "Projet supprimé du tableau de bord",
+    "task_allocation_dropped": "Allocation de tâches réduite",
+    "constructive_termination": "Résiliation constructive",
+    "dlse_filing_indicated": "Dépôt DLSE indiqué",
+    "legal_counsel_sought": "Conseil juridique recherché",
+    "collective_action_interest": "Intérêt pour une action collective",
+    "public_documentation": "Documentation publique",
+    "aiConfidence": "IA : {confidence}% de confiance",
+    "workerConfirmed": "Confirmé par le travailleur",
+    "workerRejected": "Rejeté par le travailleur",
+    "generateTags": "Générer les étiquettes",
+    "generatingTags": "Analyse en cours...",
+    "aiTags": "Schémas détectés par l'IA"
   }
 }

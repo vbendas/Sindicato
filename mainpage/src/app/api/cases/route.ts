@@ -11,6 +11,7 @@ import { notifyCompanyNewCase } from "@/lib/email/notifications";
 import { createCaseAlias } from "@/lib/email/aliases";
 import { auth } from "@/lib/auth";
 import { translateToEnglish } from "@/lib/ai/translate";
+import { generateCaseTags } from "@/lib/ai/generate-tags";
 
 export async function POST(request: Request) {
   // Require authenticated session
@@ -163,6 +164,11 @@ export async function POST(request: Request) {
       description: `Case filed against ${company.name}. ${data.amountOwed ? `Amount owed: ${data.amountOwed} ${data.currency}.` : ""}`,
       responseReceived: false,
     }).catch((err) => console.error("Failed to log case filed event:", err));
+
+    // Generate AI tags (fire-and-forget)
+    generateCaseTags(newCase.id).catch((err) =>
+      console.error("Failed to generate case tags:", err)
+    );
 
     if (data.optInCompanyNotify) {
       notifyCompanyNewCase({

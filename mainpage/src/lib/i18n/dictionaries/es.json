@@ -731,5 +731,42 @@
   },
   "languageSelector": {
     "language": "Idioma"
+  },
+  "tags": {
+    "categories": {
+      "payment_structure": "Problemas de pago",
+      "quality_review": "Calidad / Revisión",
+      "communication": "Comunicación / Participación",
+      "project_lifecycle": "Ciclo de vida del proyecto",
+      "worker_action": "Acción del trabajador / Remedio"
+    },
+    "hourly_payment_not_honored": "Términos de pago por hora no respetados",
+    "pertask_payment_not_honored": "Términos de pago por tarea no respetados",
+    "completion_payment_not_honored": "Pago por finalización no respetado",
+    "approval_condition_retroactive": "Condición de aprobación impuesta retroactivamente",
+    "retroactive_term_change": "Cambio retroactivo de términos",
+    "payment_cap_limit": "Límite de pago",
+    "no_feedback_provided": "Sin retroalimentación proporcionada",
+    "undefined_quality_standard": "Estándar de calidad indefinido",
+    "post_hoc_quality_claim": "Reclamo de calidad a posteriori",
+    "tasks_removed_deleted": "Tareas eliminadas / borradas",
+    "ignored_messages": "Mensajes ignorados",
+    "channel_lockout": "Bloqueo de canal",
+    "support_deflection": "Desvío de soporte",
+    "alias_management": "Gestión de alias",
+    "project_paused_ended": "Proyecto pausado / finalizado abruptamente",
+    "project_deleted_dashboard": "Proyecto eliminado del panel",
+    "task_allocation_dropped": "Asignación de tareas reducida",
+    "constructive_termination": "Terminación constructiva",
+    "dlse_filing_indicated": "Presentación ante DLSE indicada",
+    "legal_counsel_sought": "Asesoría legal buscada",
+    "collective_action_interest": "Interés en acción colectiva",
+    "public_documentation": "Documentación pública",
+    "aiConfidence": "IA: {confidence}% de confianza",
+    "workerConfirmed": "Confirmado por el trabajador",
+    "workerRejected": "Rechazado por el trabajador",
+    "generateTags": "Generar etiquetas",
+    "generatingTags": "Analizando...",
+    "aiTags": "Patrones detectados por IA"
   }
 }

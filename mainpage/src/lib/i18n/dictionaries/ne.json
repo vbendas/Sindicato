@@ -731,5 +731,42 @@
   },
   "languageSelector": {
     "language": "भाषा"
+  },
+  "tags": {
+    "categories": {
+      "payment_structure": "भुक्तानी समस्याहरू",
+      "quality_review": "गुणस्तर / समीक्षा",
+      "communication": "सञ्चार / संलग्नता",
+      "project_lifecycle": "परियोजना जीवनचक्र",
+      "worker_action": "श्रमिक कारबाही / उपाय"
+    },
+    "hourly_payment_not_honored": "प्रति घण्टा भुक्तानी सर्तहरू पालना गरिएको छैन",
+    "pertask_payment_not_honored": "प्रति कार्य भुक्तानी सर्तहरू पालना गरिएको छैन",
+    "completion_payment_not_honored": "समाप्ति-आधारित भुक्तानी पालना गरिएको छैन",
+    "approval_condition_retroactive": "स्वीकृति सर्त पूर्वव्यापी रूपमा लागू गरिएको",
+    "retroactive_term_change": "पूर्वव्यापी सर्त परिवर्तन",
+    "payment_cap_limit": "भुक्तानी सीमा",
+    "no_feedback_provided": "कुनै प्रतिक्रिया प्रदान गरिएको छैन",
+    "undefined_quality_standard": "अपरिभाषित गुणस्तर मापदण्ड",
+    "post_hoc_quality_claim": "पछि गुणस्तर दाबी",
+    "tasks_removed_deleted": "कार्यहरू हटाइएको / मेटाइएको",
+    "ignored_messages": "बेवास्ता गरिएका सन्देशहरू",
+    "channel_lockout": "च्यानल लकआउट",
+    "support_deflection": "सहायता विचलन",
+    "alias_management": "उपनाम व्यवस्थापन",
+    "project_paused_ended": "परियोजना रोकिएको / अचानक समाप्त",
+    "project_deleted_dashboard": "ड्यासबोर्डबाट परियोजना मेटाइएको",
+    "task_allocation_dropped": "कार्य आवंटन घटाइएको",
+    "constructive_termination": "रचनात्मक समाप्ति",
+    "dlse_filing_indicated": "DLSE दाखिला संकेतित",
+    "legal_counsel_sought": "कानुनी सल्लाह लिइएको",
+    "collective_action_interest": "सामूहिक कारबाहीमा रुचि",
+    "public_documentation": "सार्वजनिक कागजात",
+    "aiConfidence": "AI: {confidence}% विश्वास",
+    "workerConfirmed": "श्रमिकद्वारा पुष्टि",
+    "workerRejected": "श्रमिकद्वारा अस्वीकृत",
+    "generateTags": "ट्याग उत्पन्न गर्नुहोस्",
+    "generatingTags": "विश्लेषण हुँदैछ...",
+    "aiTags": "AI-पहिचानिएका ढाँचाहरू"
   }
 }

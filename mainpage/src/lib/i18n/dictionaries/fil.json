@@ -731,5 +731,42 @@
   },
   "languageSelector": {
     "language": "Wika"
+  },
+  "tags": {
+    "categories": {
+      "payment_structure": "Mga Problema sa Bayad",
+      "quality_review": "Kalidad / Pagsusuri",
+      "communication": "Komunikasyon / Pakikipag-ugnayan",
+      "project_lifecycle": "Siklo ng Buhay ng Proyekto",
+      "worker_action": "Aksyon ng Manggagawa / Lunas"
+    },
+    "hourly_payment_not_honored": "Mga tuntunin ng bayad bawat oras ay hindi sinunod",
+    "pertask_payment_not_honored": "Mga tuntunin ng bayad bawat gawain ay hindi sinunod",
+    "completion_payment_not_honored": "Bayad batay sa pagkumpleto ay hindi sinunod",
+    "approval_condition_retroactive": "Kondisyon ng pag-apruba ay ipinataw nang retroactive",
+    "retroactive_term_change": "Retroaktibong pagbabago ng termino",
+    "payment_cap_limit": "Takip / limitasyon ng bayad",
+    "no_feedback_provided": "Walang feedback na ibinigay",
+    "undefined_quality_standard": "Hindi natukoy na pamantayan ng kalidad",
+    "post_hoc_quality_claim": "Pag-angkin ng kalidad pagkatapos ng kaso",
+    "tasks_removed_deleted": "Mga gawaing inalis / binura",
+    "ignored_messages": "Mga mensaheng hindi pinansin",
+    "channel_lockout": "Pagka-lock ng channel",
+    "support_deflection": "Pag-redirect ng suporta",
+    "alias_management": "Pamamahala ng alias",
+    "project_paused_ended": "Proyekto na-hinto / natapos bigla",
+    "project_deleted_dashboard": "Proyekto binura mula sa dashboard",
+    "task_allocation_dropped": "Pagbabawas ng alokasyon ng gawain",
+    "constructive_termination": "Konstruktibong pagtatapos",
+    "dlse_filing_indicated": "DLSE filing ay ipinahiwatig",
+    "legal_counsel_sought": "Legal na payo ay hinanap",
+    "collective_action_interest": "Interes sa kolektibong aksyon",
+    "public_documentation": "Pampublikong dokumentasyon",
+    "aiConfidence": "AI: {confidence}% kumpiyansa",
+    "workerConfirmed": "Kumpirmado ng manggagawa",
+    "workerRejected": "Tinanggihan ng manggagawa",
+    "generateTags": "Bumuo ng mga Tag",
+    "generatingTags": "Sinusuri...",
+    "aiTags": "Mga Pattern na Natukoy ng AI"
   }
 }

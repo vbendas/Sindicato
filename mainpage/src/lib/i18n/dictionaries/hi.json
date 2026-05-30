@@ -731,5 +731,42 @@
   },
   "languageSelector": {
     "language": "भाषा"
+  },
+  "tags": {
+    "categories": {
+      "payment_structure": "भुगतान समस्याएं",
+      "quality_review": "गुणवत्ता / समीक्षा",
+      "communication": "संचार / सहभागिता",
+      "project_lifecycle": "परियोजना जीवनचक्र",
+      "worker_action": "श्रमिक कार्रवाई / उपाय"
+    },
+    "hourly_payment_not_honored": "प्रति घंटा भुगतान शर्तों का पालन नहीं",
+    "pertask_payment_not_honored": "प्रति कार्य भुगतान शर्तों का पालन नहीं",
+    "completion_payment_not_honored": "पूर्णता-आधारित भुगतान का पालन नहीं",
+    "approval_condition_retroactive": "अनुमोदन शर्त पूर्वव्यापी रूप से लागू",
+    "retroactive_term_change": "पूर्वव्यापी शर्त परिवर्तन",
+    "payment_cap_limit": "भुगतान सीमा",
+    "no_feedback_provided": "कोई प्रतिक्रिया प्रदान नहीं की गई",
+    "undefined_quality_standard": "अपरिभाषित गुणवत्ता मानक",
+    "post_hoc_quality_claim": "बाद में गुणवत्ता दावा",
+    "tasks_removed_deleted": "कार्य हटाए गए / मिटाए गए",
+    "ignored_messages": "अनदेखे संदेश",
+    "channel_lockout": "चैनल लॉकआउट",
+    "support_deflection": "सहायता विचलन",
+    "alias_management": "उपनाम प्रबंधन",
+    "project_paused_ended": "परियोजना रोकी गई / अचानक समाप्त",
+    "project_deleted_dashboard": "डैशबोर्ड से परियोजना हटाई गई",
+    "task_allocation_dropped": "कार्य आवंटन कम किया गया",
+    "constructive_termination": "रचनात्मक समाप्ति",
+    "dlse_filing_indicated": "DLSE दाखिल संकेतित",
+    "legal_counsel_sought": "कानूनी सलाह ली गई",
+    "collective_action_interest": "सामूहिक कार्रवाई में रुचि",
+    "public_documentation": "सार्वजनिक दस्तावेज़",
+    "aiConfidence": "AI: {confidence}% आत्मविश्वास",
+    "workerConfirmed": "श्रमिक द्वारा पुष्टि",
+    "workerRejected": "श्रमिक द्वारा अस्वीकृत",
+    "generateTags": "टैग उत्पन्न करें",
+    "generatingTags": "विश्लेषण हो रहा है...",
+    "aiTags": "AI-पहचाने गए पैटर्न"
   }
 }

@@ -731,5 +731,42 @@
   },
   "languageSelector": {
     "language": "Lugha"
+  },
+  "tags": {
+    "categories": {
+      "payment_structure": "Matatizo ya Malipo",
+      "quality_review": "Ubora / Mapitio",
+      "communication": "Mawasiliano / Ushirikiano",
+      "project_lifecycle": "Mzunguko wa Mradi",
+      "worker_action": "Hatua ya Mfanyakazi / Tiba"
+    },
+    "hourly_payment_not_honored": "Masharti ya malipo kwa saa hayakuheshimiwa",
+    "pertask_payment_not_honored": "Masharti ya malipo kwa kazi hayakuheshimiwa",
+    "completion_payment_not_honored": "Malipo kulingana na kukamilisha hayakuheshimiwa",
+    "approval_condition_retroactive": "Kibali cha kuidhinishwa kimetolewa kwa nyuma",
+    "retroactive_term_change": "Mabadiliko ya masharti ya nyuma",
+    "payment_cap_limit": "Kikomo cha malipo",
+    "no_feedback_provided": "Hakuna maoni yaliyotolewa",
+    "undefined_quality_standard": "Kiwango cha ubora ambacho hakijafafanuliwa",
+    "post_hoc_quality_claim": "Madai ya ubora baada ya tukio",
+    "tasks_removed_deleted": "Kazi zilizoondolewa / kufutwa",
+    "ignored_messages": "Ujumbe uliopuuzwa",
+    "channel_lockout": "Kufungwa kwa kituo",
+    "support_deflection": "Kuegemea msaada",
+    "alias_management": "Usimamizi wa majina ya kubadilisha",
+    "project_paused_ended": "Mradi umesimamishwa / umemalizika ghafla",
+    "project_deleted_dashboard": "Mradi umefutwa kutoka dashibodi",
+    "task_allocation_dropped": "Kugawanya kazi kumepunguzwa",
+    "constructive_termination": "Kumalizika kwa kujenga",
+    "dlse_filing_indicated": "Kuwasilisha DLSE kumeonyeshwa",
+    "legal_counsel_sought": "Ushauri wa kisheria umetafutwa",
+    "collective_action_interest": "Nia ya hatua ya pamoja",
+    "public_documentation": "Nyaraka za umma",
+    "aiConfidence": "AI: {confidence}% uhakika",
+    "workerConfirmed": "Imethibitishwa na mfanyakazi",
+    "workerRejected": "Imekataliwa na mfanyakazi",
+    "generateTags": "Tengeneza Lebo",
+    "generatingTags": "Inachambua...",
+    "aiTags": "Miundo Iliyogunduliwa na AI"
   }
 }

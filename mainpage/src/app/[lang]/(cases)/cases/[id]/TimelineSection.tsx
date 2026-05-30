@@ -38,6 +38,7 @@ import { ChevronRightIcon, PlusIcon, PencilIcon, Trash2Icon, Loader2Icon, Share2
 import { useSession } from "next-auth/react";
 import type { Session } from "next-auth";
 import ShareButtons from "@/components/ShareButtons";
+import { CaseTag } from "@/components/CaseTag";
 import { useT, useLocale } from "@/lib/i18n";
 import { useTranslation } from "@/hooks/useTranslation";
 
@@ -53,6 +54,18 @@ interface TimelineEvent {
   isAutomatic: boolean;
   emailContent: string | null;
   responseReceived: boolean;
+  createdAt: string;
+}
+
+interface CaseTagData {
+  id: string;
+  caseId: string;
+  timelineEventId: string | null;
+  category: string;
+  tagName: string;
+  confidence: number;
+  sourceText: string | null;
+  workerOverride: string | null;
   createdAt: string;
 }
 
@@ -358,6 +371,7 @@ function TimelineEventItem({
   setConfirmDelete,
   session,
   companyName,
+  eventTags,
 }: {
   event: TimelineEvent;
   index: number;
@@ -368,6 +382,7 @@ function TimelineEventItem({
   setConfirmDelete: (id: string | null) => void;
   session: Session | null;
   companyName?: string;
+  eventTags?: CaseTagData[];
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -499,6 +514,16 @@ function TimelineEventItem({
                 <p className="text-sindicato-warm-white/70 text-sm leading-relaxed whitespace-pre-wrap">
                   {displayDescription}
                 </p>
+                {eventTags && eventTags.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-white/10">
+                    {eventTags.map((tag) => (
+                      <CaseTag
+                        key={tag.id}
+                        tag={tag}
+                      />
+                    ))}
+                  </div>
+                )}
                 {event.emailContent && (
                   <div className="mt-3 pt-3 border-t border-white/10">
                     <p className="text-sindicato-warm-white/40 text-[10px] uppercase tracking-wider mb-1">
@@ -557,6 +582,7 @@ export default function TimelineSection({ caseId, workerId, companyName }: { cas
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [sessionLoading, setSessionLoading] = useState(true);
   const [sharingEvent, setSharingEvent] = useState<string | null>(null);
+  const [timelineTags, setTimelineTags] = useState<CaseTagData[]>([]);
 
   useEffect(() => {
     fetch("/api/auth/session")
@@ -570,10 +596,17 @@ export default function TimelineSection({ caseId, workerId, companyName }: { cas
 
   const fetchEvents = useCallback(async () => {
     try {
-      const res = await fetch(`/api/cases/${caseId}/timeline`);
-      if (!res.ok) throw new Error("Failed to fetch events");
-      const json = await res.json();
-      setEvents(json.data ?? []);
+      const [eventsRes, tagsRes] = await Promise.all([
+        fetch(`/api/cases/${caseId}/timeline`),
+        fetch(`/api/cases/${caseId}/tags`),
+      ]);
+      if (!eventsRes.ok) throw new Error("Failed to fetch events");
+      const eventsJson = await eventsRes.json();
+      setEvents(eventsJson.data ?? []);
+      if (tagsRes.ok) {
+        const tagsJson = await tagsRes.json();
+        setTimelineTags(tagsJson.data ?? []);
+      }
     } catch (err) {
       setError("Failed to load timeline events");
       console.error(err);
@@ -587,11 +620,18 @@ export default function TimelineSection({ caseId, workerId, companyName }: { cas
     
     const loadEvents = async () => {
       try {
-        const res = await fetch(`/api/cases/${caseId}/timeline`);
-        if (!res.ok) throw new Error("Failed to fetch events");
-        const json = await res.json();
+        const [eventsRes, tagsRes] = await Promise.all([
+          fetch(`/api/cases/${caseId}/timeline`),
+          fetch(`/api/cases/${caseId}/tags`),
+        ]);
+        if (!eventsRes.ok) throw new Error("Failed to fetch events");
+        const eventsJson = await eventsRes.json();
         if (isMounted) {
-          setEvents(json.data ?? []);
+          setEvents(eventsJson.data ?? []);
+        }
+        if (tagsRes.ok && isMounted) {
+          const tagsJson = await tagsRes.json();
+          setTimelineTags(tagsJson.data ?? []);
         }
       } catch (err) {
         if (isMounted) {
@@ -745,6 +785,8 @@ export default function TimelineSection({ caseId, workerId, companyName }: { cas
               setEditingEvent={setEditingEvent}
               setConfirmDelete={setConfirmDelete}
               session={session}
+              companyName={companyName}
+              eventTags={timelineTags.filter((t) => t.timelineEventId === event.id)}
             />
           ))}
         </Timeline>

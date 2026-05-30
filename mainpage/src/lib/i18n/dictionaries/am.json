@@ -731,5 +731,42 @@
   },
   "languageSelector": {
     "language": "ቋንቋ"
+  },
+  "tags": {
+    "categories": {
+      "payment_structure": "የክፍያ ችግሮች",
+      "quality_review": "ጥራት / ግምገማ",
+      "communication": "ግንኙነት / ተሳትፎ",
+      "project_lifecycle": "የፕሮጀክት ዕድሜ",
+      "worker_action": "የሠራተኛ ድርጊት / መፍትሄ"
+    },
+    "hourly_payment_not_honored": "የሰዓት ክፍያ ውሎች አልተከበሩም",
+    "pertask_payment_not_honored": "በተግባር የክፍያ ውሎች አልተከበሩም",
+    "completion_payment_not_honored": "በማጠናቀቅ ላይ የተመሰረተ ክፍያ አልተከበረም",
+    "approval_condition_retroactive": "የእውቅና ሁኔታ በኋላ ተግባራዊ ሆነ",
+    "retroactive_term_change": "የኋላ ቀን የውሎች ለውጥ",
+    "payment_cap_limit": "የክፍያ ገደብ",
+    "no_feedback_provided": "ምንም ግብረመልስ አልተሰጠም",
+    "undefined_quality_standard": "ያልተገለጸ የጥራት መደበኛ",
+    "post_hoc_quality_claim": "ከሁኔታው በኋላ የጥራት ጥያቄ",
+    "tasks_removed_deleted": "የተወሰዱ / የተሰረዙ ተግባራት",
+    "ignored_messages": "ተችለው የተለቀቁ መልእክቶች",
+    "channel_lockout": "የቻናል መዘጋት",
+    "support_deflection": "የድጋፍ መዛናናት",
+    "alias_management": "የስም-ተውሳኬ አስተዳደር",
+    "project_paused_ended": "ፕሮጀክት ቆሞ / በድንገት ጨርሷል",
+    "project_deleted_dashboard": "ፕሮጀክት ከዳሽቦርድ ተሰርዟል",
+    "task_allocation_dropped": "የተግባር ስምምነት ቀንሷል",
+    "constructive_termination": "የመሠረተ ልማት ማቋረጥ",
+    "dlse_filing_indicated": "DLSE ማቅረቢያ ተጠቁሟል",
+    "legal_counsel_sought": "የሕግ ምክር ተፈልጓል",
+    "collective_action_interest": "በጋራ እርምጃ ፍላጎት",
+    "public_documentation": "ይፋዊ ሰነድ",
+    "aiConfidence": "AI: {confidence}% እርግጠኝነት",
+    "workerConfirmed": "በሠራተኛ የተረጋገጠ",
+    "workerRejected": "በሠራተኛ የተቃወመ",
+    "generateTags": "መለያዎችን ፍጠር",
+    "generatingTags": "በመተንተን ላይ...",
+    "aiTags": "በAI የተገኙ ንድፎች"
   }
 }

@@ -8,6 +8,7 @@ import Footer from "@/app/sections/Footer";
 import TimelineSection from "./TimelineSection";
 import ShareButtons from "@/components/ShareButtons";
 import EntityReachStats from "@/components/EntityReachStats";
+import { CaseTag } from "@/components/CaseTag";
 import { useT, useLocale } from "@/lib/i18n";
 import { LocalizedLink } from "@/lib/i18n/navigation";
 import { localeNames } from "@/lib/i18n/config";
@@ -107,6 +108,18 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   INR: "\u20b9",
 };
 
+interface CaseTagData {
+  id: string;
+  caseId: string;
+  timelineEventId: string | null;
+  category: string;
+  tagName: string;
+  confidence: number;
+  sourceText: string | null;
+  workerOverride: string | null;
+  createdAt: string;
+}
+
 export default function CaseDetailClient({
   caseId,
   shareUrl,
@@ -118,6 +131,10 @@ export default function CaseDetailClient({
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [showTranslated, setShowTranslated] = useState(true);
+  const [caseTags, setCaseTags] = useState<CaseTagData[]>([]);
+  const [generatingTags, setGeneratingTags] = useState(false);
+  const [tagError, setTagError] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const t = useT();
   const { locale } = useLocale();
 
@@ -156,6 +173,80 @@ export default function CaseDetailClient({
 
     fetchCase();
   }, [caseId]);
+
+  useEffect(() => {
+    fetch("/api/auth/session")
+      .then((r) => r.json())
+      .then((s) => setCurrentUserId(s?.user?.id ?? null))
+      .catch(() => setCurrentUserId(null));
+  }, []);
+
+  useEffect(() => {
+    if (!caseId) return;
+    let cancelled = false;
+    fetch(`/api/cases/${caseId}/tags`)
+      .then((r) => r.json())
+      .then((json) => {
+        if (!cancelled) setCaseTags(json.data ?? []);
+      })
+      .catch(() => {
+        if (!cancelled) setCaseTags([]);
+      });
+    return () => { cancelled = true; };
+  }, [caseId]);
+
+  const isOwner = Boolean(
+    currentUserId && caseData?.workerId && currentUserId === caseData.workerId
+  );
+
+  const handleGenerateTags = async () => {
+    if (!caseId || generatingTags) return;
+    setGeneratingTags(true);
+    setTagError(null);
+    try {
+      const res = await fetch("/api/ai/generate-tags", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ caseId }),
+      });
+      const json = await res.json();
+      if (res.ok && json.data?.success) {
+        const tagsRes = await fetch(`/api/cases/${caseId}/tags`);
+        const tagsJson = await tagsRes.json();
+        setCaseTags(tagsJson.data ?? []);
+        if (json.data.tagsGenerated === 0) {
+          setTagError("No patterns detected in this case.");
+        }
+      } else {
+        setTagError(json.error || json.data?.error || "Failed to generate tags");
+      }
+    } catch (err) {
+      console.error("Failed to generate tags:", err);
+      setTagError("Network error. Please try again.");
+    } finally {
+      setGeneratingTags(false);
+    }
+  };
+
+  const handleTagOverride = async (tagId: string, override: "confirmed" | "rejected") => {
+    if (!caseId) return;
+    try {
+      const res = await fetch(`/api/cases/${caseId}/tags/${tagId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workerOverride: override }),
+      });
+      if (res.ok) {
+        setCaseTags((prev) =>
+          prev.map((tag) =>
+            tag.id === tagId ? { ...tag, workerOverride: override } : tag
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Failed to update tag:", err);
+    }
+  };
 
   if (loading) {
     return (
@@ -283,6 +374,39 @@ export default function CaseDetailClient({
                     </div>
                   </div>
 
+                  {/* AI Tags Section */}
+                  {caseTags.length > 0 && (
+                    <div className="mb-6">
+                      <div className="flex items-center gap-2 mb-2">
+                        <p className="text-sindicato-warm-white/30 text-[10px] uppercase tracking-widest font-[family-name:var(--font-jetbrains)]">
+                          {t("tags.aiTags")}
+                        </p>
+                        {isOwner && (
+                          <button
+                            onClick={handleGenerateTags}
+                            disabled={generatingTags}
+                            className="text-[9px] text-sindicato-warm-white/30 hover:text-sindicato-warm-white/60 transition-colors uppercase tracking-wider"
+                          >
+                            {generatingTags ? t("tags.generatingTags") : "re-analyze"}
+                          </button>
+                        )}
+                      </div>
+                      {tagError && (
+                        <p className="text-amber-400/70 text-[11px] mb-2">{tagError}</p>
+                      )}
+                      <div className="flex flex-wrap gap-1.5">
+                        {caseTags.map((tag) => (
+                          <CaseTag
+                            key={tag.id}
+                            tag={tag}
+                            isOwner={isOwner}
+                            onOverride={handleTagOverride}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   <div className="border-t border-white/10 pt-6">
                     <div className="mb-3">
                       <p className="text-sindicato-warm-white/40 text-xs uppercase tracking-wider">
@@ -328,7 +452,7 @@ export default function CaseDetailClient({
                       </div>
                     )}
                     <div className="border-l-2 border-white/10 pl-4">
-                      <p className="text-sindicato-warm-white/80 leading-relaxed whitespace-pre-wrap">
+                      <p data-story-text className="text-sindicato-warm-white/80 leading-relaxed whitespace-pre-wrap">
                         {displayStory}
                       </p>
                     </div>

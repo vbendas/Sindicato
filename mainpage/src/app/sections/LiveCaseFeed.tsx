@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useT } from "@/lib/i18n";
 
 interface CaseItem {
@@ -59,24 +59,25 @@ export default function LiveCaseFeed() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
-  const fetchedRef = useRef(false);
   const masonryRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const pathname = usePathname();
 
-  const fetchCases = useCallback(async (tab: TabValue) => {
+  const fetchCases = useCallback(async (tab: TabValue, signal?: AbortSignal) => {
     try {
       setLoading(true);
       setError(false);
       const params = new URLSearchParams({ limit: "12", sort: "newest" });
       if (tab !== "all") params.set("vertical", tab);
-      const response = await fetch(`/api/cases?${params}`);
+      const response = await fetch(`/api/cases?${params}`, { signal });
       if (response.ok) {
         const json = await response.json();
         setCases(json.ok ? json.data.cases : []);
       } else {
         setError(true);
       }
-    } catch {
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
       setError(true);
     } finally {
       setLoading(false);
@@ -84,12 +85,28 @@ export default function LiveCaseFeed() {
   }, []);
 
   useEffect(() => {
-    if (!fetchedRef.current) {
-      fetchedRef.current = true;
-      fetchCases(activeTab);
-    }
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
+    void fetchCases(activeTab, controller.signal);
     const interval = setInterval(() => fetchCases(activeTab), 30000);
-    return () => clearInterval(interval);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+      clearInterval(interval);
+    };
+  }, [fetchCases, activeTab, pathname]);
+
+  // Refetch on browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      void fetchCases(activeTab);
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, [fetchCases, activeTab]);
 
   useEffect(() => {
@@ -104,8 +121,6 @@ export default function LiveCaseFeed() {
 
   const handleTabChange = (tab: TabValue) => {
     setActiveTab(tab);
-    fetchedRef.current = true;
-    fetchCases(tab);
   };
 
   return (

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import Header from "../components/Header";
 import Hero from "../sections/Hero";
 import ManifestoStrip from "../sections/ManifestoStrip";
@@ -56,11 +57,11 @@ export default function Home() {
   const [stats, setStats] = useState<Stats>(defaultStats);
   const [activeVertical, setActiveVertical] = useState("all");
   const [displayStats, setDisplayStats] = useState(defaultStats);
-  const fetchedRef = useRef(false);
+  const pathname = usePathname();
 
-  const fetchStats = useCallback(async () => {
+  const fetchStats = useCallback(async (signal?: AbortSignal) => {
     try {
-      const response = await fetch("/api/stats");
+      const response = await fetch("/api/stats", { signal });
       if (response.ok) {
         const json = await response.json();
         if (json.ok) {
@@ -68,8 +69,9 @@ export default function Home() {
           setDisplayStats(json.data);
         }
       }
-    } catch (error) {
-      console.error("Failed to fetch stats:", error);
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
+      console.error("Failed to fetch stats:", err);
     }
   }, []);
 
@@ -88,12 +90,28 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!fetchedRef.current) {
-      fetchedRef.current = true;
-      fetchStats();
-    }
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
+    void fetchStats(controller.signal);
     const interval = setInterval(fetchStats, 30000);
-    return () => clearInterval(interval);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+      clearInterval(interval);
+    };
+  }, [fetchStats, pathname]);
+
+  // Refetch on browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      void fetchStats();
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, [fetchStats]);
 
   const handleVerticalChange = useCallback(

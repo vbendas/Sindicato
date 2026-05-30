@@ -1,7 +1,7 @@
 import { z } from "zod/v4";
 import { db } from "@/lib/db/client";
-import { cases, companies, companySummaries } from "@/lib/db/schema";
-import { eq, and, sum, sql } from "drizzle-orm";
+import { cases, companies, companySummaries, caseTags } from "@/lib/db/schema";
+import { eq, and, sum, sql, count } from "drizzle-orm";
 import { success, error } from "@/lib/utils/api";
 import { callOpenRouter, getReportModel } from "@/lib/ai/openrouter";
 import { COMPANY_SUMMARY_SYSTEM, COMPANY_SUMMARY_USER } from "@/lib/ai/prompts";
@@ -91,25 +91,63 @@ export async function GET(request: Request) {
       (c) => c.resolutionStatus === "resolved"
     ).length;
 
+    // Fetch tag aggregation for this company
+    let tagSummary = "";
+    try {
+      const companyCaseIds = await db
+        .select({ id: cases.id })
+        .from(cases)
+        .where(and(eq(cases.companyId, company.id), eq(cases.status, "active")))
+        .limit(50);
+
+      if (companyCaseIds.length > 0) {
+        const tagCounts = await db
+          .select({
+            tagName: caseTags.tagName,
+            category: caseTags.category,
+            cnt: count(),
+          })
+          .from(caseTags)
+          .where(
+            sql`${caseTags.caseId} IN (${sql.join(
+              companyCaseIds.map((c) => sql`${c.id}`),
+              sql`, `
+            )})`
+          )
+          .groupBy(caseTags.tagName, caseTags.category)
+          .orderBy(sql`count(*) desc`);
+
+        if (tagCounts.length > 0) {
+          tagSummary = "\n\nAI-DETECTED PATTERN TAGS (from automated analysis):\n";
+          for (const tc of tagCounts) {
+            tagSummary += `- ${tc.tagName} (${tc.category}): ${tc.cnt} cases\n`;
+          }
+        }
+      }
+    } catch (tagErr) {
+      console.error("Failed to fetch tag aggregation:", tagErr);
+    }
+
     const aiResponse = await callOpenRouter({
       model: getReportModel(),
       systemPrompt: COMPANY_SUMMARY_SYSTEM,
-      userPrompt: COMPANY_SUMMARY_USER({
-        companyName: company.name,
-        vertical: company.vertical,
-        totalCases: companyCases.length,
-        totalOwed: `$${totalOwed.toLocaleString()}`,
-        resolvedCount,
-        cases: companyCases.map((c) => ({
-          story: c.story,
-          amountOwed: c.amountOwed,
-          dateRange: c.dateRange,
-          caseType: c.caseType,
-          resolutionStatus: c.resolutionStatus,
-          contactAttempts: c.contactAttempts,
-          daysWithoutAnswer: c.daysWithoutAnswer,
-        })),
-      }),
+      userPrompt:
+        COMPANY_SUMMARY_USER({
+          companyName: company.name,
+          vertical: company.vertical,
+          totalCases: companyCases.length,
+          totalOwed: `$${totalOwed.toLocaleString()}`,
+          resolvedCount,
+          cases: companyCases.map((c) => ({
+            story: c.story,
+            amountOwed: c.amountOwed,
+            dateRange: c.dateRange,
+            caseType: c.caseType,
+            resolutionStatus: c.resolutionStatus,
+            contactAttempts: c.contactAttempts,
+            daysWithoutAnswer: c.daysWithoutAnswer,
+          })),
+        }) + tagSummary,
       temperature: 0.3,
       maxTokens: 800,
     });

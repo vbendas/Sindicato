@@ -731,5 +731,42 @@
   },
   "languageSelector": {
     "language": "اللغة"
+  },
+  "tags": {
+    "categories": {
+      "payment_structure": "مشاكل الدفع",
+      "quality_review": "الجودة / المراجعة",
+      "communication": "التواصل / التفاعل",
+      "project_lifecycle": "دورة حياة المشروع",
+      "worker_action": "إجراء العامل / العلاج"
+    },
+    "hourly_payment_not_honored": "شروط الدفع بالساعة لم تُحترم",
+    "pertask_payment_not_honored": "شروط الدفع بالمهمة لم تُحترم",
+    "completion_payment_not_honored": "الدفع عند الإنجاز لم يُحترم",
+    "approval_condition_retroactive": "شرط الموافقة فُرض بأثر رجعي",
+    "retroactive_term_change": "تعديل رجعي للشروط",
+    "payment_cap_limit": "حد الدفع",
+    "no_feedback_provided": "لم يُقدَّم أي تقييم",
+    "undefined_quality_standard": "معيار جودة غير محدد",
+    "post_hoc_quality_claim": "مطالبة جودة لاحقة",
+    "tasks_removed_deleted": "مهام محذوفة / مُزالة",
+    "ignored_messages": "رسائل متجاهلة",
+    "channel_lockout": "قفل القناة",
+    "support_deflection": "تحويل الدعم",
+    "alias_management": "إدارة الأسماء المستعارة",
+    "project_paused_ended": "مشروع متوقف / انتهى فجأة",
+    "project_deleted_dashboard": "مشروع محذوف من لوحة التحكم",
+    "task_allocation_dropped": "تراجع تخصيص المهام",
+    "constructive_termination": "إنهاء بناي",
+    "dlse_filing_indicated": "تقديم DLSE مُشار إليه",
+    "legal_counsel_sought": "بحث عن استشارة قانونية",
+    "collective_action_interest": "اهتمام بعمل جماعي",
+    "public_documentation": "وثائق عامة",
+    "aiConfidence": "الذكاء الاصطناعي: {confidence}% ثقة",
+    "workerConfirmed": "أكّده العامل",
+    "workerRejected": "رفضه العامل",
+    "generateTags": "إنشاء التسميات",
+    "generatingTags": "جارٍ التحليل...",
+    "aiTags": "أنماط مكتشفة بالذكاء الاصطناعي"
   }
 }

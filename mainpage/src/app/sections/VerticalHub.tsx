@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 import Header from "../components/Header";
 import ManifestoStrip from "../sections/ManifestoStrip";
 import HowItWorks from "../sections/HowItWorks";
@@ -40,11 +41,11 @@ export default function VerticalHub({ vertical }: { vertical: "remote" | "gig" }
   const t = useT();
   const [stats, setStats] = useState<Stats>(defaultStats);
   const [activeVertical, setActiveVertical] = useState<string>(vertical);
-  const fetchedRef = useRef(false);
+  const pathname = usePathname();
 
-  const fetchStats = useCallback(async (v: string) => {
+  const fetchStats = useCallback(async (v: string, signal?: AbortSignal) => {
     try {
-      const response = await fetch(`/api/stats?vertical=${v}`);
+      const response = await fetch(`/api/stats?vertical=${v}`, { signal });
       if (response.ok) {
         const json = await response.json();
         if (json.ok) {
@@ -52,15 +53,32 @@ export default function VerticalHub({ vertical }: { vertical: "remote" | "gig" }
         }
       }
     } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
       console.error("Failed to fetch stats:", err);
     }
   }, []);
 
   useEffect(() => {
-    if (!fetchedRef.current) {
-      fetchedRef.current = true;
-      fetchStats(vertical);
-    }
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
+    void fetchStats(vertical, controller.signal);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
+  }, [fetchStats, vertical, pathname]);
+
+  // Refetch on browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      void fetchStats(vertical);
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, [fetchStats, vertical]);
 
   return (

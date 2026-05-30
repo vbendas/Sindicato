@@ -731,5 +731,42 @@
   },
   "languageSelector": {
     "language": "Idioma"
+  },
+  "tags": {
+    "categories": {
+      "payment_structure": "Problemas de pagamento",
+      "quality_review": "Qualidade / Revisão",
+      "communication": "Comunicação / Engajamento",
+      "project_lifecycle": "Ciclo de vida do projeto",
+      "worker_action": "Ação do trabalhador / Remédio"
+    },
+    "hourly_payment_not_honored": "Termos de pagamento por hora não cumpridos",
+    "pertask_payment_not_honored": "Termos de pagamento por tarefa não cumpridos",
+    "completion_payment_not_honored": "Pagamento por conclusão não cumprido",
+    "approval_condition_retroactive": "Condição de aprovação imposta retroativamente",
+    "retroactive_term_change": "Alteração retroativa de termos",
+    "payment_cap_limit": "Limite de pagamento",
+    "no_feedback_provided": "Sem feedback fornecido",
+    "undefined_quality_standard": "Padrão de qualidade indefinido",
+    "post_hoc_quality_claim": "Reclamação de qualidade a posteriori",
+    "tasks_removed_deleted": "Tarefas removidas / excluídas",
+    "ignored_messages": "Mensagens ignoradas",
+    "channel_lockout": "Bloqueio de canal",
+    "support_deflection": "Desvio de suporte",
+    "alias_management": "Gerenciamento de alias",
+    "project_paused_ended": "Projeto pausado / encerrado abruptamente",
+    "project_deleted_dashboard": "Projeto removido do painel",
+    "task_allocation_dropped": "Atribuição de tarefas reduzida",
+    "constructive_termination": "Rescisão construtiva",
+    "dlse_filing_indicated": "Registro no DLSE indicado",
+    "legal_counsel_sought": "Assessoria jurídica procurada",
+    "collective_action_interest": "Interesse em ação coletiva",
+    "public_documentation": "Documentação pública",
+    "aiConfidence": "IA: {confidence}% de confiança",
+    "workerConfirmed": "Confirmado pelo trabalhador",
+    "workerRejected": "Rejeitado pelo trabalhador",
+    "generateTags": "Gerar etiquetas",
+    "generatingTags": "Analisando...",
+    "aiTags": "Padrões detectados por IA"
   }
 }
