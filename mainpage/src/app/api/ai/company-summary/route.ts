@@ -48,6 +48,7 @@ export async function GET(request: Request) {
       return success({
         summary: cachedSummary.summary,
         commonIssues: cachedSummary.commonIssues,
+        detectedPatterns: cachedSummary.detectedPatterns ?? [],
         resolutionRate: cachedSummary.resolutionRate,
         engagementPattern: cachedSummary.engagementPattern,
         keyInsight: cachedSummary.keyInsight,
@@ -105,6 +106,7 @@ export async function GET(request: Request) {
           .select({
             tagName: caseTags.tagName,
             category: caseTags.category,
+            source: caseTags.source,
             cnt: count(),
           })
           .from(caseTags)
@@ -114,13 +116,37 @@ export async function GET(request: Request) {
               sql`, `
             )})`
           )
-          .groupBy(caseTags.tagName, caseTags.category)
+          .groupBy(caseTags.tagName, caseTags.category, caseTags.source)
           .orderBy(sql`count(*) desc`);
 
         if (tagCounts.length > 0) {
-          tagSummary = "\n\nAI-DETECTED PATTERN TAGS (from automated analysis):\n";
+          // Aggregate by tagName (merge sources)
+          const tagMap = new Map<string, { category: string; total: number; sources: Record<string, number> }>();
           for (const tc of tagCounts) {
-            tagSummary += `- ${tc.tagName} (${tc.category}): ${tc.cnt} cases\n`;
+            const existing = tagMap.get(tc.tagName);
+            if (existing) {
+              existing.total += tc.cnt;
+              existing.sources[tc.source] = (existing.sources[tc.source] || 0) + tc.cnt;
+            } else {
+              tagMap.set(tc.tagName, {
+                category: tc.category,
+                total: tc.cnt,
+                sources: { [tc.source]: tc.cnt },
+              });
+            }
+          }
+
+          // Import tag taxonomy for severity lookup
+          const { getTagSeverity } = await import("@/lib/ai/tag-taxonomy");
+
+          tagSummary = "\n\nAI-DETECTED PATTERN TAGS (from automated analysis of individual cases):\n";
+          const sorted = [...tagMap.entries()].sort((a, b) => b[1].total - a[1].total);
+          for (const [tagName, data] of sorted) {
+            const severity = getTagSeverity(tagName);
+            const sourceBreakdown = Object.entries(data.sources)
+              .map(([s, c]) => `${c} ${s}`)
+              .join(", ");
+            tagSummary += `- ${tagName} (${data.category}, ${severity}): ${data.total} cases [${sourceBreakdown}]\n`;
           }
         }
       }
@@ -178,12 +204,20 @@ export async function GET(request: Request) {
     const expiresAt = new Date();
     expiresAt.setHours(expiresAt.getHours() + 24);
 
+    const detectedPatterns = Array.isArray(aiParsed.detectedPatterns)
+      ? aiParsed.detectedPatterns.filter(
+          (p: { pattern?: string; severity?: string; cases?: number; insight?: string }) =>
+            p.pattern && p.severity && typeof p.cases === "number" && p.insight
+        )
+      : [];
+
     await db
       .insert(companySummaries)
       .values({
         companyId: company.id,
         summary: aiParsed.summary || "",
         commonIssues: aiParsed.commonIssues || [],
+        detectedPatterns,
         resolutionRate: aiParsed.resolutionRate || "0%",
         engagementPattern: aiParsed.engagementPattern || "no_response",
         keyInsight: aiParsed.keyInsight || null,
@@ -194,6 +228,7 @@ export async function GET(request: Request) {
         set: {
           summary: aiParsed.summary || "",
           commonIssues: aiParsed.commonIssues || [],
+          detectedPatterns,
           resolutionRate: aiParsed.resolutionRate || "0%",
           engagementPattern: aiParsed.engagementPattern || "no_response",
           keyInsight: aiParsed.keyInsight || null,
@@ -205,6 +240,7 @@ export async function GET(request: Request) {
     return success({
       summary: aiParsed.summary,
       commonIssues: aiParsed.commonIssues,
+      detectedPatterns,
       resolutionRate: aiParsed.resolutionRate,
       engagementPattern: aiParsed.engagementPattern,
       keyInsight: aiParsed.keyInsight,

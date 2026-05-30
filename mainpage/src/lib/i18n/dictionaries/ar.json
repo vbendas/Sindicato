@@ -172,6 +172,7 @@
     "loadingSummary": "جارٍ تحليل القضايا...",
     "summaryError": "تعذّر إنشاء التحليل",
     "commonIssues": "المشاكل الشائعة",
+    "detectedPatterns": "الأنماط المكتشفة",
     "resolutionRate": "معدل الحل",
     "engagementPattern": "نمط التفاعل",
     "keyInsight": "الرؤية الرئيسية",

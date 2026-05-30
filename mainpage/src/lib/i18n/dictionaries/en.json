@@ -172,6 +172,7 @@
     "loadingSummary": "Analyzing cases...",
     "summaryError": "Unable to generate analysis",
     "commonIssues": "Common Issues",
+    "detectedPatterns": "Detected Patterns",
     "resolutionRate": "Resolution Rate",
     "engagementPattern": "Engagement Pattern",
     "keyInsight": "Key Insight",

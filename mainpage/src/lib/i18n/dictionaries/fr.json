@@ -172,6 +172,7 @@
     "loadingSummary": "Analyse des dossiers...",
     "summaryError": "Impossible de générer l'analyse",
     "commonIssues": "Problèmes Courants",
+    "detectedPatterns": "Modèles Détectés",
     "resolutionRate": "Taux de Résolution",
     "engagementPattern": "Modèle d'Engagement",
     "keyInsight": "Observation Clé",

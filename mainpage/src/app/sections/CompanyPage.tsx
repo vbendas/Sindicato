@@ -30,6 +30,27 @@ interface CompanyPageProps {
   vertical: "remote" | "gig";
 }
 
+const SEVERITY_DOT_COLORS: Record<string, string> = {
+  green: "bg-emerald-400",
+  yellow: "bg-amber-400",
+  orange: "bg-orange-400",
+  red: "bg-rose-400",
+};
+
+const SEVERITY_BG_COLORS: Record<string, string> = {
+  green: "bg-emerald-500/10 border-emerald-500/20",
+  yellow: "bg-amber-500/10 border-amber-500/20",
+  orange: "bg-orange-500/10 border-orange-500/20",
+  red: "bg-rose-500/10 border-rose-500/20",
+};
+
+const SEVERITY_TEXT_COLORS: Record<string, string> = {
+  green: "text-emerald-400",
+  yellow: "text-amber-400",
+  orange: "text-orange-400",
+  red: "text-rose-400",
+};
+
 export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
   const t = useT();
   const { locale } = useLocale();
@@ -39,6 +60,7 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
   const [summary, setSummary] = useState<{
     summary: string;
     commonIssues: string[];
+    detectedPatterns: { pattern: string; severity: string; cases: number; insight: string }[];
     resolutionRate: string;
     engagementPattern: string;
     keyInsight: string;
@@ -201,7 +223,7 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
-                className="mb-8 bg-gradient-to-br from-sindicato-bordeaux/20 to-sindicato-pine/20 border border-white/10 p-6 rounded-lg"
+                className="mb-8 bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-lg"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div>
@@ -258,6 +280,39 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
                   </div>
                 )}
 
+                {summary.detectedPatterns && summary.detectedPatterns.length > 0 && (
+                  <div className="mb-4">
+                    <p className="text-sindicato-warm-white/40 text-[10px] uppercase tracking-wider mb-2 font-[family-name:var(--font-jetbrains)]">
+                      {t("companyPage.detectedPatterns")}
+                    </p>
+                    <div className="space-y-2">
+                      {summary.detectedPatterns.map((p) => (
+                        <div
+                          key={p.pattern}
+                          className={`flex items-start gap-3 p-2.5 border rounded ${SEVERITY_BG_COLORS[p.severity] ?? "bg-white/5 border-white/10"}`}
+                        >
+                          <span
+                            className={`w-2 h-2 rounded-full mt-1 shrink-0 ${SEVERITY_DOT_COLORS[p.severity] ?? "bg-white/40"}`}
+                          />
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className={`text-xs font-bold uppercase tracking-wider ${SEVERITY_TEXT_COLORS[p.severity] ?? "text-sindicato-warm-white/60"}`}>
+                                {p.pattern}
+                              </span>
+                              <span className="text-[10px] text-sindicato-warm-white/40 font-mono">
+                                {p.cases} {p.cases === 1 ? "case" : "cases"}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-sindicato-warm-white/60 leading-relaxed mt-0.5">
+                              {p.insight}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
                   {summary.commonIssues.length > 0 && (
                     <div>
@@ -265,14 +320,20 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
                         {t("companyPage.commonIssues")}
                       </span>
                       <div className="flex flex-wrap gap-1">
-                        {summary.commonIssues.slice(0, 3).map((issue) => (
-                          <span
-                            key={issue}
-                            className="text-[10px] px-2 py-0.5 bg-sindicato-bordeaux/30 text-sindicato-warm-white rounded font-[family-name:var(--font-jetbrains)]"
-                          >
-                            {t(`caseTypes.${issue}`)}
-                          </span>
-                        ))}
+                        {summary.commonIssues.slice(0, 3).map((issue) => {
+                          const translated = t(`caseTypes.${issue}`);
+                          const label = translated === `caseTypes.${issue}`
+                            ? issue.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+                            : translated;
+                          return (
+                            <span
+                              key={issue}
+                              className="text-[10px] px-2 py-0.5 bg-sindicato-bordeaux/30 text-sindicato-warm-white rounded font-[family-name:var(--font-jetbrains)]"
+                            >
+                              {label}
+                            </span>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
@@ -301,7 +362,14 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
                           : "bg-yellow-500/20 text-yellow-400"
                       }`}
                     >
-                      {t(`companyPage.engagement${summary.engagementPattern.charAt(0).toUpperCase() + summary.engagementPattern.slice(1)}`)}
+                      {(() => {
+                        const camel = summary.engagementPattern.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+                        const key = `companyPage.engagement${camel.charAt(0).toUpperCase() + camel.slice(1)}`;
+                        const translated = t(key);
+                        return translated === key
+                          ? summary.engagementPattern.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+                          : translated;
+                      })()}
                     </span>
                   </div>
                 </div>

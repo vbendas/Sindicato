@@ -329,6 +329,13 @@ export const caseTags = pgTable(
   ]
 );
 
+export interface DetectedPattern {
+  pattern: string;
+  severity: string;
+  cases: number;
+  insight: string;
+}
+
 export const companySummaries = pgTable("company_summaries", {
   id: uuid("id").primaryKey().defaultRandom(),
   companyId: uuid("company_id")
@@ -337,6 +344,7 @@ export const companySummaries = pgTable("company_summaries", {
     .unique(),
   summary: text("summary").notNull(),
   commonIssues: jsonb("common_issues").$type<string[]>().default([]),
+  detectedPatterns: jsonb("detected_patterns").$type<DetectedPattern[]>().default([]),
   resolutionRate: varchar("resolution_rate", { length: 20 }),
   engagementPattern: varchar("engagement_pattern", { length: 50 }),
   keyInsight: text("key_insight"),

@@ -172,6 +172,7 @@
     "loadingSummary": "Analisando casos...",
     "summaryError": "Não foi possível gerar a análise",
     "commonIssues": "Problemas Comuns",
+    "detectedPatterns": "Padrões Detectados",
     "resolutionRate": "Taxa de Resolução",
     "engagementPattern": "Padrão de Engajamento",
     "keyInsight": "Observação Principal",

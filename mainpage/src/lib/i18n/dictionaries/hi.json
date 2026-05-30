@@ -172,6 +172,7 @@
     "loadingSummary": "मामलों का विश्लेषण हो रहा है...",
     "summaryError": "विश्लेषण उत्पन्न नहीं हो सका",
     "commonIssues": "सामान्य समस्याएं",
+    "detectedPatterns": "पहचाने गए पैटर्न",
     "resolutionRate": "समाधान दर",
     "engagementPattern": "संलग्नता पैटर्न",
     "keyInsight": "मुख्य अंतर्दृष्टि",

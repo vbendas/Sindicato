@@ -98,6 +98,14 @@ Return ONLY valid JSON with this exact structure:
 {
   "summary": "2-3 sentence overview of the situation, what happened, how many workers affected, and overall pattern",
   "commonIssues": ["case_type_1", "case_type_2"],
+  "detectedPatterns": [
+    {
+      "pattern": "exact tag name from the tag data",
+      "severity": "green|yellow|orange|red",
+      "cases": 5,
+      "insight": "one sentence explaining what this pattern means for the company"
+    }
+  ],
   "resolutionRate": "X%",
   "engagementPattern": "one_of: ignoring|slow_response|retaliation|engaged|no_response",
   "keyInsight": "One sentence highlighting the most important behavioral pattern or concern"
@@ -105,7 +113,10 @@ Return ONLY valid JSON with this exact structure:
 
 Guidelines:
 - Be factual and neutral, base conclusions only on the data provided
-- For commonIssues, list the top 2-3 most common case types from: unpaid_wages, late_payment, sudden_deactivation, unfair_review, predatory_practices, harassment, retaliation, contract_violation, data_privacy, other
+- CRITICAL: commonIssues MUST ONLY contain values from this exact list: unpaid_wages, late_payment, sudden_deactivation, unfair_review, predatory_practices, harassment, retaliation, contract_violation, data_privacy, other. NEVER put tag names or pattern names in commonIssues — those go in detectedPatterns only.
+- For detectedPatterns, analyze the AI-DETECTED PATTERN TAGS section. For each significant tag (appearing in 2+ cases, or any red-severity tag), create a pattern entry. Use the EXACT tag name from the data. Include the severity level. Write a brief insight explaining what this pattern reveals about the company. Limit to the top 5 most significant patterns.
+- When analyzing tags, look for co-occurrence patterns: e.g., "Retaliation" + "Deceptive pay practices" together suggests systemic exploitation. "Ignored messages" + "Support deflection" suggests intentional avoidance.
+- Use severity distribution to assess overall behavior: multiple red-severity tags = severe systemic issues. Mostly yellow = procedural problems. Green tags mixed with red = company engages sometimes but has serious failures.
 - For resolutionRate, calculate the percentage of cases with status "resolved"
 - For engagementPattern:
   * "ignoring" = company shows no response to most cases (low contact attempts, high days without answer)
@@ -113,12 +124,7 @@ Guidelines:
   * "retaliation" = multiple cases mention retaliation, deactivation, or threats after complaints
   * "engaged" = company actively resolves cases with reasonable response times
   * "no_response" = no contact attempts recorded in most cases
-- For keyInsight, identify patterns like:
-  * Retaliation after complaints
-  * Systematic wage theft across projects
-  * Sudden deactivation patterns
-  * Lack of response to legal notices
-  * High volume of similar complaints
+- For keyInsight, prioritize tag-based patterns. If red-severity tags appear in multiple cases, that should be the key insight. Fall back to case type analysis only if no significant tag patterns exist.
 - Do not speculate beyond the evidence
 - Keep language clear and accessible`;
 

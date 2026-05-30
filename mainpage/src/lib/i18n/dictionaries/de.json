@@ -172,6 +172,7 @@
     "loadingSummary": "Fälle werden analysiert...",
     "summaryError": "Analyse konnte nicht erstellt werden",
     "commonIssues": "Häufige Probleme",
+    "detectedPatterns": "Erkannte Muster",
     "resolutionRate": "Lösungsrate",
     "engagementPattern": "Engagement-Muster",
     "keyInsight": "Wichtige Erkenntnis",

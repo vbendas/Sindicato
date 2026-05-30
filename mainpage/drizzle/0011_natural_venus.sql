@@ -1,0 +1,1 @@
+ALTER TABLE "company_summaries" ADD COLUMN "detected_patterns" jsonb DEFAULT '[]'::jsonb;

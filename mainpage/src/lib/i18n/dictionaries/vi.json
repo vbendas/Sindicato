@@ -172,6 +172,7 @@
     "loadingSummary": "Đang phân tích vụ việc...",
     "summaryError": "Không thể tạo phân tích",
     "commonIssues": "Vấn đề phổ biến",
+    "detectedPatterns": "Mẫu Phát Hiện",
     "resolutionRate": "Tỷ lệ giải quyết",
     "engagementPattern": "Mô hình tương tác",
     "keyInsight": "Nhận định chính",

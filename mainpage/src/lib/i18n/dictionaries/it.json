@@ -172,6 +172,7 @@
     "loadingSummary": "Analisi dei casi...",
     "summaryError": "Impossibile generare l'analisi",
     "commonIssues": "Problemi Comuni",
+    "detectedPatterns": "Pattern Rilevati",
     "resolutionRate": "Tasso di Risoluzione",
     "engagementPattern": "Modello di Coinvolgimento",
     "keyInsight": "Osservazione Chiave",
