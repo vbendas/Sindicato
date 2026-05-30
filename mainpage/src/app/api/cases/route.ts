@@ -1,6 +1,6 @@
 import { franc } from "franc";
 import { db } from "@/lib/db/client";
-import { cases, companies, caseTimelineEvents } from "@/lib/db/schema";
+import { cases, companies, caseTimelineEvents, caseTags } from "@/lib/db/schema";
 import { eq, and, desc, count, ilike } from "drizzle-orm";
 import { success, error, getClientIp } from "@/lib/utils/api";
 import { rateLimit } from "@/lib/auth/rate-limit";
@@ -163,12 +163,81 @@ export async function POST(request: Request) {
       eventDate: new Date(),
       description: `Case filed against ${company.name}. ${data.amountOwed ? `Amount owed: ${data.amountOwed} ${data.currency}.` : ""}`,
       responseReceived: false,
+      isAutomatic: true,
     }).catch((err) => console.error("Failed to log case filed event:", err));
 
-    // Generate AI tags (fire-and-forget)
-    generateCaseTags(newCase.id).catch((err) =>
-      console.error("Failed to generate case tags:", err)
-    );
+    // Auto-insert user-selected tags from filing wizard
+    if (data.selectedTags && data.selectedTags.length > 0) {
+      const userTagRows = data.selectedTags.map((tagName: string) => ({
+        caseId: newCase.id,
+        category: "other" as const,
+        tagName: tagName.trim(),
+        confidence: 100,
+        sourceText: "Selected by worker during case filing",
+        source: "user" as const,
+      }));
+      await db.insert(caseTags).values(userTagRows).catch((err) =>
+        console.error("Failed to insert user-selected tags:", err)
+      );
+    }
+
+    // Auto-tag based on form selections
+    const autoTagRows: Array<{
+      caseId: string;
+      category: string;
+      tagName: string;
+      confidence: number;
+      sourceText: string;
+      source: string;
+    }> = [];
+
+    if (data.optInCollective) {
+      autoTagRows.push({
+        caseId: newCase.id,
+        category: "worker_action",
+        tagName: "Collective action interest",
+        confidence: 100,
+        sourceText: "Worker opted in to collective action during case filing",
+        source: "auto",
+      });
+    }
+
+    if (data.optInSolicitor) {
+      autoTagRows.push({
+        caseId: newCase.id,
+        category: "worker_action",
+        tagName: "Open to legal representation",
+        confidence: 100,
+        sourceText: "Worker opted in to be contacted by lawyers during case filing",
+        source: "auto",
+      });
+    }
+
+    if (autoTagRows.length > 0) {
+      await db.insert(caseTags).values(autoTagRows).catch((err) =>
+        console.error("Failed to insert auto-tags:", err)
+      );
+    }
+
+    // Insert AI tags from the filing wizard (pre-computed during review step)
+    if (data.aiTags && data.aiTags.length > 0) {
+      const aiTagRows = data.aiTags.map((t) => ({
+        caseId: newCase.id,
+        category: t.category,
+        tagName: t.tagName.trim(),
+        confidence: Math.min(100, Math.max(0, Math.round(t.confidence))),
+        sourceText: t.sourceText.trim(),
+        source: "ai" as const,
+      }));
+      await db.insert(caseTags).values(aiTagRows).catch((err) =>
+        console.error("Failed to insert AI tags from payload:", err)
+      );
+    } else {
+      // Fallback: generate AI tags fire-and-forget if not pre-computed
+      generateCaseTags(newCase.id).catch((err) =>
+        console.error("Failed to generate case tags:", err)
+      );
+    }
 
     if (data.optInCompanyNotify) {
       notifyCompanyNewCase({
@@ -188,6 +257,7 @@ export async function POST(request: Request) {
           eventDate: new Date(),
           description: `Sindicato sent notification email to ${company.name}.`,
           responseReceived: false,
+          isAutomatic: true,
         }).catch((err) => console.error("Failed to log notification event:", err));
       }).catch((err) => console.error("Failed to notify company:", err));
     }

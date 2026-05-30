@@ -334,7 +334,11 @@
     "consentCompanyContactTooltip": "Makakapag-ugnayan ka ng kumpanya sa pamamagitan ng aming anonymous alias system.",
     "attestation": "Pinatutunayan ko na ang impormasyong ibinigay ko ay tumpak at totoo sa abot ng aking kaalaman.",
     "attestationTooltip": "Kailangan mong kumpirmahin na ang lahat ng impormasyong ibinigay mo ay tumpak at totoo. Ito ay isang legal na patunay.",
-    "required": "kinakailangan"
+    "required": "kinakailangan",
+    "tagsTitle": "Mga Tag ng Kaso",
+    "tagsDescription": "Ang mga tag na ito ay nakakatulong na ilarawan ang mga pattern sa iyong kaso. Ang ilan ay awtomatikong natukoy mula sa iyong mga pinili. Maaari mo silang idagdag o alisin ngayon, o i-edit pagkatapos maghain.",
+    "tagsAutoLabel": "auto",
+    "tagsAutoExplanation": "Ang mga tag na may (auto) ay natukoy mula sa iyong mga pinili sa form. Maaari mo silang i-override."
   },
   "timeline": {
     "title": "Itala ang iyong mga interaksyon",
@@ -738,13 +742,12 @@
       "quality_review": "Kalidad / Pagsusuri",
       "communication": "Komunikasyon / Pakikipag-ugnayan",
       "project_lifecycle": "Siklo ng Buhay ng Proyekto",
-      "worker_action": "Aksyon ng Manggagawa / Lunas"
+      "worker_action": "Aksyon ng Manggagawa / Lunas",
+      "company_positive": "Mga Positibong Aksyon ng Kumpanya"
     },
-    "hourly_payment_not_honored": "Mga tuntunin ng bayad bawat oras ay hindi sinunod",
-    "pertask_payment_not_honored": "Mga tuntunin ng bayad bawat gawain ay hindi sinunod",
-    "completion_payment_not_honored": "Bayad batay sa pagkumpleto ay hindi sinunod",
-    "approval_condition_retroactive": "Kondisyon ng pag-apruba ay ipinataw nang retroactive",
     "retroactive_term_change": "Retroaktibong pagbabago ng termino",
+    "retroactive_term_change": "Retroaktibong pagbabago ng termino",
+    "deceptive_pay_practices": "Maling na gawi sa pagbabayad",
     "payment_cap_limit": "Takip / limitasyon ng bayad",
     "no_feedback_provided": "Walang feedback na ibinigay",
     "undefined_quality_standard": "Hindi natukoy na pamantayan ng kalidad",
@@ -762,11 +765,22 @@
     "legal_counsel_sought": "Legal na payo ay hinanap",
     "collective_action_interest": "Interes sa kolektibong aksyon",
     "public_documentation": "Pampublikong dokumentasyon",
+    "retaliation": "Paghihiganti",
+    "open_to_legal": "Bukas sa legal na representasyon",
+    "company_proactive_outreach": "Kumpanya ang lumapit nang proaktibo",
+    "company_relevant_response": "Nagbigay ang kumpanya ng may-kaugnayang tugon",
+    "company_resolved": "Inayos ng kumpanya ang isyu",
+    "company_quick_response": "Mabilis tumugon ang kumpanya",
     "aiConfidence": "AI: {confidence}% kumpiyansa",
     "workerConfirmed": "Kumpirmado ng manggagawa",
     "workerRejected": "Tinanggihan ng manggagawa",
     "generateTags": "Bumuo ng mga Tag",
     "generatingTags": "Sinusuri...",
-    "aiTags": "Mga Pattern na Natukoy ng AI"
+    "aiTags": "Mga Pattern ng Kaso",
+    "addTag": "Magdagdag ng tag",
+    "removeTag": "Alisin",
+    "source.ai": "Natukoy ng AI",
+    "source.user": "Idinagdag mo",
+    "source.auto": "Awtomatikong natukoy"
   }
 }

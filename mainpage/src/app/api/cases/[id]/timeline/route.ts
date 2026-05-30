@@ -1,6 +1,6 @@
 import { db } from "@/lib/db/client";
-import { caseTimelineEvents, cases } from "@/lib/db/schema";
-import { eq, and, asc } from "drizzle-orm";
+import { caseTimelineEvents, cases, caseTags } from "@/lib/db/schema";
+import { eq, and, asc, isNotNull, count } from "drizzle-orm";
 import { success, error } from "@/lib/utils/api";
 import { auth } from "@/lib/auth";
 import { timelineEventInputSchema } from "@/lib/utils/schemas";
@@ -83,6 +83,31 @@ export async function POST(
         responseReceived: data.responseReceived,
       })
       .returning();
+
+    // Auto-tag "Public documentation" on first user-created timeline event
+    const [userEventCount] = await db
+      .select({ count: count() })
+      .from(caseTimelineEvents)
+      .where(
+        and(
+          eq(caseTimelineEvents.caseId, caseId),
+          isNotNull(caseTimelineEvents.workerId),
+          eq(caseTimelineEvents.isAutomatic, false)
+        )
+      );
+
+    if (userEventCount.count === 1) {
+      await db.insert(caseTags).values({
+        caseId,
+        category: "worker_action",
+        tagName: "Public documentation",
+        confidence: 100,
+        sourceText: "Worker added their first timeline event",
+        source: "auto",
+      }).catch((err) =>
+        console.error("Failed to auto-tag Public documentation:", err)
+      );
+    }
 
     // Re-generate AI tags (fire-and-forget)
     generateCaseTags(caseId).catch((err) =>

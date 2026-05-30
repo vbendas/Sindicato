@@ -73,6 +73,17 @@ export const caseSubmissionV2Schema = z.object({
   optInCompanyContact: z.coerce.boolean().default(true),
   attested: z.literal(true, { message: "You must confirm that your account is truthful and based on your personal experience" }),
   timelineEvents: z.array(timelineEventInputSchema).default([]),
+  selectedTags: z.array(z.string()).default([]),
+  aiTags: z
+    .array(
+      z.object({
+        category: z.string(),
+        tagName: z.string(),
+        confidence: z.number(),
+        sourceText: z.string(),
+      })
+    )
+    .default([]),
   turnstileToken: z.string().optional(),
 });
 

@@ -33,6 +33,7 @@ export interface CaseFormData {
   optInCompanyNotify: boolean;
   optInCompanyContact: boolean;
   attested: boolean;
+  selectedTags: string[];
 }
 
 export interface TimelineEvent {
@@ -71,6 +72,7 @@ export default function FilingWizard() {
     optInCompanyNotify: true,
     optInCompanyContact: true,
     attested: false,
+    selectedTags: [],
   });
 
   const [timelineEvents, setTimelineEvents] = useState<TimelineEvent[]>([]);

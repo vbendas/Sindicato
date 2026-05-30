@@ -1,8 +1,11 @@
+export type TagSeverity = "green" | "yellow" | "orange" | "red";
+
 export interface TagDefinition {
   name: string;
   i18nKey: string;
   description: string;
   examples: string[];
+  severity: TagSeverity;
 }
 
 export interface TagCategory {
@@ -17,6 +20,7 @@ export const TAG_CATEGORIES = [
   "communication",
   "project_lifecycle",
   "worker_action",
+  "company_positive",
 ] as const;
 
 export type TagCategorySlug = (typeof TAG_CATEGORIES)[number];
@@ -27,59 +31,11 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
     i18nKey: "tags.categories.payment_structure",
     tags: [
       {
-        name: "Hourly payment terms not honored",
-        i18nKey: "tags.hourly_payment_not_honored",
-        description:
-          "Company did not respect the agreed hourly payment structure — reduced rate, unpaid hours, or added conditions after work began",
-        examples: [
-          "changed my rate",
-          "stopped paying for all hours",
-          "reduced hourly rate without notice",
-          "only paid for approved hours",
-          "hourly rate was cut",
-        ],
-      },
-      {
-        name: "Per-task payment terms not honored",
-        i18nKey: "tags.pertask_payment_not_honored",
-        description:
-          "Company did not respect the agreed per-task payment structure — rejected completed tasks, reduced per-task rate, or added approval requirements",
-        examples: [
-          "rejected completed tasks",
-          "reduced per-task rate",
-          "tasks marked as failed after completion",
-          "stopped paying per task",
-        ],
-      },
-      {
-        name: "Completion-based payment not honored",
-        i18nKey: "tags.completion_payment_not_honored",
-        description:
-          "Company promised payment on completion but did not pay after work was finished",
-        examples: [
-          "didn't pay after completion",
-          "promised on completion but never paid",
-          "completed the work, no payment",
-          "submitted work, payment denied",
-        ],
-      },
-      {
-        name: "Approval condition imposed retroactively",
-        i18nKey: "tags.approval_condition_retroactive",
-        description:
-          "Company added an approval or acceptance requirement that was not part of the original payment terms",
-        examples: [
-          "now says needs approval",
-          "changed to approval-based payment",
-          "added acceptance criteria after work",
-          "payment now depends on review",
-        ],
-      },
-      {
         name: "Retroactive term change",
         i18nKey: "tags.retroactive_term_change",
+        severity: "orange",
         description:
-          "Payment or work terms changed after work began or was completed",
+          "Payment or work terms CHANGED after work began — requires evidence of a before/after shift. Does NOT apply to pay structures that were always exploitative.",
         examples: [
           "suddenly changed to",
           "now it's",
@@ -87,11 +43,36 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
           "switched from X to Y",
           "retroactive",
           "changed the terms",
+          "changed my rate",
+          "reduced hourly rate without notice",
+          "reduced per-task rate",
+          "now says needs approval",
+          "used to be",
+          "they changed the policy",
+        ],
+      },
+      {
+        name: "Deceptive pay practices",
+        i18nKey: "tags.deceptive_pay_practices",
+        severity: "red",
+        description:
+          "Pay structure is misleading or exploitative by design — not a change from previous terms, but the original structure itself is deceptive or hidden",
+        examples: [
+          "pockets tips",
+          "tip subsidizes base pay",
+          "advertised rate is misleading",
+          "real earnings much lower",
+          "hidden deductions",
+          "up to £18/hr but actually",
+          "up to $22/hr but actually",
+          "never actually get that rate",
+          "base pay is subsidized by",
         ],
       },
       {
         name: "Payment cap / limit",
         i18nKey: "tags.payment_cap_limit",
+        severity: "orange",
         description:
           "Maximum hours, tasks, or earnings imposed without prior notice",
         examples: [
@@ -111,6 +92,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
       {
         name: "No feedback provided",
         i18nKey: "tags.no_feedback_provided",
+        severity: "yellow",
         description:
           "Rejection or non-payment without explanation or feedback",
         examples: [
@@ -124,6 +106,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
       {
         name: "Undefined quality standard",
         i18nKey: "tags.undefined_quality_standard",
+        severity: "yellow",
         description:
           "Vague or missing criteria for work acceptance",
         examples: [
@@ -137,6 +120,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
       {
         name: "Post-hoc quality claim",
         i18nKey: "tags.post_hoc_quality_claim",
+        severity: "orange",
         description:
           "Quality issues raised only after payment dispute or complaint",
         examples: [
@@ -149,6 +133,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
       {
         name: "Tasks removed / deleted",
         i18nKey: "tags.tasks_removed_deleted",
+        severity: "orange",
         description:
           "Completed work disappearing from platform or dashboard",
         examples: [
@@ -168,6 +153,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
       {
         name: "Ignored messages",
         i18nKey: "tags.ignored_messages",
+        severity: "yellow",
         description:
           "No response to worker inquiries or messages",
         examples: [
@@ -182,6 +168,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
       {
         name: "Channel lockout",
         i18nKey: "tags.channel_lockout",
+        severity: "orange",
         description:
           "Worker removed from Discord, Slack, or project communication channels",
         examples: [
@@ -195,6 +182,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
       {
         name: "Support deflection",
         i18nKey: "tags.support_deflection",
+        severity: "yellow",
         description:
           "Generic or unhelpful support responses that avoid addressing the issue",
         examples: [
@@ -208,6 +196,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
       {
         name: "Alias management",
         i18nKey: "tags.alias_management",
+        severity: "yellow",
         description:
           "Leaders using pseudonyms, no real names or identifiable contacts",
         examples: [
@@ -228,6 +217,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
       {
         name: "Project paused / ended abruptly",
         i18nKey: "tags.project_paused_ended",
+        severity: "yellow",
         description:
           "Sudden halt to work availability without notice",
         examples: [
@@ -241,6 +231,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
       {
         name: "Project deleted from dashboard",
         i18nKey: "tags.project_deleted_dashboard",
+        severity: "orange",
         description:
           "Project no longer visible to worker on the platform",
         examples: [
@@ -253,6 +244,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
       {
         name: "Task allocation dropped",
         i18nKey: "tags.task_allocation_dropped",
+        severity: "yellow",
         description:
           "Hours or tasks reduced without explanation",
         examples: [
@@ -266,6 +258,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
       {
         name: "Constructive termination",
         i18nKey: "tags.constructive_termination",
+        severity: "red",
         description:
           "Conditions made impossible to continue working",
         examples: [
@@ -274,6 +267,21 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
           "left with no choice",
           "pushed out",
           "preventing me from taking other contracts",
+        ],
+      },
+      {
+        name: "Retaliation",
+        i18nKey: "tags.retaliation",
+        severity: "red",
+        description:
+          "Company took adverse action against worker after complaint, filing, or protected activity",
+        examples: [
+          "fired after complaining",
+          "removed from project after asking for pay",
+          "hours cut after filing",
+          "blacklisted after leaving review",
+          "punished for speaking up",
+          "retaliated",
         ],
       },
     ],
@@ -285,6 +293,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
       {
         name: "DLSE filing indicated",
         i18nKey: "tags.dlse_filing_indicated",
+        severity: "red",
         description:
           "Worker mentions filing with Labor Commissioner or equivalent agency",
         examples: [
@@ -298,8 +307,9 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
       {
         name: "Legal counsel sought",
         i18nKey: "tags.legal_counsel_sought",
+        severity: "red",
         description:
-          "Worker mentions contacting or retaining a lawyer",
+          "Worker is in contact with or has retained a lawyer, or a lawyer has reached out through the platform",
         examples: [
           "talked to a lawyer",
           "seeking counsel",
@@ -309,8 +319,17 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
         ],
       },
       {
+        name: "Open to legal representation",
+        i18nKey: "tags.open_to_legal",
+        severity: "yellow",
+        description:
+          "Worker indicated willingness to be contacted by labor lawyers",
+        examples: [],
+      },
+      {
         name: "Collective action interest",
         i18nKey: "tags.collective_action_interest",
+        severity: "red",
         description:
           "Worker expresses interest in group legal action",
         examples: [
@@ -325,14 +344,74 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
       {
         name: "Public documentation",
         i18nKey: "tags.public_documentation",
+        severity: "yellow",
         description:
-          "Worker posted about case publicly on social media or review sites",
+          "Worker posted about case publicly on social media or review sites, or has documented the case in the timeline",
         examples: [
           "posted on Reddit",
           "shared on Twitter",
           "Trustpilot review",
           "Glassdoor",
           "made it public",
+        ],
+      },
+    ],
+  },
+  company_positive: {
+    name: "Company Positive Actions",
+    i18nKey: "tags.categories.company_positive",
+    tags: [
+      {
+        name: "Company reached out proactively",
+        i18nKey: "tags.company_proactive_outreach",
+        severity: "green",
+        description:
+          "Company initiated contact with the worker to address the issue",
+        examples: [
+          "company reached out",
+          "they contacted me",
+          "got a message from them",
+          "they initiated",
+        ],
+      },
+      {
+        name: "Company provided relevant response",
+        i18nKey: "tags.company_relevant_response",
+        severity: "green",
+        description:
+          "Company replied with a substantive, non-canned response addressing the issue",
+        examples: [
+          "they explained what happened",
+          "gave a real answer",
+          "addressed my concerns",
+          "detailed explanation",
+        ],
+      },
+      {
+        name: "Company resolved the issue",
+        i18nKey: "tags.company_resolved",
+        severity: "green",
+        description:
+          "Company resolved the dispute — payment made, issue fixed, or case closed positively",
+        examples: [
+          "they paid me",
+          "issue resolved",
+          "got my money",
+          "case closed",
+          "received payment",
+        ],
+      },
+      {
+        name: "Company responded quickly",
+        i18nKey: "tags.company_quick_response",
+        severity: "green",
+        description:
+          "Company responded to worker communications in a timely manner",
+        examples: [
+          "quick reply",
+          "responded same day",
+          "fast response",
+          "within hours",
         ],
       },
     ],
@@ -357,6 +436,13 @@ export function getTagByName(
   return getAllTags().find(
     (t) => t.name.toLowerCase() === name.toLowerCase()
   );
+}
+
+export function getTagSeverity(
+  tagName: string
+): TagSeverity {
+  const tag = getTagByName(tagName);
+  return tag?.severity ?? "yellow";
 }
 
 export function getCategoryForTag(

@@ -4,6 +4,7 @@ import { eq, and } from "drizzle-orm";
 import { success, error } from "@/lib/utils/api";
 import { auth } from "@/lib/auth";
 import { z } from "zod";
+import { generateCaseTags } from "@/lib/ai/generate-tags";
 
 const updateEventSchema = z.object({
   eventType: z.enum(["email_sent", "no_response", "canned_response", "chat_support", "phone_call", "legal_notice", "payment_partial", "case_updated", "resolved", "other"]).optional(),
@@ -75,6 +76,11 @@ export async function PUT(
       .where(eq(caseTimelineEvents.id, eventId))
       .returning();
 
+    // Re-generate AI tags (fire-and-forget)
+    generateCaseTags(id).catch((err) =>
+      console.error("Failed to regenerate case tags after update:", err)
+    );
+
     return success(updated);
   } catch (err) {
     console.error("Error updating timeline event:", err);
@@ -103,6 +109,11 @@ export async function DELETE(
     if (existing.isAutomatic) return error("Cannot delete automatic events", 403);
 
     await db.delete(caseTimelineEvents).where(eq(caseTimelineEvents.id, eventId));
+
+    // Re-generate AI tags (fire-and-forget)
+    generateCaseTags(id).catch((err) =>
+      console.error("Failed to regenerate case tags after delete:", err)
+    );
 
     return success({ deleted: true });
   } catch (err) {

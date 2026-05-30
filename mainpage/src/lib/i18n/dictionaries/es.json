@@ -334,7 +334,11 @@
     "consentCompanyContactTooltip": "La empresa puede contactarte a través de nuestro sistema de alias anonimizado.",
     "attestation": "Declaro que la información que he proporcionado es precisa y veraz según mi leal saber y entender.",
     "attestationTooltip": "Debes confirmar que toda la información que has proporcionado es precisa y veraz. Esta es una declaración legal.",
-    "required": "obligatorio"
+    "required": "obligatorio",
+    "tagsTitle": "Etiquetas del Caso",
+    "tagsDescription": "Estas etiquetas ayudan a describir patrones en tu caso. Algunas se detectan automáticamente a partir de tus selecciones. Puedes agregarlas o eliminarlas ahora, o editar después de presentar.",
+    "tagsAutoLabel": "automático",
+    "tagsAutoExplanation": "Las etiquetas marcadas como (automático) se detectaron a partir de tus selecciones del formulario. Puedes modificarlas."
   },
   "timeline": {
     "title": "Registra tus interacciones",
@@ -738,13 +742,17 @@
       "quality_review": "Calidad / Revisión",
       "communication": "Comunicación / Participación",
       "project_lifecycle": "Ciclo de vida del proyecto",
-      "worker_action": "Acción del trabajador / Remedio"
+      "worker_action": "Acción del trabajador / Remedio",
+      "company_positive": "Acciones Positivas de la Empresa"
     },
-    "hourly_payment_not_honored": "Términos de pago por hora no respetados",
-    "pertask_payment_not_honored": "Términos de pago por tarea no respetados",
-    "completion_payment_not_honored": "Pago por finalización no respetado",
-    "approval_condition_retroactive": "Condición de aprobación impuesta retroactivamente",
+    "retaliation": "Represalias",
+    "open_to_legal": "Abierto a representación legal",
+    "company_proactive_outreach": "La empresa contactó proactivamente",
+    "company_relevant_response": "La empresa proporcionó una respuesta relevante",
+    "company_resolved": "La empresa resolvió el problema",
+    "company_quick_response": "La empresa respondió rápidamente",
     "retroactive_term_change": "Cambio retroactivo de términos",
+    "deceptive_pay_practices": "Prácticas de pago engañosas",
     "payment_cap_limit": "Límite de pago",
     "no_feedback_provided": "Sin retroalimentación proporcionada",
     "undefined_quality_standard": "Estándar de calidad indefinido",
@@ -767,6 +775,13 @@
     "workerRejected": "Rechazado por el trabajador",
     "generateTags": "Generar etiquetas",
     "generatingTags": "Analizando...",
-    "aiTags": "Patrones detectados por IA"
+    "aiTags": "Patrones del Caso",
+    "addTag": "Agregar etiqueta",
+    "removeTag": "Eliminar",
+    "source": {
+      "ai": "Detectado por IA",
+      "user": "Agregado por ti",
+      "auto": "Detectado automáticamente"
+    }
   }
 }

@@ -334,7 +334,11 @@
     "consentCompanyContactTooltip": "Công ty có thể liên hệ bạn qua hệ thống bí danh ẩn danh của chúng tôi.",
     "attestation": "Tôi xác nhận rằng thông tin tôi cung cấp là chính xác và trung thực theo hiểu biết tốt nhất của tôi.",
     "attestationTooltip": "Bạn phải xác nhận rằng tất cả thông tin bạn cung cấp là chính xác và trung thực. Đây là một xác nhận pháp lý.",
-    "required": "bắt buộc"
+    "required": "bắt buộc",
+    "tagsTitle": "Thẻ vụ việc",
+    "tagsDescription": "Các thẻ này giúp mô tả mô hình trong vụ việc của bạn. Một số được phát hiện tự động từ các lựa chọn của bạn. Bạn có thể thêm hoặc xóa chúng ngay bây giờ, hoặc chỉnh sửa sau khi gửi.",
+    "tagsAutoLabel": "tự động",
+    "tagsAutoExplanation": "Các thẻ đánh dấu (tự động) được phát hiện từ lựa chọn biểu mẫu của bạn. Bạn có thể ghi đè chúng."
   },
   "timeline": {
     "title": "Ghi nhận các tương tác của bạn",
@@ -738,13 +742,11 @@
       "quality_review": "Chất lượng / Đánh giá",
       "communication": "Giao tiếp / Tương tác",
       "project_lifecycle": "Vòng đời dự án",
-      "worker_action": "Hành động người lao động / Biện pháp khắc phục"
+      "worker_action": "Hành động người lao động / Biện pháp khắc phục",
+      "company_positive": "Hành Động Tích Cực của Công Ty"
     },
-    "hourly_payment_not_honored": "Điều khoản thanh toán theo giờ không được tuân thủ",
-    "pertask_payment_not_honored": "Điều khoản thanh toán theo nhiệm vụ không được tuân thủ",
-    "completion_payment_not_honored": "Thanh toán khi hoàn thành không được tuân thủ",
-    "approval_condition_retroactive": "Điều kiện phê duyệt áp dụng hồi tố",
     "retroactive_term_change": "Thay đổi điều khoản hồi tố",
+    "deceptive_pay_practices": "Thực hành trả lương gây hiểu lầm",
     "payment_cap_limit": "Giới hạn thanh toán",
     "no_feedback_provided": "Không có phản hồi",
     "undefined_quality_standard": "Tiêu chuẩn chất lượng chưa xác định",
@@ -762,11 +764,22 @@
     "legal_counsel_sought": "Tìm kiếm tư vấn pháp lý",
     "collective_action_interest": "Quan tâm đến hành động tập thể",
     "public_documentation": "Tài liệu công khai",
+    "retaliation": "Trả đũa",
+    "open_to_legal": "Sẵn sàng đại diện pháp lý",
+    "company_proactive_outreach": "Công ty đã chủ động liên hệ",
+    "company_relevant_response": "Công ty đã phản hồi liên quan",
+    "company_resolved": "Công ty đã giải quyết vấn đề",
+    "company_quick_response": "Công ty đã phản hồi nhanh",
     "aiConfidence": "AI: {confidence}% tin cậy",
     "workerConfirmed": "Xác nhận bởi người lao động",
     "workerRejected": "Từ chối bởi người lao động",
     "generateTags": "Tạo thẻ",
     "generatingTags": "Đang phân tích...",
-    "aiTags": "Mẫu do AI phát hiện"
+    "aiTags": "Mẫu vụ việc",
+    "addTag": "Thêm thẻ",
+    "removeTag": "Xóa",
+    "source.ai": "AI phát hiện",
+    "source.user": "Bạn đã thêm",
+    "source.auto": "Tự động phát hiện"
   }
 }

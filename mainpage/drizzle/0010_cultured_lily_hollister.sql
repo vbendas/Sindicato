@@ -1,0 +1,1 @@
+ALTER TABLE "case_tags" ADD COLUMN "source" varchar(20) DEFAULT 'ai' NOT NULL;

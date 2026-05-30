@@ -334,7 +334,11 @@
     "consentCompanyContactTooltip": "The company can reach you through our anonymized alias system.",
     "attestation": "I attest that the information I have provided is accurate and truthful to the best of my knowledge.",
     "attestationTooltip": "You must confirm that all information you've provided is accurate and truthful. This is a legal attestation.",
-    "required": "required"
+    "required": "required",
+    "tagsTitle": "Case Tags",
+    "tagsDescription": "These tags help describe patterns in your case. Some are detected automatically from your selections. You can add or remove them now, or edit after filing.",
+    "tagsAutoLabel": "auto",
+    "tagsAutoExplanation": "Tags marked (auto) were detected from your form selections. You can override them."
   },
   "timeline": {
     "title": "Log your interactions",
@@ -737,13 +741,11 @@
       "quality_review": "Quality / Review",
       "communication": "Communication / Engagement",
       "project_lifecycle": "Project Lifecycle",
-      "worker_action": "Worker Action / Remedy"
+      "worker_action": "Worker Action / Remedy",
+      "company_positive": "Company Positive Actions"
     },
-    "hourly_payment_not_honored": "Hourly payment terms not honored",
-    "pertask_payment_not_honored": "Per-task payment terms not honored",
-    "completion_payment_not_honored": "Completion-based payment not honored",
-    "approval_condition_retroactive": "Approval condition imposed retroactively",
     "retroactive_term_change": "Retroactive term change",
+    "deceptive_pay_practices": "Deceptive pay practices",
     "payment_cap_limit": "Payment cap / limit",
     "no_feedback_provided": "No feedback provided",
     "undefined_quality_standard": "Undefined quality standard",
@@ -757,15 +759,28 @@
     "project_deleted_dashboard": "Project deleted from dashboard",
     "task_allocation_dropped": "Task allocation dropped",
     "constructive_termination": "Constructive termination",
+    "retaliation": "Retaliation",
     "dlse_filing_indicated": "DLSE filing indicated",
     "legal_counsel_sought": "Legal counsel sought",
+    "open_to_legal": "Open to legal representation",
     "collective_action_interest": "Collective action interest",
     "public_documentation": "Public documentation",
+    "company_proactive_outreach": "Company reached out proactively",
+    "company_relevant_response": "Company provided relevant response",
+    "company_resolved": "Company resolved the issue",
+    "company_quick_response": "Company responded quickly",
     "aiConfidence": "AI: {confidence}% confident",
     "workerConfirmed": "Worker confirmed",
     "workerRejected": "Worker rejected",
     "generateTags": "Generate Tags",
     "generatingTags": "Analyzing...",
-    "aiTags": "AI-Detected Patterns"
+    "aiTags": "Case Patterns",
+    "addTag": "Add tag",
+    "removeTag": "Remove",
+    "source": {
+      "ai": "AI detected",
+      "user": "Added by you",
+      "auto": "Auto-detected"
+    }
   }
 }

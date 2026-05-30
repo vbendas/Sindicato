@@ -9,39 +9,35 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { CheckIcon, XIcon } from "lucide-react";
+import { getTagSeverity, type TagSeverity } from "@/lib/ai/tag-taxonomy";
 
-const CATEGORY_COLORS: Record<
-  string,
+const SEVERITY_COLORS: Record<
+  TagSeverity,
   { bg: string; text: string; border: string }
 > = {
-  payment_structure: {
+  green: {
     bg: "bg-emerald-500/10",
     text: "text-emerald-400",
     border: "border-emerald-500/20",
   },
-  quality_review: {
-    bg: "bg-purple-500/10",
-    text: "text-purple-400",
-    border: "border-purple-500/20",
-  },
-  communication: {
-    bg: "bg-sky-500/10",
-    text: "text-sky-400",
-    border: "border-sky-500/20",
-  },
-  project_lifecycle: {
+  yellow: {
     bg: "bg-amber-500/10",
     text: "text-amber-400",
     border: "border-amber-500/20",
   },
-  worker_action: {
+  orange: {
+    bg: "bg-orange-500/10",
+    text: "text-orange-400",
+    border: "border-orange-500/20",
+  },
+  red: {
     bg: "bg-rose-500/10",
     text: "text-rose-400",
     border: "border-rose-500/20",
   },
 };
 
-interface CaseTagData {
+export interface CaseTagData {
   id: string;
   caseId: string;
   timelineEventId: string | null;
@@ -50,6 +46,7 @@ interface CaseTagData {
   confidence: number;
   sourceText: string | null;
   workerOverride: string | null;
+  source: string;
   createdAt: string;
 }
 
@@ -60,14 +57,12 @@ interface CaseTagProps {
     tagId: string,
     override: "confirmed" | "rejected"
   ) => void;
+  onDelete?: (tagId: string) => void;
 }
 
 const TAG_I18N_MAP: Record<string, string> = {
-  "Hourly payment terms not honored": "tags.hourly_payment_not_honored",
-  "Per-task payment terms not honored": "tags.pertask_payment_not_honored",
-  "Completion-based payment not honored": "tags.completion_payment_not_honored",
-  "Approval condition imposed retroactively": "tags.approval_condition_retroactive",
   "Retroactive term change": "tags.retroactive_term_change",
+  "Deceptive pay practices": "tags.deceptive_pay_practices",
   "Payment cap / limit": "tags.payment_cap_limit",
   "No feedback provided": "tags.no_feedback_provided",
   "Undefined quality standard": "tags.undefined_quality_standard",
@@ -81,30 +76,44 @@ const TAG_I18N_MAP: Record<string, string> = {
   "Project deleted from dashboard": "tags.project_deleted_dashboard",
   "Task allocation dropped": "tags.task_allocation_dropped",
   "Constructive termination": "tags.constructive_termination",
+  "Retaliation": "tags.retaliation",
   "DLSE filing indicated": "tags.dlse_filing_indicated",
   "Legal counsel sought": "tags.legal_counsel_sought",
+  "Open to legal representation": "tags.open_to_legal",
   "Collective action interest": "tags.collective_action_interest",
   "Public documentation": "tags.public_documentation",
+  "Company reached out proactively": "tags.company_proactive_outreach",
+  "Company provided relevant response": "tags.company_relevant_response",
+  "Company resolved the issue": "tags.company_resolved",
+  "Company responded quickly": "tags.company_quick_response",
+};
+
+const SOURCE_LABELS: Record<string, string> = {
+  ai: "tags.source.ai",
+  user: "tags.source.user",
+  auto: "tags.source.auto",
 };
 
 export function CaseTag({
   tag,
   isOwner = false,
   onOverride,
+  onDelete,
 }: CaseTagProps) {
   const t = useT();
 
-  const colors = CATEGORY_COLORS[tag.category] ?? {
-    bg: "bg-white/10",
-    text: "text-sindicato-warm-white/60",
-    border: "border-white/20",
-  };
+  const severity = getTagSeverity(tag.tagName);
+  const colors = SEVERITY_COLORS[severity];
 
   const i18nKey = TAG_I18N_MAP[tag.tagName];
   const displayName = i18nKey ? t(i18nKey) : tag.tagName;
 
   const isRejected = tag.workerOverride === "rejected";
   const isConfirmed = tag.workerOverride === "confirmed";
+  const isUserTag = tag.source === "user";
+
+  const sourceI18nKey = SOURCE_LABELS[tag.source];
+  const sourceLabel = sourceI18nKey ? t(sourceI18nKey) : tag.source;
 
   return (
     <TooltipProvider delay={200}>
@@ -145,6 +154,21 @@ export function CaseTag({
               </span>
             </div>
 
+            <div className="flex items-center gap-2">
+              <span
+                className={cn(
+                  "text-[9px] uppercase tracking-wider px-1.5 py-0.5 border",
+                  tag.source === "ai"
+                    ? "text-sky-400/70 border-sky-500/20 bg-sky-500/5"
+                    : tag.source === "user"
+                    ? "text-emerald-400/70 border-emerald-500/20 bg-emerald-500/5"
+                    : "text-amber-400/70 border-amber-500/20 bg-amber-500/5"
+                )}
+              >
+                {sourceLabel}
+              </span>
+            </div>
+
             {tag.sourceText && (
               <p className="text-[11px] text-sindicato-warm-white/50 leading-relaxed italic">
                 &ldquo;{tag.sourceText}&rdquo;
@@ -175,6 +199,18 @@ export function CaseTag({
                   <XIcon className="size-3 inline mr-0.5" />
                   {t("tags.workerRejected")}
                 </button>
+                {isUserTag && onDelete && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete(tag.id);
+                    }}
+                    className="text-[10px] px-2 py-0.5 border border-white/20 text-sindicato-warm-white/50 hover:text-sindicato-warm-white hover:bg-white/10 transition-colors uppercase tracking-wider"
+                  >
+                    {t("tags.removeTag")}
+                  </button>
+                )}
               </div>
             )}
 

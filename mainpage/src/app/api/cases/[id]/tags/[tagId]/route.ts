@@ -65,3 +65,57 @@ export async function PUT(
     return error("Failed to update tag", 500);
   }
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string; tagId: string }> }
+) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return error("Authentication required.", 401);
+  }
+
+  try {
+    const { id: caseId, tagId } = await params;
+
+    const [caseRow] = await db
+      .select({ id: cases.id, workerId: cases.workerId })
+      .from(cases)
+      .where(and(eq(cases.id, caseId), eq(cases.status, "active")))
+      .limit(1);
+
+    if (!caseRow) {
+      return error("Case not found", 404);
+    }
+
+    if (caseRow.workerId !== session.user.id) {
+      return error("Not authorised.", 403);
+    }
+
+    const [tag] = await db
+      .select()
+      .from(caseTags)
+      .where(
+        and(eq(caseTags.id, tagId), eq(caseTags.caseId, caseId))
+      )
+      .limit(1);
+
+    if (!tag) {
+      return error("Tag not found", 404);
+    }
+
+    // Only allow deleting user-added tags (not AI-generated)
+    if (tag.source !== "user") {
+      return error("Cannot delete AI-generated tags. Use reject instead.", 403);
+    }
+
+    await db
+      .delete(caseTags)
+      .where(eq(caseTags.id, tagId));
+
+    return success({ deleted: true });
+  } catch (err) {
+    console.error("Error deleting tag:", err);
+    return error("Failed to delete tag", 500);
+  }
+}

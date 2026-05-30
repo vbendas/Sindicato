@@ -334,7 +334,11 @@
     "consentCompanyContactTooltip": "A empresa pode entrar em contato com você através do nosso sistema de pseudônimos anônimos.",
     "attestation": "Atesto que as informações que forneci são precisas e verdadeiras, ao melhor do meu conhecimento.",
     "attestationTooltip": "Você deve confirmar que todas as informações fornecidas são precisas e verdadeiras. Esta é uma atestação legal.",
-    "required": "obrigatório"
+    "required": "obrigatório",
+    "tagsTitle": "Etiquetas do Caso",
+    "tagsDescription": "Essas etiquetas ajudam a descrever padrões no seu caso. Algumas são detectadas automaticamente a partir das suas seleções. Você pode adicioná-las ou removê-las agora, ou editar depois de registrar.",
+    "tagsAutoLabel": "automático",
+    "tagsAutoExplanation": "Etiquetas marcadas como (automático) foram detectadas a partir das seleções do formulário. Você pode alterá-las."
   },
   "timeline": {
     "title": "Registre suas interações",
@@ -738,13 +742,17 @@
       "quality_review": "Qualidade / Revisão",
       "communication": "Comunicação / Engajamento",
       "project_lifecycle": "Ciclo de vida do projeto",
-      "worker_action": "Ação do trabalhador / Remédio"
+      "worker_action": "Ação do trabalhador / Remédio",
+      "company_positive": "Ações Positivas da Empresa"
     },
-    "hourly_payment_not_honored": "Termos de pagamento por hora não cumpridos",
-    "pertask_payment_not_honored": "Termos de pagamento por tarefa não cumpridos",
-    "completion_payment_not_honored": "Pagamento por conclusão não cumprido",
-    "approval_condition_retroactive": "Condição de aprovação imposta retroativamente",
+    "retaliation": "Retaliação",
+    "open_to_legal": "Aberto a representação jurídica",
+    "company_proactive_outreach": "Empresa entrou em contato proativamente",
+    "company_relevant_response": "Empresa forneceu resposta relevante",
+    "company_resolved": "Empresa resolveu o problema",
+    "company_quick_response": "Empresa respondeu rapidamente",
     "retroactive_term_change": "Alteração retroativa de termos",
+    "deceptive_pay_practices": "Práticas de pagamento enganosas",
     "payment_cap_limit": "Limite de pagamento",
     "no_feedback_provided": "Sem feedback fornecido",
     "undefined_quality_standard": "Padrão de qualidade indefinido",
@@ -767,6 +775,13 @@
     "workerRejected": "Rejeitado pelo trabalhador",
     "generateTags": "Gerar etiquetas",
     "generatingTags": "Analisando...",
-    "aiTags": "Padrões detectados por IA"
+    "aiTags": "Padrões do Caso",
+    "addTag": "Adicionar etiqueta",
+    "removeTag": "Remover",
+    "source": {
+      "ai": "Detectado por IA",
+      "user": "Adicionado por você",
+      "auto": "Detectado automaticamente"
+    }
   }
 }

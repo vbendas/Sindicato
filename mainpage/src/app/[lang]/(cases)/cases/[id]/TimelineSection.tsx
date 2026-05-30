@@ -66,6 +66,7 @@ interface CaseTagData {
   confidence: number;
   sourceText: string | null;
   workerOverride: string | null;
+  source: string;
   createdAt: string;
 }
 

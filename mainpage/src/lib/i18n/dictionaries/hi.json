@@ -334,7 +334,11 @@
     "consentCompanyContactTooltip": "कंपनी हमारी गुमनाम उपनाम प्रणाली के माध्यम से आप तक पहुंच सकती है।",
     "attestation": "मैं प्रमाणित करता/करती हूं कि मेरे द्वारा प्रदान की गई जानकारी मेरे ज्ञान के अनुसार सटीक और सत्य है।",
     "attestationTooltip": "आपको यह पुष्टि करनी होगी कि आपके द्वारा प्रदान की गई सभी जानकारी सटीक और सत्य है। यह एक कानूनी प्रमाणन है।",
-    "required": "आवश्यक"
+    "required": "आवश्यक",
+    "tagsTitle": "केस टैग",
+    "tagsDescription": "ये टैग आपके मामले में पैटर्न का वर्णन करने में मदद करते हैं। कुछ आपके चयनों से स्वचालित रूप से पहचाने जाते हैं। आप उन्हें अभी जोड़ या हटा सकते हैं, या दर्ज करने के बाद संपादित कर सकते हैं।",
+    "tagsAutoLabel": "स्वचालित",
+    "tagsAutoExplanation": "(स्वचालित) चिह्नित टैग आपके फ़ॉर्म चयनों से पहचाने गए हैं। आप उन्हें ओवरराइड कर सकते हैं।"
   },
   "timeline": {
     "title": "अपनी बातचीत दर्ज करें",
@@ -738,13 +742,17 @@
       "quality_review": "गुणवत्ता / समीक्षा",
       "communication": "संचार / सहभागिता",
       "project_lifecycle": "परियोजना जीवनचक्र",
-      "worker_action": "श्रमिक कार्रवाई / उपाय"
+      "worker_action": "श्रमिक कार्रवाई / उपाय",
+      "company_positive": "कंपनी की सकारात्मक कार्रवाइयाँ"
     },
-    "hourly_payment_not_honored": "प्रति घंटा भुगतान शर्तों का पालन नहीं",
-    "pertask_payment_not_honored": "प्रति कार्य भुगतान शर्तों का पालन नहीं",
-    "completion_payment_not_honored": "पूर्णता-आधारित भुगतान का पालन नहीं",
-    "approval_condition_retroactive": "अनुमोदन शर्त पूर्वव्यापी रूप से लागू",
+    "retaliation": "प्रतिशोध",
+    "open_to_legal": "कानूनी प्रतिनिधित्व के लिए खुला",
+    "company_proactive_outreach": "कंपनी ने स्वयं संपर्क किया",
+    "company_relevant_response": "कंपनी ने प्रासंगिक प्रतिक्रिया दी",
+    "company_resolved": "कंपनी ने समस्या हल की",
+    "company_quick_response": "कंपनी ने तुरंत जवाब दिया",
     "retroactive_term_change": "पूर्वव्यापी शर्त परिवर्तन",
+    "deceptive_pay_practices": "भ्रामक भुगतान प्रथाएँ",
     "payment_cap_limit": "भुगतान सीमा",
     "no_feedback_provided": "कोई प्रतिक्रिया प्रदान नहीं की गई",
     "undefined_quality_standard": "अपरिभाषित गुणवत्ता मानक",
@@ -767,6 +775,11 @@
     "workerRejected": "श्रमिक द्वारा अस्वीकृत",
     "generateTags": "टैग उत्पन्न करें",
     "generatingTags": "विश्लेषण हो रहा है...",
-    "aiTags": "AI-पहचाने गए पैटर्न"
+    "aiTags": "केस पैटर्न",
+    "addTag": "टैग जोड़ें",
+    "removeTag": "हटाएं",
+    "source.ai": "AI द्वारा पहचाना गया",
+    "source.user": "आपके द्वारा जोड़ा गया",
+    "source.auto": "स्वचालित रूप से पहचाना गया"
   }
 }

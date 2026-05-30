@@ -9,11 +9,93 @@ import TimelineSection from "./TimelineSection";
 import ShareButtons from "@/components/ShareButtons";
 import EntityReachStats from "@/components/EntityReachStats";
 import { CaseTag } from "@/components/CaseTag";
+import { TAG_TAXONOMY, TAG_CATEGORIES } from "@/lib/ai/tag-taxonomy";
 import { useT, useLocale } from "@/lib/i18n";
 import { LocalizedLink } from "@/lib/i18n/navigation";
 import { localeNames } from "@/lib/i18n/config";
 import type { Locale } from "@/lib/i18n/config";
 import { useTranslation } from "@/hooks/useTranslation";
+import type { CaseTagData } from "@/components/CaseTag";
+
+const SEVERITY_DOT_COLORS: Record<string, string> = {
+  green: "bg-emerald-400",
+  yellow: "bg-amber-400",
+  orange: "bg-orange-400",
+  red: "bg-rose-400",
+};
+
+function AddTagDropdown({
+  existingTags,
+  onAdd,
+}: {
+  existingTags: CaseTagData[];
+  onAdd: (tagName: string, category: string) => void;
+}) {
+  const t = useT();
+  const [open, setOpen] = useState(false);
+  const existingNames = new Set(existingTags.map((t) => t.tagName));
+
+  const availableTags = TAG_CATEGORIES.flatMap((catSlug) => {
+    const cat = TAG_TAXONOMY[catSlug];
+    return cat.tags
+      .filter((tag) => !existingNames.has(tag.name))
+      .map((tag) => ({ ...tag, category: catSlug }));
+  });
+
+  if (availableTags.length === 0) return null;
+
+  return (
+    <div className="relative mt-2">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="text-[10px] text-sindicato-warm-white/40 hover:text-sindicato-warm-white/70 transition-colors uppercase tracking-wider border border-white/10 hover:border-white/20 px-2 py-1"
+      >
+        + {t("tags.addTag")}
+      </button>
+      {open && (
+        <div className="absolute z-50 mt-1 left-0 bg-sindicato-charcoal border border-white/20 p-3 max-h-64 overflow-y-auto min-w-[280px]">
+          <div className="space-y-3">
+            {TAG_CATEGORIES.map((catSlug) => {
+              const cat = TAG_TAXONOMY[catSlug];
+              const available = cat.tags.filter(
+                (tag) => !existingNames.has(tag.name)
+              );
+              if (available.length === 0) return null;
+              return (
+                <div key={catSlug}>
+                  <p className="text-[9px] uppercase tracking-wider font-bold text-sindicato-warm-white/30 mb-1.5">
+                    {t(cat.i18nKey)}
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    {available.map((tag) => (
+                      <button
+                        key={tag.name}
+                        type="button"
+                        onClick={() => {
+                          onAdd(tag.name, catSlug);
+                          setOpen(false);
+                        }}
+                        className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 border border-white/10 text-sindicato-warm-white/50 hover:text-sindicato-warm-white hover:border-white/30 hover:bg-white/5 transition-colors"
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            SEVERITY_DOT_COLORS[tag.severity] ?? "bg-white/40"
+                          }`}
+                        />
+                        {t(tag.i18nKey)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function ScrollableColumn({ children, className, innerClassName }: { children: React.ReactNode; className?: string; innerClassName?: string }) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -107,18 +189,6 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   BRL: "R$",
   INR: "\u20b9",
 };
-
-interface CaseTagData {
-  id: string;
-  caseId: string;
-  timelineEventId: string | null;
-  category: string;
-  tagName: string;
-  confidence: number;
-  sourceText: string | null;
-  workerOverride: string | null;
-  createdAt: string;
-}
 
 export default function CaseDetailClient({
   caseId,
@@ -245,6 +315,45 @@ export default function CaseDetailClient({
       }
     } catch (err) {
       console.error("Failed to update tag:", err);
+    }
+  };
+
+  const handleTagDelete = async (tagId: string) => {
+    if (!caseId) return;
+    try {
+      const res = await fetch(`/api/cases/${caseId}/tags/${tagId}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setCaseTags((prev) => prev.filter((tag) => tag.id !== tagId));
+      }
+    } catch (err) {
+      console.error("Failed to delete tag:", err);
+    }
+  };
+
+  const handleTagAdd = async (tagName: string, category: string) => {
+    if (!caseId) return;
+    try {
+      const res = await fetch(`/api/cases/${caseId}/tags`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tagName,
+          category,
+          confidence: 100,
+          sourceText: "Manually added by worker",
+          source: "user",
+        }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.data) {
+          setCaseTags((prev) => [...prev, json.data]);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to add tag:", err);
     }
   };
 
@@ -375,37 +484,44 @@ export default function CaseDetailClient({
                   </div>
 
                   {/* AI Tags Section */}
-                  {caseTags.length > 0 && (
-                    <div className="mb-6">
-                      <div className="flex items-center gap-2 mb-2">
-                        <p className="text-sindicato-warm-white/30 text-[10px] uppercase tracking-widest font-[family-name:var(--font-jetbrains)]">
-                          {t("tags.aiTags")}
-                        </p>
-                        {isOwner && (
-                          <button
-                            onClick={handleGenerateTags}
-                            disabled={generatingTags}
-                            className="text-[9px] text-sindicato-warm-white/30 hover:text-sindicato-warm-white/60 transition-colors uppercase tracking-wider"
-                          >
-                            {generatingTags ? t("tags.generatingTags") : "re-analyze"}
-                          </button>
-                        )}
-                      </div>
-                      {tagError && (
-                        <p className="text-amber-400/70 text-[11px] mb-2">{tagError}</p>
+                  <div className="mb-6">
+                    <div className="flex items-center gap-2 mb-2">
+                      <p className="text-sindicato-warm-white/30 text-[10px] uppercase tracking-widest font-[family-name:var(--font-jetbrains)]">
+                        {t("tags.aiTags")}
+                      </p>
+                      {isOwner && (
+                        <button
+                          onClick={handleGenerateTags}
+                          disabled={generatingTags}
+                          className="text-[9px] text-sindicato-warm-white/30 hover:text-sindicato-warm-white/60 transition-colors uppercase tracking-wider"
+                        >
+                          {generatingTags ? t("tags.generatingTags") : "re-analyze"}
+                        </button>
                       )}
-                      <div className="flex flex-wrap gap-1.5">
-                        {caseTags.map((tag) => (
-                          <CaseTag
-                            key={tag.id}
-                            tag={tag}
-                            isOwner={isOwner}
-                            onOverride={handleTagOverride}
-                          />
-                        ))}
-                      </div>
                     </div>
-                  )}
+                    {tagError && (
+                      <p className="text-amber-400/70 text-[11px] mb-2">{tagError}</p>
+                    )}
+                    <div className="flex flex-wrap gap-1.5">
+                      {caseTags.map((tag) => (
+                        <CaseTag
+                          key={tag.id}
+                          tag={tag}
+                          isOwner={isOwner}
+                          onOverride={handleTagOverride}
+                          onDelete={handleTagDelete}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Add tag dropdown for owner */}
+                    {isOwner && (
+                      <AddTagDropdown
+                        existingTags={caseTags}
+                        onAdd={handleTagAdd}
+                      />
+                    )}
+                  </div>
 
                   <div className="border-t border-white/10 pt-6">
                     <div className="mb-3">

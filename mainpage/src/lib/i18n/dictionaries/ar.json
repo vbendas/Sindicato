@@ -334,7 +334,11 @@
     "consentCompanyContactTooltip": "يمكن للشركة التواصل معك عبر نظام الأسماء المستعارة المجهول.",
     "attestation": "أشهد بأن المعلومات التي قدّمتها دقيقة وصادقة على حد علمي.",
     "attestationTooltip": "يجب أن تؤكّد أن جميع المعلومات التي قدّمتها دقيقة وصادقة. هذا إقرار قانوني.",
-    "required": "مطلوب"
+    "required": "مطلوب",
+    "tagsTitle": "وسوم القضية",
+    "tagsDescription": "تساعد هذه الوسوم في وصف الأنماط في قضيتك. بعضها يُكتشف تلقائيًا من اختياراتك. يمكنك إضافتها أو إزالتها الآن، أو تعديلها بعد التقديم.",
+    "tagsAutoLabel": "تلقائي",
+    "tagsAutoExplanation": "الوسوم المعلّمة بـ(تلقائي) اكتُشفت من نموذج إدخالك. يمكنك تجاوزها."
   },
   "timeline": {
     "title": "سجّل تفاعلاتك",
@@ -738,13 +742,11 @@
       "quality_review": "الجودة / المراجعة",
       "communication": "التواصل / التفاعل",
       "project_lifecycle": "دورة حياة المشروع",
-      "worker_action": "إجراء العامل / العلاج"
+      "worker_action": "إجراء العامل / العلاج",
+      "company_positive": "إجراءات إيجابية من الشركة"
     },
-    "hourly_payment_not_honored": "شروط الدفع بالساعة لم تُحترم",
-    "pertask_payment_not_honored": "شروط الدفع بالمهمة لم تُحترم",
-    "completion_payment_not_honored": "الدفع عند الإنجاز لم يُحترم",
-    "approval_condition_retroactive": "شرط الموافقة فُرض بأثر رجعي",
     "retroactive_term_change": "تعديل رجعي للشروط",
+    "deceptive_pay_practices": "ممارسات دفع مضللة",
     "payment_cap_limit": "حد الدفع",
     "no_feedback_provided": "لم يُقدَّم أي تقييم",
     "undefined_quality_standard": "معيار جودة غير محدد",
@@ -762,11 +764,22 @@
     "legal_counsel_sought": "بحث عن استشارة قانونية",
     "collective_action_interest": "اهتمام بعمل جماعي",
     "public_documentation": "وثائق عامة",
+    "retaliation": "انتقام",
+    "open_to_legal": "منفتح للتمثيل القانوني",
+    "company_proactive_outreach": "تواصلت الشركة بشكل استباقي",
+    "company_relevant_response": "قدّمت الشركة ردًا ذا صلة",
+    "company_resolved": "حلّت الشركة المشكلة",
+    "company_quick_response": "ردّت الشركة بسرعة",
     "aiConfidence": "الذكاء الاصطناعي: {confidence}% ثقة",
     "workerConfirmed": "أكّده العامل",
     "workerRejected": "رفضه العامل",
     "generateTags": "إنشاء التسميات",
     "generatingTags": "جارٍ التحليل...",
-    "aiTags": "أنماط مكتشفة بالذكاء الاصطناعي"
+    "aiTags": "أنماط القضية",
+    "addTag": "إضافة تسمية",
+    "removeTag": "إزالة",
+    "source.ai": "مكتشف بالذكاء الاصطناعي",
+    "source.user": "أضفتها أنت",
+    "source.auto": "مكتشف تلقائيًا"
   }
 }

@@ -216,11 +216,15 @@ export async function generateCaseTags(
     return { success: true, tagsGenerated: 0 };
   }
 
-  // Delete existing non-override tags
+  // Delete existing AI-generated non-override tags (preserve user-added and auto-added)
   await db
     .delete(caseTags)
     .where(
-      and(eq(caseTags.caseId, caseId), isNull(caseTags.workerOverride))
+      and(
+        eq(caseTags.caseId, caseId),
+        isNull(caseTags.workerOverride),
+        eq(caseTags.source, "ai")
+      )
     );
 
   const tagRows = validTags.map((t) => ({

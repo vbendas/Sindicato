@@ -334,7 +334,11 @@
     "consentCompanyContactTooltip": "Das Unternehmen kann dich über unser anonymisiertes Alias-System erreichen.",
     "attestation": "Ich versichere, dass die von mir gemachten Angaben nach bestem Wissen korrekt und wahrheitsgemäß sind.",
     "attestationTooltip": "Du musst bestätigen, dass alle von dir gemachten Angaben korrekt und wahrheitsgemäß sind. Dies ist eine rechtliche Versicherung.",
-    "required": "Pflichtfeld"
+    "required": "Pflichtfeld",
+    "tagsTitle": "Fall-Tags",
+    "tagsDescription": "Diese Tags helfen, Muster in deinem Fall zu beschreiben. Einige werden automatisch aus deinen Auswahlmöglichkeiten erkannt. Du kannst sie jetzt hinzufügen oder entfernen, oder nach der Einreichung bearbeiten.",
+    "tagsAutoLabel": "auto",
+    "tagsAutoExplanation": "Tags mit (auto) wurden aus deinen Formulareingaben erkannt. Du kannst sie überschreiben."
   },
   "timeline": {
     "title": "Dokumentiere deine Interaktionen",
@@ -738,13 +742,11 @@
       "quality_review": "Qualität / Überprüfung",
       "communication": "Kommunikation / Engagement",
       "project_lifecycle": "Projektlebenszyklus",
-      "worker_action": "Maßnahme der Arbeitenden / Abhilfe"
+      "worker_action": "Maßnahme der Arbeitenden / Abhilfe",
+      "company_positive": "Positive Unternehmensaktionen"
     },
-    "hourly_payment_not_honored": "Stundenlohnbedingungen nicht eingehalten",
-    "pertask_payment_not_honored": "Aufgabenbasierte Zahlungsbedingungen nicht eingehalten",
-    "completion_payment_not_honored": "Abschlussbasierte Zahlung nicht eingehalten",
-    "approval_condition_retroactive": "Genehmigungsbedingung rückwirkend auferlegt",
     "retroactive_term_change": "Rückwirkende Änderung der Bedingungen",
+    "deceptive_pay_practices": "Irreführende Zahlungspraktiken",
     "payment_cap_limit": "Zahlungsobergrenze",
     "no_feedback_provided": "Kein Feedback gegeben",
     "undefined_quality_standard": "Undefinierter Qualitätsstandard",
@@ -762,11 +764,22 @@
     "legal_counsel_sought": "Rechtsberatung gesucht",
     "collective_action_interest": "Interesse an Sammelklage",
     "public_documentation": "Öffentliche Dokumentation",
+    "retaliation": "Vergeltung",
+    "open_to_legal": "Offen für Rechtsvertretung",
+    "company_proactive_outreach": "Unternehmen hat sich proaktiv gemeldet",
+    "company_relevant_response": "Unternehmen hat relevante Antwort gegeben",
+    "company_resolved": "Unternehmen hat das Problem gelöst",
+    "company_quick_response": "Unternehmen hat schnell geantwortet",
     "aiConfidence": "KI: {confidence}% sicher",
     "workerConfirmed": "Von Arbeitenden bestätigt",
     "workerRejected": "Von Arbeitenden abgelehnt",
     "generateTags": "Tags generieren",
     "generatingTags": "Analyse läuft...",
-    "aiTags": "KI-erkannte Muster"
+    "aiTags": "Fallmuster",
+    "addTag": "Tag hinzufügen",
+    "removeTag": "Entfernen",
+    "source.ai": "KI-erkannt",
+    "source.user": "Von dir hinzugefügt",
+    "source.auto": "Automatisch erkannt"
   }
 }

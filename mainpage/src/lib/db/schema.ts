@@ -320,6 +320,7 @@ export const caseTags = pgTable(
     confidence: integer("confidence").notNull(),
     sourceText: text("source_text"),
     workerOverride: varchar("worker_override", { length: 20 }),
+    source: varchar("source", { length: 20 }).default("ai").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [

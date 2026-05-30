@@ -1,12 +1,18 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { useLocale, useT } from "@/lib/i18n";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import type { CaseFormData, TimelineEvent } from "../FilingWizard";
+import {
+  TAG_TAXONOMY,
+  TAG_CATEGORIES,
+  type TagSeverity,
+} from "@/lib/ai/tag-taxonomy";
 
 const CASE_TYPE_LABELS: Record<string, string> = {
   unpaid_wages: "Unpaid Wages",
@@ -45,6 +51,20 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   JPY: "\u00a5",
 };
 
+const SEVERITY_DOT_COLORS: Record<TagSeverity, string> = {
+  green: "bg-emerald-400",
+  yellow: "bg-amber-400",
+  orange: "bg-orange-400",
+  red: "bg-rose-400",
+};
+
+const SEVERITY_COLORS: Record<TagSeverity, { bg: string; text: string; border: string }> = {
+  green: { bg: "bg-emerald-500/10", text: "text-emerald-400", border: "border-emerald-500/20" },
+  yellow: { bg: "bg-amber-500/10", text: "text-amber-400", border: "border-amber-500/20" },
+  orange: { bg: "bg-orange-500/10", text: "text-orange-400", border: "border-orange-500/20" },
+  red: { bg: "bg-rose-500/10", text: "text-rose-400", border: "border-rose-500/20" },
+};
+
 const rowLabelClass =
   "text-xs uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold text-sindicato-warm-white/50";
 const rowValueClass = "text-sm text-sindicato-warm-white mt-0.5";
@@ -69,6 +89,8 @@ interface ReviewStepProps {
 
 export default function ReviewStep({ email: propEmail, workerId: propWorkerId, caseData, timelineEvents, onBack }: ReviewStepProps) {
   const router = useRouter();
+  const { locale } = useLocale();
+  const t = useT();
   const turnstileRef = useRef<TurnstileInstance>(null);
   const [turnstileToken, setTurnstileToken] = useState("");
   const [loading, setLoading] = useState(false);
@@ -90,6 +112,87 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
   const resolvedEmail = propEmail || localEmail;
 
   const contactAttemptsFromTimeline = timelineEvents.length;
+
+  // Compute auto-selected tags from form selections
+  const autoSelectedTags = useMemo(() => {
+    const tags: string[] = [];
+    if (caseData.optInCollective) tags.push("Collective action interest");
+    if (caseData.optInSolicitor) tags.push("Open to legal representation");
+    return tags;
+  }, [caseData.optInCollective, caseData.optInSolicitor]);
+
+  // Initialize selected tags: user selections + auto-detected
+  const [selectedTags, setSelectedTags] = useState<Set<string>>(() => {
+    const initial = new Set(caseData.selectedTags);
+    autoSelectedTags.forEach((t) => initial.add(t));
+    return initial;
+  });
+
+  // AI tag analysis
+  interface AIDetectedTag {
+    category: string;
+    tagName: string;
+    confidence: number;
+    sourceText: string;
+  }
+  const [aiTags, setAiTags] = useState<AIDetectedTag[]>([]);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+
+  // Auto-run AI analysis on mount and when story/timeline changes
+  useEffect(() => {
+    let cancelled = false;
+    const run = async () => {
+      if (!caseData.story || caseData.story.trim().length < 50) return;
+      setAiLoading(true);
+      setAiError(null);
+      try {
+        const res = await fetch("/api/ai/analyze-tags", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            story: caseData.story,
+            timelineEvents: timelineEvents.map((ev) => ({
+              description: ev.description,
+              eventDate: ev.eventDate.toISOString(),
+              direction: "worker_to_company",
+            })),
+          }),
+        });
+        const data = await res.json();
+        if (!cancelled && res.ok && data.data?.tags) {
+          setAiTags(data.data.tags);
+          setSelectedTags((prev) => {
+            const next = new Set(prev);
+            for (const tag of data.data.tags) {
+              next.add(tag.tagName);
+            }
+            return next;
+          });
+        } else if (!cancelled) {
+          setAiError(data.error || "Failed to analyze tags");
+        }
+      } catch {
+        if (!cancelled) setAiError("Failed to analyze tags");
+      } finally {
+        if (!cancelled) setAiLoading(false);
+      }
+    };
+    run();
+    return () => { cancelled = true; };
+  }, [caseData.story, timelineEvents]);
+
+  const toggleTag = (tagName: string) => {
+    setSelectedTags((prev) => {
+      const next = new Set(prev);
+      if (next.has(tagName)) {
+        next.delete(tagName);
+      } else {
+        next.add(tagName);
+      }
+      return next;
+    });
+  };
 
   async function handleSendCode() {
     setVerifyError("");
@@ -195,6 +298,8 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
           description: ev.description,
           responseReceived: ev.responseReceived,
         })),
+        selectedTags: Array.from(selectedTags),
+        aiTags: aiTags,
         turnstileToken: token || undefined,
       };
 
@@ -216,7 +321,7 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
       setCaseId(data.data?.id || "");
       setSubmitted(true);
 
-      setTimeout(() => router.push("/cases"), 4000);
+      setTimeout(() => router.push(`/${locale}/cases`), 4000);
     } catch {
       setSubmitError("Network error. Please try again.");
       turnstileRef.current?.reset();
@@ -321,6 +426,101 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
             </div>
           </div>
         )}
+
+        {/* Tag Selection */}
+        <div className="mb-6">
+          <p className={`${rowLabelClass} mb-1`}>{t("fileCase.tagsTitle")}</p>
+          <p className="text-xs text-sindicato-warm-white/40 mb-4">
+            {t("fileCase.tagsDescription")}
+          </p>
+
+          {/* AI-detected tags */}
+          {(aiLoading || aiTags.length > 0 || aiError) && (
+            <div className="mb-4 p-3 bg-white/5 border border-white/10">
+              <p className="text-[10px] uppercase tracking-wider font-bold text-sindicato-warm-white/40 mb-2">
+                {t("tags.source.ai")}
+              </p>
+              {aiLoading && (
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 border-2 border-white/20 border-t-sindicato-warm-white/60 rounded-full animate-spin" />
+                  <span className="text-[10px] text-sindicato-warm-white/40">
+                    {t("tags.generatingTags")}
+                  </span>
+                </div>
+              )}
+              {!aiLoading && aiError && (
+                <p className="text-[10px] text-amber-400/60">{aiError}</p>
+              )}
+              {!aiLoading && aiTags.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {aiTags.map((tag) => {
+                    const def = TAG_TAXONOMY[tag.category as keyof typeof TAG_TAXONOMY]?.tags.find(
+                      (t) => t.name === tag.tagName
+                    );
+                    const severity = def?.severity ?? "yellow";
+                    const i18nKey = def?.i18nKey;
+                    return (
+                      <span
+                        key={tag.tagName}
+                        className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 border ${SEVERITY_COLORS[severity].bg} ${SEVERITY_COLORS[severity].text} ${SEVERITY_COLORS[severity].border}`}
+                        title={`${tag.confidence}% — ${tag.sourceText}`}
+                      >
+                        <span className={`w-1.5 h-1.5 rounded-full ${SEVERITY_DOT_COLORS[severity]}`} />
+                        {i18nKey ? t(i18nKey) : tag.tagName}
+                        <span className="text-[8px] opacity-50">{tag.confidence}%</span>
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="space-y-4">
+            {TAG_CATEGORIES.filter((cat) => cat !== "company_positive").map((catSlug) => {
+              const cat = TAG_TAXONOMY[catSlug];
+              return (
+                <div key={catSlug}>
+                  <p className="text-[10px] uppercase tracking-wider font-bold text-sindicato-warm-white/30 mb-2">
+                    {t(cat.i18nKey)}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {cat.tags.map((tag) => {
+                      const isSelected = selectedTags.has(tag.name);
+                      const isAuto = autoSelectedTags.includes(tag.name);
+                      return (
+                        <button
+                          key={tag.name}
+                          type="button"
+                          onClick={() => toggleTag(tag.name)}
+                          className={`
+                            inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2 py-1 border transition-colors
+                            ${isSelected
+                              ? "bg-white/15 border-white/30 text-sindicato-warm-white"
+                              : "bg-white/5 border-white/10 text-sindicato-warm-white/40 hover:border-white/20 hover:text-sindicato-warm-white/60"
+                            }
+                          `}
+                        >
+                          <span className={`w-1.5 h-1.5 rounded-full ${SEVERITY_DOT_COLORS[tag.severity]}`} />
+                          {t(tag.i18nKey)}
+                          {isAuto && (
+                            <span className="text-[8px] text-amber-400/60 ml-0.5">
+                              ({t("fileCase.tagsAutoLabel")})
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <p className="text-[10px] text-sindicato-warm-white/30 mt-3">
+            {t("fileCase.tagsAutoExplanation")}
+          </p>
+        </div>
 
         {/* Email verification for unauthenticated users */}
         {!hasSession && verifyStep !== "verified" && (

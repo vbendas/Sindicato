@@ -334,7 +334,11 @@
     "consentCompanyContactTooltip": "Kampuni inaweza kukufikia kupitia mfumo wetu wa majina ya kubadilisha.",
     "attestation": "Ninathibitisha kwamba taarifa nilizotoa ni sahihi na za kweli kwa ujuzi wangu wote.",
     "attestationTooltip": "Lazima uthibitishe kwamba taarifa zote ulizotoa ni sahihi na za kweli. Hii ni uthibitisho wa kisheria.",
-    "required": "inahitajika"
+    "required": "inahitajika",
+    "tagsTitle": "Lebo za Kesi",
+    "tagsDescription": "Lebo hizi zinasaidia kuelezea mifumo katika kesi yako. Baadhi hugunduliwa kiotomatiki kutoka kwa chaguzi zako. Unaweza kuongeza au kuondoa sasa, au hariri baada ya kuwasilisha.",
+    "tagsAutoLabel": "kiomatiki",
+    "tagsAutoExplanation": "Lebo zilizo na alama (kiomatiki) ziligunduliwa kutoka kwa chaguzi zako za fomu. Unaweza kuzibatilisha."
   },
   "timeline": {
     "title": "Andika mwingiliano wako",
@@ -738,13 +742,17 @@
       "quality_review": "Ubora / Mapitio",
       "communication": "Mawasiliano / Ushirikiano",
       "project_lifecycle": "Mzunguko wa Mradi",
-      "worker_action": "Hatua ya Mfanyakazi / Tiba"
+      "worker_action": "Hatua ya Mfanyakazi / Tiba",
+      "company_positive": "Matendo Chanya ya Kampuni"
     },
-    "hourly_payment_not_honored": "Masharti ya malipo kwa saa hayakuheshimiwa",
-    "pertask_payment_not_honored": "Masharti ya malipo kwa kazi hayakuheshimiwa",
-    "completion_payment_not_honored": "Malipo kulingana na kukamilisha hayakuheshimiwa",
-    "approval_condition_retroactive": "Kibali cha kuidhinishwa kimetolewa kwa nyuma",
+    "retaliation": "Kisasi",
+    "open_to_legal": "Wazi kwa uwakilishi wa kisheria",
+    "company_proactive_outreach": "Kampuni ilifikia kwa hiari",
+    "company_relevant_response": "Kampuni ilitoa jibu linalofaa",
+    "company_resolved": "Kampuni ilitatua tatizo",
+    "company_quick_response": "Kampuni ilijibu haraka",
     "retroactive_term_change": "Mabadiliko ya masharti ya nyuma",
+    "deceptive_pay_practices": "Malipo ya udanganyifu",
     "payment_cap_limit": "Kikomo cha malipo",
     "no_feedback_provided": "Hakuna maoni yaliyotolewa",
     "undefined_quality_standard": "Kiwango cha ubora ambacho hakijafafanuliwa",
@@ -767,6 +775,11 @@
     "workerRejected": "Imekataliwa na mfanyakazi",
     "generateTags": "Tengeneza Lebo",
     "generatingTags": "Inachambua...",
-    "aiTags": "Miundo Iliyogunduliwa na AI"
+    "aiTags": "Mifumo ya Kesi",
+    "addTag": "Ongeza lebo",
+    "removeTag": "Ondoa",
+    "source.ai": "Iliyogunduliwa na AI",
+    "source.user": "Imeongezwa na wewe",
+    "source.auto": "Iliyogunduliwa kiotomatiki"
   }
 }

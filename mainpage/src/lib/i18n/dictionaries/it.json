@@ -334,7 +334,11 @@
     "consentCompanyContactTooltip": "L'azienda può raggiungerti tramite il nostro sistema di alias anonimizzati.",
     "attestation": "Attesto che le informazioni fornite sono accurate e veritiere al meglio delle mie conoscenze.",
     "attestationTooltip": "Devi confermare che tutte le informazioni fornite sono accurate e veritiere. Questa è un'attestazione legale.",
-    "required": "obbligatorio"
+    "required": "obbligatorio",
+    "tagsTitle": "Tag del Caso",
+    "tagsDescription": "Questi tag aiutano a descrivere gli schemi nel tuo caso. Alcuni vengono rilevati automaticamente dalle tue selezioni. Puoi aggiungerli o rimuoverli ora, oppure modificarli dopo la presentazione.",
+    "tagsAutoLabel": "auto",
+    "tagsAutoExplanation": "I tag contrassegnati con (auto) sono stati rilevati dalle tue selezioni nel modulo. Puoi sovrascriverli."
   },
   "timeline": {
     "title": "Registra le tue interazioni",
@@ -738,13 +742,11 @@
       "quality_review": "Qualità / Revisione",
       "communication": "Comunicazione / Coinvolgimento",
       "project_lifecycle": "Ciclo di vita del progetto",
-      "worker_action": "Azione del lavoratore / Rimedio"
+      "worker_action": "Azione del lavoratore / Rimedio",
+      "company_positive": "Azioni Positive dell'Azienda"
     },
-    "hourly_payment_not_honored": "Termini di pagamento orario non rispettati",
-    "pertask_payment_not_honored": "Termini di pagamento per compito non rispettati",
-    "completion_payment_not_honored": "Pagamento al completamento non rispettato",
-    "approval_condition_retroactive": "Condizione di approvazione imposta retroattivamente",
     "retroactive_term_change": "Modifica retroattiva dei termini",
+    "deceptive_pay_practices": "Pratiche di pagamento ingannevoli",
     "payment_cap_limit": "Tetto / limite di pagamento",
     "no_feedback_provided": "Nessun feedback fornito",
     "undefined_quality_standard": "Standard di qualità non definito",
@@ -762,11 +764,22 @@
     "legal_counsel_sought": "Consulenza legale cercata",
     "collective_action_interest": "Interesse per azione collettiva",
     "public_documentation": "Documentazione pubblica",
+    "retaliation": "Ritorsione",
+    "open_to_legal": "Aperto alla rappresentanza legale",
+    "company_proactive_outreach": "L'azienda ha contattato proattivamente",
+    "company_relevant_response": "L'azienda ha fornito una risposta pertinente",
+    "company_resolved": "L'azienda ha risolto il problema",
+    "company_quick_response": "L'azienda ha risposto rapidamente",
     "aiConfidence": "IA: {confidence}% di confidenza",
     "workerConfirmed": "Confermato dal lavoratore",
     "workerRejected": "Rifiutato dal lavoratore",
     "generateTags": "Genera tag",
     "generatingTags": "Analisi in corso...",
-    "aiTags": "Pattern rilevati dall'IA"
+    "aiTags": "Pattern del caso",
+    "addTag": "Aggiungi tag",
+    "removeTag": "Rimuovi",
+    "source.ai": "Rilevato dall'IA",
+    "source.user": "Aggiunto da te",
+    "source.auto": "Rilevato automaticamente"
   }
 }
