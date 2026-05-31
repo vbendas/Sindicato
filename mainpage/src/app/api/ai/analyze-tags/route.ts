@@ -5,6 +5,7 @@ import { rateLimit } from "@/lib/auth/rate-limit";
 import { getClientIp } from "@/lib/utils/api";
 import { callOpenRouter, getTagModel } from "@/lib/ai/openrouter";
 import { TAG_EXTRACTION_SYSTEM } from "@/lib/ai/prompts";
+import { getTagSeverity } from "@/lib/ai/tag-taxonomy";
 
 const requestSchema = z.object({
   story: z.string().min(1).max(10000),
@@ -93,7 +94,7 @@ Extract all pattern tags from both the story and timeline events. Return ONLY th
       }
     }
 
-    // Filter valid tags
+    // Filter valid tags with severity-based confidence thresholds
     interface ExtractedTag {
       category: string;
       tagName: string;
@@ -103,14 +104,19 @@ Extract all pattern tags from both the story and timeline events. Return ONLY th
     const validTags: ExtractedTag[] = extracted.filter((t): t is ExtractedTag => {
       if (typeof t !== "object" || t === null) return false;
       const obj = t as Record<string, unknown>;
-      return (
-        typeof obj.tagName === "string" &&
-        typeof obj.sourceText === "string" &&
-        typeof obj.confidence === "number" &&
-        typeof obj.category === "string" &&
-        obj.confidence >= 60 &&
-        obj.confidence <= 100
-      );
+      if (
+        typeof obj.tagName !== "string" ||
+        typeof obj.sourceText !== "string" ||
+        typeof obj.confidence !== "number" ||
+        typeof obj.category !== "string"
+      ) return false;
+      if (obj.confidence < 0 || obj.confidence > 100) return false;
+      // Severity-based minimum confidence
+      const severity = getTagSeverity(obj.tagName as string);
+      let minConfidence = 60;
+      if (severity === "red") minConfidence = 80;
+      else if (severity === "orange") minConfidence = 70;
+      return (obj.confidence as number) >= minConfidence;
     });
 
     return success({ tags: validTags });

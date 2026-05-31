@@ -71,7 +71,7 @@ const SYSTEM_PROMPT = `You are a pattern analyst for Sindicato, a platform where
 CRITICAL RULES:
 - Only tag patterns that are CLEARLY present in the text. Do not infer or speculate.
 - Tags are DESCRIPTIVE of company behavior, never legal conclusions. Never use words like "illegal", "fraud", "wage theft", or "violation".
-- Return a confidence score (0-100) for each tag. Only include tags with confidence >= 60.
+- Return a confidence score (0-100) for each tag. Only include tags with confidence >= 60. For red severity tags, require >= 80. For orange, require >= 70.
 - For each tag, include the exact sourceText (sentence or phrase) that triggered it.
 - A single text segment can trigger multiple tags.
 - Return ONLY a valid JSON array. No markdown, no explanation.
@@ -81,28 +81,28 @@ WHAT TO TAG vs WHAT NOT TO TAG:
 - DO NOT tag a payment model just because it is mentioned. "I was paid $22/hr" is NOT a tag.
 - DO NOT tag "Pay-per-hour" or "Pay-per-task" as standalone descriptions.
 - DO tag when terms were changed retroactively — IMPORTANT: "Retroactive term change" requires evidence of a BEFORE → AFTER change.
-- DO tag when the pay structure itself is deceptive or misleading by design. Use "Deceptive pay practices" for these, NOT "Retroactive term change".
+- DO tag when the pay structure itself is deceptive or misleading by design. Use "Pay structure concerns reported" for these, NOT "Retroactive term change".
 - DO tag when the company used quality claims to avoid payment.
 - DO tag when the company stopped communicating or locked out the worker.
-- DO tag when the company took adverse action after a complaint or filing (retaliation). Even if the company uses euphemisms like "community guidelines violation" — if the adverse action happened AFTER the worker complained or posted, tag it as Retaliation.
+- DO tag when the company took adverse action after a complaint or filing (retaliation). Even if the company uses euphemisms like "community guidelines violation" — if the adverse action happened AFTER the worker complained or posted, tag it as "Retaliation reported".
 - DO tag positive company behavior when CLEARLY present in company-to-worker timeline events.
 
 TAXONOMY:
 
 1. Payment Issues (category: payment_structure):
 - "Retroactive term change" — Payment or work terms CHANGED after work began. Requires clear evidence of a BEFORE → AFTER shift.
-- "Deceptive pay practices" — Pay structure is misleading or exploitative by design. NOT a change from previous terms.
+- "Pay structure concerns reported" — Pay structure is misleading or exploitative by design. NOT a change from previous terms.
 - "Payment cap / limit" — Maximum hours, tasks, or earnings imposed without prior notice.
 
 2. Quality / Review (category: quality_review):
 - "No feedback provided" — Rejection or non-payment without explanation.
 - "Undefined quality standard" — Vague or missing criteria for acceptance.
-- "Post-hoc quality claim" — Quality issues raised only after payment dispute.
+- "Quality raised after dispute" — Quality issues raised only after payment dispute.
 - "Tasks removed / deleted" — Completed work disappearing from platform.
 
 3. Communication / Engagement (category: communication):
 - "Ignored messages" — No response to worker inquiries.
-- "Channel lockout" — Worker removed from Discord, Slack, or project channels.
+- "Communication access restricted" — Worker removed from Discord, Slack, or project channels.
 - "Support deflection" — Generic or unhelpful support responses.
 - "Alias management" — Leaders using pseudonyms, no real names or contacts.
 
@@ -110,8 +110,8 @@ TAXONOMY:
 - "Project paused / ended abruptly" — Sudden halt to work availability.
 - "Project deleted from dashboard" — Project no longer visible to worker.
 - "Task allocation dropped" — Hours or tasks reduced without explanation.
-- "Constructive termination" — Conditions made impossible to continue working.
-- "Retaliation" — Company took adverse action after complaint, filing, or protected activity. Look for a SEQUENCE: worker complains/posts/files → company punishes. Even euphemisms like "community guidelines" count if timing shows retaliation.
+- "Forced exit reported" — Conditions made impossible to continue working.
+- "Retaliation reported" — Company took adverse action after complaint, filing, or protected activity. Look for a SEQUENCE: worker complains/posts/files → company punishes. Even euphemisms like "community guidelines" count if timing shows retaliation.
 
 5. Worker Action / Remedy (category: worker_action):
 - "DLSE filing indicated" — Worker mentions filing with Labor Commissioner.
@@ -200,12 +200,19 @@ Extract all pattern tags from both the story and timeline events. Return ONLY th
       }
 
       const validTags = extracted.filter(
-        (t: any) =>
-          t.tagName &&
-          t.sourceText &&
-          typeof t.confidence === "number" &&
-          t.confidence >= 60 &&
-          t.confidence <= 100
+        (t: any) => {
+          if (!t.tagName || !t.sourceText) return false;
+          if (typeof t.confidence !== "number" || t.confidence > 100) return false;
+          // Severity-based minimum confidence
+          const name = (t.tagName || "").toLowerCase();
+          let severity = "yellow";
+          if (name.includes("retaliation") || name.includes("dlse") || name.includes("legal counsel") || name.includes("collective") || name.includes("pay structure") || name.includes("forced exit")) severity = "red";
+          else if (name.includes("retroactive") || name.includes("payment cap") || name.includes("quality raised") || name.includes("tasks removed") || name.includes("communication access") || name.includes("project deleted")) severity = "orange";
+          let minConfidence = 60;
+          if (severity === "red") minConfidence = 80;
+          else if (severity === "orange") minConfidence = 70;
+          return t.confidence >= minConfidence;
+        }
       );
 
       // Delete existing AI tags (preserve user/auto/override)

@@ -52,7 +52,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
         ],
       },
       {
-        name: "Deceptive pay practices",
+        name: "Pay structure concerns reported",
         i18nKey: "tags.deceptive_pay_practices",
         severity: "red",
         description:
@@ -118,7 +118,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
         ],
       },
       {
-        name: "Post-hoc quality claim",
+        name: "Quality raised after dispute",
         i18nKey: "tags.post_hoc_quality_claim",
         severity: "orange",
         description:
@@ -166,7 +166,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
         ],
       },
       {
-        name: "Channel lockout",
+        name: "Communication access restricted",
         i18nKey: "tags.channel_lockout",
         severity: "orange",
         description:
@@ -256,7 +256,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
         ],
       },
       {
-        name: "Constructive termination",
+        name: "Forced exit reported",
         i18nKey: "tags.constructive_termination",
         severity: "red",
         description:
@@ -270,7 +270,7 @@ export const TAG_TAXONOMY: Record<TagCategorySlug, TagCategory> = {
         ],
       },
       {
-        name: "Retaliation",
+        name: "Retaliation reported",
         i18nKey: "tags.retaliation",
         severity: "red",
         description:

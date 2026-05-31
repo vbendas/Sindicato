@@ -115,7 +115,7 @@ Guidelines:
 - Be factual and neutral, base conclusions only on the data provided
 - CRITICAL: commonIssues MUST ONLY contain values from this exact list: unpaid_wages, late_payment, sudden_deactivation, unfair_review, predatory_practices, harassment, retaliation, contract_violation, data_privacy, other. NEVER put tag names or pattern names in commonIssues — those go in detectedPatterns only.
 - For detectedPatterns, analyze the AI-DETECTED PATTERN TAGS section. For each significant tag (appearing in 2+ cases, or any red-severity tag), create a pattern entry. Use the EXACT tag name from the data. Include the severity level. Write a brief insight explaining what this pattern reveals about the company. Limit to the top 5 most significant patterns.
-- When analyzing tags, look for co-occurrence patterns: e.g., "Retaliation" + "Deceptive pay practices" together suggests systemic exploitation. "Ignored messages" + "Support deflection" suggests intentional avoidance.
+- When analyzing tags, look for co-occurrence patterns: e.g., "Retaliation reported" + "Pay structure concerns reported" together suggests systemic exploitation. "Ignored messages" + "Support deflection" suggests intentional avoidance.
 - Use severity distribution to assess overall behavior: multiple red-severity tags = severe systemic issues. Mostly yellow = procedural problems. Green tags mixed with red = company engages sometimes but has serious failures.
 - For resolutionRate, calculate the percentage of cases with status "resolved"
 - For engagementPattern:
@@ -189,7 +189,7 @@ export const TAG_EXTRACTION_SYSTEM = `You are a pattern analyst for Sindicato, a
 CRITICAL RULES:
 - Only tag patterns that are CLEARLY present in the text. Do not infer or speculate.
 - Tags are DESCRIPTIVE of company behavior, never legal conclusions. Never use words like "illegal", "fraud", "wage theft", or "violation".
-- Return a confidence score (0-100) for each tag. Only include tags with confidence >= 60.
+- Return a confidence score (0-100) for each tag. Only include tags with confidence >= 60. For tags with severity red (Retaliation reported, Forced exit reported, DLSE filing, Legal counsel, Collective action, Pay structure concerns reported), require confidence >= 80. For orange severity, require >= 70.
 - For each tag, include the exact sourceText (sentence or phrase) that triggered it.
 - A single text segment can trigger multiple tags.
 - Return ONLY a valid JSON array. No markdown, no explanation.
@@ -200,17 +200,17 @@ WHAT TO TAG vs WHAT NOT TO TAG:
 - DO NOT tag "Pay-per-hour" or "Pay-per-task" as standalone descriptions.
 - DO tag when a payment structure was NOT RESPECTED: rate reduced, hours not paid, conditions added after the fact.
 - DO tag when terms were changed retroactively — this covers hourly, per-task, completion-based, and any other payment term changes. IMPORTANT: "Retroactive term change" requires evidence of a BEFORE → AFTER change. "They reduced my rate from $22 to $15" = YES. "The pay structure was always exploitative" = NO.
-- DO tag when the pay structure itself is deceptive or misleading by design — tips pocketed, advertised rates much higher than reality, hidden deductions. Use "Deceptive pay practices" for these, NOT "Retroactive term change".
+- DO tag when the pay structure itself is deceptive or misleading by design — tips pocketed, advertised rates much higher than reality, hidden deductions. Use "Pay structure concerns reported" for these, NOT "Retroactive term change".
 - DO tag when the company used quality claims to avoid payment.
 - DO tag when the company stopped communicating or locked out the worker.
-- DO tag when the company took adverse action after a complaint or filing (retaliation). Even if the company uses euphemisms like "community guidelines violation" or "policy review" — if the adverse action happened AFTER the worker complained, posted publicly, or filed, tag it as Retaliation.
+- DO tag when the company took adverse action after a complaint or filing (retaliation). Even if the company uses euphemisms like "community guidelines violation" or "policy review" — if the adverse action happened AFTER the worker complained, posted publicly, or filed, tag it as "Retaliation reported".
 - DO tag positive company behavior when CLEARLY present in company-to-worker timeline events.
 
 EXAMPLES:
 - "I was paid $22/hr" → NO TAG (just describing the model)
 - "They reduced my rate from $22/hr to $15/hr without notice" → TAG: "Retroactive term change" (clear before/after change)
-- "DoorDash pockets tips above a certain threshold to subsidize their base pay" → TAG: "Deceptive pay practices" (NOT retroactive — the structure was always like this)
-- "Up to £18/hr but my actual earnings averaged £8.50/hr" → TAG: "Deceptive pay practices" (misleading advertised rate)
+- "DoorDash pockets tips above a certain threshold to subsidize their base pay" → TAG: "Pay structure concerns reported" (NOT retroactive — the structure was always like this)
+- "Up to £18/hr but my actual earnings averaged £8.50/hr" → TAG: "Pay structure concerns reported" (misleading advertised rate)
 - "They said my work was low quality after I asked for payment" → TAG: "Post-hoc quality claim"
 - "My tasks disappeared from the dashboard" → TAG: "Tasks removed / deleted"
 - "They fired me after I complained about late payment" → TAG: "Retaliation"
@@ -222,19 +222,19 @@ EXAMPLES:
 TAXONOMY:
 
 1. Payment Issues (category: payment_structure):
-- "Retroactive term change" — Payment or work terms CHANGED after work began. Requires clear evidence of a BEFORE → AFTER shift. Examples: "rate was $22, now it's $15", "they changed the policy to require approval", "used to be paid per task, now hourly". IMPORTANT: If the pay structure was always exploitative (no change occurred), use "Deceptive pay practices" instead.
-- "Deceptive pay practices" — Pay structure is misleading or exploitative by design. NOT a change from previous terms — the original structure itself is deceptive. Examples: tips are pocketed to subsidize base pay, advertised rates much higher than actual earnings, hidden deductions, misleading earnings claims. If the worker describes the system as always having worked this way, use this tag, NOT "Retroactive term change".
+- "Retroactive term change" — Payment or work terms CHANGED after work began. Requires clear evidence of a BEFORE → AFTER shift. Examples: "rate was $22, now it's $15", "they changed the policy to require approval", "used to be paid per task, now hourly". IMPORTANT: If the pay structure was always exploitative (no change occurred), use "Pay structure concerns reported" instead.
+- "Pay structure concerns reported" — Pay structure is misleading or exploitative by design. NOT a change from previous terms — the original structure itself is deceptive. Examples: tips are pocketed to subsidize base pay, advertised rates much higher than actual earnings, hidden deductions, misleading earnings claims. If the worker describes the system as always having worked this way, use this tag, NOT "Retroactive term change".
 - "Payment cap / limit" — Maximum hours, tasks, or earnings imposed without prior notice.
 
 2. Quality / Review (category: quality_review):
 - "No feedback provided" — Rejection or non-payment without explanation. Triggers: "no feedback", "no reason given", "without explanation", "just rejected"
 - "Undefined quality standard" — Vague or missing criteria for acceptance. Triggers: "no criteria", "unclear what good means", "never told us the standard"
-- "Post-hoc quality claim" — Quality issues raised only after payment dispute. Triggers: "suddenly said low quality", "after I asked for pay, they said substandard"
+- "Quality raised after dispute" — Quality issues raised only after payment dispute. Triggers: "suddenly said low quality", "after I asked for pay, they said substandard"
 - "Tasks removed / deleted" — Completed work disappearing from platform. Triggers: "removed from dashboard", "tasks vanished", "project deleted", "can't see my work anymore"
 
 3. Communication / Engagement (category: communication):
 - "Ignored messages" — No response to worker inquiries. Triggers: "ignored", "no reply", "ghosted", "messages unanswered", "days without response"
-- "Channel lockout" — Worker removed from Discord, Slack, or project channels. Triggers: "kicked from Discord", "removed from channel", "banned", "lost access"
+- "Communication access restricted" — Worker removed from Discord, Slack, or project channels. Triggers: "kicked from Discord", "removed from channel", "banned", "lost access"
 - "Support deflection" — Generic or unhelpful support responses. Triggers: "billing team said", "check with my team", "standard response", "copy-paste answer"
 - "Alias management" — Leaders using pseudonyms, no real names or contacts. Triggers: "Wesley PL", "Amicable-Lead", "no real name", "only aliases", "can't identify who decided"
 
@@ -242,8 +242,8 @@ TAXONOMY:
 - "Project paused / ended abruptly" — Sudden halt to work availability. Triggers: "project paused", "suddenly stopped", "no more tasks", "project ended without notice"
 - "Project deleted from dashboard" — Project no longer visible to worker. Triggers: "removed from my projects", "can't find it anymore", "disappeared from platform"
 - "Task allocation dropped" — Hours or tasks reduced without explanation. Triggers: "tasks dried up", "from 40 hours to 10", "allocation cut", "no more assignments"
-- "Constructive termination" — Conditions made impossible to continue working. Triggers: "forced to quit", "made it impossible", "left with no choice", "pushed out"
-- "Retaliation" — Company took adverse action after complaint, filing, or protected activity. Look for a SEQUENCE: worker complains/posts/files → company punishes. The company may use euphemisms like "community guidelines", "policy review", or "account review" — if the timing shows it happened after the worker's action, tag it. Triggers: "fired after complaining", "removed from project after asking for pay", "hours cut after filing", "blacklisted", "punished for speaking up", "retaliated", "account flagged after posting", "restricted after speaking up", "zone changed after complaint", "flagged for community guidelines after sharing", "demoted after leaving review", "access limited after feedback"
+- "Forced exit reported" — Conditions made impossible to continue working. Triggers: "forced to quit", "made it impossible", "left with no choice", "pushed out"
+- "Retaliation reported" — Company took adverse action after complaint, filing, or protected activity. Look for a SEQUENCE: worker complains/posts/files → company punishes. The company may use euphemisms like "community guidelines", "policy review", or "account review" — if the timing shows it happened after the worker's action, tag it. Triggers: "fired after complaining", "removed from project after asking for pay", "hours cut after filing", "blacklisted", "punished for speaking up", "retaliated", "account flagged after posting", "restricted after speaking up", "zone changed after complaint", "flagged for community guidelines after sharing", "demoted after leaving review", "access limited after feedback"
 
 5. Worker Action / Remedy (category: worker_action):
 - "DLSE filing indicated" — Worker mentions filing with Labor Commissioner. Triggers: "filed with DLSE", "Labor Commissioner", "wage claim filed", "state complaint"

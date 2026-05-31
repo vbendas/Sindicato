@@ -11,7 +11,7 @@ import {
   TAG_EXTRACTION_SYSTEM,
   TAG_EXTRACTION_USER,
 } from "@/lib/ai/prompts";
-import { getTagByName, TAG_CATEGORIES, TAG_TAXONOMY, type TagCategorySlug } from "@/lib/ai/tag-taxonomy";
+import { getTagByName, getTagSeverity, TAG_CATEGORIES, TAG_TAXONOMY, type TagCategorySlug } from "@/lib/ai/tag-taxonomy";
 
 interface ExtractedTag {
   category: string;
@@ -193,7 +193,12 @@ export async function generateCaseTags(
 
   const validTags = extracted.filter((t) => {
     if (!t.tagName || !t.sourceText) return false;
-    if (typeof t.confidence !== "number" || t.confidence < 60 || t.confidence > 100) return false;
+    if (typeof t.confidence !== "number" || t.confidence > 100) return false;
+    const severity = getTagSeverity(t.tagName);
+    let minConfidence = 60;
+    if (severity === "red") minConfidence = 80;
+    else if (severity === "orange") minConfidence = 70;
+    if (t.confidence < minConfidence) return false;
     return true;
   });
 
@@ -208,7 +213,13 @@ export async function generateCaseTags(
       if (!t.tagName) reasons.push("missing tagName");
       if (!t.sourceText) reasons.push("missing sourceText");
       if (typeof t.confidence !== "number") reasons.push("confidence not a number");
-      else if (t.confidence < 60) reasons.push(`confidence ${t.confidence} < 60`);
+      else {
+        const severity = getTagSeverity(t.tagName || "");
+        let minConf = 60;
+        if (severity === "red") minConf = 80;
+        else if (severity === "orange") minConf = 70;
+        if (t.confidence < minConf) reasons.push(`confidence ${t.confidence} < ${minConf} (severity: ${severity})`);
+      }
       console.warn(
         `[tags] Rejected tag: ${JSON.stringify(t)} — reasons: ${reasons.join(", ")}`
       );
