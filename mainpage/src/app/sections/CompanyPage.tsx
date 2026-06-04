@@ -11,6 +11,7 @@ import ShareButtons from "@/components/ShareButtons";
 import { useTrackPageview } from "@/hooks/useTrackPageview";
 import { useT, useLocale } from "@/lib/i18n";
 import { useTranslation } from "@/hooks/useTranslation";
+import { TAG_I18N_MAP } from "@/components/CaseTag";
 
 interface CaseItem {
   id: string;
@@ -19,6 +20,7 @@ interface CaseItem {
   amountOwed: string;
   currency: string;
   story: string;
+  storyTranslated: string | null;
   vertical: string;
   createdAt: string;
   resolutionStatus: string;
@@ -50,6 +52,132 @@ const SEVERITY_TEXT_COLORS: Record<string, string> = {
   orange: "text-orange-400",
   red: "text-rose-400",
 };
+
+interface DetectedPatternItem {
+  pattern: string;
+  severity: string;
+  cases: number;
+  insight: string;
+}
+
+interface DetectedPatternCardProps {
+  p: DetectedPatternItem;
+  locale: string;
+  t: (key: string, params?: Record<string, string | number>) => string;
+}
+
+function DetectedPatternCard({ p, locale, t }: DetectedPatternCardProps) {
+  const i18nKey = TAG_I18N_MAP[p.pattern];
+  const displayName = i18nKey ? t(i18nKey) : p.pattern;
+
+  const {
+    displayText: displayInsight,
+  } = useTranslation(p.insight, undefined, locale !== 'en');
+
+  return (
+    <div
+      className={`flex items-start gap-3 p-2.5 border rounded ${SEVERITY_BG_COLORS[p.severity] ?? "bg-white/5 border-white/10"}`}
+    >
+      <span
+        className={`w-2 h-2 rounded-full mt-1 shrink-0 ${SEVERITY_DOT_COLORS[p.severity] ?? "bg-white/40"}`}
+      />
+      <div className="min-w-0">
+        <div className="flex items-center gap-2">
+          <span className={`text-xs font-bold uppercase tracking-wider ${SEVERITY_TEXT_COLORS[p.severity] ?? "text-sindicato-warm-white/60"}`}>
+            {displayName}
+          </span>
+          <span className="text-[10px] text-sindicato-warm-white/40 font-mono">
+            {p.cases} {p.cases === 1 ? t("companyPage.patternCase") : t("companyPage.patternCases")}
+          </span>
+        </div>
+        <p className="text-[11px] text-sindicato-warm-white/60 leading-relaxed mt-0.5">
+          {displayInsight}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+interface CompanyCaseItem {
+  id: string;
+  displayName: string;
+  story: string;
+  storyTranslated: string | null;
+  amountOwed: string;
+  currency: string;
+  createdAt: string;
+  resolutionStatus: string;
+}
+
+interface CompanyCasePreviewCardProps {
+  item: CompanyCaseItem;
+  locale: string;
+  t: (key: string, params?: Record<string, string | number>) => string;
+}
+
+function CompanyCasePreviewCard({ item, locale, t }: CompanyCasePreviewCardProps) {
+  const {
+    displayText: autoTranslatedStory,
+    translatedText,
+    isTranslating,
+  } = useTranslation(
+    item.story,
+    "en",
+    locale !== "en" && !item.storyTranslated
+  );
+
+  const displayStory =
+    locale !== "en" && item.storyTranslated ? item.storyTranslated : autoTranslatedStory;
+
+  return (
+    <Link key={item.id} href={`/${locale}/cases/${item.id}`}>
+      <div className="bg-white/5 border border-white/10 p-4 hover:bg-white/10 transition-colors">
+        <div className="flex items-start justify-between gap-4 mb-1">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-sindicato-warm-white font-medium text-sm truncate">
+              {item.displayName}
+            </span>
+            <span className="inline-flex items-center gap-1 bg-white/10 border border-white/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider font-[family-name:var(--font-jetbrains)] shrink-0">
+              <span className={`w-1 h-1 rounded-full ${item.resolutionStatus === "resolved" ? "bg-green-400" : "bg-red-400"}`} />
+              <span className={item.resolutionStatus === "resolved" ? "text-green-400" : "text-red-400"}>
+                {item.resolutionStatus === "resolved" ? t("companyPage.statusSolved") : t("companyPage.statusUnresolved")}
+              </span>
+            </span>
+          </div>
+          <span className="text-sindicato-warm-white/40 text-xs font-[family-name:var(--font-jetbrains)] shrink-0">
+            {new Date(item.createdAt).toLocaleDateString(locale)}
+          </span>
+        </div>
+        {isTranslating && locale !== "en" && !item.storyTranslated && (
+          <div className="flex items-center gap-1.5 mb-1">
+            <div className="w-2.5 h-2.5 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin" />
+            <span className="text-blue-400 text-[9px] uppercase tracking-wider font-[family-name:var(--font-jetbrains)]">
+              {t("common.translating")}
+            </span>
+          </div>
+        )}
+        {translatedText && !isTranslating && locale !== "en" && !item.storyTranslated && (
+          <div className="mb-1">
+            <span className="inline-flex items-center gap-1 bg-blue-500/10 border border-blue-500/20 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-blue-400 font-[family-name:var(--font-jetbrains)]">
+              {t("caseDetail.machineTranslated")}
+            </span>
+          </div>
+        )}
+        <p className="text-sindicato-warm-white/60 text-sm line-clamp-2">
+          {displayStory}
+        </p>
+        {Number(item.amountOwed) > 0 && (
+          <div className="mt-2">
+            <span className="text-sindicato-warm-white font-bold text-sm font-[family-name:var(--font-jetbrains)]">
+              {item.currency === "EUR" ? "\u20AC" : "$"}{Number(item.amountOwed).toLocaleString(locale)}
+            </span>
+            <span className="text-sindicato-warm-white/30 text-xs ml-2">{t("companyPage.unpaid")}</span>
+          </div>
+        )}
+      </div>
+    </Link>
+  );
+}
 
 export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
   const t = useT();
@@ -287,27 +415,12 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
                     </p>
                     <div className="space-y-2">
                       {summary.detectedPatterns.map((p) => (
-                        <div
+                        <DetectedPatternCard
                           key={p.pattern}
-                          className={`flex items-start gap-3 p-2.5 border rounded ${SEVERITY_BG_COLORS[p.severity] ?? "bg-white/5 border-white/10"}`}
-                        >
-                          <span
-                            className={`w-2 h-2 rounded-full mt-1 shrink-0 ${SEVERITY_DOT_COLORS[p.severity] ?? "bg-white/40"}`}
-                          />
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span className={`text-xs font-bold uppercase tracking-wider ${SEVERITY_TEXT_COLORS[p.severity] ?? "text-sindicato-warm-white/60"}`}>
-                                {p.pattern}
-                              </span>
-                              <span className="text-[10px] text-sindicato-warm-white/40 font-mono">
-                                {p.cases} {p.cases === 1 ? "case" : "cases"}
-                              </span>
-                            </div>
-                            <p className="text-[11px] text-sindicato-warm-white/60 leading-relaxed mt-0.5">
-                              {p.insight}
-                            </p>
-                          </div>
-                        </div>
+                          p={p}
+                          locale={locale}
+                          t={t}
+                        />
                       ))}
                     </div>
                   </div>
@@ -410,37 +523,12 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
 
               <div className="space-y-3">
                 {cases.map((item) => (
-                  <Link key={item.id} href={`/cases/${item.id}`}>
-                    <div className="bg-white/5 border border-white/10 p-4 hover:bg-white/10 transition-colors">
-                      <div className="flex items-start justify-between gap-4 mb-1">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span className="text-sindicato-warm-white font-medium text-sm truncate">
-                            {item.displayName}
-                          </span>
-                          <span className="inline-flex items-center gap-1 bg-white/10 border border-white/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider font-[family-name:var(--font-jetbrains)] shrink-0">
-                            <span className={`w-1 h-1 rounded-full ${item.resolutionStatus === "resolved" ? "bg-green-400" : "bg-red-400"}`} />
-                            <span className={item.resolutionStatus === "resolved" ? "text-green-400" : "text-red-400"}>
-                              {item.resolutionStatus === "resolved" ? t("companyPage.statusSolved") : t("companyPage.statusUnresolved")}
-                            </span>
-                          </span>
-                        </div>
-                        <span className="text-sindicato-warm-white/40 text-xs font-[family-name:var(--font-jetbrains)] shrink-0">
-                          {new Date(item.createdAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <p className="text-sindicato-warm-white/60 text-sm line-clamp-2">
-                        {item.story}
-                      </p>
-                      {Number(item.amountOwed) > 0 && (
-                        <div className="mt-2">
-                          <span className="text-sindicato-warm-white font-bold text-sm font-[family-name:var(--font-jetbrains)]">
-                            {item.currency === "EUR" ? "\u20AC" : "$"}{Number(item.amountOwed).toLocaleString()}
-                          </span>
-                          <span className="text-sindicato-warm-white/30 text-xs ml-2">{t("companyPage.unpaid")}</span>
-                        </div>
-                      )}
-                    </div>
-                  </Link>
+                  <CompanyCasePreviewCard
+                    key={item.id}
+                    item={item}
+                    locale={locale}
+                    t={t}
+                  />
                 ))}
               </div>
             </div>

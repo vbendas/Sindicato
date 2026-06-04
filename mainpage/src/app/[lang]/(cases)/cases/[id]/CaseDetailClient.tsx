@@ -212,12 +212,15 @@ export default function CaseDetailClient({
   const { 
     translatedText: storyTranslation, 
     isTranslating: isStoryTranslating,
-    displayText: displayStory 
   } = useTranslation(
     caseData?.story,
     caseData?.translationLanguage || undefined,
     showTranslated && locale !== 'en'
   );
+
+  const displayStory = showTranslated
+    ? (storyTranslation || caseData?.story || '')
+    : (caseData?.story || '');
 
   useEffect(() => {
     if (!caseId) return;
