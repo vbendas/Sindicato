@@ -14,11 +14,12 @@ export function ClerkHeader({ onExpand }: ClerkHeaderProps) {
 
   const showBack = activeMode !== "home";
 
+  const clerkName = t("clerk.name");
   const modeTitles: Record<ClerkMode, string> = {
-    home: t("clerk.header.titleHome"),
-    "kb-chat": t("clerk.header.titleKb"),
-    "query-chat": t("clerk.header.titleQuery"),
-    contact: t("clerk.header.titleContact"),
+    home: t("clerk.header.titleHome", { name: clerkName }),
+    "kb-chat": t("clerk.header.titleKb", { name: clerkName }),
+    "query-chat": t("clerk.header.titleQuery", { name: clerkName }),
+    contact: t("clerk.header.titleContact", { name: clerkName }),
   };
 
   return (

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { useT } from "@/lib/i18n";
+import { useT, useLocale } from "@/lib/i18n";
 
 interface CaseItem {
   id: string;
@@ -13,6 +13,8 @@ interface CaseItem {
   amountOwed: string;
   currency: string;
   story: string;
+  storyTranslated: string | null;
+  translationLanguage: string | null;
   vertical: "remote" | "gig";
   resolutionStatus: string;
   createdAt: string;
@@ -24,24 +26,94 @@ interface CaseItem {
 
 type TabValue = "all" | "remote" | "gig";
 
-function formatTimeAgo(dateStr: string): string {
+function formatTimeAgo(dateStr: string, t: (key: string, params?: Record<string, string | number>) => string): string {
   const now = Date.now();
   const date = new Date(dateStr).getTime();
   const diff = now - date;
   const minutes = Math.floor(diff / 60000);
-  if (minutes < 1) return "just now";
-  if (minutes < 60) return `${minutes}m ago`;
+  if (minutes < 1) return t("liveFeed.timeJustNow");
+  if (minutes < 60) return t("liveFeed.timeMinutesAgo", { n: minutes });
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) return t("liveFeed.timeHoursAgo", { n: hours });
   const days = Math.floor(hours / 24);
-  if (days < 30) return `${days}d ago`;
+  if (days < 30) return t("liveFeed.timeDaysAgo", { n: days });
   return new Date(dateStr).toLocaleDateString();
+}
+
+interface CaseCardProps {
+  item: CaseItem;
+  locale: string;
+  t: (key: string, params?: Record<string, string | number>) => string;
+  verticalStyles: Record<string, { badge: string; label: string }>;
+  onClick: () => void;
+}
+
+function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
+  const displayStory = locale !== 'en' && item.storyTranslated ? item.storyTranslated : item.story;
+
+  return (
+    <div
+      onClick={onClick}
+      onKeyDown={(e) => { if (e.key === "Enter") onClick(); }}
+      role="presentation"
+      className="break-inside-avoid mb-5 bg-white/10 backdrop-blur-sm p-5 sm:p-6 border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/25 hover:-translate-y-1 cursor-pointer"
+    >
+      <div className="flex items-start justify-between gap-4 mb-2">
+        <span
+          className={`text-[10px] px-2 py-0.5 font-bold uppercase tracking-wider ${
+            verticalStyles[item.vertical].badge
+          } font-[family-name:var(--font-barlow)]`}
+        >
+          {verticalStyles[item.vertical].label}
+        </span>
+        {Number(item.amountOwed) > 0 && (
+          <span className="text-sindicato-warm-white font-bold text-base font-[family-name:var(--font-jetbrains)] tracking-tight">
+            {item.currency === "EUR" ? "\u20AC" : item.currency === "USD" ? "$" : item.currency}{" "}
+            {Number(item.amountOwed).toLocaleString()}
+          </span>
+        )}
+      </div>
+
+      <div className="flex items-center gap-2 flex-wrap mb-2">
+        <span className="text-sindicato-warm-white/80 text-sm font-medium">
+          {item.displayName}
+        </span>
+        <span className="text-sindicato-warm-white/20 text-sm">&bull;</span>
+        <Link
+          href={`/${locale}/${item.vertical === "gig" ? "gig" : "workers"}/${item.company.slug}`}
+          onClick={(e) => e.stopPropagation()}
+          className="text-sindicato-warm-white/60 text-sm hover:text-sindicato-warm-white transition-colors"
+        >
+          {item.company.name}
+        </Link>
+      </div>
+
+      <p className="text-sindicato-warm-white/65 text-sm leading-relaxed">
+        {displayStory}
+      </p>
+
+      <div className="mt-2 flex items-center justify-between">
+        <span className="text-sindicato-warm-white/40 text-xs font-[family-name:var(--font-jetbrains)]">
+          {formatTimeAgo(item.createdAt, t)}
+        </span>
+        <span className="inline-flex items-center gap-1.5 bg-white/10 border border-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider font-[family-name:var(--font-jetbrains)]">
+          <span className={`w-1.5 h-1.5 rounded-full ${item.resolutionStatus === "resolved" ? "bg-green-400" : "bg-red-400"}`} />
+          <span className={item.resolutionStatus === "resolved" ? "text-green-400" : "text-red-400"}>
+            {item.resolutionStatus === "resolved" ? t("liveFeed.statusSolved") : t("liveFeed.statusUnresolved")}
+          </span>
+        </span>
+      </div>
+    </div>
+  );
 }
 
 const MASONRY_MAX_HEIGHT = 1380;
 
 export default function LiveCaseFeed() {
   const t = useT();
+  const { locale } = useLocale();
+  // Always prefix navigation paths with the current locale to prevent
+  // RSC payload fetch failures and full page reloads (bfcache bugs).
 
   const tabs: { label: string; value: TabValue }[] = [
     { label: t("liveFeed.tabAll"), value: "all" },
@@ -186,60 +258,15 @@ export default function LiveCaseFeed() {
             } : undefined}
           >
             <div ref={masonryRef} className="columns-1 md:columns-2 lg:columns-3 gap-6">
-              {cases.map((item, index) => (
-                <div
+              {cases.map((item) => (
+                <CaseCard
                   key={item.id}
-                  onClick={() => router.push(`/cases/${item.id}`)}
-                  onKeyDown={(e) => { if (e.key === "Enter") router.push(`/cases/${item.id}`); }}
-                  role="presentation"
-                  className="break-inside-avoid mb-5 bg-white/10 backdrop-blur-sm p-5 sm:p-6 border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/25 hover:-translate-y-1 cursor-pointer"
-                >
-                    <div className="flex items-start justify-between gap-4 mb-2">
-                      <span
-                        className={`text-[10px] px-2 py-0.5 font-bold uppercase tracking-wider ${
-                          verticalStyles[item.vertical].badge
-                        } font-[family-name:var(--font-barlow)]`}
-                      >
-                        {verticalStyles[item.vertical].label}
-                      </span>
-                      {Number(item.amountOwed) > 0 && (
-                        <span className="text-sindicato-warm-white font-bold text-base font-[family-name:var(--font-jetbrains)] tracking-tight">
-                          {item.currency === "EUR" ? "\u20AC" : item.currency === "USD" ? "$" : item.currency}{" "}
-                          {Number(item.amountOwed).toLocaleString()}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex items-center gap-2 flex-wrap mb-2">
-                      <span className="text-sindicato-warm-white/80 text-sm font-medium">
-                        {item.displayName}
-                      </span>
-                      <span className="text-sindicato-warm-white/20 text-sm">&bull;</span>
-                      <Link
-                        href={`/${item.vertical === "gig" ? "gig" : "workers"}/${item.company.slug}`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="text-sindicato-warm-white/60 text-sm hover:text-sindicato-warm-white transition-colors"
-                      >
-                        {item.company.name}
-                      </Link>
-                    </div>
-
-                    <p className="text-sindicato-warm-white/65 text-sm leading-relaxed">
-                      {item.story}
-                    </p>
-
-                    <div className="mt-2 flex items-center justify-between">
-                      <span className="text-sindicato-warm-white/40 text-xs font-[family-name:var(--font-jetbrains)]">
-                        {formatTimeAgo(item.createdAt)}
-                      </span>
-                      <span className="inline-flex items-center gap-1.5 bg-white/10 border border-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider font-[family-name:var(--font-jetbrains)]">
-                        <span className={`w-1.5 h-1.5 rounded-full ${item.resolutionStatus === "resolved" ? "bg-green-400" : "bg-red-400"}`} />
-                        <span className={item.resolutionStatus === "resolved" ? "text-green-400" : "text-red-400"}>
-                          {item.resolutionStatus === "resolved" ? t("liveFeed.statusSolved") : t("liveFeed.statusUnresolved")}
-                        </span>
-                      </span>
-                    </div>
-                  </div>
+                  item={item}
+                  locale={locale}
+                  t={t}
+                  verticalStyles={verticalStyles}
+                  onClick={() => router.push(`/${locale}/cases/${item.id}`)}
+                />
               ))}
             </div>
           </div>
@@ -248,7 +275,7 @@ export default function LiveCaseFeed() {
         {cases.length > 0 && (
           <div className="mt-[15px] text-center">
             <Link
-              href="/cases"
+              href={`/${locale}/cases`}
               className="inline-block bg-white/10 backdrop-blur-sm border border-white/30 px-6 py-3 text-sindicato-warm-white text-sm uppercase tracking-wider hover:bg-white/20 transition-all font-[family-name:var(--font-barlow)] font-bold"
             >
               {t("liveFeed.viewAll")} &rarr;

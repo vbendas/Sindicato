@@ -9,6 +9,7 @@ import {
   fileDropdownCommandClass,
   fileDropdownItemClass,
 } from "@/app/[lang]/file/fileFormStyles";
+import { useT } from "@/lib/i18n";
 
 interface Option {
   label: string;
@@ -23,6 +24,7 @@ interface VariableSelectorProps {
 }
 
 export default function VariableSelector({ label, options, value, onChange }: VariableSelectorProps) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -65,7 +67,7 @@ export default function VariableSelector({ label, options, value, onChange }: Va
           />
           <CommandList>
             <CommandEmpty className="text-sindicato-warm-white/60 py-4 text-center text-sm">
-              No options found.
+              {t("clerk.page.noOptions")}
             </CommandEmpty>
             {filtered.map((opt) => (
               <CommandItem

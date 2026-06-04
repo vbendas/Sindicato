@@ -3,8 +3,10 @@
 import Link from "next/link";
 import Header from "@/app/components/Header";
 import { motion } from "framer-motion";
+import { useLocale } from "@/lib/i18n";
 
 export default function ProtectedPage() {
+  const { locale } = useLocale();
   const fears = [
     {
       question: "Will anyone know it was me?",
@@ -75,7 +77,7 @@ export default function ProtectedPage() {
 
             <div className="text-center">
               <Link
-                href="/file"
+                href={`/${locale}/file`}
                 className="inline-block bg-sindicato-red text-sindicato-warm-white px-10 py-4 font-bold uppercase tracking-wider hover:bg-sindicato-red/90 transition-colors text-lg"
               >
                 File your case — it&apos;s safe

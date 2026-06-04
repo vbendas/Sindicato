@@ -4,6 +4,7 @@ import { useState } from "react";
 import { format } from "date-fns";
 import Link from "next/link";
 import { nanoid } from "nanoid";
+import { useLocale } from "@/lib/i18n";
 
 const CASE_TYPE_LABELS: Record<string, string> = {
   unpaid_wages: "Unpaid Wages",
@@ -97,6 +98,7 @@ export default function WorkerDashboard({
   timelineMap,
   workerId,
 }: WorkerDashboardProps) {
+  const { locale } = useLocale();
   const [expandedCaseId, setExpandedCaseId] = useState<string | null>(null);
   const [showAddEventFor, setShowAddEventFor] = useState<string | null>(null);
   const [drafts, setDrafts] = useState<Record<string, EventDraft>>({});
@@ -171,7 +173,7 @@ export default function WorkerDashboard({
           No cases filed yet
         </p>
         <Link
-          href="/file"
+          href={`/${locale}/file`}
           className="bg-sindicato-bordeaux text-sindicato-warm-white px-6 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-sindicato-bordeaux-dark transition-colors font-[family-name:var(--font-barlow)] inline-block"
         >
           File Your First Case

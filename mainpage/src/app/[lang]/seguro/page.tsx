@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Header from "@/app/components/Header";
 import { motion } from "framer-motion";
+import { useLocale } from "@/lib/i18n";
 
 const informacoes = [
   {
@@ -28,6 +29,7 @@ const informacoes = [
 ];
 
 export default function SeguroPage() {
+  const { locale } = useLocale();
   return (
     <>
       <div className="fixed inset-0 pointer-events-none z-[60] grain-overlay" style={{ opacity: 0.45 }} />
@@ -70,7 +72,7 @@ export default function SeguroPage() {
 
             <div className="text-center">
               <Link
-                href="/file"
+                href={`/${locale}/file`}
                 className="inline-block bg-sindicato-red text-sindicato-warm-white px-10 py-4 font-bold uppercase tracking-wider hover:bg-sindicato-red/90 transition-colors text-lg"
               >
                 Registre seu caso — é seguro

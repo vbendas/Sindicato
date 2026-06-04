@@ -2,10 +2,11 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useT } from "@/lib/i18n";
+import { useT, useLocale } from "@/lib/i18n";
 
 export default function CTAs() {
   const t = useT();
+  const { locale } = useLocale();
   return (
     <section className="bg-sindicato-bordeaux-dark border-t border-b border-white/10 lg:section-diagonal-top">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24 lg:py-28">
@@ -24,7 +25,7 @@ export default function CTAs() {
               {t("ctas.workersBody")}
             </p>
             <Link
-              href="/file"
+              href={`/${locale}/file`}
               className="bg-sindicato-charcoal text-sindicato-warm-white px-6 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-sindicato-charcoal/80 transition-all font-[family-name:var(--font-barlow)] mt-auto inline-block text-center"
             >
               {t("ctas.workersCta")}

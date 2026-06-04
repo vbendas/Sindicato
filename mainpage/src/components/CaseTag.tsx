@@ -60,7 +60,7 @@ interface CaseTagProps {
   onDelete?: (tagId: string) => void;
 }
 
-const TAG_I18N_MAP: Record<string, string> = {
+export const TAG_I18N_MAP: Record<string, string> = {
   "Retroactive term change": "tags.retroactive_term_change",
   "Pay structure concerns reported": "tags.deceptive_pay_practices",
   "Payment cap / limit": "tags.payment_cap_limit",

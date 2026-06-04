@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { getSuggestionGroups } from "./suggestions";
+import { useT } from "@/lib/i18n";
 
 interface WelcomeScreenProps {
   onSuggestionClick: (label: string) => void;
@@ -8,8 +9,9 @@ interface WelcomeScreenProps {
 }
 
 export default function WelcomeScreen({ onSuggestionClick, role }: WelcomeScreenProps) {
-  const suggestionGroups = getSuggestionGroups(role);
-  const popularGroup = suggestionGroups.find(g => g.name === "Popular questions");
+  const t = useT();
+  const suggestionGroups = getSuggestionGroups(role, t);
+  const popularGroup = suggestionGroups.find(g => g.id === "popular");
   const popularSuggestions = popularGroup?.suggestions || [];
 
   return (
@@ -22,17 +24,17 @@ export default function WelcomeScreen({ onSuggestionClick, role }: WelcomeScreen
       <div className="w-16 h-1 bg-sindicato-cream/10 rounded-full mb-8" />
       
       <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-warm-white uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-4">
-        Clerk
+        {t("clerk.name")}
       </div>
       
       <p className="text-sindicato-warm-white/40 text-sm font-[family-name:var(--font-jetbrains)] mb-10">
-        Ask questions about worker exploitation data
+        {t("clerk.welcome.subtitle")}
       </p>
       
       <div className="relative size-[125px] rounded-full overflow-hidden border-2 border-black bg-sindicato-bordeaux mb-10">
         <Image
           src="/clerk.png"
-          alt="Clerk"
+          alt={t("clerk.name")}
           fill
           className="object-cover"
           sizes="125px"
@@ -52,7 +54,7 @@ export default function WelcomeScreen({ onSuggestionClick, role }: WelcomeScreen
       </div>
       
       <p className="text-sindicato-warm-white/30 text-xs font-[family-name:var(--font-jetbrains)] max-w-md">
-        Try asking about case totals, company statistics, or worker demographics
+        {t("clerk.welcome.hint")}
       </p>
     </motion.div>
   );

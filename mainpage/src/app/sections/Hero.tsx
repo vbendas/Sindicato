@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
-import { useT } from "@/lib/i18n";
+import { useT, useLocale } from "@/lib/i18n";
 
 interface HeroProps {
   caseCount?: number;
@@ -11,6 +11,7 @@ interface HeroProps {
 
 export default function Hero({ caseCount = 0, companyCount = 0 }: HeroProps) {
   const t = useT();
+  const { locale } = useLocale();
   const { scrollYProgress } = useScroll();
   const fistOpacity = useTransform(scrollYProgress, [0, 0.4], [0.65, 0]);
   const fistY = useTransform(scrollYProgress, [0, 0.4], [225, 625]);
@@ -65,7 +66,7 @@ export default function Hero({ caseCount = 0, companyCount = 0 }: HeroProps) {
             className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mt-8 sm:mt-10"
           >
             <Link
-              href="/file"
+              href={`/${locale}/file`}
               className="bg-sindicato-charcoal text-sindicato-warm-white px-10 sm:px-12 py-3.5 sm:py-4 text-base sm:text-lg font-bold uppercase tracking-wider hover:bg-sindicato-charcoal/80 transition-all font-[family-name:var(--font-barlow)] shadow-md hover:shadow-lg active:scale-[0.98]"
             >
               {t("hero.ctaFileReport")}

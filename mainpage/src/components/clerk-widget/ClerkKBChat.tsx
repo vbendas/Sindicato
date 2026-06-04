@@ -123,7 +123,7 @@ export function ClerkKBChat() {
                     />
                     <div className="ml-2 px-4 py-2.5 rounded-3xl bg-sindicato-smoked-charcoal/80 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/20">
                       <TextShimmer className="text-xs text-sindicato-warm-white">
-                        Thinking
+                        {t("clerk.kb.thinking")}
                       </TextShimmer>
                     </div>
                   </Message>
@@ -161,7 +161,7 @@ export function ClerkKBChat() {
         >
           <div className="flex items-center gap-2">
             <PromptInputTextarea
-              placeholder="Ask about Sindicato..."
+              placeholder={t("clerk.kb.placeholder")}
               className="text-sindicato-warm-white/90 placeholder:text-sindicato-warm-white/30 flex-1 text-sm"
               disableAutosize
             />

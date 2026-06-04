@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useT } from "@/lib/i18n";
+import { useT, useLocale } from "@/lib/i18n";
 
 interface HeaderProps {
   scrolledBg?: string;
@@ -29,6 +29,7 @@ export default function Header({
   onSessionChange
 }: HeaderProps) {
   const t = useT();
+  const { locale } = useLocale();
   const [scrolled, setScrolled] = useState(false);
   const [session, setSession] = useState<{ user?: { id?: string; email?: string } } | null>(null);
   const [sessionLoading, setSessionLoading] = useState(true);
@@ -151,7 +152,7 @@ export default function Header({
 
           <div className="hidden md:flex items-center gap-6 lg:gap-8">
             <Link
-              href="/file"
+              href={`/${locale}/file`}
               className={`${navTextColor} ${navHoverColor} transition-colors uppercase tracking-wider text-xs lg:text-sm font-[family-name:var(--font-barlow)] font-bold relative after:absolute after:bottom-[-2px] after:left-0 after:h-[1px] after:w-0 after:bg-white/50 after:transition-all hover:after:w-full`}
             >
               {t("header.navReport")}
@@ -256,7 +257,7 @@ export default function Header({
 
           <div className="md:hidden flex items-center gap-3">
             <Link
-              href="/file"
+              href={`/${locale}/file`}
               className="bg-sindicato-charcoal text-sindicato-warm-white px-3 py-1.5 text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)]"
             >
               {t("header.mobileReport")}

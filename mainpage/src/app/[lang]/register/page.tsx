@@ -3,6 +3,7 @@
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useLocale } from "@/lib/i18n";
 
 type Step = "email" | "register";
 
@@ -32,6 +33,7 @@ const TOS_ROUTES: Record<string, string> = {
 
 function RegisterForm() {
   const router = useRouter();
+  const { locale } = useLocale();
   const searchParams = useSearchParams();
   const role = searchParams.get("role") || "lawyer";
 
@@ -103,7 +105,8 @@ function RegisterForm() {
         setError(data.error || "Registration failed.");
         return;
       }
-      router.push(data.data.redirect || "/pending-approval");
+      const redirect = data.data.redirect || `/${locale}/pending-approval`;
+      router.push(redirect);
     } catch {
       setError("Network error. Please try again.");
     } finally {

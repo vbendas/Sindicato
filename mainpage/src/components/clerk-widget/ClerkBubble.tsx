@@ -35,7 +35,7 @@ export function ClerkBubble() {
                 <X size={10} />
               </button>
               <p className="text-sm text-sindicato-warm-white/90 leading-snug">
-                {t("clerk.bubble.proactive")}
+                {t("clerk.bubble.proactive", { name: t("clerk.name") })}
               </p>
               <button
                 onClick={openWidget}

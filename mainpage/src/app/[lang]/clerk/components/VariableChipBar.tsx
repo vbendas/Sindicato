@@ -2,6 +2,7 @@
 
 import VariableSelector from "./VariableSelector";
 import type { Variables } from "./suggestions";
+import { useT } from "@/lib/i18n";
 
 interface VariableDef {
   name: string;
@@ -18,6 +19,7 @@ interface VariableChipBarProps {
 }
 
 export default function VariableChipBar({ variables, values, labels, data, onChange }: VariableChipBarProps) {
+  const t = useT();
   if (variables.length === 0) return null;
 
   const allResolved = variables.every((v) => values[v.name]);
@@ -35,7 +37,7 @@ export default function VariableChipBar({ variables, values, labels, data, onCha
       ))}
       {!allResolved && (
         <span className="text-[10px] text-sindicato-warm-white/40 ml-1">
-          Fill all variables to send
+          {t("clerk.page.fillVariables")}
         </span>
       )}
     </div>

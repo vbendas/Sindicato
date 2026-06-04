@@ -76,6 +76,19 @@ const DIRECTION_COLORS: Record<string, string> = {
   system: "bg-white/10 text-sindicato-warm-white/50 border-white/20",
 };
 
+const LABEL_I18N_MAP: Record<string, string> = {
+  "CASE FILED": "timelineSection.labelCaseFiled",
+  "EMAIL SENT": "timelineSection.labelEmailSent",
+  "RESOLVED": "timelineSection.labelResolved",
+  "LEGAL NOTICE": "timelineSection.labelLegal",
+  "PHONE CALL": "timelineSection.labelPhone",
+  "CHAT SUPPORT": "timelineSection.labelChat",
+  "CANNED RESPONSE": "timelineSection.labelCanned",
+  "NO RESPONSE": "timelineSection.labelNoResponse",
+  "NOT ANSWERED": "timelineSection.labelNotAnswered",
+  "PAYMENT PARTIAL": "timelineSection.labelPayment",
+};
+
 function getEventTitle(event: TimelineEvent, companyName: string, t: (key: string, params?: Record<string, string>) => string): string {
   // Map event types to translation keys
   const titleMap: Record<string, string> = {
@@ -428,11 +441,15 @@ function TimelineEventItem({
         </TimelineTitle>
         {event.labels.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-1">
-            {event.labels.map((label) => (
-              <Badge key={label} variant="outline" size="xs" className="text-sindicato-warm-white/50 border-white/20">
-                {label}
-              </Badge>
-            ))}
+            {event.labels.map((label) => {
+              const i18nKey = LABEL_I18N_MAP[label];
+              const displayLabel = i18nKey ? t(i18nKey) : label;
+              return (
+                <Badge key={label} variant="outline" size="xs" className="text-sindicato-warm-white/50 border-white/20">
+                  {displayLabel}
+                </Badge>
+              );
+            })}
           </div>
         )}
         <TimelineIndicator
