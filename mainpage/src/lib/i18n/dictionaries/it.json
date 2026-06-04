@@ -181,7 +181,9 @@
     "engagementRetaliation": "Modello di Ritorsione",
     "engagementEngaged": "Attivamente Coinvolta",
     "engagementNoResponse": "Nessun Contatto Registrato",
-    "aiGenerated": "Analisi generata dall'IA"
+    "aiGenerated": "Analisi generata dall'IA",
+    "patternCase": "case",
+    "patternCases": "cases"
   },
   "header": {
     "navHome": "Home",
@@ -292,7 +294,8 @@
     "eventTitleWorkerResponse": "Risposta del lavoratore",
     "eventTitleCompanyReply": "Risposta dell'azienda",
     "eventTitleWorkerReply": "Risposta del lavoratore",
-    "eventTitleResolution": "Caso risolto"
+    "eventTitleResolution": "Caso risolto",
+    "labelCaseFiled": "CASE FILED"
   },
   "fileCase": {
     "title": "Segnala un Caso",
@@ -482,6 +485,20 @@
       "reportContact": "Email di Contatto:",
       "reportStory": "Storia Completa:"
     },
+    "chart": {
+      "title": "Grafico",
+      "total": "Totale",
+      "tooltipCount": "Conteggio",
+      "statCount": "Totale casi",
+      "statTotalUnpaid": "Totale non pagato",
+      "statSum": "Somma",
+      "statRecords": "Record",
+      "statViews": "Totale visualizzazioni",
+      "statVisitors": "Visitatori",
+      "statShares": "Condivisioni",
+      "autoDimension": "(auto)",
+      "noData": "Nessun dato"
+    },
     "contact": {
       "categoryGeneral": "Richiesta Generale",
       "categoryLegal": "Legale",
@@ -515,7 +532,7 @@
       "errorGeneric": "Qualcosa è andato storto. Riprova."
     },
     "header": {
-      "titleHome": "Sindicato Clerk",
+      "titleHome": "Sindicato {name}",
       "titleKb": "Fai una Domanda",
       "titleQuery": "Interroga i Dati",
       "titleContact": "Contatta Sindicato",
@@ -524,7 +541,7 @@
       "close": "Chiudi"
     },
     "bubble": {
-      "proactive": "Ciao! Sono il Clerk di Sindicato. Chiedimi qualsiasi cosa o esplora i nostri dati.",
+      "proactive": "Ciao! Sono il {name} di Sindicato. Chiedimi qualsiasi cosa o esplora i nostri dati.",
       "openChat": "Apri chat"
     },
     "page": {
@@ -543,14 +560,74 @@
       "errorProcessing": "Mi dispiace, ho riscontrato un errore nell'elaborazione della tua richiesta. Riprova.",
       "canceled": "La richiesta è stata annullata.",
       "errorGeneric": "Si è verificato un errore durante l'elaborazione della tua richiesta. Riprova.",
-      "downloadError": "Impossibile scaricare i dettagli completi del caso. Il formato dei dati non è valido. Prova ad aggiornare la pagina e a eseguire nuovamente la query."
+      "downloadError": "Impossibile scaricare i dettagli completi del caso. Il formato dei dati non è valido. Prova ad aggiornare la pagina e a eseguire nuovamente la query.",
+      "fillVariables": "Fill all variables to send",
+      "noOptions": "No options found."
     },
     "welcome": {
-      "title": "Clerk",
       "subtitle": "Fai domande sui dati dello sfruttamento dei lavoratori",
       "hint": "Prova a chiedere informazioni su totali dei casi, statistiche aziendali o dati demografici dei lavoratori"
     },
-    "name": "Cancelliere"
+    "suggestions": {
+      "groupPopular": "Popular questions",
+      "groupTemplates": "Query templates",
+      "groupLegal": "Legal resources",
+      "groupCompany": "Company resources",
+      "groupMedia": "Media & research resources",
+      "allUnresolved": "Show all unresolved cases",
+      "commonViolations": "Most common violations reported",
+      "totalUnpaid": "Total unpaid wages across all cases",
+      "repeatOffenders": "Companies with the most cases",
+      "casesByVertical": "Remote vs gig worker cases",
+      "topCountries": "Countries with most cases",
+      "recentCases30Days": "Cases from last 30 days",
+      "recentCasesThisMonth": "Cases from this month",
+      "casesByDateRange": "Cases in date range",
+      "lawyerSolicitorOptin": "Cases with solicitor opt-in by company",
+      "lawyerSolicitorGrouped": "Solicitor opt-in cases by type",
+      "lawyerUnresolvedContacts": "Unresolved cases with aliased contacts",
+      "lawyerCollectiveAction": "Collective action candidates",
+      "lawyerHighValue": "Highest value unresolved cases",
+      "lawyerRecent": "Recent cases filed",
+      "lawyerRecent30Days": "Cases from last 30 days",
+      "lawyerDateRange": "Cases in date range",
+      "lawyerContactUnresolved": "Contact info for unresolved cases",
+      "companyMyCases": "Cases filed against my company",
+      "companyUnresolvedContacts": "Unresolved cases with contacts",
+      "companyGroupedType": "Cases grouped by type",
+      "companyTotalClaimed": "Total amount claimed",
+      "companyResolutionStatus": "Resolution status",
+      "companyTimeline": "Recent case activity",
+      "companyRecent30Days": "Recent cases (last 30 days)",
+      "companyDateRange": "Cases in date range",
+      "companyContactUnresolved": "Contact info for unresolved cases",
+      "mediaAllContacts": "Cases with aliased contacts",
+      "mediaByCountryType": "Cases by country and type",
+      "mediaHighValue": "Highest value unresolved cases",
+      "mediaRecentFiled": "Recent cases this month",
+      "mediaCompanyTrends": "Company case trends",
+      "mediaDemographics": "Demographic breakdown",
+      "mediaRecent30Days": "Recent cases (last 30 days)",
+      "mediaDateRange": "Cases in date range",
+      "mediaContactAll": "Contact info for cases",
+      "tplCasesByCompany": "Cases against a specific company",
+      "tplTotalUnpaidCompany": "Unpaid wages for a company",
+      "tplCasesByCountry": "Case types by country",
+      "tplTotalUnpaidByVertical": "Unpaid wages by worker type",
+      "tplResolutionStatus": "Resolution status for a company",
+      "tplCasesByCompanyCountry": "Cross-reference company and country",
+      "tplCasesByDemographic": "Cases by gender and age range",
+      "tplCasesByCompanyDemographic": "Deep cross-reference (company, country, gender, age)",
+      "tplCasesByDateRange": "Cases in specific date range",
+      "varCompany": "Company",
+      "varCountry": "Country",
+      "varVertical": "Vertical",
+      "varSex": "Sex",
+      "varAgeFrom": "Age from",
+      "varAgeTo": "Age to",
+      "varDateFrom": "From date",
+      "varDateTo": "To date"
+    }
   },
   "about": {
     "title": "Chi È Sindicato",

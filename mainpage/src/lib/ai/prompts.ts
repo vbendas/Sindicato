@@ -359,6 +359,24 @@ CASE LIST LIMITS AND ORDERING:
 - Always order list queries by createdAt desc (most recent first) unless the user specifies a different ordering
 - If the user asks for "recent cases", "latest cases", or "newest cases", this is the default behavior
 
+CHART / VISUALIZATION REQUESTS:
+- If the user asks for a chart, graph, plot, pie, bar, line, donut, visualization, or any visual representation of the data, treat it as a "group_by" query with a single dimension by default.
+- Pick the most informative single dimension based on the user's wording. Preferences, in order:
+  1. If the user mentions a specific dimension ("by country", "by company", "by case type", "by status", "by vertical", "by age range", "by sex"), use that field as the groupBy.
+  2. If the user mentions time, trend, over time, monthly, weekly, daily, evolution, progression, history, or year, use "createdAt" as the groupBy.
+  3. If the user does not specify a dimension, infer the most useful one from the filter context (e.g. when filtering by a single company, group by "caseType"; when filtering by a single country, group by "company_name"; when there are no filters, group by "caseType").
+  4. Two dimensions are allowed only if the user explicitly asks for a stacked or grouped breakdown ("cases by type and country", "resolution status by company").
+- Charts work best with categorical dimensions (caseType, country, vertical, resolutionStatus, companyName, ageRange, sex) or dates (createdAt).
+- NEVER group by numeric fields (amountOwed, viewsTotal, visitorsTotal, sharesTotal).
+- For "count" requests that should be a chart ("how many cases by country"), use aggregation "group_by" with the inferred dimension and an appropriate orderBy to keep results meaningful (e.g. orderBy: { field: "count", direction: "desc" }).
+- Do NOT add extra fields the user did not ask for; just produce a clean group_by suitable for a chart.
+
+Examples:
+- "Create a chart of cases by country" → { "rejected": false, "aggregation": "group_by", "groupBy": "country", "orderBy": { "field": "count", "direction": "desc" }, "limit": 20, "summary": "Cases grouped by country" }
+- "Plot unpaid wages over time" → { "rejected": false, "aggregation": "group_by", "groupBy": "createdAt", "orderBy": { "field": "createdAt", "direction": "asc" }, "summary": "Cases over time" }
+- "Show me a pie chart of case types for Alignerr" → { "rejected": false, "aggregation": "group_by", "groupBy": "caseType", "filters": [{ "field": "company_name", "operator": "eq", "value": "Alignerr" }], "orderBy": { "field": "count", "direction": "desc" }, "summary": "Case type distribution for Alignerr" }
+- "Cria um gráfico dos casos por tipo" → { "rejected": false, "aggregation": "group_by", "groupBy": "caseType", "orderBy": { "field": "count", "direction": "desc" }, "summary": "Casos agrupados por tipo" }
+
 DATE RANGE FILTERING:
 - The database has a "createdAt" field (timestamp) that tracks when cases were filed
 - You can filter by date ranges using the "gte" (greater than or equal) and "lte" (less than or equal) operators
@@ -481,6 +499,15 @@ FORMATTING RULES:
 - For simple data (1-2 columns), use bullet lists instead of tables
 - NEVER output raw tab-separated values — always use proper markdown tables
 
+CHART-AWARE FORMATTING:
+- The frontend auto-renders a chart from the raw query data. You do NOT need to describe the chart shape in prose.
+- If the result is a group_by aggregation, the chart is already visible. Skip the markdown table to avoid duplicating the chart's data. Just write a 1-2 sentence caption highlighting the top finding (e.g. "**United States** leads with **12 cases**, followed by **Portugal (4)** and **Brazil (3)**."). A short insight paragraph at the end is still welcome.
+- If the user asked for a specific chart view ("graph of cases by country", "pie chart of case types") and the result is NOT a group_by, mention briefly that a chart could not be generated from this result and proceed with whatever table/list is appropriate.
+- For count results, the frontend shows a big-number stat card. Skip the table; just state the number in **bold** in the summary sentence.
+- For sum results, the frontend shows a currency stat card. Skip the table; state the total in **bold** in the summary sentence.
+- For list results, render a markdown table as before (the frontend also shows an auto-aggregated chart, but the table provides full case detail).
+- For metrics results, the frontend shows a line chart. Skip the table; briefly describe the trend.
+
 FOLLOW-UP QUESTIONS:
 - When the user references previous data (e.g., "those cases", "the results", "the data above"), the current query will re-fetch the same data with additional fields
 - Use the current database results to answer the question
@@ -544,10 +571,17 @@ CONCISE DISPLAY RULES:
 - Show: total count, date range span (earliest to latest), main categories/types, key totals in **bold**
 - Do NOT list individual case IDs or full details in the chat
 - Do NOT use markdown tables in the chat widget — use inline summaries instead
-- ALWAYS mention the time range of the results (e.g., "spanning Jan 2024 – May 2026")
+- ALWAYS mention the time range of the results (e.g. "spanning Jan 2024 – May 2026")
 - If results approach 100 cases, mention "showing up to 100 most recent cases"
 - ALWAYS end with: "Download the .md report for full case details, individual IDs, and complete stories."
 - If there are more cases beyond the 100-case limit, add: "For older cases, specify a date range (e.g., 'cases from 2023' or 'cases between Jan 2022 and Dec 2023')."
+
+CHART-AWARE CONCISE RULES:
+- The frontend auto-renders a chart from the raw query data. You do NOT need to describe the chart shape.
+- For group_by results (charts are shown above the message): write a 1-2 sentence caption with the top finding in **bold**, no table.
+- For count / sum results (stat cards are shown above the message): state the number in **bold** in the caption, no table.
+- For list results: do NOT use tables, just an inline summary of the top categories, totals, and date range as defined above.
+- For metrics results: a line chart is shown above the message; briefly describe the trend.
 
 EXAMPLE RESPONSES:
 - "**47 cases** against Acme Corp spanning **Jan 2024 – May 2026**, primarily **unpaid wages (38)** and **retaliation (9)**. Total unpaid: **$312,000**. Download the .md report for full case details, individual IDs, and complete stories."
@@ -585,12 +619,22 @@ Mark as invalid only if the question:
 - Is nonsensical or gibberish
 - Asks about data that clearly doesn't exist in the database (e.g. stock prices, weather)
 - Contains inappropriate content
-- Is a command not related to querying data
+- Is a command to create a visualization or perform an action about a topic that is NOT in the database (e.g. "draw me a pie chart of the weather", "create a graph of last quarter's stock prices")
 - Is too vague to interpret (e.g. "tell me about data")
+
+Commands to create a visualization (chart, graph, plot, pie, bar, line) ABOUT database content are VALID. Treat them as a normal data query — the planner will pick the right aggregation.
 
 Examples of VALID queries:
 - "Can I have their emails?" → valid: true (contact request)
 - "Show me contact information for those cases" → valid: true
 - "List all cases against Alignerr" → valid: true
+- "Create a chart of cases by country" → valid: true (visualization of database data)
+- "Plot unpaid wages over time" → valid: true
+- "Show me a pie chart of case types" → valid: true
+
+Examples of INVALID queries:
+- "Draw me a pie chart of the weather" → valid: false (weather is outside the database)
+- "Graph last quarter's stock prices" → valid: false (stock prices are outside the database)
+- "Plot the population of Brazil" → valid: false (population data is outside the database)
 
 Otherwise, mark as valid even if the phrasing is imperfect.`;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 import {
   BarChart,
   Bar,
@@ -16,112 +16,59 @@ import {
   LineChart,
   Line,
 } from "recharts";
+import { Hash, DollarSign, TrendingUp, BarChart3 } from "lucide-react";
+import {
+  CHART_COLORS,
+  TIME_FIELDS,
+  type ChartType,
+  type QuerySummary,
+  type ParsedResults,
+  deriveChartType,
+  formatLabel,
+  extractSingleDimensionData,
+  extractStackedData,
+  pickListDimension,
+  aggregateListRows,
+  pickMetricsDimension,
+  aggregateMetricsRows,
+  formatStatNumber,
+} from "@/lib/clerk/chart-helpers";
 
-const CHART_COLORS = [
-  "#8B1A2A",
-  "#C9A84C",
-  "#4a5c3a",
-  "#c45a30",
-  "#F26522",
-  "#6B0F1A",
-  "#d4c49f",
-  "#1a2330",
-  "#12261C",
-  "#A0522D",
-];
-
-const TIME_FIELDS = ["createdAt", "dateRange", "date_range", "created_at"];
-
-type ChartType = "bar" | "donut" | "line" | "stacked_bar" | null;
-
-type QuerySummary = {
-  type: string;
-  groupBy?: string | string[];
-  totalFetched?: number;
-  [key: string]: unknown;
+export type ChartLabels = {
+  title?: string;
+  total?: string;
+  tooltipCount?: string;
+  statCount?: string;
+  statTotalUnpaid?: string;
+  statSum?: string;
+  statRecords?: string;
+  statViews?: string;
+  statVisitors?: string;
+  statShares?: string;
+  autoDimension?: string;
+  noData?: string;
 };
 
-type ParsedResults = {
-  rows: Record<string, unknown>[];
-  summary: QuerySummary;
+const DEFAULT_LABELS: Required<ChartLabels> = {
+  title: "Chart",
+  total: "Total",
+  tooltipCount: "Count",
+  statCount: "Total cases",
+  statTotalUnpaid: "Total unpaid",
+  statSum: "Sum",
+  statRecords: "Records",
+  statViews: "Total views",
+  statVisitors: "Visitors",
+  statShares: "Shares",
+  autoDimension: "(auto)",
+  noData: "No data to display",
 };
-
-function deriveChartType(summary: QuerySummary, rowCount: number): ChartType {
-  if (summary.type !== "group_by") return null;
-  if (rowCount < 2) return null;
-
-  const groupByFields = Array.isArray(summary.groupBy) ? summary.groupBy : (summary.groupBy ? [summary.groupBy] : []);
-  
-  if (groupByFields.length === 2) {
-    return "stacked_bar";
-  }
-
-  if (groupByFields.length === 1 && TIME_FIELDS.includes(groupByFields[0])) {
-    return "line";
-  }
-
-  if (rowCount <= 6) return "donut";
-  return "bar";
-}
-
-function formatLabel(value: string): string {
-  return value
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
-function extractSingleDimensionData(
-  rows: Record<string, unknown>[],
-  groupBy: string
-) {
-  const valueKeys = Object.keys(rows[0] || {}).filter((k) => k !== groupBy);
-  const dataKey = valueKeys[0] || "count";
-
-  return rows.map((row) => ({
-    name: String(row[groupBy] ?? "Unknown"),
-    value: Number(row[dataKey] ?? 0),
-  }));
-}
-
-function extractStackedData(
-  rows: Record<string, unknown>[],
-  groupByFields: string[]
-) {
-  if (groupByFields.length !== 2 || rows.length === 0) {
-    return { data: [], seriesKeys: [] };
-  }
-
-  const [primaryField, secondaryField] = groupByFields;
-  const valueKeys = Object.keys(rows[0]).filter(
-    (k) => k !== primaryField && k !== secondaryField
-  );
-  const valueKey = valueKeys[0] || "count";
-
-  const grouped = new Map<string, Record<string, unknown>>();
-  const seriesSet = new Set<string>();
-
-  for (const row of rows) {
-    const primary = String(row[primaryField] ?? "Unknown");
-    const secondary = String(row[secondaryField] ?? "Unknown");
-    seriesSet.add(secondary);
-
-    if (!grouped.has(primary)) {
-      grouped.set(primary, { name: primary });
-    }
-    const entry = grouped.get(primary)!;
-    entry[secondary] = (entry[secondary] as number || 0) + Number(row[valueKey] ?? 0);
-  }
-
-  const data = Array.from(grouped.values());
-  const seriesKeys = Array.from(seriesSet);
-
-  return { data, seriesKeys };
-}
 
 type ClerkChartProps = {
   queryResults: string;
   compact?: boolean;
   className?: string;
+  labels?: ChartLabels;
 };
 
 const TOOLTIP_STYLE = {
@@ -133,7 +80,9 @@ const TOOLTIP_STYLE = {
   boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
 };
 
-export function ClerkChart({ queryResults, compact = false, className }: ClerkChartProps) {
+export function ClerkChart({ queryResults, compact = false, className, labels }: ClerkChartProps) {
+  const L = { ...DEFAULT_LABELS, ...(labels ?? {}) };
+
   const parsed = useMemo<ParsedResults | null>(() => {
     try {
       return JSON.parse(queryResults);
@@ -145,16 +94,22 @@ export function ClerkChart({ queryResults, compact = false, className }: ClerkCh
   if (!parsed) return null;
 
   const { rows, summary } = parsed;
-  const chartType = deriveChartType(summary, rows.length);
+  const chartType: ChartType = deriveChartType(summary, rows.length);
 
   if (!chartType) return null;
 
-  const groupByFields = Array.isArray(summary.groupBy) 
-    ? summary.groupBy 
-    : (summary.groupBy ? [summary.groupBy] : []);
+  const groupByFields = Array.isArray(summary.groupBy)
+    ? summary.groupBy
+    : summary.groupBy
+    ? [summary.groupBy]
+    : [];
 
   const height = compact ? 220 : 380;
   const fontSize = compact ? 10 : 12;
+
+  if (chartType === "stat") {
+    return <StatCard summary={summary} rows={rows} compact={compact} className={className} L={L} />;
+  }
 
   if (chartType === "stacked_bar") {
     const { data, seriesKeys } = extractStackedData(rows, groupByFields);
@@ -175,8 +130,8 @@ export function ClerkChart({ queryResults, compact = false, className }: ClerkCh
               axisLine={{ stroke: "rgba(255,255,255,0.1)" }}
               tickLine={false}
             />
-            <YAxis 
-              tick={{ fontSize, fill: "rgba(245,214,208,0.7)" }} 
+            <YAxis
+              tick={{ fontSize, fill: "rgba(245,214,208,0.7)" }}
               axisLine={false}
               tickLine={false}
             />
@@ -208,42 +163,75 @@ export function ClerkChart({ queryResults, compact = false, className }: ClerkCh
   }
 
   if (chartType === "bar") {
-    const data = extractSingleDimensionData(rows, groupByFields[0]);
+    let data: { name: string; value: number }[] = [];
+    let chartLabel = L.title;
+    let isAuto = false;
+
+    if (summary.type === "list") {
+      const { dimension, isAuto: auto } = pickListDimension(rows);
+      if (!dimension) return null;
+      data = aggregateListRows(rows, dimension);
+      chartLabel = `${formatLabel(dimension)} ${auto ? L.autoDimension : ""}`.trim();
+      isAuto = auto;
+    } else if (summary.type === "metrics") {
+      const { dimension, isAuto: auto } = pickMetricsDimension(rows);
+      if (!dimension) return null;
+      data = aggregateMetricsRows(rows, dimension);
+      chartLabel = `${L.statViews} ${auto ? L.autoDimension : ""}`.trim();
+      isAuto = auto;
+    } else if (summary.type === "group_by" && groupByFields.length === 1) {
+      data = extractSingleDimensionData(rows, groupByFields[0]);
+      chartLabel = formatLabel(groupByFields[0]);
+    } else {
+      return null;
+    }
+
     if (data.length === 0) return null;
 
     return (
-      <div className={className} style={{ width: "100%", height }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 16, right: 16, left: compact ? -8 : 0, bottom: compact ? 50 : 20 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
-            <XAxis
-              dataKey="name"
-              tick={{ fontSize, fill: "rgba(245,214,208,0.7)" }}
-              angle={compact ? -35 : 0}
-              textAnchor={compact ? "end" : "middle"}
-              interval={0}
-              height={compact ? 60 : 30}
-              axisLine={{ stroke: "rgba(255,255,255,0.1)" }}
-              tickLine={false}
-            />
-            <YAxis 
-              tick={{ fontSize, fill: "rgba(245,214,208,0.7)" }} 
-              axisLine={false}
-              tickLine={false}
-            />
-            <Tooltip
-              contentStyle={TOOLTIP_STYLE}
-              cursor={{ fill: "rgba(255,255,255,0.03)" }}
-              formatter={(value) => [value, "Count"]}
-              labelFormatter={(label) => formatLabel(label)}
-            />
-            <Bar dataKey="value" radius={[6, 6, 0, 0]}>
-              {data.map((_, index) => (
-                <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+      <div className={className}>
+        {!compact && (
+          <div className="flex items-center gap-2 mb-2 px-1">
+            <BarChart3 size={12} className="text-sindicato-warm-white/40" />
+            <p className="text-xs text-sindicato-warm-white/50">{chartLabel}</p>
+            {isAuto && (
+              <span className="text-[10px] text-sindicato-warm-white/30 italic">{L.autoDimension}</span>
+            )}
+          </div>
+        )}
+        <div style={{ width: "100%", height }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data} margin={{ top: 16, right: 16, left: compact ? -8 : 0, bottom: compact ? 50 : 20 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
+              <XAxis
+                dataKey="name"
+                tick={{ fontSize, fill: "rgba(245,214,208,0.7)" }}
+                angle={compact ? -35 : 0}
+                textAnchor={compact ? "end" : "middle"}
+                interval={0}
+                height={compact ? 60 : 30}
+                axisLine={{ stroke: "rgba(255,255,255,0.1)" }}
+                tickLine={false}
+              />
+              <YAxis
+                tick={{ fontSize, fill: "rgba(245,214,208,0.7)" }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <Tooltip
+                contentStyle={TOOLTIP_STYLE}
+                cursor={{ fill: "rgba(255,255,255,0.03)" }}
+                formatter={(value) => [value, L.tooltipCount]}
+                labelFormatter={(label) => formatLabel(label)}
+              />
+              <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+                {data.map((_, index) => (
+                  <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     );
   }
@@ -268,9 +256,11 @@ export function ClerkChart({ queryResults, compact = false, className }: ClerkCh
               dataKey="value"
               nameKey="name"
               strokeWidth={0}
-              label={!compact ? (props: { name?: string; percent?: number }) => 
-                `${props.name || ""} (${((props.percent || 0) * 100).toFixed(0)}%)` 
-                : undefined
+              label={
+                !compact
+                  ? (props: { name?: string; percent?: number }) =>
+                      `${props.name || ""} (${((props.percent || 0) * 100).toFixed(0)}%)`
+                  : undefined
               }
               labelLine={!compact ? { stroke: "rgba(245,214,208,0.4)", strokeWidth: 1 } : false}
             >
@@ -297,7 +287,7 @@ export function ClerkChart({ queryResults, compact = false, className }: ClerkCh
               fill="rgba(245,214,208,0.6)"
               fontSize={compact ? 10 : 12}
             >
-              total
+              {L.total}
             </text>
             <Tooltip contentStyle={TOOLTIP_STYLE} />
             {!compact && (
@@ -330,14 +320,14 @@ export function ClerkChart({ queryResults, compact = false, className }: ClerkCh
               axisLine={{ stroke: "rgba(255,255,255,0.1)" }}
               tickLine={false}
             />
-            <YAxis 
-              tick={{ fontSize, fill: "rgba(245,214,208,0.7)" }} 
+            <YAxis
+              tick={{ fontSize, fill: "rgba(245,214,208,0.7)" }}
               axisLine={false}
               tickLine={false}
             />
             <Tooltip
               contentStyle={TOOLTIP_STYLE}
-              formatter={(value) => [value, "Count"]}
+              formatter={(value) => [value, L.tooltipCount]}
               labelFormatter={(label) => formatLabel(label)}
             />
             <Line
@@ -356,3 +346,71 @@ export function ClerkChart({ queryResults, compact = false, className }: ClerkCh
 
   return null;
 }
+
+function StatCard({
+  summary,
+  rows,
+  compact,
+  className,
+  L,
+}: {
+  summary: QuerySummary;
+  rows: Record<string, unknown>[];
+  compact: boolean;
+  className?: string;
+  L: Required<ChartLabels>;
+}) {
+  let value: number;
+  let label: string;
+  let icon: ReactNode;
+  let isCurrency = false;
+
+  if (summary.type === "count") {
+    value = Number(summary.value ?? 0);
+    label = L.statCount;
+    icon = <Hash size={compact ? 14 : 18} />;
+  } else if (summary.type === "sum") {
+    value = Number(summary.value ?? 0);
+    isCurrency = summary.field === "amountOwed";
+    label = summary.field === "amountOwed" ? L.statTotalUnpaid : L.statSum;
+    icon = isCurrency ? <DollarSign size={compact ? 14 : 18} /> : <TrendingUp size={compact ? 14 : 18} />;
+  } else if (summary.type === "metrics" && rows.length === 1) {
+    const row = rows[0];
+    value = Number(row.viewsTotal ?? 0);
+    label = L.statViews;
+    icon = <BarChart3 size={compact ? 14 : 18} />;
+  } else if (summary.type === "list" && rows.length === 1) {
+    const row = rows[0];
+    value = Number(row.amountOwed ?? 0);
+    isCurrency = true;
+    label = L.statTotalUnpaid;
+    icon = <DollarSign size={compact ? 14 : 18} />;
+  } else {
+    return null;
+  }
+
+  const display = isCurrency ? `$${formatStatNumber(value)}` : formatStatNumber(value);
+  const height = compact ? 80 : 120;
+
+  return (
+    <div className={className} style={{ width: "100%", height }}>
+      <div className="h-full w-full rounded-2xl bg-sindicato-bordeaux/15 border border-sindicato-bordeaux/30 backdrop-blur-xl p-3 flex items-center gap-3">
+        <div className="size-10 rounded-xl bg-sindicato-bordeaux/30 flex items-center justify-center text-sindicato-warm-white shrink-0">
+          {icon}
+        </div>
+        <div className="flex flex-col min-w-0">
+          <span
+            className={`font-bold text-sindicato-warm-white ${
+              compact ? "text-xl" : "text-3xl"
+            } leading-none tabular-nums`}
+          >
+            {display}
+          </span>
+          <span className="text-xs text-sindicato-warm-white/60 mt-1 truncate">{label}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export { TIME_FIELDS };

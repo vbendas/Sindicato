@@ -181,7 +181,9 @@
     "engagementRetaliation": "Pattern ng Paghihiganti",
     "engagementEngaged": "Aktibong Nakikipag-ugnayan",
     "engagementNoResponse": "Walang Naitalang Pakikipag-ugnayan",
-    "aiGenerated": "AI-generated na pagsusuri"
+    "aiGenerated": "AI-generated na pagsusuri",
+    "patternCase": "case",
+    "patternCases": "cases"
   },
   "header": {
     "navHome": "Home",
@@ -292,7 +294,8 @@
     "eventTitleWorkerResponse": "Tugon ng manggagawa",
     "eventTitleCompanyReply": "Tugon ng kumpanya",
     "eventTitleWorkerReply": "Tugon ng manggagawa",
-    "eventTitleResolution": "Nalutas ang kaso"
+    "eventTitleResolution": "Nalutas ang kaso",
+    "labelCaseFiled": "CASE FILED"
   },
   "fileCase": {
     "title": "Mag-ulat ng Kaso",
@@ -482,6 +485,20 @@
       "reportContact": "Contact Email:",
       "reportStory": "Buong Kwento:"
     },
+    "chart": {
+      "title": "Tsart",
+      "total": "Kabuuan",
+      "tooltipCount": "Bilang",
+      "statCount": "Kabuuang kaso",
+      "statTotalUnpaid": "Kabuuang hindi nabayaran",
+      "statSum": "Kabuuan",
+      "statRecords": "Mga talaan",
+      "statViews": "Kabuuang mga view",
+      "statVisitors": "Mga bisita",
+      "statShares": "Mga share",
+      "autoDimension": "(awtomatiko)",
+      "noData": "Walang data"
+    },
     "contact": {
       "categoryGeneral": "Pangkalahatang Katanungan",
       "categoryLegal": "Legal",
@@ -515,7 +532,7 @@
       "errorGeneric": "May nangyaring mali. Pakisubukan muli."
     },
     "header": {
-      "titleHome": "Sindicato Clerk",
+      "titleHome": "Sindicato {name}",
       "titleKb": "Magtanong",
       "titleQuery": "I-query ang Data",
       "titleContact": "Makipag-ugnayan sa Sindicato",
@@ -524,7 +541,7 @@
       "close": "Isara"
     },
     "bubble": {
-      "proactive": "Kumusta! Ako ang Sindicato Clerk. Magtanong ng kahit ano o galugarin ang aming data.",
+      "proactive": "Kumusta! Ako ang {name} ng Sindicato. Magtanong ng kahit ano o galugarin ang aming data.",
       "openChat": "Buksan ang chat"
     },
     "page": {
@@ -543,14 +560,74 @@
       "errorProcessing": "Paumanhin, ngunit nakatagpo ako ng error sa pagproseso ng iyong kahilingan. Pakisubukan muli.",
       "canceled": "Nakansela ang kahilingan.",
       "errorGeneric": "May naganap na error habang pinoproseso ang iyong kahilingan. Pakisubukan muli.",
-      "downloadError": "Hindi ma-download ang kumpletong mga detalye ng kaso. Ang format ng data ay hindi wasto. Pakisubukang i-refresh ang pahina at patakbuhin muli ang query."
+      "downloadError": "Hindi ma-download ang kumpletong mga detalye ng kaso. Ang format ng data ay hindi wasto. Pakisubukang i-refresh ang pahina at patakbuhin muli ang query.",
+      "fillVariables": "Fill all variables to send",
+      "noOptions": "No options found."
     },
     "welcome": {
-      "title": "Clerk",
       "subtitle": "Magtanong tungkol sa data ng pang-aabuso sa manggagawa",
       "hint": "Subukang magtanong tungkol sa kabuuang kaso, istatistika ng kumpanya, o demographics ng manggagawa"
     },
-    "name": "Klerk"
+    "suggestions": {
+      "groupPopular": "Popular questions",
+      "groupTemplates": "Query templates",
+      "groupLegal": "Legal resources",
+      "groupCompany": "Company resources",
+      "groupMedia": "Media & research resources",
+      "allUnresolved": "Show all unresolved cases",
+      "commonViolations": "Most common violations reported",
+      "totalUnpaid": "Total unpaid wages across all cases",
+      "repeatOffenders": "Companies with the most cases",
+      "casesByVertical": "Remote vs gig worker cases",
+      "topCountries": "Countries with most cases",
+      "recentCases30Days": "Cases from last 30 days",
+      "recentCasesThisMonth": "Cases from this month",
+      "casesByDateRange": "Cases in date range",
+      "lawyerSolicitorOptin": "Cases with solicitor opt-in by company",
+      "lawyerSolicitorGrouped": "Solicitor opt-in cases by type",
+      "lawyerUnresolvedContacts": "Unresolved cases with aliased contacts",
+      "lawyerCollectiveAction": "Collective action candidates",
+      "lawyerHighValue": "Highest value unresolved cases",
+      "lawyerRecent": "Recent cases filed",
+      "lawyerRecent30Days": "Cases from last 30 days",
+      "lawyerDateRange": "Cases in date range",
+      "lawyerContactUnresolved": "Contact info for unresolved cases",
+      "companyMyCases": "Cases filed against my company",
+      "companyUnresolvedContacts": "Unresolved cases with contacts",
+      "companyGroupedType": "Cases grouped by type",
+      "companyTotalClaimed": "Total amount claimed",
+      "companyResolutionStatus": "Resolution status",
+      "companyTimeline": "Recent case activity",
+      "companyRecent30Days": "Recent cases (last 30 days)",
+      "companyDateRange": "Cases in date range",
+      "companyContactUnresolved": "Contact info for unresolved cases",
+      "mediaAllContacts": "Cases with aliased contacts",
+      "mediaByCountryType": "Cases by country and type",
+      "mediaHighValue": "Highest value unresolved cases",
+      "mediaRecentFiled": "Recent cases this month",
+      "mediaCompanyTrends": "Company case trends",
+      "mediaDemographics": "Demographic breakdown",
+      "mediaRecent30Days": "Recent cases (last 30 days)",
+      "mediaDateRange": "Cases in date range",
+      "mediaContactAll": "Contact info for cases",
+      "tplCasesByCompany": "Cases against a specific company",
+      "tplTotalUnpaidCompany": "Unpaid wages for a company",
+      "tplCasesByCountry": "Case types by country",
+      "tplTotalUnpaidByVertical": "Unpaid wages by worker type",
+      "tplResolutionStatus": "Resolution status for a company",
+      "tplCasesByCompanyCountry": "Cross-reference company and country",
+      "tplCasesByDemographic": "Cases by gender and age range",
+      "tplCasesByCompanyDemographic": "Deep cross-reference (company, country, gender, age)",
+      "tplCasesByDateRange": "Cases in specific date range",
+      "varCompany": "Company",
+      "varCountry": "Country",
+      "varVertical": "Vertical",
+      "varSex": "Sex",
+      "varAgeFrom": "Age from",
+      "varAgeTo": "Age to",
+      "varDateFrom": "From date",
+      "varDateTo": "To date"
+    }
   },
   "about": {
     "title": "Tungkol sa Sindicato",

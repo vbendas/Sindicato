@@ -181,7 +181,9 @@
     "engagementRetaliation": "የበቀል ንድፍ",
     "engagementEngaged": "በንቃት የተሳተፈ",
     "engagementNoResponse": "ምንም እውቂያ አልተመዘገበም",
-    "aiGenerated": "በAI የተመነጨ ትንተና"
+    "aiGenerated": "በAI የተመነጨ ትንተና",
+    "patternCase": "case",
+    "patternCases": "cases"
   },
   "header": {
     "navHome": "መነሻ",
@@ -292,7 +294,8 @@
     "eventTitleWorkerResponse": "የሠራተኛ ምላሽ",
     "eventTitleCompanyReply": "የኩባንያ ምላሽ",
     "eventTitleWorkerReply": "የሠራተኛ ምላሽ",
-    "eventTitleResolution": "ጉዳይ ተፈትቷል"
+    "eventTitleResolution": "ጉዳይ ተፈትቷል",
+    "labelCaseFiled": "CASE FILED"
   },
   "fileCase": {
     "title": "ጉዳይ ያስታውቁ",
@@ -482,6 +485,20 @@
       "reportContact": "የእውቂያ ኢሜይል:",
       "reportStory": "ሙሉ ታሪክ:"
     },
+    "chart": {
+      "title": "ገበታ",
+      "total": "ጠቅላላ",
+      "tooltipCount": "ብዛት",
+      "statCount": "ጠቅላላ ጉዳዮች",
+      "statTotalUnpaid": "ጠቅላላ ያልተከፈለ",
+      "statSum": "ድምር",
+      "statRecords": "መዝገቦች",
+      "statViews": "ጠቅላላ እይታዎች",
+      "statVisitors": "ጎብኝዎች",
+      "statShares": "የተጋራ",
+      "autoDimension": "(በራስ-ሰር)",
+      "noData": "ምንም መረጃ የለም"
+    },
     "contact": {
       "categoryGeneral": "አጠቃላይ ጥያቄ",
       "categoryLegal": "ሕጋዊ",
@@ -515,7 +532,7 @@
       "errorGeneric": "ችግር አጋጥሟል። እባክዎ እንደገና ይሞክሩ።"
     },
     "header": {
-      "titleHome": "Sindicato Clerk",
+      "titleHome": "Sindicato {name}",
       "titleKb": "ጥያቄ ይጠይቁ",
       "titleQuery": "መረጃ ይጠይቁ",
       "titleContact": "Sindicatoን ያግኙ",
@@ -524,7 +541,7 @@
       "close": "ዝጋ"
     },
     "bubble": {
-      "proactive": "ሰላም! እኔ የSindicato Clerk ነኝ። ማንኛውንም ነገር ይጠይቁኝ ወይም መረጃችንን ያስሱ።",
+      "proactive": "ሰላም! እኔ {name} የSindicato ነኝ። ማንኛውንም ነገር ይጠይቁኝ ወይም መረጃችንን ያስሱ።",
       "openChat": "ውይይት ክፈት"
     },
     "page": {
@@ -543,14 +560,74 @@
       "errorProcessing": "ይቅርታ፣ ጥያቄዎን በማቀነባበር ላይ ስህተት አጋጥሞኛል። እባክዎ እንደገና ይሞክሩ።",
       "canceled": "ጥያቄው ተሰርዟል።",
       "errorGeneric": "ጥያቄዎን በማቀነባበር ላይ ስህተት አጋጥሟል። እባክዎ እንደገና ይሞክሩ።",
-      "downloadError": "ሙሉ የጉዳይ ዝርዝሮችን ማውረድ አልተቻለም። የመረጃ ቅርጸቱ ልክ ያልሆነ ነው። እባክዎ ገጹን እንደገና በማደስ ጥያቄውን እንደገና ይሞክሩ።"
+      "downloadError": "ሙሉ የጉዳይ ዝርዝሮችን ማውረድ አልተቻለም። የመረጃ ቅርጸቱ ልክ ያልሆነ ነው። እባክዎ ገጹን እንደገና በማደስ ጥያቄውን እንደገና ይሞክሩ።",
+      "fillVariables": "Fill all variables to send",
+      "noOptions": "No options found."
     },
     "welcome": {
-      "title": "Clerk",
       "subtitle": "ስለ ሠራተኛ ብዝበዛ መረጃ ጥያቄዎችን ይጠይቁ",
       "hint": "ስለ ጉዳይ ድምሮች፣ የኩባንያ ስታቲስቲክስ፣ ወይም የሠራተኛ ዲሞግራፊክስ ለመጠየቅ ይሞክሩ"
     },
-    "name": "ጸሐፊ"
+    "suggestions": {
+      "groupPopular": "Popular questions",
+      "groupTemplates": "Query templates",
+      "groupLegal": "Legal resources",
+      "groupCompany": "Company resources",
+      "groupMedia": "Media & research resources",
+      "allUnresolved": "Show all unresolved cases",
+      "commonViolations": "Most common violations reported",
+      "totalUnpaid": "Total unpaid wages across all cases",
+      "repeatOffenders": "Companies with the most cases",
+      "casesByVertical": "Remote vs gig worker cases",
+      "topCountries": "Countries with most cases",
+      "recentCases30Days": "Cases from last 30 days",
+      "recentCasesThisMonth": "Cases from this month",
+      "casesByDateRange": "Cases in date range",
+      "lawyerSolicitorOptin": "Cases with solicitor opt-in by company",
+      "lawyerSolicitorGrouped": "Solicitor opt-in cases by type",
+      "lawyerUnresolvedContacts": "Unresolved cases with aliased contacts",
+      "lawyerCollectiveAction": "Collective action candidates",
+      "lawyerHighValue": "Highest value unresolved cases",
+      "lawyerRecent": "Recent cases filed",
+      "lawyerRecent30Days": "Cases from last 30 days",
+      "lawyerDateRange": "Cases in date range",
+      "lawyerContactUnresolved": "Contact info for unresolved cases",
+      "companyMyCases": "Cases filed against my company",
+      "companyUnresolvedContacts": "Unresolved cases with contacts",
+      "companyGroupedType": "Cases grouped by type",
+      "companyTotalClaimed": "Total amount claimed",
+      "companyResolutionStatus": "Resolution status",
+      "companyTimeline": "Recent case activity",
+      "companyRecent30Days": "Recent cases (last 30 days)",
+      "companyDateRange": "Cases in date range",
+      "companyContactUnresolved": "Contact info for unresolved cases",
+      "mediaAllContacts": "Cases with aliased contacts",
+      "mediaByCountryType": "Cases by country and type",
+      "mediaHighValue": "Highest value unresolved cases",
+      "mediaRecentFiled": "Recent cases this month",
+      "mediaCompanyTrends": "Company case trends",
+      "mediaDemographics": "Demographic breakdown",
+      "mediaRecent30Days": "Recent cases (last 30 days)",
+      "mediaDateRange": "Cases in date range",
+      "mediaContactAll": "Contact info for cases",
+      "tplCasesByCompany": "Cases against a specific company",
+      "tplTotalUnpaidCompany": "Unpaid wages for a company",
+      "tplCasesByCountry": "Case types by country",
+      "tplTotalUnpaidByVertical": "Unpaid wages by worker type",
+      "tplResolutionStatus": "Resolution status for a company",
+      "tplCasesByCompanyCountry": "Cross-reference company and country",
+      "tplCasesByDemographic": "Cases by gender and age range",
+      "tplCasesByCompanyDemographic": "Deep cross-reference (company, country, gender, age)",
+      "tplCasesByDateRange": "Cases in specific date range",
+      "varCompany": "Company",
+      "varCountry": "Country",
+      "varVertical": "Vertical",
+      "varSex": "Sex",
+      "varAgeFrom": "Age from",
+      "varAgeTo": "Age to",
+      "varDateFrom": "From date",
+      "varDateTo": "To date"
+    }
   },
   "about": {
     "title": "ስለ Sindicato",

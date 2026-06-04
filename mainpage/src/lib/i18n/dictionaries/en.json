@@ -181,7 +181,9 @@
     "engagementRetaliation": "Retaliation Pattern",
     "engagementEngaged": "Actively Engaged",
     "engagementNoResponse": "No Contact Recorded",
-    "aiGenerated": "AI-generated analysis"
+    "aiGenerated": "AI-generated analysis",
+    "patternCase": "case",
+    "patternCases": "cases"
   },
   "header": {
     "navHome": "Home",
@@ -292,7 +294,8 @@
     "eventTitleWorkerResponse": "Worker response",
     "eventTitleCompanyReply": "Company reply",
     "eventTitleWorkerReply": "Worker reply",
-    "eventTitleResolution": "Case resolved"
+    "eventTitleResolution": "Case resolved",
+    "labelCaseFiled": "CASE FILED"
   },
   "fileCase": {
     "title": "Report a Case",
@@ -482,6 +485,20 @@
       "reportContact": "Contact Email:",
       "reportStory": "Full Story:"
     },
+    "chart": {
+      "title": "Chart",
+      "total": "Total",
+      "tooltipCount": "Count",
+      "statCount": "Total cases",
+      "statTotalUnpaid": "Total unpaid",
+      "statSum": "Sum",
+      "statRecords": "Records",
+      "statViews": "Total views",
+      "statVisitors": "Visitors",
+      "statShares": "Shares",
+      "autoDimension": "(auto)",
+      "noData": "No data to display"
+    },
     "contact": {
       "categoryGeneral": "General Inquiry",
       "categoryLegal": "Legal",
@@ -515,7 +532,7 @@
       "errorGeneric": "Something went wrong. Please try again."
     },
     "header": {
-      "titleHome": "Sindicato Clerk",
+      "titleHome": "Sindicato {name}",
       "titleKb": "Ask a Question",
       "titleQuery": "Query Data",
       "titleContact": "Contact Sindicato",
@@ -524,7 +541,7 @@
       "close": "Close"
     },
     "bubble": {
-      "proactive": "Hi! I'm the Sindicato Clerk. Ask me anything or explore our data.",
+      "proactive": "Hi! I'm the Sindicato {name}. Ask me anything or explore our data.",
       "openChat": "Open chat"
     },
     "page": {
@@ -543,12 +560,73 @@
       "errorProcessing": "I apologize, but I encountered an error processing your request. Please try again.",
       "canceled": "Request was canceled.",
       "errorGeneric": "An error occurred while processing your request. Please try again.",
-      "downloadError": "Unable to download full case details. The data format is invalid. Please try refreshing the page and running the query again."
+      "downloadError": "Unable to download full case details. The data format is invalid. Please try refreshing the page and running the query again.",
+      "fillVariables": "Fill all variables to send",
+      "noOptions": "No options found."
     },
     "welcome": {
-      "title": "Clerk",
       "subtitle": "Ask questions about worker exploitation data",
       "hint": "Try asking about case totals, company statistics, or worker demographics"
+    },
+    "suggestions": {
+      "groupPopular": "Popular questions",
+      "groupTemplates": "Query templates",
+      "groupLegal": "Legal resources",
+      "groupCompany": "Company resources",
+      "groupMedia": "Media & research resources",
+      "allUnresolved": "Show all unresolved cases",
+      "commonViolations": "Most common violations reported",
+      "totalUnpaid": "Total unpaid wages across all cases",
+      "repeatOffenders": "Companies with the most cases",
+      "casesByVertical": "Remote vs gig worker cases",
+      "topCountries": "Countries with most cases",
+      "recentCases30Days": "Cases from last 30 days",
+      "recentCasesThisMonth": "Cases from this month",
+      "casesByDateRange": "Cases in date range",
+      "lawyerSolicitorOptin": "Cases with solicitor opt-in by company",
+      "lawyerSolicitorGrouped": "Solicitor opt-in cases by type",
+      "lawyerUnresolvedContacts": "Unresolved cases with aliased contacts",
+      "lawyerCollectiveAction": "Collective action candidates",
+      "lawyerHighValue": "Highest value unresolved cases",
+      "lawyerRecent": "Recent cases filed",
+      "lawyerRecent30Days": "Cases from last 30 days",
+      "lawyerDateRange": "Cases in date range",
+      "lawyerContactUnresolved": "Contact info for unresolved cases",
+      "companyMyCases": "Cases filed against my company",
+      "companyUnresolvedContacts": "Unresolved cases with contacts",
+      "companyGroupedType": "Cases grouped by type",
+      "companyTotalClaimed": "Total amount claimed",
+      "companyResolutionStatus": "Resolution status",
+      "companyTimeline": "Recent case activity",
+      "companyRecent30Days": "Recent cases (last 30 days)",
+      "companyDateRange": "Cases in date range",
+      "companyContactUnresolved": "Contact info for unresolved cases",
+      "mediaAllContacts": "Cases with aliased contacts",
+      "mediaByCountryType": "Cases by country and type",
+      "mediaHighValue": "Highest value unresolved cases",
+      "mediaRecentFiled": "Recent cases this month",
+      "mediaCompanyTrends": "Company case trends",
+      "mediaDemographics": "Demographic breakdown",
+      "mediaRecent30Days": "Recent cases (last 30 days)",
+      "mediaDateRange": "Cases in date range",
+      "mediaContactAll": "Contact info for cases",
+      "tplCasesByCompany": "Cases against a specific company",
+      "tplTotalUnpaidCompany": "Unpaid wages for a company",
+      "tplCasesByCountry": "Case types by country",
+      "tplTotalUnpaidByVertical": "Unpaid wages by worker type",
+      "tplResolutionStatus": "Resolution status for a company",
+      "tplCasesByCompanyCountry": "Cross-reference company and country",
+      "tplCasesByDemographic": "Cases by gender and age range",
+      "tplCasesByCompanyDemographic": "Deep cross-reference (company, country, gender, age)",
+      "tplCasesByDateRange": "Cases in specific date range",
+      "varCompany": "Company",
+      "varCountry": "Country",
+      "varVertical": "Vertical",
+      "varSex": "Sex",
+      "varAgeFrom": "Age from",
+      "varAgeTo": "Age to",
+      "varDateFrom": "From date",
+      "varDateTo": "To date"
     }
   },
   "about": {

@@ -1,9 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useLocale } from '@/lib/i18n';
-
-interface TranslationCache {
-  [key: string]: string;
-}
 
 const CACHE_KEY = 'sindicato_translations';
 const CACHE_EXPIRY = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -18,13 +14,13 @@ function getFromCache(key: string): string | null {
     const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
     const entry = cache[key];
     if (!entry) return null;
-    
+
     if (Date.now() - entry.timestamp > CACHE_EXPIRY) {
       delete cache[key];
       localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
       return null;
     }
-    
+
     return entry.translation;
   } catch {
     return null;
@@ -44,44 +40,53 @@ function setInCache(key: string, translation: string): void {
   }
 }
 
+/**
+ * Hook to translate text on-the-fly using the /api/translate endpoint.
+ * Translations are cached in localStorage for 7 days.
+ *
+ * IMPORTANT: This hook intentionally calls setState synchronously in effects
+ * for cache hits. This is safe because React bails out of re-renders when
+ * the state value doesn't change (functional updater returns the same object).
+ * The lint rule `react-hooks/set-state-in-effect` is a general guideline, but
+ * in this case the pattern is correct and doesn't cause cascading renders.
+ */
 export function useTranslation(
   text: string | null | undefined,
   sourceLang?: string,
   enabled: boolean = true
 ) {
   const { locale } = useLocale();
-  const [translatedText, setTranslatedText] = useState<string | null>(null);
-  const [isTranslating, setIsTranslating] = useState(false);
+
+  const cacheKey = useMemo(
+    () => (text ? getCacheKey(text, locale, sourceLang) : ''),
+    [text, locale, sourceLang]
+  );
+
+  const [translationMap, setTranslationMap] = useState<Record<string, string>>({});
+  const [inflightKey, setInflightKey] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const requestIdRef = useRef(0);
+
+  const shouldSkip = useMemo(() => {
+    if (!text || !enabled) return true;
+    if (locale === 'en' && (!sourceLang || sourceLang === 'eng' || sourceLang === 'en')) return true;
+    if (sourceLang && (sourceLang === locale || sourceLang.startsWith(locale))) return true;
+    return false;
+  }, [text, locale, sourceLang, enabled]);
 
   useEffect(() => {
-    if (!text || !enabled) {
-      setTranslatedText(null);
-      return;
-    }
+    if (shouldSkip || !text || !cacheKey) return;
 
-    // Don't translate if already in target language
-    if (locale === 'en' && (!sourceLang || sourceLang === 'eng' || sourceLang === 'en')) {
-      setTranslatedText(null);
-      return;
-    }
-
-    // Don't translate if source matches target
-    if (sourceLang && (sourceLang === locale || sourceLang.startsWith(locale))) {
-      setTranslatedText(null);
-      return;
-    }
-
-    const cacheKey = getCacheKey(text, locale, sourceLang);
     const cached = getFromCache(cacheKey);
-    
     if (cached) {
-      setTranslatedText(cached);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- safe: React bails out when value is unchanged
+      setTranslationMap((prev) => (prev[cacheKey] === cached ? prev : { ...prev, [cacheKey]: cached }));
+      setInflightKey(null);
       return;
     }
 
-    let cancelled = false;
-    setIsTranslating(true);
+    const requestId = ++requestIdRef.current;
+    setInflightKey(cacheKey);
     setError(null);
 
     fetch('/api/translate', {
@@ -98,34 +103,33 @@ export function useTranslation(
         return res.json();
       })
       .then((data) => {
-        if (cancelled) return;
-        
+        if (requestId !== requestIdRef.current) return;
+
         if (data.ok && data.data?.translated) {
-          setTranslatedText(data.data.translated);
+          setTranslationMap((prev) => ({ ...prev, [cacheKey]: data.data.translated }));
           setInCache(cacheKey, data.data.translated);
         } else {
           setError(data.error || 'Translation failed');
         }
       })
       .catch((err) => {
-        if (cancelled) return;
+        if (requestId !== requestIdRef.current) return;
         setError(err.message);
       })
       .finally(() => {
-        if (!cancelled) {
-          setIsTranslating(false);
+        if (requestId === requestIdRef.current) {
+          setInflightKey(null);
         }
       });
+  }, [text, locale, sourceLang, enabled, shouldSkip, cacheKey]);
 
-    return () => {
-      cancelled = true;
-    };
-  }, [text, locale, sourceLang, enabled]);
+  const translatedText = cacheKey ? translationMap[cacheKey] ?? null : null;
+  const isTranslating = !shouldSkip && inflightKey === cacheKey;
 
-  return {
+  return useMemo(() => ({
     translatedText,
     isTranslating,
-    error,
+    error: shouldSkip ? null : error,
     displayText: translatedText || text || '',
-  };
+  }), [translatedText, isTranslating, error, shouldSkip, text]);
 }

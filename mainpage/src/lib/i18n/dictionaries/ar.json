@@ -181,7 +181,9 @@
     "engagementRetaliation": "نمط انتقامي",
     "engagementEngaged": "تفاعل نشط",
     "engagementNoResponse": "لا تواصل مسجّل",
-    "aiGenerated": "تحليل مُنتَج بالذكاء الاصطناعي"
+    "aiGenerated": "تحليل مُنتَج بالذكاء الاصطناعي",
+    "patternCase": "case",
+    "patternCases": "cases"
   },
   "header": {
     "navHome": "الرئيسية",
@@ -292,7 +294,8 @@
     "eventTitleWorkerResponse": "رد العامل",
     "eventTitleCompanyReply": "رد الشركة",
     "eventTitleWorkerReply": "رد العامل",
-    "eventTitleResolution": "تم حل القضية"
+    "eventTitleResolution": "تم حل القضية",
+    "labelCaseFiled": "CASE FILED"
   },
   "fileCase": {
     "title": "بلّغ عن قضية",
@@ -482,6 +485,20 @@
       "reportContact": "بريد التواصل:",
       "reportStory": "القصة الكاملة:"
     },
+    "chart": {
+      "title": "الرسم البياني",
+      "total": "المجموع",
+      "tooltipCount": "العدد",
+      "statCount": "إجمالي الحالات",
+      "statTotalUnpaid": "إجمالي غير مدفوع",
+      "statSum": "المجموع",
+      "statRecords": "السجلات",
+      "statViews": "إجمالي المشاهدات",
+      "statVisitors": "الزوار",
+      "statShares": "المشاركات",
+      "autoDimension": "(تلقائي)",
+      "noData": "لا توجد بيانات"
+    },
     "contact": {
       "categoryGeneral": "استفسار عام",
       "categoryLegal": "قانوني",
@@ -515,7 +532,7 @@
       "errorGeneric": "حدث خطأ ما. يُرجى المحاولة مجددًا."
     },
     "header": {
-      "titleHome": "موظف Sindicato",
+      "titleHome": "Sindicato {name}",
       "titleKb": "اطرح سؤالًا",
       "titleQuery": "استعلام بيانات",
       "titleContact": "تواصل مع Sindicato",
@@ -524,7 +541,7 @@
       "close": "إغلاق"
     },
     "bubble": {
-      "proactive": "مرحبًا! أنا موظف Sindicato. اسألني أي شيء أو استكشف بياناتنا.",
+      "proactive": "مرحبًا! أنا {name} Sindicato. اسألني أي شيء أو استكشف بياناتنا.",
       "openChat": "فتح الدردشة"
     },
     "page": {
@@ -543,14 +560,74 @@
       "errorProcessing": "أعتذر، واجهت خطأ في معالجة طلبك. يُرجى المحاولة مجددًا.",
       "canceled": "أُلغي الطلب.",
       "errorGeneric": "حدث خطأ أثناء معالجة طلبك. يُرجى المحاولة مجددًا.",
-      "downloadError": "تعذّر تنزيل تفاصيل القضية الكاملة. تنسيق البيانات غير صالح. يُرجى محاولة تحديث الصفحة وتشغيل الاستعلام مجددًا."
+      "downloadError": "تعذّر تنزيل تفاصيل القضية الكاملة. تنسيق البيانات غير صالح. يُرجى محاولة تحديث الصفحة وتشغيل الاستعلام مجددًا.",
+      "fillVariables": "Fill all variables to send",
+      "noOptions": "No options found."
     },
     "welcome": {
-      "title": "الموظف",
       "subtitle": "اطرح أسئلة عن بيانات استغلال العمّال",
       "hint": "جرّب السؤال عن إجماليات القضايا أو إحصاءات الشركات أو الديموغرافيا العمّالية"
     },
-    "name": "كاتب"
+    "suggestions": {
+      "groupPopular": "Popular questions",
+      "groupTemplates": "Query templates",
+      "groupLegal": "Legal resources",
+      "groupCompany": "Company resources",
+      "groupMedia": "Media & research resources",
+      "allUnresolved": "Show all unresolved cases",
+      "commonViolations": "Most common violations reported",
+      "totalUnpaid": "Total unpaid wages across all cases",
+      "repeatOffenders": "Companies with the most cases",
+      "casesByVertical": "Remote vs gig worker cases",
+      "topCountries": "Countries with most cases",
+      "recentCases30Days": "Cases from last 30 days",
+      "recentCasesThisMonth": "Cases from this month",
+      "casesByDateRange": "Cases in date range",
+      "lawyerSolicitorOptin": "Cases with solicitor opt-in by company",
+      "lawyerSolicitorGrouped": "Solicitor opt-in cases by type",
+      "lawyerUnresolvedContacts": "Unresolved cases with aliased contacts",
+      "lawyerCollectiveAction": "Collective action candidates",
+      "lawyerHighValue": "Highest value unresolved cases",
+      "lawyerRecent": "Recent cases filed",
+      "lawyerRecent30Days": "Cases from last 30 days",
+      "lawyerDateRange": "Cases in date range",
+      "lawyerContactUnresolved": "Contact info for unresolved cases",
+      "companyMyCases": "Cases filed against my company",
+      "companyUnresolvedContacts": "Unresolved cases with contacts",
+      "companyGroupedType": "Cases grouped by type",
+      "companyTotalClaimed": "Total amount claimed",
+      "companyResolutionStatus": "Resolution status",
+      "companyTimeline": "Recent case activity",
+      "companyRecent30Days": "Recent cases (last 30 days)",
+      "companyDateRange": "Cases in date range",
+      "companyContactUnresolved": "Contact info for unresolved cases",
+      "mediaAllContacts": "Cases with aliased contacts",
+      "mediaByCountryType": "Cases by country and type",
+      "mediaHighValue": "Highest value unresolved cases",
+      "mediaRecentFiled": "Recent cases this month",
+      "mediaCompanyTrends": "Company case trends",
+      "mediaDemographics": "Demographic breakdown",
+      "mediaRecent30Days": "Recent cases (last 30 days)",
+      "mediaDateRange": "Cases in date range",
+      "mediaContactAll": "Contact info for cases",
+      "tplCasesByCompany": "Cases against a specific company",
+      "tplTotalUnpaidCompany": "Unpaid wages for a company",
+      "tplCasesByCountry": "Case types by country",
+      "tplTotalUnpaidByVertical": "Unpaid wages by worker type",
+      "tplResolutionStatus": "Resolution status for a company",
+      "tplCasesByCompanyCountry": "Cross-reference company and country",
+      "tplCasesByDemographic": "Cases by gender and age range",
+      "tplCasesByCompanyDemographic": "Deep cross-reference (company, country, gender, age)",
+      "tplCasesByDateRange": "Cases in specific date range",
+      "varCompany": "Company",
+      "varCountry": "Country",
+      "varVertical": "Vertical",
+      "varSex": "Sex",
+      "varAgeFrom": "Age from",
+      "varAgeTo": "Age to",
+      "varDateFrom": "From date",
+      "varDateTo": "To date"
+    }
   },
   "about": {
     "title": "عن Sindicato",
