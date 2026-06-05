@@ -381,8 +381,8 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
         <div className="bg-white/5 border border-white/10 p-4 sm:p-6 mb-6">
           <SummaryRow label="Email" value={resolvedEmail} />
           <SummaryRow
-            label="Platform"
-            value={caseData.vertical === "remote" ? "Remote Platform" : caseData.vertical === "gig" ? "Gig Delivery" : caseData.vertical || ""}
+            label={t("review.labelPlatform")}
+            value={caseData.vertical === "remote" ? t("review.platformRemote") : caseData.vertical === "gig" ? t("review.platformGig") : caseData.vertical || ""}
           />
           <SummaryRow label="Company" value={caseData.companyName} />
           <SummaryRow label="Case type" value={CASE_TYPE_LABELS[caseData.caseType] || caseData.caseType} />

@@ -209,13 +209,16 @@ export default function CaseDetailClient({
   const { locale } = useLocale();
 
   // Translate story on-the-fly
-  const { 
-    translatedText: storyTranslation, 
+  const {
+    translatedText: storyTranslation,
     isTranslating: isStoryTranslating,
   } = useTranslation(
     caseData?.story,
     caseData?.translationLanguage || undefined,
-    showTranslated && locale !== 'en'
+    showTranslated && locale !== 'en',
+    caseData?.id
+      ? { entityType: "case", entityId: caseData.id, field: "story" }
+      : undefined,
   );
 
   const displayStory = showTranslated

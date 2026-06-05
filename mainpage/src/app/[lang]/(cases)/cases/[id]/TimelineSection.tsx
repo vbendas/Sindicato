@@ -407,14 +407,15 @@ function TimelineEventItem({
     system: t("timelineSection.directionSystem"),
   };
   
-  const { 
-    translatedText: descriptionTranslation, 
+  const {
+    translatedText: descriptionTranslation,
     isTranslating: isDescriptionTranslating,
-    displayText: displayDescription 
+    displayText: displayDescription
   } = useTranslation(
     event.description,
     undefined,
-    locale !== 'en'
+    locale !== 'en',
+    { entityType: "case_timeline_event", entityId: event.id, field: "description" },
   );
 
   const step = index + 1;

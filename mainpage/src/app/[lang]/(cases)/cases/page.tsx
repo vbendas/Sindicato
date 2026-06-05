@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Header from "@/app/components/Header";
 import Footer from "@/app/sections/Footer";
 import { useT, useLocale } from "@/lib/i18n";
+import { TranslatedCaseStory } from "@/components/case/TranslatedCaseStory";
 
 interface CaseCard {
   id: string;
@@ -52,8 +53,6 @@ interface CaseCardProps {
 }
 
 function WallCaseCard({ c, locale, t, router }: CaseCardProps) {
-  const displayStory = locale !== 'en' && c.storyTranslated ? c.storyTranslated : c.story;
-
   return (
     <div key={c.id} className="break-inside-avoid mb-5">
       <div
@@ -96,9 +95,15 @@ function WallCaseCard({ c, locale, t, router }: CaseCardProps) {
           </p>
         )}
 
-        <p className="text-sindicato-cream/60 text-sm flex-1 leading-relaxed">
-          {displayStory}
-        </p>
+        <TranslatedCaseStory
+          text={c.story}
+          cachedTranslation={c.storyTranslated}
+          sourceLanguage={c.translationLanguage}
+          locale={locale}
+          t={t}
+          className="text-sindicato-cream/60 text-sm flex-1 leading-relaxed block"
+          cacheKey={{ entityType: "case", entityId: c.id, field: "story" }}
+        />
 
         <div className="mt-4 pt-3 border-t border-white/10 flex items-start justify-between gap-4">
           <div>

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useT } from "@/lib/i18n";
 
 interface Company {
   name: string;
@@ -26,13 +27,15 @@ const manifestoLines = [
   { text: "Together, our voices become impossible to silence.", red: true },
 ];
 
-const tabs = [
-  { label: "All Verticals", value: "all" },
-  { label: "Remote", value: "remote" },
-  { label: "Gig", value: "gig" },
-];
-
 export default function Manifesto({ companies, activeVertical, onVerticalChange }: ManifestoProps) {
+  const t = useT();
+
+  const tabs = [
+    { label: t("manifesto.tabs.all"), value: "all" },
+    { label: t("manifesto.tabs.remote"), value: "remote" },
+    { label: t("manifesto.tabs.gig"), value: "gig" },
+  ];
+
   const filteredCompanies =
     activeVertical === "all"
       ? companies

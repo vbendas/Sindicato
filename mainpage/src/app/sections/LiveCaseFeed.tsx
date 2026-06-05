@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useT, useLocale } from "@/lib/i18n";
+import { TranslatedCaseStory } from "@/components/case/TranslatedCaseStory";
 
 interface CaseItem {
   id: string;
@@ -49,8 +50,6 @@ interface CaseCardProps {
 }
 
 function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
-  const displayStory = locale !== 'en' && item.storyTranslated ? item.storyTranslated : item.story;
-
   return (
     <div
       onClick={onClick}
@@ -60,7 +59,7 @@ function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
     >
       <div className="flex items-start justify-between gap-4 mb-2">
         <span
-          className={`text-[10px] px-2 py-0.5 font-bold uppercase tracking-wider ${
+          className={`text-[10px] px-2 py-0.5 font-bold uppercase tracking-wider whitespace-nowrap ${
             verticalStyles[item.vertical].badge
           } font-[family-name:var(--font-barlow)]`}
         >
@@ -88,9 +87,15 @@ function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
         </Link>
       </div>
 
-      <p className="text-sindicato-warm-white/65 text-sm leading-relaxed">
-        {displayStory}
-      </p>
+      <TranslatedCaseStory
+        text={item.story}
+        cachedTranslation={item.storyTranslated}
+        sourceLanguage={item.translationLanguage}
+        locale={locale}
+        t={t}
+        className="text-sindicato-warm-white/65 text-sm leading-relaxed block"
+        cacheKey={{ entityType: "case", entityId: item.id, field: "story" }}
+      />
 
       <div className="mt-2 flex items-center justify-between">
         <span className="text-sindicato-warm-white/40 text-xs font-[family-name:var(--font-jetbrains)]">

@@ -57,8 +57,8 @@
   "whyItExists": {
     "title": "Warum es existiert",
     "tabAll": "Alle Netzwerke",
-    "tabRemote": "Remote-Arbeitende",
-    "tabGig": "Gig-Arbeitende",
+    "tabRemote": "Remote Workers",
+    "tabGig": "Gig Workers",
     "statCasesLabel": "eingereichte Fälle",
     "statCasesBody": "Jeder Fall ergänzt ein dauerhaftes öffentliches Verzeichnis. Einzelne Beschwerden werden ignoriert. Tausend einzelne Beschwerden werden zu einer Bewegung, die Aufsichtsbehörden und Anwälte nicht ignorieren können.",
     "statUnpaidLabel": "dokumentierte unbezahlte Löhne",
@@ -96,10 +96,10 @@
   "liveFeed": {
     "title": "Aktuelle Fälle",
     "tabAll": "Alle Netzwerke",
-    "tabRemote": "Remote",
-    "tabGig": "Gig",
-    "badgeRemote": "REMOTE",
-    "badgeGig": "GIG",
+    "tabRemote": "Remote Workers",
+    "tabGig": "Gig Workers",
+    "badgeRemote": "REMOTE WORKERS",
+    "badgeGig": "GIG WORKERS",
     "loading": "Fälle werden geladen...",
     "error": "Aktuelle Fälle konnten nicht geladen werden. Bitte versuche es später erneut.",
     "emptyTitle": "Noch keine Fälle gemeldet",
@@ -142,9 +142,9 @@
   },
   "network": {
     "title": "Das Netzwerk",
-    "remoteTitle": "Remote-Plattform",
+    "remoteTitle": "Remote Workers",
     "remoteDescription": "Datenannotatoren, Übersetzer, Freelancer und Remote-Plattformarbeitende",
-    "gigTitle": "Gig-Lieferung",
+    "gigTitle": "Gig Workers",
     "gigDescription": "Lieferarbeitende von Uber, Glovo, DoorDash, Just Eat und anderen Plattformen",
     "statCases": "Fälle",
     "statUnpaid": "Unbezahlt",
@@ -153,13 +153,13 @@
     "loading": "Netzwerke werden geladen..."
   },
   "companyPage": {
-    "backRemote": "Zurück zum Remote-Arbeitende-Hub",
-    "backGig": "Zurück zum Gig-Arbeitende-Hub",
+    "backRemote": "Back to Remote Workers Hub",
+    "backGig": "Back to Gig Workers Hub",
     "totalCases": "Fälle gesamt",
     "totalUnpaid": "Unbezahlt gesamt",
     "vertical": "Bereich",
-    "verticalRemote": "Remote",
-    "verticalGig": "Gig",
+    "verticalRemote": "Remote Workers",
+    "verticalGig": "Gig Workers",
     "totalViews": "Aufrufe gesamt",
     "shareLabel": "Diesen Bericht teilen",
     "filedCases": "Eingereichte Fälle",
@@ -217,8 +217,8 @@
     "title": "Fallübersicht",
     "subtitle": "Echte Geschichten von echten Arbeitenden",
     "filterAll": "Alle",
-    "filterRemote": "Remote-Arbeitende",
-    "filterGig": "Gig-Arbeitende",
+    "filterRemote": "Remote Workers",
+    "filterGig": "Gig Workers",
     "empty": "Noch keine Fälle gemeldet. Sei der Erste, der seine Geschichte teilt.",
     "emptyCta": "Fall melden",
     "caseLabel": "FALL #",
@@ -532,7 +532,7 @@
       "errorGeneric": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
     },
     "header": {
-      "titleHome": "Sindicato {name}",
+      "titleHome": "{name}",
       "titleKb": "Frage stellen",
       "titleQuery": "Daten abfragen",
       "titleContact": "Sindicato kontaktieren",
@@ -679,7 +679,12 @@
     "p7": "Die Plattformen, die auf diesem Modell aufgebaut wurden, haben diese Isolation nicht geschaffen. Sie fanden sie vor und formalisierten sie. Status als selbstständige Auftragnehmer. Obligatorische Schiedsklauseln, die kollektive Klagen unmöglich machen. Nutzungsbedingungen, die das Recht auf öffentliche Streitbeilegung aufgeben. Kommunikation über Unternehmenskanäle geleitet, wo sie überwacht, gelöscht oder einfach ignoriert werden kann.",
     "p8": "Der Fabrikboden gab Arbeitenden eine Sache, die die Remote-Plattform bewusst vorenthält: die Fähigkeit, zur Seite zu schauen und zu sehen, wer sonst noch gleich behandelt wurde.",
     "p9": "Sindicato gibt das zurück.",
-    "footer": "Sindicato — sindicato.report"
+    "footer": "Sindicato — sindicato.report",
+    "tabs": {
+      "all": "All Verticals",
+      "remote": "Remote Workers",
+      "gig": "Gig Workers"
+    }
   },
   "donate": {
     "back": "Zurück",
@@ -690,7 +695,32 @@
     "comingSoonLabel": "Spendenlink kommt bald",
     "comingSoonBody": "Wir richten unsere Spendeninfrastruktur ein. Schau bald wieder vorbei oder kontaktiere uns unter",
     "email": "hello@sindicato.report",
-    "transparency": "Sindicato arbeitet gemeinnützig. Jeder Euro über den Betriebskosten fließt in den Unterstützungsfonds für Arbeitende — deckt Gebühren für Kleinforderungen, Rechtsberatungen und psychologische Unterstützung für Arbeitende, die sie brauchen. Volle finanzielle Transparenz wird öffentlich veröffentlicht."
+    "transparency": "Sindicato arbeitet gemeinnützig. Jeder Euro über den Betriebskosten fließt in den Unterstützungsfonds für Arbeitende — deckt Gebühren für Kleinforderungen, Rechtsberatungen und psychologische Unterstützung für Arbeitende, die sie brauchen. Volle finanzielle Transparenz wird öffentlich veröffentlicht.",
+    "formTitle": "Wähle deinen Beitrag",
+    "amountCustomLabel": "Anderer Betrag",
+    "amountCustomPlaceholder": "Betrag in EUR eingeben",
+    "emailLabel": "E-Mail (optional, für Beleg)",
+    "nameLabel": "Name (optional)",
+    "submit": "Weiter zur Zahlung",
+    "processing": "Sicheren Checkout öffnen…",
+    "cancel": "Abbrechen und anderen Betrag wählen",
+    "errorMin": "Mindestspende ist {amount} €",
+    "errorMax": "Maximale Spende ist 10 000 €",
+    "errorInvalid": "Bitte gib einen gültigen Betrag ein",
+    "errorGeneric": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+    "securityNote": "Zahlungen werden sicher von Stripe verarbeitet. Wir sehen nie deine Kartendaten.",
+    "thanks": {
+      "title": "Danke",
+      "body": "Dein Beitrag hält diese Plattform am Laufen — ohne Investoren, ohne Werbetreibende, ohne Unternehmensgeld. Er finanziert den Unterstützungsfonds für Arbeitende und macht Ausbeutung teuer für die, die darauf setzen, dass sie billig bleibt.",
+      "amount": "Spende erhalten: {amount}",
+      "receiptNote": "Ein Beleg wurde an deine E-Mail gesendet.",
+      "processing": "Spende wird verarbeitet…",
+      "processingBody": "Deine Zahlung wird gerade bestätigt. Lade diese Seite in einem Moment neu, um die Dankesnachricht zu sehen.",
+      "expiredBody": "Diese Spendensitzung ist abgelaufen oder nicht mehr gültig. Du kannst auf der Spendenseite eine neue Spende starten.",
+      "share": "Teile, dass du gespendet hast",
+      "shareMessage": "Ich habe gerade an Sindicato gespendet — die Plattform, die Ausbeutung teuer macht.",
+      "homeCta": "← Zurück zur Startseite"
+    }
   },
   "register": {
     "roleLawyer": "Jurist",

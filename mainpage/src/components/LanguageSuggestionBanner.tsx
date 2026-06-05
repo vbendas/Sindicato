@@ -1,10 +1,29 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { useLocale, locales, localeNames, localeFlags, type Locale } from "@/lib/i18n";
+
+// Pages where the suggestion banner should sit on a charcoal background
+// to blend with the page (home, manifesto, about). All other pages keep
+// the default bordeaux.
+const CHARCOAL_BANNER_PAGES = new Set(["manifesto", "about"]);
+
+function shouldUseCharcoalBackground(
+  pathname: string | null,
+  locale: string,
+): boolean {
+  if (!pathname) return false;
+  // Strip the leading locale segment, e.g. "/pt/manifesto" -> "/manifesto"
+  const stripped = pathname.replace(new RegExp(`^/${locale}`), "") || "/";
+  if (stripped === "/" || stripped === "") return true;
+  const segment = stripped.split("/").filter(Boolean)[0];
+  return segment ? CHARCOAL_BANNER_PAGES.has(segment) : false;
+}
 
 export default function LanguageSuggestionBanner() {
   const { locale, setLocale } = useLocale();
+  const pathname = usePathname();
   const [suggestedLocale, setSuggestedLocale] = useState<Locale | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -49,8 +68,12 @@ export default function LanguageSuggestionBanner() {
 
   if (!isVisible || !suggestedLocale) return null;
 
+  const bgClass = shouldUseCharcoalBackground(pathname, locale)
+    ? "bg-sindicato-charcoal"
+    : "bg-sindicato-bordeaux";
+
   return (
-    <div className="fixed top-16 left-0 right-0 z-40 bg-sindicato-bordeaux text-sindicato-warm-white shadow-lg">
+    <div className={`fixed top-16 left-0 right-0 z-40 ${bgClass} text-sindicato-warm-white shadow-lg`}>
       <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 text-sm">
           <span className="text-lg">{localeFlags[suggestedLocale]}</span>

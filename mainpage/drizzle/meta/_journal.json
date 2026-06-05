@@ -85,6 +85,20 @@
       "when": 1780182437628,
       "tag": "0011_natural_venus",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1780658670617,
+      "tag": "0012_low_triton",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1780732800000,
+      "tag": "0013_translations",
+      "breakpoints": true
     }
   ]
 }

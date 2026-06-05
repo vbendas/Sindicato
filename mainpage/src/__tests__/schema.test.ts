@@ -7,8 +7,11 @@ import {
   dataAccessLogs,
   reports,
   verificationTokens,
+  translations,
   caseStatusEnum,
   reportTypeEnum,
+  donations,
+  donationStatusEnum,
 } from "@/lib/db/schema";
 
 describe("Database schema structure", () => {
@@ -123,5 +126,44 @@ describe("Database schema structure", () => {
 
   it("reportTypeEnum has correct values", () => {
     expect(reportTypeEnum.enumValues).toEqual(["lawyer", "company"]);
+  });
+
+  it("donations table has required columns", () => {
+    const cols = Object.keys(donations);
+    expect(cols).toContain("id");
+    expect(cols).toContain("donorEmail");
+    expect(cols).toContain("donorName");
+    expect(cols).toContain("amountCents");
+    expect(cols).toContain("currency");
+    expect(cols).toContain("status");
+    expect(cols).toContain("stripeSessionId");
+    expect(cols).toContain("stripePaymentIntentId");
+    expect(cols).toContain("locale");
+    expect(cols).toContain("ipAddress");
+    expect(cols).toContain("userAgent");
+    expect(cols).toContain("createdAt");
+    expect(cols).toContain("completedAt");
+  });
+
+  it("donationStatusEnum has correct values", () => {
+    expect(donationStatusEnum.enumValues).toEqual([
+      "pending",
+      "completed",
+      "expired",
+      "failed",
+    ]);
+  });
+
+  it("translations table has required columns", () => {
+    const cols = Object.keys(translations);
+    expect(cols).toContain("id");
+    expect(cols).toContain("entityType");
+    expect(cols).toContain("entityId");
+    expect(cols).toContain("field");
+    expect(cols).toContain("locale");
+    expect(cols).toContain("translatedText");
+    expect(cols).toContain("sourceHash");
+    expect(cols).toContain("createdAt");
+    expect(cols).toContain("updatedAt");
   });
 });

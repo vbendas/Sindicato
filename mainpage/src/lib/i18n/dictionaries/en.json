@@ -96,10 +96,10 @@
   "liveFeed": {
     "title": "Recent Cases",
     "tabAll": "All Networks",
-    "tabRemote": "Remote",
-    "tabGig": "Gig",
-    "badgeRemote": "REMOTE",
-    "badgeGig": "GIG",
+    "tabRemote": "Remote Workers",
+    "tabGig": "Gig Workers",
+    "badgeRemote": "REMOTE WORKERS",
+    "badgeGig": "GIG WORKERS",
     "loading": "Loading cases...",
     "error": "Unable to load recent cases. Please try again later.",
     "emptyTitle": "No cases reported yet",
@@ -142,9 +142,9 @@
   },
   "network": {
     "title": "The Network",
-    "remoteTitle": "Remote Platform",
+    "remoteTitle": "Remote Workers",
     "remoteDescription": "Data annotators, translators, freelancers, and remote platform workers",
-    "gigTitle": "Gig Delivery",
+    "gigTitle": "Gig Workers",
     "gigDescription": "Delivery workers from Uber, Glovo, DoorDash, Just Eat, and other platforms",
     "statCases": "Cases",
     "statUnpaid": "Unpaid",
@@ -158,8 +158,8 @@
     "totalCases": "Total Cases",
     "totalUnpaid": "Total Unpaid",
     "vertical": "Vertical",
-    "verticalRemote": "Remote",
-    "verticalGig": "Gig",
+    "verticalRemote": "Remote Workers",
+    "verticalGig": "Gig Workers",
     "totalViews": "Total Views",
     "shareLabel": "Share this report",
     "filedCases": "Filed Cases",
@@ -532,7 +532,7 @@
       "errorGeneric": "Something went wrong. Please try again."
     },
     "header": {
-      "titleHome": "Sindicato {name}",
+      "titleHome": "{name}",
       "titleKb": "Ask a Question",
       "titleQuery": "Query Data",
       "titleContact": "Contact Sindicato",
@@ -679,7 +679,12 @@
     "p7": "The platforms built on top of this model did not create that isolation. They found it ready-made and formalised it. Independent contractor status. Mandatory arbitration clauses that make collective legal action impossible. Terms of service that waive the right to public dispute. Communication routed through company channels, where it can be monitored, deleted, or simply ignored.",
     "p8": "The factory floor gave workers one thing the remote platform deliberately withholds: the ability to look sideways and see who else was being treated the same way.",
     "p9": "Sindicato gives that back.",
-    "footer": "Sindicato — sindicato.report"
+    "footer": "Sindicato — sindicato.report",
+    "tabs": {
+      "all": "All Verticals",
+      "remote": "Remote Workers",
+      "gig": "Gig Workers"
+    }
   },
   "donate": {
     "back": "Back",
@@ -690,7 +695,32 @@
     "comingSoonLabel": "Donation link coming soon",
     "comingSoonBody": "We're setting up our donation infrastructure. Check back shortly, or reach out at",
     "email": "hello@sindicato.report",
-    "transparency": "Sindicato operates as a non-profit. Every euro beyond operational costs goes to the Worker Support Fund — covering small claims filing fees, legal consultations, and psychological support for workers who need it. Full financial transparency is published publicly."
+    "transparency": "Sindicato operates as a non-profit. Every euro beyond operational costs goes to the Worker Support Fund — covering small claims filing fees, legal consultations, and psychological support for workers who need it. Full financial transparency is published publicly.",
+    "formTitle": "Choose your contribution",
+    "amountCustomLabel": "Other amount",
+    "amountCustomPlaceholder": "Enter amount in EUR",
+    "emailLabel": "Email (optional, for receipt)",
+    "nameLabel": "Name (optional)",
+    "submit": "Continue to payment",
+    "processing": "Opening secure checkout…",
+    "cancel": "Cancel and choose a different amount",
+    "errorMin": "Minimum donation is {amount} €",
+    "errorMax": "Maximum donation is 10 000 €",
+    "errorInvalid": "Please enter a valid amount",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "securityNote": "Payments are processed securely by Stripe. We never see your card details.",
+    "thanks": {
+      "title": "Thank you",
+      "body": "Your contribution keeps this platform running with no investors, no advertisers, and no company money behind it. It funds the Worker Support Fund and makes exploitation expensive for those who depend on it staying cheap.",
+      "amount": "Donation received: {amount}",
+      "receiptNote": "A receipt has been sent to your email.",
+      "processing": "Processing your donation…",
+      "processingBody": "Your payment is being confirmed. Refresh this page in a moment to see your thank-you message.",
+      "expiredBody": "This donation session has expired or is no longer valid. You can start a new donation from the donate page.",
+      "share": "Share that you donated",
+      "shareMessage": "I just donated to Sindicato — the platform that makes exploitation expensive.",
+      "homeCta": "← Back to home"
+    }
   },
   "register": {
     "roleLawyer": "Legal Professional",

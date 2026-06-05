@@ -11,6 +11,7 @@ import ShareButtons from "@/components/ShareButtons";
 import { useTrackPageview } from "@/hooks/useTrackPageview";
 import { useT, useLocale } from "@/lib/i18n";
 import { useTranslation } from "@/hooks/useTranslation";
+import { TranslatedCaseStory } from "@/components/case/TranslatedCaseStory";
 import { TAG_I18N_MAP } from "@/components/CaseTag";
 
 interface CaseItem {
@@ -21,6 +22,7 @@ interface CaseItem {
   currency: string;
   story: string;
   storyTranslated: string | null;
+  translationLanguage: string | null;
   vertical: string;
   createdAt: string;
   resolutionStatus: string;
@@ -72,7 +74,12 @@ function DetectedPatternCard({ p, locale, t }: DetectedPatternCardProps) {
 
   const {
     displayText: displayInsight,
-  } = useTranslation(p.insight, undefined, locale !== 'en');
+  } = useTranslation(
+    p.insight,
+    undefined,
+    locale !== 'en',
+    { entityType: "company_pattern", entityId: p.pattern, field: "insight" },
+  );
 
   return (
     <div
@@ -103,6 +110,7 @@ interface CompanyCaseItem {
   displayName: string;
   story: string;
   storyTranslated: string | null;
+  translationLanguage: string | null;
   amountOwed: string;
   currency: string;
   createdAt: string;
@@ -116,19 +124,6 @@ interface CompanyCasePreviewCardProps {
 }
 
 function CompanyCasePreviewCard({ item, locale, t }: CompanyCasePreviewCardProps) {
-  const {
-    displayText: autoTranslatedStory,
-    translatedText,
-    isTranslating,
-  } = useTranslation(
-    item.story,
-    "en",
-    locale !== "en" && !item.storyTranslated
-  );
-
-  const displayStory =
-    locale !== "en" && item.storyTranslated ? item.storyTranslated : autoTranslatedStory;
-
   return (
     <Link key={item.id} href={`/${locale}/cases/${item.id}`}>
       <div className="bg-white/5 border border-white/10 p-4 hover:bg-white/10 transition-colors">
@@ -148,24 +143,15 @@ function CompanyCasePreviewCard({ item, locale, t }: CompanyCasePreviewCardProps
             {new Date(item.createdAt).toLocaleDateString(locale)}
           </span>
         </div>
-        {isTranslating && locale !== "en" && !item.storyTranslated && (
-          <div className="flex items-center gap-1.5 mb-1">
-            <div className="w-2.5 h-2.5 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin" />
-            <span className="text-blue-400 text-[9px] uppercase tracking-wider font-[family-name:var(--font-jetbrains)]">
-              {t("common.translating")}
-            </span>
-          </div>
-        )}
-        {translatedText && !isTranslating && locale !== "en" && !item.storyTranslated && (
-          <div className="mb-1">
-            <span className="inline-flex items-center gap-1 bg-blue-500/10 border border-blue-500/20 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-blue-400 font-[family-name:var(--font-jetbrains)]">
-              {t("caseDetail.machineTranslated")}
-            </span>
-          </div>
-        )}
-        <p className="text-sindicato-warm-white/60 text-sm line-clamp-2">
-          {displayStory}
-        </p>
+        <TranslatedCaseStory
+          text={item.story}
+          cachedTranslation={item.storyTranslated}
+          sourceLanguage={item.translationLanguage}
+          locale={locale}
+          t={t}
+          className="text-sindicato-warm-white/60 text-sm line-clamp-2 block"
+          cacheKey={{ entityType: "case", entityId: item.id, field: "story" }}
+        />
         {Number(item.amountOwed) > 0 && (
           <div className="mt-2">
             <span className="text-sindicato-warm-white font-bold text-sm font-[family-name:var(--font-jetbrains)]">
@@ -198,24 +184,26 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
   const { data: session } = useSession();
 
   // Translate summary text
-  const { 
-    translatedText: summaryTranslation, 
+  const {
+    translatedText: summaryTranslation,
     isTranslating: isSummaryTranslating,
-    displayText: displaySummary 
+    displayText: displaySummary
   } = useTranslation(
     summary?.summary,
     undefined,
-    locale !== 'en'
+    locale !== 'en',
+    { entityType: "company_summary", entityId: slug, field: "summary" },
   );
 
-  const { 
-    translatedText: keyInsightTranslation, 
+  const {
+    translatedText: keyInsightTranslation,
     isTranslating: isKeyInsightTranslating,
-    displayText: displayKeyInsight 
+    displayText: displayKeyInsight
   } = useTranslation(
     summary?.keyInsight,
     undefined,
-    locale !== 'en'
+    locale !== 'en',
+    { entityType: "company_summary", entityId: slug, field: "keyInsight" },
   );
 
   useTrackPageview("company", slug);

@@ -57,8 +57,8 @@
   "whyItExists": {
     "title": "Por Qué Existe",
     "tabAll": "Todas las Redes",
-    "tabRemote": "Trabajadores Remotos",
-    "tabGig": "Trabajadores de Plataformas",
+    "tabRemote": "Remote Workers",
+    "tabGig": "Gig Workers",
     "statCasesLabel": "casos presentados",
     "statCasesBody": "Cada caso se suma a un registro público permanente. Las quejas individuales son ignoradas. Mil quejas individuales se convierten en un movimiento que reguladores y abogados no pueden ignorar.",
     "statUnpaidLabel": "salarios impagos documentados",
@@ -96,10 +96,10 @@
   "liveFeed": {
     "title": "Casos Recientes",
     "tabAll": "Todas las Redes",
-    "tabRemote": "Remoto",
-    "tabGig": "Plataformas",
-    "badgeRemote": "REMOTO",
-    "badgeGig": "PLATAFORMA",
+    "tabRemote": "Remote Workers",
+    "tabGig": "Gig Workers",
+    "badgeRemote": "REMOTE WORKERS",
+    "badgeGig": "GIG WORKERS",
     "loading": "Cargando casos...",
     "error": "No se pudieron cargar los casos recientes. Por favor, inténtalo de nuevo más tarde.",
     "emptyTitle": "Aún no hay casos reportados",
@@ -142,9 +142,9 @@
   },
   "network": {
     "title": "La Red",
-    "remoteTitle": "Plataforma Remota",
+    "remoteTitle": "Remote Workers",
     "remoteDescription": "Anotadores de datos, traductores, freelancers y trabajadores remotos de plataformas",
-    "gigTitle": "Repartidores",
+    "gigTitle": "Gig Workers",
     "gigDescription": "Repartidores de Uber, Glovo, DoorDash, Just Eat y otras plataformas",
     "statCases": "Casos",
     "statUnpaid": "Impagos",
@@ -153,13 +153,13 @@
     "loading": "Cargando redes..."
   },
   "companyPage": {
-    "backRemote": "Volver al Hub de Trabajadores Remotos",
-    "backGig": "Volver al Hub de Repartidores",
+    "backRemote": "Back to Remote Workers Hub",
+    "backGig": "Back to Gig Workers Hub",
     "totalCases": "Total de Casos",
     "totalUnpaid": "Total Impago",
     "vertical": "Vertical",
-    "verticalRemote": "Remoto",
-    "verticalGig": "Plataformas",
+    "verticalRemote": "Remote Workers",
+    "verticalGig": "Gig Workers",
     "totalViews": "Total de Vistas",
     "shareLabel": "Compartir este informe",
     "filedCases": "Casos Presentados",
@@ -217,8 +217,8 @@
     "title": "Muro de Casos",
     "subtitle": "Historias reales de trabajadores reales",
     "filterAll": "Todos",
-    "filterRemote": "Trabajadores Remotos",
-    "filterGig": "Trabajadores de Plataformas",
+    "filterRemote": "Remote Workers",
+    "filterGig": "Gig Workers",
     "empty": "Aún no hay casos reportados. Sé el primero en compartir tu historia.",
     "emptyCta": "Relatar un Caso",
     "caseLabel": "CASO #",
@@ -532,7 +532,7 @@
       "errorGeneric": "Algo salió mal. Por favor, inténtalo de nuevo."
     },
     "header": {
-      "titleHome": "Sindicato {name}",
+      "titleHome": "{name}",
       "titleKb": "Hacer una Pregunta",
       "titleQuery": "Consultar Datos",
       "titleContact": "Contactar a Sindicato",
@@ -679,7 +679,12 @@
     "p7": "Las plataformas construidas sobre este modelo no crearon ese aislamiento. Lo encontraron ya hecho y lo formalizaron. Estatus de contratista independiente. Cláusulas de arbitraje obligatorio que hacen imposible la acción legal colectiva. Términos de servicio que renuncian al derecho a disputas públicas. Comunicación enrutada a través de canales de la empresa, donde puede ser monitoreada, eliminada o simplemente ignorada.",
     "p8": "El piso de fábrica les daba a los trabajadores una cosa que la plataforma remota deliberadamente retiene: la capacidad de mirar al lado y ver quién más estaba siendo tratado de la misma manera.",
     "p9": "Sindicato devuelve eso.",
-    "footer": "Sindicato — sindicato.report"
+    "footer": "Sindicato — sindicato.report",
+    "tabs": {
+      "all": "All Verticals",
+      "remote": "Remote Workers",
+      "gig": "Gig Workers"
+    }
   },
   "donate": {
     "back": "Volver",
@@ -690,7 +695,32 @@
     "comingSoonLabel": "Enlace de donación próximamente",
     "comingSoonBody": "Estamos configurando nuestra infraestructura de donaciones. Vuelve pronto, o contáctanos en",
     "email": "hello@sindicato.report",
-    "transparency": "Sindicato opera como una organización sin fines de lucro. Cada euro más allá de los costos operativos va al Fondo de Apoyo al Trabajador — cubriendo tarifas de presentación de reclamos menores, consultas legales y apoyo psicológico para trabajadores que lo necesiten. La transparencia financiera completa se publica públicamente."
+    "transparency": "Sindicato opera como una organización sin fines de lucro. Cada euro más allá de los costos operativos va al Fondo de Apoyo al Trabajador — cubriendo tarifas de presentación de reclamos menores, consultas legales y apoyo psicológico para trabajadores que lo necesiten. La transparencia financiera completa se publica públicamente.",
+    "formTitle": "Elige tu contribución",
+    "amountCustomLabel": "Otro importe",
+    "amountCustomPlaceholder": "Introduce el importe en EUR",
+    "emailLabel": "Correo electrónico (opcional, para recibo)",
+    "nameLabel": "Nombre (opcional)",
+    "submit": "Continuar al pago",
+    "processing": "Abriendo pago seguro…",
+    "cancel": "Cancelar y elegir otro importe",
+    "errorMin": "La donación mínima es {amount} €",
+    "errorMax": "La donación máxima es 10 000 €",
+    "errorInvalid": "Introduce un importe válido",
+    "errorGeneric": "Algo salió mal. Inténtalo de nuevo.",
+    "securityNote": "Los pagos los procesa Stripe de forma segura. Nunca vemos los datos de tu tarjeta.",
+    "thanks": {
+      "title": "Gracias",
+      "body": "Tu contribución mantiene esta plataforma en marcha sin inversores, sin anunciantes y sin dinero de empresas. Financia el Fondo de Apoyo al Trabajador y hace que la explotación sea costosa para quienes dependen de que siga siendo barata.",
+      "amount": "Donación recibida: {amount}",
+      "receiptNote": "Hemos enviado un recibo a tu correo electrónico.",
+      "processing": "Procesando tu donación…",
+      "processingBody": "Estamos confirmando tu pago. Actualiza esta página en un momento para ver el mensaje de agradecimiento.",
+      "expiredBody": "Esta sesión de donación ha caducado o ya no es válida. Puedes iniciar una nueva donación desde la página de donaciones.",
+      "share": "Comparte que has donado",
+      "shareMessage": "Acabo de donar a Sindicato — la plataforma que hace que la explotación sea cara.",
+      "homeCta": "← Volver al inicio"
+    }
   },
   "register": {
     "roleLawyer": "Profesional Legal",

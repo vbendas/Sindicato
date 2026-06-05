@@ -351,3 +351,47 @@ export const companySummaries = pgTable("company_summaries", {
   generatedAt: timestamp("generated_at").defaultNow().notNull(),
   expiresAt: timestamp("expires_at").notNull(),
 });
+
+export const donationStatusEnum = pgEnum("donation_status", [
+  "pending",
+  "completed",
+  "expired",
+  "failed",
+]);
+
+// Server-side translation cache. One row per (entity, field, locale).
+// source_hash lets us detect when the source text has changed and the
+// cached translation needs to be regenerated.
+export const translations = pgTable(
+  "translations",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    entityType: varchar("entity_type", { length: 50 }).notNull(),
+    entityId: varchar("entity_id", { length: 255 }).notNull(),
+    field: varchar("field", { length: 50 }).notNull(),
+    locale: varchar("locale", { length: 10 }).notNull(),
+    translatedText: text("translated_text").notNull(),
+    sourceHash: varchar("source_hash", { length: 64 }).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("translations_lookup_idx").on(t.entityType, t.entityId, t.field, t.locale),
+  ],
+);
+
+export const donations = pgTable("donations", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  donorEmail: varchar("donor_email", { length: 255 }),
+  donorName: varchar("donor_name", { length: 255 }),
+  amountCents: integer("amount_cents").notNull(),
+  currency: varchar("currency", { length: 10 }).default("eur").notNull(),
+  status: donationStatusEnum("status").default("pending").notNull(),
+  stripeSessionId: varchar("stripe_session_id", { length: 255 }).unique(),
+  stripePaymentIntentId: varchar("stripe_payment_intent_id", { length: 255 }),
+  locale: varchar("locale", { length: 10 }),
+  ipAddress: varchar("ip_address", { length: 45 }),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
+});
