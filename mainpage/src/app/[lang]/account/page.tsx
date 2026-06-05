@@ -9,7 +9,7 @@ import WorkerDashboard from "./WorkerDashboard";
 export default async function AccountPage() {
   const session = await auth();
   if (!session?.user?.id) {
-    redirect("/file");
+    redirect("/");
   }
 
   const workerId = session.user.id;

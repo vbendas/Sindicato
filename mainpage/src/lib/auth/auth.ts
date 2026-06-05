@@ -164,10 +164,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     strategy: "jwt",
     maxAge: 7 * 24 * 60 * 60,
   },
-  pages: {
-    signIn: "/auth/verify",
-    error: "/auth/error",
-  },
   callbacks: {
     async jwt({ token, user }) {
       if (process.env.NODE_ENV === 'development') {

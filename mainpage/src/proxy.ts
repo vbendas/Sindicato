@@ -6,7 +6,7 @@ import { detectLocale } from "@/lib/i18n/detect-locale";
 
 const MAX_BODY_SIZE = 1024 * 1024 * 5;
 
-const PROTECTED_ROUTES = ["/account", "/file"];
+const PROTECTED_ROUTES = ["/account"];
 const API_PROTECTED_PREFIXES = ["/api/cases", "/api/register"];
 const API_PUBLIC_PREFIXES = ["/api/auth", "/api/ai", "/api/metrics", "/api/stats", "/api/track", "/api/cron", "/api/translate"];
 
