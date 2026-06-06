@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "cd mainpage && npm install && npm run build"
+  },
+  "dependencies": {
+    "next": "^16.0.0"
+  }
+}
