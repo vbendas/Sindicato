@@ -66,7 +66,7 @@ function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}
       role="button"
       tabIndex={0}
-      className="bg-white/10 backdrop-blur-sm p-5 sm:p-6 border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/25 hover:-translate-y-1 cursor-pointer break-inside-avoid flex flex-col mb-6"
+      className="bg-white/10 backdrop-blur-sm p-5 sm:p-6 border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/25 hover:-translate-y-1 cursor-pointer flex flex-col mb-6"
     >
       <div className="flex items-start justify-between gap-4 mb-2">
         <span
@@ -296,7 +296,7 @@ export default function LiveCaseFeed() {
               WebkitMaskImage: "linear-gradient(to bottom, black 65%, transparent 100%)",
             } : undefined}
           >
-            <div ref={masonryRef} className="columns-1 md:columns-2 lg:columns-3 gap-6">
+            <div ref={masonryRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {cases.map((item) => (
                 <CaseCard
                   key={item.id}
