@@ -409,7 +409,7 @@ export async function GET(request: Request) {
       if (preview) {
         return {
           ...base,
-          storyPreview: row.story.slice(0, 300),
+          storyPreview: row.story.slice(0, 600),
           translationLanguage: row.translationLanguage,
         };
       }

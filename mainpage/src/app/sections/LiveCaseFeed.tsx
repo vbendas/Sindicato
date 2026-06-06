@@ -67,7 +67,7 @@ function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}
       role="button"
       tabIndex={0}
-      className="bg-white/10 backdrop-blur-sm p-5 sm:p-6 border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/25 hover:-translate-y-1 cursor-pointer flex flex-col mb-6"
+      className="bg-white/10 backdrop-blur-sm p-5 sm:p-6 border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/25 hover:-translate-y-1 cursor-pointer flex flex-col"
     >
       <div className="flex items-start justify-between gap-4 mb-2">
         <span
@@ -123,7 +123,7 @@ function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
           sourceLanguage={item.translationLanguage ?? null}
           locale={locale}
           t={t}
-          className="text-sindicato-warm-white/65 text-sm leading-relaxed block line-clamp-6 [mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]"
+          className="text-sindicato-warm-white/65 text-sm leading-relaxed block line-clamp-10 [mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]"
           cacheKey={{ entityType: "case", entityId: item.id, field: "story" }}
         />
       </div>
@@ -301,7 +301,7 @@ export default function LiveCaseFeed() {
             <Masonry
               breakpointCols={{ default: 3, 1024: 2, 640: 1 }}
               className="flex gap-6"
-              columnClassName="flex flex-col gap-6"
+              columnClassName="flex flex-col gap-5"
             >
               {cases.map((item) => (
                 <CaseCard
