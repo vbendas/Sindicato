@@ -342,7 +342,16 @@
     "tagsTitle": "Fall-Tags",
     "tagsDescription": "Diese Tags helfen, Muster in deinem Fall zu beschreiben. Einige werden automatisch aus deinen Auswahlmöglichkeiten erkannt. Du kannst sie jetzt hinzufügen oder entfernen, oder nach der Einreichung bearbeiten.",
     "tagsAutoLabel": "auto",
-    "tagsAutoExplanation": "Tags mit (auto) wurden aus deinen Formulareingaben erkannt. Du kannst sie überschreiben."
+    "tagsAutoExplanation": "Tags mit (auto) wurden aus deinen Formulareingaben erkannt. Du kannst sie überschreiben.",
+    "donation": {
+      "title": "Help the next worker",
+      "body": "If Sindicato helped you, consider helping the next worker. Your contribution keeps the platform free and independent.",
+      "donate": "Donate",
+      "skip": "No thanks, go to my cases",
+      "processing": "Opening secure checkout…",
+      "back": "← Back",
+      "errorGeneric": "Something went wrong. Please try again."
+    }
   },
   "timeline": {
     "title": "Dokumentiere deine Interaktionen",

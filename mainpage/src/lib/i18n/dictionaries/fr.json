@@ -342,7 +342,16 @@
     "tagsTitle": "Étiquettes du dossier",
     "tagsDescription": "Ces étiquettes aident à décrire les schémas de votre dossier. Certaines sont détectées automatiquement à partir de vos sélections. Vous pouvez les ajouter ou les supprimer maintenant, ou les modifier après le dépôt.",
     "tagsAutoLabel": "automatique",
-    "tagsAutoExplanation": "Les étiquettes marquées (automatique) ont été détectées à partir de vos sélections de formulaire. Vous pouvez les modifier."
+    "tagsAutoExplanation": "Les étiquettes marquées (automatique) ont été détectées à partir de vos sélections de formulaire. Vous pouvez les modifier.",
+    "donation": {
+      "title": "Help the next worker",
+      "body": "If Sindicato helped you, consider helping the next worker. Your contribution keeps the platform free and independent.",
+      "donate": "Donate",
+      "skip": "No thanks, go to my cases",
+      "processing": "Opening secure checkout…",
+      "back": "← Back",
+      "errorGeneric": "Something went wrong. Please try again."
+    }
   },
   "timeline": {
     "title": "Enregistrez vos interactions",

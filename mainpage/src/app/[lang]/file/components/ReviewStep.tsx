@@ -1,10 +1,15 @@
 "use client";
 
 import { useState, useRef, useMemo, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { loadStripe, type Stripe as StripeJs } from "@stripe/stripe-js";
+import {
+  EmbeddedCheckoutProvider,
+  EmbeddedCheckout,
+} from "@stripe/react-stripe-js";
 import { useLocale, useT } from "@/lib/i18n";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import type { CaseFormData, TimelineEvent } from "../FilingWizard";
@@ -98,6 +103,18 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
   const [submitted, setSubmitted] = useState(false);
   const [caseId, setCaseId] = useState("");
 
+  // Donation state
+  const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? null;
+  const stripePromise = useMemo<Promise<StripeJs | null> | null>(() => {
+    if (!stripePublishableKey) return null;
+    return loadStripe(stripePublishableKey);
+  }, [stripePublishableKey]);
+  const [donateAmountEur, setDonateAmountEur] = useState<number>(25);
+  const [donateClientSecret, setDonateClientSecret] = useState<string | null>(null);
+  const [donateLoading, setDonateLoading] = useState(false);
+  const [donateError, setDonateError] = useState<string | null>(null);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
   // Inline email verification for unauthenticated users
   const [verifyStep, setVerifyStep] = useState<"idle" | "sent" | "verified">("idle");
   const [verifyEmail, setVerifyEmail] = useState("");
@@ -181,6 +198,13 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
     run();
     return () => { cancelled = true; };
   }, [caseData.story, timelineEvents]);
+
+  // Track donation CTA shown
+  useEffect(() => {
+    if (submitted && typeof window !== "undefined" && window.umami) {
+      window.umami.track("donation_cta_shown", { source: "filing_wizard" });
+    }
+  }, [submitted]);
 
   const toggleTag = (tagName: string) => {
     setSelectedTags((prev) => {
@@ -320,8 +344,6 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
 
       setCaseId(data.data?.id || "");
       setSubmitted(true);
-
-      setTimeout(() => router.push(`/${locale}/cases`), 4000);
     } catch {
       setSubmitError("Network error. Please try again.");
       turnstileRef.current?.reset();
@@ -330,6 +352,35 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
       setLoading(false);
     }
   }
+
+  async function handleDonateSubmit() {
+    setDonateError(null);
+    setDonateLoading(true);
+    window.umami?.track("donation_cta_donate_clicked", { amount_eur: String(donateAmountEur) });
+    try {
+      const res = await fetch("/api/donations/checkout", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          amountCents: donateAmountEur * 100,
+          locale,
+          returnTo: `/${locale}/cases`,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.ok) {
+        throw new Error(json.error || t("fileCase.donation.errorGeneric"));
+      }
+      setDonateClientSecret(json.data.clientSecret);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : t("fileCase.donation.errorGeneric");
+      setDonateError(message);
+    } finally {
+      setDonateLoading(false);
+    }
+  }
+
+  const DONATE_AMOUNTS = [5, 10, 25, 50, 100] as const;
 
   if (submitted) {
     return (
@@ -355,9 +406,113 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
               #{caseId.slice(-8).toUpperCase()}
             </p>
           )}
-          <p className="text-sindicato-warm-white/40 text-xs mt-6">
-            Redirecting to all cases...
-          </p>
+
+          {/* Donation CTA */}
+          <div className="mt-8 pt-6 border-t border-white/10">
+            <AnimatePresence mode="wait">
+              {!donateClientSecret ? (
+                <motion.div
+                  key="cta"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <h3 className="text-lg font-bold text-sindicato-warm-white font-[family-name:var(--font-barlow)] uppercase tracking-wider mb-2">
+                    {t("fileCase.donation.title")}
+                  </h3>
+                  <p className="text-sindicato-warm-white/50 text-sm mb-6 max-w-sm mx-auto">
+                    {t("fileCase.donation.body")}
+                  </p>
+
+                  <div className="flex justify-center gap-2 mb-6">
+                    {DONATE_AMOUNTS.map((amount) => {
+                      const active = donateAmountEur === amount;
+                      return (
+                        <button
+                          key={amount}
+                          type="button"
+                          onClick={() => setDonateAmountEur(amount)}
+                          className={`w-14 h-10 text-sm font-bold font-[family-name:var(--font-barlow)] border transition-colors ${
+                            active
+                              ? "bg-sindicato-warm-white text-sindicato-bordeaux border-sindicato-warm-white"
+                              : "bg-transparent text-sindicato-warm-white border-white/15 hover:border-white/40"
+                          }`}
+                          aria-pressed={active}
+                        >
+                          {amount}€
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {donateError && (
+                    <p className="text-red-300/90 text-sm mb-4" role="alert">
+                      {donateError}
+                    </p>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={handleDonateSubmit}
+                    disabled={donateLoading || !stripePublishableKey}
+                    className="w-full h-12 bg-sindicato-warm-white text-sindicato-bordeaux font-[family-name:var(--font-barlow)] font-bold uppercase tracking-wider text-sm hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed mb-4"
+                  >
+                    {donateLoading ? t("fileCase.donation.processing") : t("fileCase.donation.donate")}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      window.umami?.track("donation_cta_skipped", {});
+                      router.push(`/${locale}/cases`);
+                    }}
+                    className="text-sindicato-warm-white/40 hover:text-sindicato-warm-white/70 text-xs uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] font-bold"
+                  >
+                    {t("fileCase.donation.skip")} →
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="checkout"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <EmbeddedCheckoutProvider
+                    stripe={stripePromise}
+                    options={{
+                      clientSecret: donateClientSecret,
+                      onComplete: () => {
+                        // Payment completed — Stripe will redirect to return_url
+                      },
+                    }}
+                  >
+                    <EmbeddedCheckout />
+                  </EmbeddedCheckoutProvider>
+                  {checkoutError && (
+                    <p className="text-amber-300/90 text-sm mt-3 text-center" role="alert">
+                      {checkoutError}
+                    </p>
+                  )}
+                  <div className="pt-4 text-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDonateClientSecret(null);
+                        setDonateError(null);
+                        setCheckoutError(null);
+                      }}
+                      className="text-sindicato-warm-white/50 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] font-bold"
+                    >
+                      {t("fileCase.donation.back")}
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </motion.div>
     );

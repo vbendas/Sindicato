@@ -342,7 +342,16 @@
     "tagsTitle": "Case Tags",
     "tagsDescription": "These tags help describe patterns in your case. Some are detected automatically from your selections. You can add or remove them now, or edit after filing.",
     "tagsAutoLabel": "auto",
-    "tagsAutoExplanation": "Tags marked (auto) were detected from your form selections. You can override them."
+    "tagsAutoExplanation": "Tags marked (auto) were detected from your form selections. You can override them.",
+    "donation": {
+      "title": "Help the next worker",
+      "body": "If Sindicato helped you, consider helping the next worker. Your contribution keeps the platform free and independent.",
+      "donate": "Donate",
+      "skip": "No thanks, go to my cases",
+      "processing": "Opening secure checkout…",
+      "back": "← Back",
+      "errorGeneric": "Something went wrong. Please try again."
+    }
   },
   "timeline": {
     "title": "Log your interactions",
@@ -719,7 +728,8 @@
       "expiredBody": "This donation session has expired or is no longer valid. You can start a new donation from the donate page.",
       "share": "Share that you donated",
       "shareMessage": "I just donated to Sindicato — the platform that makes exploitation expensive.",
-      "homeCta": "← Back to home"
+      "homeCta": "← Back to home",
+      "fromCasesCta": "Continue to your cases →"
     }
   },
   "register": {

@@ -342,7 +342,16 @@
     "tagsTitle": "Tag del Caso",
     "tagsDescription": "Questi tag aiutano a descrivere gli schemi nel tuo caso. Alcuni vengono rilevati automaticamente dalle tue selezioni. Puoi aggiungerli o rimuoverli ora, oppure modificarli dopo la presentazione.",
     "tagsAutoLabel": "auto",
-    "tagsAutoExplanation": "I tag contrassegnati con (auto) sono stati rilevati dalle tue selezioni nel modulo. Puoi sovrascriverli."
+    "tagsAutoExplanation": "I tag contrassegnati con (auto) sono stati rilevati dalle tue selezioni nel modulo. Puoi sovrascriverli.",
+    "donation": {
+      "title": "Help the next worker",
+      "body": "If Sindicato helped you, consider helping the next worker. Your contribution keeps the platform free and independent.",
+      "donate": "Donate",
+      "skip": "No thanks, go to my cases",
+      "processing": "Opening secure checkout…",
+      "back": "← Back",
+      "errorGeneric": "Something went wrong. Please try again."
+    }
   },
   "timeline": {
     "title": "Registra le tue interazioni",

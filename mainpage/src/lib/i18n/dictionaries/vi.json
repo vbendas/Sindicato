@@ -342,7 +342,16 @@
     "tagsTitle": "Thẻ vụ việc",
     "tagsDescription": "Các thẻ này giúp mô tả mô hình trong vụ việc của bạn. Một số được phát hiện tự động từ các lựa chọn của bạn. Bạn có thể thêm hoặc xóa chúng ngay bây giờ, hoặc chỉnh sửa sau khi gửi.",
     "tagsAutoLabel": "tự động",
-    "tagsAutoExplanation": "Các thẻ đánh dấu (tự động) được phát hiện từ lựa chọn biểu mẫu của bạn. Bạn có thể ghi đè chúng."
+    "tagsAutoExplanation": "Các thẻ đánh dấu (tự động) được phát hiện từ lựa chọn biểu mẫu của bạn. Bạn có thể ghi đè chúng.",
+    "donation": {
+      "title": "Help the next worker",
+      "body": "If Sindicato helped you, consider helping the next worker. Your contribution keeps the platform free and independent.",
+      "donate": "Donate",
+      "skip": "No thanks, go to my cases",
+      "processing": "Opening secure checkout…",
+      "back": "← Back",
+      "errorGeneric": "Something went wrong. Please try again."
+    }
   },
   "timeline": {
     "title": "Ghi nhận các tương tác của bạn",

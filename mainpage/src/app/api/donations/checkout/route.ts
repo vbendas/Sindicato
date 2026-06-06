@@ -28,6 +28,11 @@ const checkoutSchema = z.object({
     .or(z.literal("").transform(() => undefined)),
   locale: z.string().min(2).max(10),
   turnstileToken: z.string().optional(),
+  returnTo: z
+    .string()
+    .max(255)
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
 });
 
 export async function POST(request: NextRequest) {
@@ -51,7 +56,7 @@ export async function POST(request: NextRequest) {
     return error("Invalid input", 400, parsed.error.flatten().fieldErrors);
   }
 
-  const { amountCents, donorEmail, donorName, locale, turnstileToken } =
+  const { amountCents, donorEmail, donorName, locale, turnstileToken, returnTo } =
     parsed.data;
 
   const isPreset = (PRESET_AMOUNTS_CENTS as readonly number[]).includes(
@@ -140,7 +145,7 @@ export async function POST(request: NextRequest) {
             donorName: donorName ?? "",
           },
         },
-        return_url: `${baseUrl}/${locale}/donate/thanks?session_id={CHECKOUT_SESSION_ID}`,
+        return_url: `${baseUrl}/${locale}/donate/thanks?session_id={CHECKOUT_SESSION_ID}${returnTo && /^\/[a-z]{2}(\/.*)?$/.test(returnTo) ? `&returnTo=${encodeURIComponent(returnTo)}` : ""}`,
       },
       { idempotencyKey: donationId }
     );

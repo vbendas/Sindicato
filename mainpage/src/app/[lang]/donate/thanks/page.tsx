@@ -5,7 +5,7 @@ import DonateThanksClient, { type DonateStatus } from "./DonateThanksClient";
 
 interface PageProps {
   params: Promise<{ lang: string }>;
-  searchParams: Promise<{ session_id?: string }>;
+  searchParams: Promise<{ session_id?: string; returnTo?: string }>;
 }
 
 function formatAmount(cents: number | null, currency: string, locale: string) {
@@ -23,7 +23,9 @@ function formatAmount(cents: number | null, currency: string, locale: string) {
 export default async function DonateThanksPage({ params, searchParams }: PageProps) {
   const { lang } = await params;
   const locale: Locale = isValidLocale(lang) ? lang : "en";
-  const { session_id } = await searchParams;
+  const { session_id, returnTo } = await searchParams;
+  const safeReturnTo =
+    returnTo && /^\/[a-z]{2}(\/.*)?$/.test(returnTo) ? returnTo : null;
 
   let status: DonateStatus = "missing";
   let amountFormatted: string | null = null;
@@ -58,6 +60,7 @@ export default async function DonateThanksPage({ params, searchParams }: PagePro
       amountFormatted={amountFormatted}
       customerEmail={customerEmail}
       baseUrl={baseUrl}
+      returnTo={safeReturnTo}
     />
   );
 }

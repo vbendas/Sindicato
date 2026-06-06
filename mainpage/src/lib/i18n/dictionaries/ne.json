@@ -342,7 +342,16 @@
     "tagsTitle": "केस ट्यागहरू",
     "tagsDescription": "यी ट्यागहरूले तपाईंको मुद्दामा ढाँचाहरू वर्णन गर्न मद्दत गर्छन्। केही तपाईंका चयनहरूबाट स्वचालित रूपमा पहिचानिन्छन्। तपाईंले तिनीहरूलाई अहिले थप्न वा हटाउन सक्नुहुन्छ, वा दर्ता गरेपछि सम्पादन गर्न सक्नुहुन्छ।",
     "tagsAutoLabel": "स्वचालित",
-    "tagsAutoExplanation": "(स्वचालित) चिन्ह लगाइएका ट्यागहरू तपाईंका फारम चयनहरूबाट पहिचानिएका हुन्। तपाईंले तिनीहरूलाई ओभरराइड गर्न सक्नुहुन्छ।"
+    "tagsAutoExplanation": "(स्वचालित) चिन्ह लगाइएका ट्यागहरू तपाईंका फारम चयनहरूबाट पहिचानिएका हुन्। तपाईंले तिनीहरूलाई ओभरराइड गर्न सक्नुहुन्छ।",
+    "donation": {
+      "title": "Help the next worker",
+      "body": "If Sindicato helped you, consider helping the next worker. Your contribution keeps the platform free and independent.",
+      "donate": "Donate",
+      "skip": "No thanks, go to my cases",
+      "processing": "Opening secure checkout…",
+      "back": "← Back",
+      "errorGeneric": "Something went wrong. Please try again."
+    }
   },
   "timeline": {
     "title": "आफ्ना अन्तरक्रियाहरू लग गर्नुहोस्",

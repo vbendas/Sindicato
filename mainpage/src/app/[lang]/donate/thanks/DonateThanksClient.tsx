@@ -13,6 +13,7 @@ interface DonateThanksClientProps {
   amountFormatted: string | null;
   customerEmail: string | null;
   baseUrl: string;
+  returnTo: string | null;
 }
 
 export default function DonateThanksClient({
@@ -20,6 +21,7 @@ export default function DonateThanksClient({
   amountFormatted,
   customerEmail,
   baseUrl,
+  returnTo,
 }: DonateThanksClientProps) {
   const t = useT();
   const shareUrl = `${baseUrl}/donate`;
@@ -126,6 +128,14 @@ export default function DonateThanksClient({
             transition={{ delay: 0.3, duration: 0.6 }}
             className="mt-12 pt-8 border-t border-white/10"
           >
+            {returnTo && (
+              <Link
+                href={returnTo}
+                className="bg-sindicato-warm-white text-sindicato-bordeaux px-6 py-3 font-bold uppercase tracking-wider text-sm font-[family-name:var(--font-barlow)] hover:bg-white transition-colors inline-block mb-4"
+              >
+                {t("donate.thanks.fromCasesCta")}
+              </Link>
+            )}
             <Link
               href="/"
               className="text-sindicato-warm-white/60 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] font-bold"

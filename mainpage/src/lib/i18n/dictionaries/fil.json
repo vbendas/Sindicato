@@ -342,7 +342,16 @@
     "tagsTitle": "Mga Tag ng Kaso",
     "tagsDescription": "Ang mga tag na ito ay nakakatulong na ilarawan ang mga pattern sa iyong kaso. Ang ilan ay awtomatikong natukoy mula sa iyong mga pinili. Maaari mo silang idagdag o alisin ngayon, o i-edit pagkatapos maghain.",
     "tagsAutoLabel": "auto",
-    "tagsAutoExplanation": "Ang mga tag na may (auto) ay natukoy mula sa iyong mga pinili sa form. Maaari mo silang i-override."
+    "tagsAutoExplanation": "Ang mga tag na may (auto) ay natukoy mula sa iyong mga pinili sa form. Maaari mo silang i-override.",
+    "donation": {
+      "title": "Help the next worker",
+      "body": "If Sindicato helped you, consider helping the next worker. Your contribution keeps the platform free and independent.",
+      "donate": "Donate",
+      "skip": "No thanks, go to my cases",
+      "processing": "Opening secure checkout…",
+      "back": "← Back",
+      "errorGeneric": "Something went wrong. Please try again."
+    }
   },
   "timeline": {
     "title": "Itala ang iyong mga interaksyon",

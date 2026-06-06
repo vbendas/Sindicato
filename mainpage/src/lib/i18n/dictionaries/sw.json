@@ -342,7 +342,16 @@
     "tagsTitle": "Lebo za Kesi",
     "tagsDescription": "Lebo hizi zinasaidia kuelezea mifumo katika kesi yako. Baadhi hugunduliwa kiotomatiki kutoka kwa chaguzi zako. Unaweza kuongeza au kuondoa sasa, au hariri baada ya kuwasilisha.",
     "tagsAutoLabel": "kiomatiki",
-    "tagsAutoExplanation": "Lebo zilizo na alama (kiomatiki) ziligunduliwa kutoka kwa chaguzi zako za fomu. Unaweza kuzibatilisha."
+    "tagsAutoExplanation": "Lebo zilizo na alama (kiomatiki) ziligunduliwa kutoka kwa chaguzi zako za fomu. Unaweza kuzibatilisha.",
+    "donation": {
+      "title": "Help the next worker",
+      "body": "If Sindicato helped you, consider helping the next worker. Your contribution keeps the platform free and independent.",
+      "donate": "Donate",
+      "skip": "No thanks, go to my cases",
+      "processing": "Opening secure checkout…",
+      "back": "← Back",
+      "errorGeneric": "Something went wrong. Please try again."
+    }
   },
   "timeline": {
     "title": "Andika mwingiliano wako",

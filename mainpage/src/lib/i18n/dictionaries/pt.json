@@ -342,7 +342,16 @@
     "tagsTitle": "Etiquetas do Caso",
     "tagsDescription": "Essas etiquetas ajudam a descrever padrões no seu caso. Algumas são detectadas automaticamente a partir das suas seleções. Você pode adicioná-las ou removê-las agora, ou editar depois de registrar.",
     "tagsAutoLabel": "automático",
-    "tagsAutoExplanation": "Etiquetas marcadas como (automático) foram detectadas a partir das seleções do formulário. Você pode alterá-las."
+    "tagsAutoExplanation": "Etiquetas marcadas como (automático) foram detectadas a partir das seleções do formulário. Você pode alterá-las.",
+    "donation": {
+      "title": "Help the next worker",
+      "body": "If Sindicato helped you, consider helping the next worker. Your contribution keeps the platform free and independent.",
+      "donate": "Donate",
+      "skip": "No thanks, go to my cases",
+      "processing": "Opening secure checkout…",
+      "back": "← Back",
+      "errorGeneric": "Something went wrong. Please try again."
+    }
   },
   "timeline": {
     "title": "Registre suas interações",
