@@ -6,6 +6,14 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useT, useLocale } from "@/lib/i18n";
 import { TranslatedCaseStory } from "@/components/case/TranslatedCaseStory";
+import { getTagSeverity, type TagSeverity } from "@/lib/ai/tag-taxonomy";
+
+const TAG_SEVERITY_COLORS: Record<TagSeverity, { bg: string; text: string; border: string }> = {
+  green: { bg: "bg-emerald-500/10", text: "text-emerald-400", border: "border-emerald-500/20" },
+  yellow: { bg: "bg-amber-500/10", text: "text-amber-400", border: "border-amber-500/20" },
+  orange: { bg: "bg-orange-500/10", text: "text-orange-400", border: "border-orange-500/20" },
+  red: { bg: "bg-rose-500/10", text: "text-rose-400", border: "border-rose-500/20" },
+};
 
 interface CaseItem {
   id: string;
@@ -92,14 +100,18 @@ function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
 
       {item.tags && item.tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-2">
-          {item.tags.slice(0, 3).map((tag, i) => (
-            <span
-              key={i}
-              className="text-[10px] px-1.5 py-0.5 bg-white/8 text-sindicato-warm-white/50 font-[family-name:var(--font-jetbrains)]"
-            >
-              {tag.tagName}
-            </span>
-          ))}
+          {item.tags.slice(0, 3).map((tag, i) => {
+            const severity = getTagSeverity(tag.tagName);
+            const colors = TAG_SEVERITY_COLORS[severity];
+            return (
+              <span
+                key={i}
+                className={`text-[10px] px-1.5 py-0.5 border font-[family-name:var(--font-jetbrains)] ${colors.bg} ${colors.text} ${colors.border}`}
+              >
+                {tag.tagName}
+              </span>
+            );
+          })}
         </div>
       )}
 
