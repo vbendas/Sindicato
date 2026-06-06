@@ -9,6 +9,7 @@ type Dictionary = Record<string, unknown>;
 interface LocaleContextValue {
   locale: Locale;
   dictionary: Dictionary;
+  fallbackDictionary: Dictionary;
   setLocale: (locale: Locale) => void;
   t: (key: string, params?: Record<string, string | number>) => string;
 }
@@ -18,10 +19,12 @@ const LocaleContext = createContext<LocaleContextValue | null>(null);
 export function LocaleProvider({
   locale,
   dictionary,
+  fallbackDictionary,
   children,
 }: {
   locale: Locale;
   dictionary: Dictionary;
+  fallbackDictionary: Dictionary;
   children: ReactNode;
 }) {
   const router = useRouter();
@@ -55,16 +58,21 @@ export function LocaleProvider({
 
   const t = useCallback(
     (key: string, params?: Record<string, string | number>): string => {
-      const keys = key.split(".");
-      let value: unknown = dictionary;
-      for (const k of keys) {
-        if (value && typeof value === "object" && k in (value as Record<string, unknown>)) {
-          value = (value as Record<string, unknown>)[k];
-        } else {
-          return key;
+      const resolve = (dict: Dictionary): string | null => {
+        const segments = key.split(".");
+        let value: unknown = dict;
+        for (const k of segments) {
+          if (value && typeof value === "object" && k in (value as Record<string, unknown>)) {
+            value = (value as Record<string, unknown>)[k];
+          } else {
+            return null;
+          }
         }
-      }
-      if (typeof value !== "string") return key;
+        return typeof value === "string" ? value : null;
+      };
+
+      const value = resolve(dictionary) ?? resolve(fallbackDictionary);
+      if (value === null) return key;
 
       if (!params) return value;
 
@@ -72,12 +80,12 @@ export function LocaleProvider({
         return params[paramKey] !== undefined ? String(params[paramKey]) : `{${paramKey}}`;
       });
     },
-    [dictionary]
+    [dictionary, fallbackDictionary]
   );
 
   const contextValue = useMemo(
-    () => ({ locale, dictionary, setLocale, t }),
-    [locale, dictionary, setLocale, t]
+    () => ({ locale, dictionary, fallbackDictionary, setLocale, t }),
+    [locale, dictionary, fallbackDictionary, setLocale, t]
   );
 
   return (

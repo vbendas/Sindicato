@@ -92,6 +92,8 @@ export default async function RootLayout({
   const { lang } = await params;
   const locale = (locales.includes(lang as Locale) ? lang : "en") as Locale;
   const dictionary = await getDictionary(locale);
+  const fallbackDictionary =
+    locale === "en" ? dictionary : await getDictionary("en");
   const isRTL = isRTLLocale(locale);
 
   const needsArabicFont = locale === "ar";
@@ -125,7 +127,11 @@ export default async function RootLayout({
             onLoad={onUmamiLoaded}
           />
         )}
-        <LocaleProvider locale={locale} dictionary={dictionary}>
+        <LocaleProvider
+          locale={locale}
+          dictionary={dictionary}
+          fallbackDictionary={fallbackDictionary}
+        >
           <AuthProvider>
             <ClerkWidgetProvider>
               <LanguageSuggestionBanner />
