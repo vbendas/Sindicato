@@ -8,6 +8,7 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/sections/Footer";
 import { useT, useLocale } from "@/lib/i18n";
 import { TranslatedCaseStory } from "@/components/case/TranslatedCaseStory";
+import { getTagSeverity, type TagSeverity } from "@/lib/ai/tag-taxonomy";
 
 interface CaseCard {
   id: string;
@@ -24,6 +25,7 @@ interface CaseCard {
   vertical: string;
   createdAt: string;
   resolutionStatus: string;
+  tags?: { tagName: string; category: string }[];
   company: {
     name: string;
     slug: string;
@@ -43,6 +45,13 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   GBP: "\u00a3",
   BRL: "R$",
   INR: "\u20b9",
+};
+
+const TAG_SEVERITY_COLORS: Record<TagSeverity, { bg: string; text: string; border: string }> = {
+  green: { bg: "bg-emerald-500/10", text: "text-emerald-400", border: "border-emerald-500/20" },
+  yellow: { bg: "bg-amber-500/10", text: "text-amber-400", border: "border-amber-500/20" },
+  orange: { bg: "bg-orange-500/10", text: "text-orange-400", border: "border-orange-500/20" },
+  red: { bg: "bg-rose-500/10", text: "text-rose-400", border: "border-rose-500/20" },
 };
 
 interface CaseCardProps {
@@ -88,6 +97,23 @@ function WallCaseCard({ c, locale, t, router }: CaseCardProps) {
         >
           {c.company.name}
         </Link>
+
+        {c.tags && c.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {c.tags.slice(0, 3).map((tag, i) => {
+              const severity = getTagSeverity(tag.tagName);
+              const colors = TAG_SEVERITY_COLORS[severity];
+              return (
+                <span
+                  key={i}
+                  className={`text-[10px] px-1.5 py-0.5 border font-[family-name:var(--font-jetbrains)] ${colors.bg} ${colors.text} ${colors.border}`}
+                >
+                  {tag.tagName}
+                </span>
+              );
+            })}
+          </div>
+        )}
 
         {c.project && (
           <p className="text-sindicato-cream/40 text-xs mb-3">
