@@ -7,7 +7,6 @@ import { useRouter, usePathname } from "next/navigation";
 import { useT, useLocale } from "@/lib/i18n";
 import { TranslatedCaseStory } from "@/components/case/TranslatedCaseStory";
 import { getTagSeverity, type TagSeverity } from "@/lib/ai/tag-taxonomy";
-import { truncateAtWord } from "@/lib/utils/text";
 
 const TAG_SEVERITY_COLORS: Record<TagSeverity, { bg: string; text: string; border: string }> = {
   green: { bg: "bg-emerald-500/10", text: "text-emerald-400", border: "border-emerald-500/20" },
@@ -67,7 +66,7 @@ function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}
       role="button"
       tabIndex={0}
-      className="bg-white/10 backdrop-blur-sm p-5 sm:p-6 border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/25 hover:-translate-y-1 cursor-pointer flex flex-col h-[420px]"
+      className="bg-white/10 backdrop-blur-sm p-5 sm:p-6 border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/25 hover:-translate-y-1 cursor-pointer break-inside-avoid flex flex-col mb-6"
     >
       <div className="flex items-start justify-between gap-4 mb-2">
         <span
@@ -116,17 +115,15 @@ function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
         </div>
       )}
 
-      <div className="flex-1 min-h-0 overflow-hidden">
-        <TranslatedCaseStory
-          text={truncateAtWord(item.storyPreview || item.story || "", 400)}
-          cachedTranslation={item.storyTranslated ?? null}
-          sourceLanguage={item.translationLanguage ?? null}
-          locale={locale}
-          t={t}
-          className="text-sindicato-warm-white/65 text-sm leading-relaxed block line-clamp-7 [mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)]"
-          cacheKey={{ entityType: "case", entityId: item.id, field: "story" }}
-        />
-      </div>
+      <TranslatedCaseStory
+        text={item.storyPreview || item.story || ""}
+        cachedTranslation={item.storyTranslated ?? null}
+        sourceLanguage={item.translationLanguage ?? null}
+        locale={locale}
+        t={t}
+        className="text-sindicato-warm-white/65 text-sm flex-1 leading-relaxed block"
+        cacheKey={{ entityType: "case", entityId: item.id, field: "story" }}
+      />
 
       <div className="mt-auto pt-2 flex items-center justify-between">
         <span className="text-sindicato-warm-white/40 text-xs font-[family-name:var(--font-jetbrains)]">
@@ -297,7 +294,7 @@ export default function LiveCaseFeed() {
               WebkitMaskImage: "linear-gradient(to bottom, black 65%, transparent 100%)",
             } : undefined}
           >
-            <div ref={masonryRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div ref={masonryRef} className="columns-1 md:columns-2 lg:columns-3 gap-6">
               {cases.map((item) => (
                 <CaseCard
                   key={item.id}
