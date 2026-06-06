@@ -1,7 +1,7 @@
 import { franc } from "franc";
 import { db } from "@/lib/db/client";
 import { cases, companies, caseTimelineEvents, caseTags } from "@/lib/db/schema";
-import { eq, and, desc, count, ilike } from "drizzle-orm";
+import { eq, and, desc, count, ilike, inArray } from "drizzle-orm";
 import { success, error, getClientIp } from "@/lib/utils/api";
 import { rateLimit } from "@/lib/auth/rate-limit";
 import { caseSubmissionV2Schema } from "@/lib/utils/schemas";
@@ -270,8 +270,14 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
+  const ip = getClientIp(request);
+  const { allowed } = await rateLimit(`cases-list:${ip}`, 60, 60_000);
+  if (!allowed) return error("Too many requests", 429);
+
+  const { searchParams } = new URL(request.url);
+  const preview = searchParams.get("preview") === "true";
+
   try {
-    const { searchParams } = new URL(request.url);
     const page = Math.max(1, Number(searchParams.get("page")) || 1);
     const limit = Math.min(100, Math.max(1, Number(searchParams.get("limit")) || 20));
     const companySlug = searchParams.get("company") || undefined;
@@ -325,28 +331,58 @@ export async function GET(request: Request) {
       .limit(limit)
       .offset(offset);
 
-    const data = rows.map((row) => ({
-      id: row.id,
-      displayName: redactName(row.displayName),
-      country: row.country,
-      project: row.project,
-      dateRange: row.dateRange,
-      amountOwed: row.amountOwed,
-      currency: row.currency,
-      ageRange: row.ageRange,
-      sex: row.sex,
-      contactAlias: row.contactAlias,
-      story: row.story,
-      storyTranslated: row.storyTranslated,
-      translationLanguage: row.translationLanguage,
-      vertical: row.vertical,
-      resolutionStatus: row.resolutionStatus,
-      createdAt: row.createdAt,
-      company: {
-        name: row.companyName,
-        slug: row.companySlug,
-      },
-    }));
+    const caseIds = rows.map((r) => r.id);
+    const tagRows = caseIds.length > 0
+      ? await db
+          .select({ caseId: caseTags.caseId, tagName: caseTags.tagName, category: caseTags.category })
+          .from(caseTags)
+          .where(inArray(caseTags.caseId, caseIds))
+      : [];
+
+    const tagsByCase = new Map<string, { tagName: string; category: string }[]>();
+    for (const tag of tagRows) {
+      const existing = tagsByCase.get(tag.caseId) ?? [];
+      existing.push({ tagName: tag.tagName, category: tag.category });
+      tagsByCase.set(tag.caseId, existing);
+    }
+
+    const data = rows.map((row) => {
+      const base = {
+        id: row.id,
+        displayName: redactName(row.displayName),
+        country: row.country,
+        dateRange: row.dateRange,
+        amountOwed: row.amountOwed,
+        currency: row.currency,
+        vertical: row.vertical,
+        resolutionStatus: row.resolutionStatus,
+        createdAt: row.createdAt,
+        company: {
+          name: row.companyName,
+          slug: row.companySlug,
+        },
+        tags: tagsByCase.get(row.id) ?? [],
+      };
+
+      if (preview) {
+        return {
+          ...base,
+          storyPreview: row.story.slice(0, 300),
+          translationLanguage: row.translationLanguage,
+        };
+      }
+
+      return {
+        ...base,
+        project: row.project,
+        ageRange: row.ageRange,
+        sex: row.sex,
+        contactAlias: row.contactAlias,
+        story: row.story,
+        storyTranslated: row.storyTranslated,
+        translationLanguage: row.translationLanguage,
+      };
+    });
 
     return success({
       cases: data,

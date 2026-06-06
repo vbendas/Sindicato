@@ -126,7 +126,7 @@ interface CompanyCasePreviewCardProps {
 function CompanyCasePreviewCard({ item, locale, t }: CompanyCasePreviewCardProps) {
   return (
     <Link key={item.id} href={`/${locale}/cases/${item.id}`}>
-      <div className="bg-white/5 border border-white/10 p-4 hover:bg-white/10 transition-colors">
+      <div className="bg-sindicato-charcoal/50 border border-white/10 p-4 hover:bg-sindicato-charcoal/70 transition-colors">
         <div className="flex items-start justify-between gap-4 mb-1">
           <div className="flex items-center gap-2 min-w-0">
             <span className="text-sindicato-warm-white font-medium text-sm truncate">
@@ -339,7 +339,7 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
-                className="mb-8 bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-lg"
+                className="mb-8 bg-sindicato-charcoal/50 backdrop-blur-sm border border-white/10 p-6 rounded-lg"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div>

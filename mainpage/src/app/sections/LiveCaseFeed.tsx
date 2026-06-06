@@ -13,9 +13,10 @@ interface CaseItem {
   country: string;
   amountOwed: string;
   currency: string;
-  story: string;
-  storyTranslated: string | null;
-  translationLanguage: string | null;
+  story?: string;
+  storyPreview?: string;
+  storyTranslated?: string | null;
+  translationLanguage?: string | null;
   vertical: "remote" | "gig";
   resolutionStatus: string;
   createdAt: string;
@@ -23,6 +24,7 @@ interface CaseItem {
     name: string;
     slug: string;
   };
+  tags?: { tagName: string; category: string }[];
 }
 
 type TabValue = "all" | "remote" | "gig";
@@ -53,9 +55,10 @@ function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
   return (
     <div
       onClick={onClick}
-      onKeyDown={(e) => { if (e.key === "Enter") onClick(); }}
-      role="presentation"
-      className="break-inside-avoid mb-5 bg-white/10 backdrop-blur-sm p-5 sm:p-6 border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/25 hover:-translate-y-1 cursor-pointer"
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}
+      role="button"
+      tabIndex={0}
+      className="bg-white/10 backdrop-blur-sm p-5 sm:p-6 border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/25 hover:-translate-y-1 cursor-pointer flex flex-col h-[320px]"
     >
       <div className="flex items-start justify-between gap-4 mb-2">
         <span
@@ -87,17 +90,30 @@ function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
         </Link>
       </div>
 
+      {item.tags && item.tags.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-2">
+          {item.tags.slice(0, 3).map((tag, i) => (
+            <span
+              key={i}
+              className="text-[10px] px-1.5 py-0.5 bg-white/8 text-sindicato-warm-white/50 font-[family-name:var(--font-jetbrains)]"
+            >
+              {tag.tagName}
+            </span>
+          ))}
+        </div>
+      )}
+
       <TranslatedCaseStory
-        text={item.story}
-        cachedTranslation={item.storyTranslated}
-        sourceLanguage={item.translationLanguage}
+        text={item.storyPreview || item.story || ""}
+        cachedTranslation={item.storyTranslated ?? null}
+        sourceLanguage={item.translationLanguage ?? null}
         locale={locale}
         t={t}
-        className="text-sindicato-warm-white/65 text-sm leading-relaxed block"
+        className="text-sindicato-warm-white/65 text-sm leading-relaxed block flex-1 line-clamp-5"
         cacheKey={{ entityType: "case", entityId: item.id, field: "story" }}
       />
 
-      <div className="mt-2 flex items-center justify-between">
+      <div className="mt-auto pt-2 flex items-center justify-between">
         <span className="text-sindicato-warm-white/40 text-xs font-[family-name:var(--font-jetbrains)]">
           {formatTimeAgo(item.createdAt, t)}
         </span>
@@ -112,7 +128,7 @@ function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
   );
 }
 
-const MASONRY_MAX_HEIGHT = 1380;
+const MASONRY_MAX_HEIGHT = 1420;
 
 export default function LiveCaseFeed() {
   const t = useT();
@@ -144,7 +160,7 @@ export default function LiveCaseFeed() {
     try {
       setLoading(true);
       setError(false);
-      const params = new URLSearchParams({ limit: "12", sort: "newest" });
+      const params = new URLSearchParams({ limit: "12", sort: "newest", preview: "true" });
       if (tab !== "all") params.set("vertical", tab);
       const response = await fetch(`/api/cases?${params}`, { signal });
       if (response.ok) {
@@ -167,14 +183,18 @@ export default function LiveCaseFeed() {
     
     // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
     void fetchCases(activeTab, controller.signal);
-    const interval = setInterval(() => fetchCases(activeTab), 30000);
+    const interval = setInterval(() => {
+      if (document.visibilityState === "visible") {
+        void fetchCases(activeTab);
+      }
+    }, 60000);
     
     return () => {
       clearTimeout(timeoutId);
       controller.abort();
       clearInterval(interval);
     };
-  }, [fetchCases, activeTab, pathname]);
+  }, [fetchCases, activeTab]);
 
   // Refetch on browser back/forward navigation
   useEffect(() => {
@@ -262,7 +282,7 @@ export default function LiveCaseFeed() {
               WebkitMaskImage: "linear-gradient(to bottom, black 65%, transparent 100%)",
             } : undefined}
           >
-            <div ref={masonryRef} className="columns-1 md:columns-2 lg:columns-3 gap-6">
+            <div ref={masonryRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {cases.map((item) => (
                 <CaseCard
                   key={item.id}
