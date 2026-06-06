@@ -1,48 +1,39 @@
 "use client";
 
-import { useState } from "react";
-import { Command, CommandInput, CommandList, CommandItem, CommandEmpty } from "@/components/ui/command";
+import { useState, useEffect } from "react";
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandItem,
+  CommandEmpty,
+  CommandGroup,
+  CommandSeparator,
+} from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon, PlusIcon } from "lucide-react";
 import {
   fileDropdownCommandClass,
   fileDropdownContentClass,
   fileDropdownItemClass,
 } from "../fileFormStyles";
-
-const KNOWN_COMPANIES = [
-  { slug: "uber", name: "Uber", vertical: "gig" },
-  { slug: "upwork", name: "Upwork", vertical: "remote" },
-  { slug: "fiverr", name: "Fiverr", vertical: "remote" },
-  { slug: "alignerr", name: "Alignerr", vertical: "remote" },
-  { slug: "doordash", name: "DoorDash", vertical: "gig" },
-  { slug: "instacart", name: "Instacart", vertical: "gig" },
-  { slug: "lyft", name: "Lyft", vertical: "gig" },
-  { slug: "taskrabbit", name: "TaskRabbit", vertical: "gig" },
-  { slug: "remotasks", name: "Remotasks", vertical: "remote" },
-  { slug: "scale-ai", name: "Scale AI", vertical: "remote" },
-  { slug: "appen", name: "Appen", vertical: "remote" },
-  { slug: "amazon-mechanical-turk", name: "Amazon Mechanical Turk", vertical: "remote" },
-  { slug: "clickworker", name: "Clickworker", vertical: "remote" },
-  { slug: "grubhub", name: "Grubhub", vertical: "gig" },
-  { slug: "shipt", name: "Shipt", vertical: "gig" },
-  { slug: "freelancer", name: "Freelancer.com", vertical: "remote" },
-  { slug: "toptal", name: "Toptal", vertical: "remote" },
-  { slug: "99designs", name: "99designs", vertical: "remote" },
-  { slug: "crowdworks", name: "CrowdWorks", vertical: "remote" },
-  { slug: "cloudworkers", name: "CloudWorkers", vertical: "remote" },
-  { slug: "spare5", name: "Spare5", vertical: "remote" },
-  { slug: "neevo", name: "Neevo", vertical: "remote" },
-];
+import { useT } from "@/lib/i18n";
 
 function normalizeToSlug(name: string): string {
   return name
     .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
+}
+
+interface CompanyOption {
+  slug: string;
+  name: string;
+  vertical: string;
+  caseCount: number;
 }
 
 interface CompanyComboboxProps {
@@ -52,22 +43,61 @@ interface CompanyComboboxProps {
 }
 
 export default function CompanyCombobox({ value, displayName, onChange }: CompanyComboboxProps) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [companies, setCompanies] = useState<CompanyOption[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
-  const filtered = KNOWN_COMPANIES.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase())
-  );
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/companies?limit=200")
+      .then((r) => r.json())
+      .then((json) => {
+        if (cancelled) return;
+        if (json?.ok && Array.isArray(json.data?.companies)) {
+          setCompanies(json.data.companies);
+        } else {
+          setLoadError("loadFailed");
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setLoadError("loadFailed");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-  const hasExactMatch = KNOWN_COMPANIES.some(
-    (c) => c.name.toLowerCase() === search.toLowerCase()
+  const trimmed = search.trim();
+  const filtered = trimmed
+    ? companies.filter((c) => c.name.toLowerCase().includes(trimmed.toLowerCase()))
+    : companies;
+
+  const hasExactMatch = filtered.some(
+    (c) => c.name.toLowerCase() === trimmed.toLowerCase()
   );
-  const showCustom = search.trim().length > 0 && !hasExactMatch;
+  const showAdd = trimmed.length > 0 && !hasExactMatch;
 
   function handleSelect(slug: string, name: string) {
     onChange(slug, name);
     setOpen(false);
     setSearch("");
+  }
+
+  function handleAdd() {
+    handleSelect(normalizeToSlug(trimmed), trimmed);
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter" && showAdd) {
+      e.preventDefault();
+      handleAdd();
+    }
   }
 
   const triggerClass =
@@ -80,7 +110,7 @@ export default function CompanyCombobox({ value, displayName, onChange }: Compan
         aria-label="Select company"
       >
         <span className={displayName ? "text-sindicato-warm-white" : "text-sindicato-warm-white/40"}>
-          {displayName || "Select company..."}
+          {displayName || t("fileCase.company") + "..."}
         </span>
         <ChevronDownIcon className="w-4 h-4 text-sindicato-warm-white/40 flex-shrink-0" />
       </PopoverTrigger>
@@ -92,35 +122,56 @@ export default function CompanyCombobox({ value, displayName, onChange }: Compan
       >
         <Command shouldFilter={false} className={fileDropdownCommandClass}>
           <CommandInput
-            placeholder="Search companies..."
+            placeholder={t("fileCase.searchCompanies")}
             value={search}
             onValueChange={setSearch}
+            onKeyDown={handleKeyDown}
             className="text-sindicato-warm-white placeholder:text-sindicato-warm-white/30"
           />
           <CommandList>
-            <CommandEmpty className="text-sindicato-warm-white/60 py-4 text-center text-sm">No companies found.</CommandEmpty>
-            {filtered.map((company) => (
-<CommandItem
-                 key={company.slug}
-                 value={company.slug}
-                 onSelect={() => handleSelect(company.slug, company.name)}
-                 data-checked={value === company.slug}
-                 className={`${fileDropdownItemClass} data-[checked=true]:bg-sindicato-bordeaux/30`}
-               >
-                 {company.name}
-               </CommandItem>
-            ))}
-{showCustom && (
-               <CommandItem
-                 value={`custom:${search}`}
-                 onSelect={() =>
-                   handleSelect(normalizeToSlug(search), search.trim())
-                 }
-                 className={`text-sindicato-bordeaux ${fileDropdownItemClass}`}
-               >
-                  Use &quot;{search.trim()}&quot;
-               </CommandItem>
-             )}
+            {loading && (
+              <CommandEmpty className="text-sindicato-warm-white/60 py-4 text-center text-sm">
+                {t("fileCase.loadingCompanies")}
+              </CommandEmpty>
+            )}
+            {!loading && loadError && (
+              <CommandEmpty className="text-sindicato-warm-white/60 py-4 text-center text-sm">
+                {t("fileCase.companiesLoadFailed")}
+              </CommandEmpty>
+            )}
+            {!loading && !loadError && filtered.length === 0 && !showAdd && (
+              <CommandEmpty className="text-sindicato-warm-white/60 py-4 text-center text-sm">
+                {t("fileCase.noCompaniesFound")}
+              </CommandEmpty>
+            )}
+            {!loading && !loadError && filtered.length > 0 && (
+              <CommandGroup heading={t("fileCase.existingCompanies")}>
+                {filtered.map((company) => (
+                  <CommandItem
+                    key={company.slug}
+                    value={company.slug}
+                    onSelect={() => handleSelect(company.slug, company.name)}
+                    data-checked={value === company.slug}
+                    className={`${fileDropdownItemClass} data-[checked=true]:bg-sindicato-bordeaux/30`}
+                  >
+                    {company.name}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
+            {showAdd && (
+              <>
+                {filtered.length > 0 && <CommandSeparator />}
+                <CommandItem
+                  value="__add__"
+                  onSelect={handleAdd}
+                  className={`text-sindicato-bordeaux ${fileDropdownItemClass}`}
+                >
+                  <PlusIcon className="w-3.5 h-3.5 mr-1.5" />
+                  {t("fileCase.addCompanyNamed", { name: trimmed })}
+                </CommandItem>
+              </>
+            )}
           </CommandList>
         </Command>
       </PopoverContent>

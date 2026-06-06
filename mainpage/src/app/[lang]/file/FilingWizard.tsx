@@ -89,6 +89,25 @@ export default function FilingWizard() {
       .catch(() => {});
   }, []);
 
+  useEffect(() => {
+    const slug = searchParams.get("company");
+    if (!slug || caseData.companyName) return;
+    fetch(`/api/companies?q=${encodeURIComponent(slug)}&limit=200`)
+      .then((r) => r.json())
+      .then((json) => {
+        const list: Array<{ slug: string; name: string }> = json?.data?.companies ?? [];
+        const match = list.find(
+          (c) => c.slug.toLowerCase() === slug.toLowerCase()
+        );
+        if (match) {
+          setCaseData((prev) =>
+            prev.companyName ? prev : { ...prev, companyName: match.name }
+          );
+        }
+      })
+      .catch(() => {});
+  }, [searchParams, caseData.companyName]);
+
 
   return (
     <div className="min-h-screen bg-sindicato-charcoal">
