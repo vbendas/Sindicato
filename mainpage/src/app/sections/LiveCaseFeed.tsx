@@ -7,6 +7,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useT, useLocale } from "@/lib/i18n";
 import { TranslatedCaseStory } from "@/components/case/TranslatedCaseStory";
 import { getTagSeverity, type TagSeverity } from "@/lib/ai/tag-taxonomy";
+import Masonry from "react-masonry-css";
 
 const TAG_SEVERITY_COLORS: Record<TagSeverity, { bg: string; text: string; border: string }> = {
   green: { bg: "bg-emerald-500/10", text: "text-emerald-400", border: "border-emerald-500/20" },
@@ -66,7 +67,7 @@ function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}
       role="button"
       tabIndex={0}
-      className="bg-white/10 backdrop-blur-sm p-5 sm:p-6 border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/25 hover:-translate-y-1 cursor-pointer break-inside-avoid flex flex-col mb-6"
+      className="bg-white/10 backdrop-blur-sm p-5 sm:p-6 border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/25 hover:-translate-y-1 cursor-pointer flex flex-col mb-6"
     >
       <div className="flex items-start justify-between gap-4 mb-2">
         <span
@@ -288,6 +289,7 @@ export default function LiveCaseFeed() {
 
         {cases.length > 0 && (
           <div
+            ref={masonryRef}
             className="relative"
             style={isOverflowing ? {
               maxHeight: `${MASONRY_MAX_HEIGHT}px`,
@@ -296,7 +298,11 @@ export default function LiveCaseFeed() {
               WebkitMaskImage: "linear-gradient(to bottom, black 65%, transparent 100%)",
             } : undefined}
           >
-            <div ref={masonryRef} className="columns-1 md:columns-2 lg:columns-3 gap-6">
+            <Masonry
+              breakpointCols={{ default: 3, 1024: 2, 640: 1 }}
+              className="flex gap-6"
+              columnClassName="flex flex-col gap-6"
+            >
               {cases.map((item) => (
                 <CaseCard
                   key={item.id}
@@ -307,7 +313,7 @@ export default function LiveCaseFeed() {
                   onClick={() => router.push(`/${locale}/cases/${item.id}`)}
                 />
               ))}
-            </div>
+            </Masonry>
           </div>
         )}
 
