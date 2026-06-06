@@ -67,7 +67,7 @@ function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}
       role="button"
       tabIndex={0}
-      className="bg-white/10 backdrop-blur-sm p-5 sm:p-6 border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/25 hover:-translate-y-1 cursor-pointer flex flex-col h-[320px]"
+      className="bg-white/10 backdrop-blur-sm p-5 sm:p-6 border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/25 hover:-translate-y-1 cursor-pointer flex flex-col h-[420px]"
     >
       <div className="flex items-start justify-between gap-4 mb-2">
         <span
@@ -118,12 +118,12 @@ function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
 
       <div className="flex-1 min-h-0 overflow-hidden">
         <TranslatedCaseStory
-          text={truncateAtWord(item.storyPreview || item.story || "", 280)}
+          text={truncateAtWord(item.storyPreview || item.story || "", 400)}
           cachedTranslation={item.storyTranslated ?? null}
           sourceLanguage={item.translationLanguage ?? null}
           locale={locale}
           t={t}
-          className="text-sindicato-warm-white/65 text-sm leading-relaxed block line-clamp-5 [mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)]"
+          className="text-sindicato-warm-white/65 text-sm leading-relaxed block line-clamp-7 [mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)]"
           cacheKey={{ entityType: "case", entityId: item.id, field: "story" }}
         />
       </div>
@@ -143,7 +143,7 @@ function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
   );
 }
 
-const MASONRY_MAX_HEIGHT = 1420;
+const MASONRY_MAX_HEIGHT = 1800;
 
 export default function LiveCaseFeed() {
   const t = useT();
