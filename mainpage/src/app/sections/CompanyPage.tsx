@@ -323,7 +323,7 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-8 bg-white/5 border border-white/10 p-6 rounded-lg"
+                className="mb-8 bg-sindicato-charcoal/50 backdrop-blur-sm border border-white/10 p-6 rounded-lg"
               >
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-4 h-4 border-2 border-sindicato-warm-white/30 border-t-sindicato-warm-white rounded-full animate-spin" />
