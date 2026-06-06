@@ -115,15 +115,17 @@ function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
         </div>
       )}
 
-      <TranslatedCaseStory
-        text={item.storyPreview || item.story || ""}
-        cachedTranslation={item.storyTranslated ?? null}
-        sourceLanguage={item.translationLanguage ?? null}
-        locale={locale}
-        t={t}
-        className="text-sindicato-warm-white/65 text-sm leading-relaxed block flex-1 line-clamp-5"
-        cacheKey={{ entityType: "case", entityId: item.id, field: "story" }}
-      />
+      <div className="flex-1 min-h-0 overflow-hidden">
+        <TranslatedCaseStory
+          text={item.storyPreview || item.story || ""}
+          cachedTranslation={item.storyTranslated ?? null}
+          sourceLanguage={item.translationLanguage ?? null}
+          locale={locale}
+          t={t}
+          className="text-sindicato-warm-white/65 text-sm leading-relaxed block line-clamp-5"
+          cacheKey={{ entityType: "case", entityId: item.id, field: "story" }}
+        />
+      </div>
 
       <div className="mt-auto pt-2 flex items-center justify-between">
         <span className="text-sindicato-warm-white/40 text-xs font-[family-name:var(--font-jetbrains)]">

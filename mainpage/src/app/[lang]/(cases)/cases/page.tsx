@@ -95,15 +95,17 @@ function WallCaseCard({ c, locale, t, router }: CaseCardProps) {
           </p>
         )}
 
-        <TranslatedCaseStory
-          text={c.story}
-          cachedTranslation={c.storyTranslated}
-          sourceLanguage={c.translationLanguage}
-          locale={locale}
-          t={t}
-          className="text-sindicato-cream/60 text-sm flex-1 leading-relaxed block"
-          cacheKey={{ entityType: "case", entityId: c.id, field: "story" }}
-        />
+        <div className="flex-1 min-h-0 overflow-hidden">
+          <TranslatedCaseStory
+            text={c.story}
+            cachedTranslation={c.storyTranslated}
+            sourceLanguage={c.translationLanguage}
+            locale={locale}
+            t={t}
+            className="text-sindicato-cream/60 text-sm leading-relaxed block line-clamp-5"
+            cacheKey={{ entityType: "case", entityId: c.id, field: "story" }}
+          />
+        </div>
 
         <div className="mt-4 pt-3 border-t border-white/10 flex items-start justify-between gap-4">
           <div>

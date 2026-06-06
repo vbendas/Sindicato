@@ -143,15 +143,17 @@ function CompanyCasePreviewCard({ item, locale, t }: CompanyCasePreviewCardProps
             {new Date(item.createdAt).toLocaleDateString(locale)}
           </span>
         </div>
-        <TranslatedCaseStory
-          text={item.story}
-          cachedTranslation={item.storyTranslated}
-          sourceLanguage={item.translationLanguage}
-          locale={locale}
-          t={t}
-          className="text-sindicato-warm-white/60 text-sm line-clamp-2 block"
-          cacheKey={{ entityType: "case", entityId: item.id, field: "story" }}
-        />
+        <div className="min-h-0 overflow-hidden">
+          <TranslatedCaseStory
+            text={item.story}
+            cachedTranslation={item.storyTranslated}
+            sourceLanguage={item.translationLanguage}
+            locale={locale}
+            t={t}
+            className="text-sindicato-warm-white/60 text-sm leading-relaxed block line-clamp-2"
+            cacheKey={{ entityType: "case", entityId: item.id, field: "story" }}
+          />
+        </div>
         {Number(item.amountOwed) > 0 && (
           <div className="mt-2">
             <span className="text-sindicato-warm-white font-bold text-sm font-[family-name:var(--font-jetbrains)]">
