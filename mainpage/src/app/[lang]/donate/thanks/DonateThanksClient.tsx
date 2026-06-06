@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Header from "../../../components/Header";
 import Footer from "../../../sections/Footer";
-import { useT } from "@/lib/i18n";
+import { useT, useLocale } from "@/lib/i18n";
 
 export type DonateStatus = "completed" | "processing" | "missing" | "error";
 
@@ -24,6 +24,7 @@ export default function DonateThanksClient({
   returnTo,
 }: DonateThanksClientProps) {
   const t = useT();
+  const { locale } = useLocale();
   const shareUrl = `${baseUrl}/donate`;
 
   return (
@@ -42,7 +43,7 @@ export default function DonateThanksClient({
             className="mb-12"
           >
             <Link
-              href="/donate"
+              href={`/${locale}/donate`}
               className="text-sindicato-warm-white/40 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors mb-6 inline-block font-[family-name:var(--font-barlow)] font-bold"
             >
               &larr; {t("donate.back")}
@@ -137,7 +138,7 @@ export default function DonateThanksClient({
               </Link>
             )}
             <Link
-              href="/"
+              href={`/${locale}/`}
               className="text-sindicato-warm-white/60 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] font-bold"
             >
               {t("donate.thanks.homeCta")}

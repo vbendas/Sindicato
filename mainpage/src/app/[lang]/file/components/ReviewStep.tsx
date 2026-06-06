@@ -301,6 +301,7 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
         displayName: caseData.displayName,
         companySlug: caseData.companySlug,
         companyName: caseData.companyName,
+        companyWebsite: caseData.companyWebsite || undefined,
         country: caseData.country,
         ageRange: caseData.ageRange || undefined,
         sex: caseData.sex || undefined,
@@ -534,28 +535,28 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
         </p>
 
         <div className="bg-white/5 border border-white/10 p-4 sm:p-6 mb-6">
-          <SummaryRow label="Email" value={resolvedEmail} />
+          <SummaryRow label={t("review.labelEmail")} value={resolvedEmail} />
           <SummaryRow
             label={t("review.labelPlatform")}
             value={caseData.vertical === "remote" ? t("review.platformRemote") : caseData.vertical === "gig" ? t("review.platformGig") : caseData.vertical || ""}
           />
-          <SummaryRow label="Company" value={caseData.companyName} />
-          <SummaryRow label="Case type" value={CASE_TYPE_LABELS[caseData.caseType] || caseData.caseType} />
-          <SummaryRow label="Your name" value={caseData.displayName} />
-          <SummaryRow label="Country" value={caseData.country} />
-          <SummaryRow label="Work period" value={workPeriod} />
+          <SummaryRow label={t("review.labelCompany")} value={caseData.companyName} />
+          <SummaryRow label={t("review.labelCaseType")} value={CASE_TYPE_LABELS[caseData.caseType] || caseData.caseType} />
+          <SummaryRow label={t("review.labelName")} value={caseData.displayName} />
+          <SummaryRow label={t("review.labelCountry")} value={caseData.country} />
+          <SummaryRow label={t("review.labelWorkPeriod")} value={workPeriod} />
           {caseData.amountOwed && (
-            <SummaryRow label="Amount owed" value={`${currencySymbol}${caseData.amountOwed} ${caseData.currency}`} />
+            <SummaryRow label={t("review.labelAmount")} value={`${currencySymbol}${caseData.amountOwed} ${caseData.currency}`} />
           )}
           {contactAttemptsFromTimeline > 0 && (
-            <SummaryRow label="Contact attempts" value={String(contactAttemptsFromTimeline)} />
+            <SummaryRow label={t("review.labelContactAttempts")} value={String(contactAttemptsFromTimeline)} />
           )}
           {caseData.project && (
             <SummaryRow label="Project" value={caseData.project} />
           )}
           {caseData.story && (
             <div className="py-3 border-b border-white/10 last:border-0">
-              <p className={rowLabelClass}>Your story</p>
+              <p className={rowLabelClass}>{t("review.labelStory")}</p>
               <p className={`${rowValueClass} line-clamp-4 whitespace-pre-wrap`}>
                 {caseData.story}
               </p>
@@ -565,7 +566,7 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
 
         {timelineEvents.length > 0 && (
           <div className="mb-6">
-            <p className={`${rowLabelClass} mb-3`}>Timeline ({timelineEvents.length} event{timelineEvents.length !== 1 ? "s" : ""})</p>
+            <p className={`${rowLabelClass} mb-3`}>{t("review.timelineLabel", { count: timelineEvents.length })}</p>
             <div className="space-y-2">
               {timelineEvents.map((ev) => (
                 <div key={ev.id} className="flex items-start gap-3 text-sm">
@@ -681,10 +682,10 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
         {!hasSession && verifyStep !== "verified" && (
           <div className="border border-sindicato-warm-white/20 bg-white/5 p-4 sm:p-6 mb-6">
             <h3 className="text-sm font-bold text-sindicato-warm-white font-[family-name:var(--font-barlow)] uppercase tracking-wider mb-1">
-              Verify your email
+              {t("review.verifyTitle")}
             </h3>
             <p className="text-xs text-sindicato-warm-white/60 mb-4">
-              One last step — we&apos;ll send a code to confirm your identity before submitting.
+              {t("review.verifyBody")}
             </p>
 
             {verifyStep === "idle" && (
@@ -703,7 +704,7 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
                   disabled={verifyLoading || !verifyEmail}
                   className="bg-sindicato-charcoal text-sindicato-warm-white px-5 py-2 text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)] hover:bg-sindicato-charcoal/80 transition-colors disabled:opacity-50"
                 >
-                  {verifyLoading ? "Sending..." : "Send Code"}
+                  {verifyLoading ? t("review.verifySending") : t("review.verifySend")}
                 </button>
               </div>
             )}
@@ -731,14 +732,14 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
                     disabled={verifyLoading || verifyCode.length !== 6}
                     className="bg-sindicato-charcoal text-sindicato-warm-white px-5 py-2 text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)] hover:bg-sindicato-charcoal/80 transition-colors disabled:opacity-50"
                   >
-                    {verifyLoading ? "Verifying..." : "Verify"}
+                    {verifyLoading ? t("review.verifyVerifying") : t("review.verifyButton")}
                   </button>
                   <button
                     type="button"
                     onClick={() => { setVerifyStep("idle"); setVerifyCode(""); setVerifyError(""); }}
                     className="text-sindicato-warm-white/50 hover:text-sindicato-warm-white text-xs uppercase tracking-wider font-[family-name:var(--font-barlow)]"
                   >
-                    Change email
+                    {t("review.verifyChangeEmail")}
                   </button>
                 </div>
               </div>
@@ -765,7 +766,7 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
             disabled={loading || !resolvedWorkerId}
             className="w-full bg-sindicato-charcoal text-sindicato-warm-white py-3 px-6 font-bold uppercase tracking-wider hover:bg-sindicato-charcoal/80 transition-colors font-[family-name:var(--font-barlow)] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Submitting..." : "Submit Case"}
+            {loading ? t("review.submitting") : t("review.submitCase")}
           </button>
           <div className="text-center">
             <button
@@ -774,13 +775,13 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
               disabled={loading}
               className="text-sindicato-warm-white/60 hover:text-sindicato-warm-white transition-colors text-sm uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold"
             >
-              Back
+              {t("common.back")}
             </button>
           </div>
         </div>
 
         <p className="text-xs text-sindicato-warm-white/40 text-center mt-4">
-          By submitting, you confirm your case details are accurate and truthful.
+          {t("review.attestation")}
         </p>
       </div>
     </motion.div>

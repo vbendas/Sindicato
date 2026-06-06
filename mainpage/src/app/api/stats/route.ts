@@ -1,7 +1,8 @@
 import { db } from "@/lib/db/client";
 import { cases, companies } from "@/lib/db/schema";
 import { eq, sql, count, sum, and, ne } from "drizzle-orm";
-import { success, error } from "@/lib/utils/api";
+import { success, error, getClientIp } from "@/lib/utils/api";
+import { rateLimit } from "@/lib/auth/rate-limit";
 
 type Vertical = "remote" | "gig";
 
@@ -96,18 +97,28 @@ async function getStats(vertical?: Vertical | null) {
 }
 
 export async function GET(request: Request) {
+  const ip = getClientIp(request);
+  const { allowed } = await rateLimit(`stats:${ip}`, 30, 60_000);
+  if (!allowed) return error("Too many requests", 429);
+
+  const responseHeaders = {
+    "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60",
+  };
+
   try {
     const { searchParams } = new URL(request.url);
     const vertical = (searchParams.get("vertical") as Vertical | null) || null;
 
-    const mainStats = await getStats(vertical);
-
     if (vertical) {
-      return success(mainStats);
+      const mainStats = await getStats(vertical);
+      return success(mainStats, 200);
     }
 
-    const remoteStats = await getStats("remote");
-    const gigStats = await getStats("gig");
+    const [mainStats, remoteStats, gigStats] = await Promise.all([
+      getStats(),
+      getStats("remote"),
+      getStats("gig"),
+    ]);
 
     const data = {
       ...mainStats,
@@ -117,7 +128,7 @@ export async function GET(request: Request) {
       },
     };
 
-    return success(data);
+    return success(data, 200);
   } catch (err) {
     console.error("Error fetching stats:", err);
     return error("Failed to fetch stats", 500);

@@ -81,6 +81,48 @@ export async function POST(request: Request) {
         .returning();
     }
 
+    // Update company website if worker provided one and company doesn't have one
+    if (data.companyWebsite && !company.website) {
+      await db
+        .update(companies)
+        .set({
+          website: data.companyWebsite,
+          websiteProvidedByWorker: true,
+        })
+        .where(eq(companies.id, company.id));
+    }
+
+    // Trigger LLM email scraping if company has no contact emails
+    const existingEmails = (company.contactEmails as string[]) || [];
+    if (
+      existingEmails.length === 0 &&
+      company.scrapeStatus !== "scraping" &&
+      company.scrapeStatus !== "found"
+    ) {
+      await db
+        .update(companies)
+        .set({ scrapeStatus: "scraping" })
+        .where(eq(companies.id, company.id));
+
+      // Fire-and-forget: call internal LLM scraper (non-blocking)
+      const website = data.companyWebsite || company.website;
+      if (website) {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+        fetch(`${baseUrl}/api/internal/scrape-company`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${process.env.CRON_SECRET}`,
+          },
+          body: JSON.stringify({
+            companyId: company.id,
+            companyWebsite: website,
+            companyName: company.name,
+          }),
+        }).catch(() => {});
+      }
+    }
+
     const detectedLang = franc(data.story, { minLength: 50 });
 
     let storyTranslated: string | null = null;

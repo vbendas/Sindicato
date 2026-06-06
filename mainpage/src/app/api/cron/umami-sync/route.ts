@@ -76,11 +76,9 @@ const BATCH_SIZE = 50;
 const BATCH_DELAY_MS = 1000;
 
 export async function GET(req: NextRequest) {
-  if (CRON_SECRET) {
-    const authHeader = req.headers.get("Authorization");
-    if (authHeader !== `Bearer ${CRON_SECRET}`) {
-      return Response.json({ success: false, message: "Unauthorized" }, { status: 401 });
-    }
+  const authHeader = req.headers.get("Authorization");
+  if (!CRON_SECRET || authHeader !== `Bearer ${CRON_SECRET}`) {
+    return Response.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
 
   try {

@@ -1,8 +1,10 @@
 "use client";
 
-import Link from "next/link";
+import { LocalizedLink } from "@/lib/i18n/navigation";
+import { useT } from "@/lib/i18n";
 
 export default function PendingApprovalPage() {
+  const t = useT();
   return (
     <main className="min-h-screen bg-sindicato-charcoal text-sindicato-warm-white flex items-center justify-center">
       <div className="max-w-lg mx-auto px-4 py-20 text-center">
@@ -13,29 +15,28 @@ export default function PendingApprovalPage() {
         </div>
 
         <h1 className="text-2xl font-bold mb-4 font-[family-name:var(--font-barlow)] uppercase tracking-wider">
-          Account Pending Approval
+          {t("pending.title")}
         </h1>
 
         <p className="text-sindicato-warm-white/65 leading-relaxed mb-8">
-          Your registration has been submitted successfully. An administrator is reviewing your account.
-          You will receive an email once your access has been approved.
+          {t("pending.body")}
         </p>
 
         <div className="border border-white/20 p-4 mb-8 text-left text-sm text-sindicato-warm-white/65 leading-relaxed">
-          <p className="mb-2"><strong className="text-sindicato-warm-white">What happens next?</strong></p>
+          <p className="mb-2"><strong className="text-sindicato-warm-white">{t("pending.nextLabel")}</strong></p>
           <ol className="list-decimal list-inside space-y-1">
-            <li>Your request is reviewed by the Sindicato team</li>
-            <li>If approved, your account will be activated</li>
-            <li>You will be able to log in and access the platform</li>
+            <li>{t("pending.next1")}</li>
+            <li>{t("pending.next2")}</li>
+            <li>{t("pending.next3")}</li>
           </ol>
         </div>
 
-        <Link
+        <LocalizedLink
           href="/"
           className="inline-block bg-sindicato-warm-white text-sindicato-charcoal px-6 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-sindicato-warm-white/90 transition-all font-[family-name:var(--font-barlow)]"
         >
-          Back to Home
-        </Link>
+          {t("pending.backHome")}
+        </LocalizedLink>
       </div>
     </main>
   );

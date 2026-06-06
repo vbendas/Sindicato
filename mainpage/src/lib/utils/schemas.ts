@@ -45,6 +45,10 @@ export const caseSubmissionV2Schema = z.object({
   displayName: z.string().min(1).max(100),
   companySlug: z.string().min(1).max(100),
   companyName: z.string().min(1).max(255),
+  companyWebsite: z.string().optional().refine(
+    (v) => !v || /^https?:\/\/.+/.test(v),
+    { message: "Must be a valid URL starting with http:// or https://" }
+  ),
   country: z.string().max(100).optional(),
   ageRange: z.string().max(20).optional(),
   sex: z.string().max(20).optional(),

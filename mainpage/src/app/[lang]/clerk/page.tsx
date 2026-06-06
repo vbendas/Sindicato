@@ -104,10 +104,12 @@ export default function ClerkPage() {
 
   useEffect(() => {
     if (!sessionLoading && session?.user) {
-      console.log("[Clerk] User role:", userRole);
-      console.log("[Clerk] Company name:", session.user.companyName);
-      console.log("[Clerk] Approval status:", approvalStatus);
-      console.log("[Clerk] Is privileged:", isPrivileged);
+      if (process.env.NODE_ENV === "development") {
+        console.log("[Clerk] User role:", userRole);
+        console.log("[Clerk] Company name:", session.user.companyName);
+        console.log("[Clerk] Approval status:", approvalStatus);
+        console.log("[Clerk] Is privileged:", isPrivileged);
+      }
     }
   }, [session, userRole, approvalStatus, isPrivileged, sessionLoading]);
 
@@ -124,7 +126,7 @@ export default function ClerkPage() {
     fetch("/api/auth/session")
       .then((r) => r.json())
       .then((s) => {
-        console.log("[Clerk] Session fetched:", s);
+        if (process.env.NODE_ENV === "development") console.log("[Clerk] Session fetched:", s);
         setSession(s?.user ? s : null);
       })
       .catch((err) => {
@@ -138,7 +140,7 @@ export default function ClerkPage() {
     fetch("/api/auth/session")
       .then((r) => r.json())
       .then((s) => {
-        console.log("[Clerk] Session refreshed:", s);
+        if (process.env.NODE_ENV === "development") console.log("[Clerk] Session refreshed:", s);
         setSession(s?.user ? s : null);
       })
       .catch((err) => {
@@ -391,9 +393,7 @@ export default function ClerkPage() {
       reportStory: t("clerk.query.reportStory"),
       downloadError: t("clerk.query.downloadError"),
       onParseError: () =>
-        alert(
-          "Unable to download full case details. The data format is invalid. Please try refreshing the page and running the query again."
-        ),
+        alert(t("clerk.query.downloadError")),
     });
 
     if (!ok) {
@@ -517,21 +517,21 @@ export default function ClerkPage() {
               <div className="border border-white/10 bg-white/5 px-4 py-2.5 text-center rounded-2xl">
                 <p className="text-xs text-sindicato-warm-white/50">
                   <Link
-                    href="/register?role=lawyer"
+                    href={`/${locale}/register?role=lawyer`}
                     className="underline hover:text-sindicato-warm-white"
                   >
                     {t("clerk.page.registerLegal")}
                   </Link>
                   {" · "}
                   <Link
-                    href="/register?role=company"
+                    href={`/${locale}/register?role=company`}
                     className="underline hover:text-sindicato-warm-white"
                   >
                     {t("clerk.page.registerCompanies")}
                   </Link>
                   {" · "}
                   <Link
-                    href="/register?role=media"
+                    href={`/${locale}/register?role=media`}
                     className="underline hover:text-sindicato-warm-white"
                   >
                     {t("clerk.page.registerMedia")}

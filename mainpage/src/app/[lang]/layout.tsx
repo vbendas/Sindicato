@@ -8,6 +8,7 @@ import { onUmamiLoaded } from "@/lib/umami";
 import { LocaleProvider } from "@/lib/i18n/locale-provider";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { locales, defaultLocale, isRTLLocale, type Locale } from "@/lib/i18n/config";
+import { headers } from "next/headers";
 import "../globals.css";
 import { cn } from "@/lib/utils";
 
@@ -100,11 +101,22 @@ export default async function RootLayout({
   const needsDevanagariFont = locale === "hi" || locale === "ne";
   const needsEthiopicFont = locale === "am";
 
+  const headerStore = await headers();
+  const acceptLanguage = headerStore.get("accept-language") || "";
+  let suggestedLocale = "";
+  if (acceptLanguage) {
+    const preferred = acceptLanguage.split(",").map((lang) => lang.split(";")[0].trim().split("-")[0].toLowerCase());
+    const match = preferred.find((l) => locales.includes(l as Locale));
+    if (match && match !== locale) {
+      suggestedLocale = match;
+    }
+  }
+
   return (
     <html
       lang={locale}
       dir={isRTL ? "rtl" : "ltr"}
-      data-suggested-locale=""
+      data-suggested-locale={suggestedLocale}
       className={cn(
         "antialiased",
         barlowCondensed.variable,

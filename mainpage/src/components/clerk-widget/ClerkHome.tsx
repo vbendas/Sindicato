@@ -10,7 +10,7 @@ import {
 import Image from "next/image";
 import { useClerkWidget } from "./ClerkWidgetProvider";
 import { cn } from "@/lib/utils";
-import { useT } from "@/lib/i18n";
+import { useT, useLocale } from "@/lib/i18n";
 
 type QuickAction = {
   icon: React.ReactNode;
@@ -22,6 +22,7 @@ type QuickAction = {
 export function ClerkHome() {
   const { setActiveMode, session } = useClerkWidget();
   const t = useT();
+  const { locale } = useLocale();
 
   const isAuthenticated = !!session?.user;
   const isWorker = isAuthenticated && !session?.user?.role;
@@ -38,7 +39,7 @@ export function ClerkHome() {
       label: t("clerk.home.actionFile"),
       description: t("clerk.home.actionFileDesc"),
       action: () => {
-        window.location.href = "/file";
+        window.location.href = `/${locale}/file`;
       },
     },
     {
@@ -46,7 +47,7 @@ export function ClerkHome() {
       label: t("clerk.home.actionQuery"),
       description: t("clerk.home.actionQueryDesc"),
       action: () => {
-        window.location.href = "/clerk";
+        window.location.href = `/${locale}/clerk`;
       },
     },
     {
@@ -63,7 +64,7 @@ export function ClerkHome() {
       label: t("clerk.home.actionMyCases"),
       description: t("clerk.home.actionMyCasesDesc"),
       action: () => {
-        window.location.href = "/account";
+        window.location.href = `/${locale}/account`;
       },
     });
   }

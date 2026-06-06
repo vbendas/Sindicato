@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useT } from "@/lib/i18n";
+import { useT, useLocale } from "@/lib/i18n";
 
 interface CaseData {
   id: string;
@@ -17,6 +17,7 @@ interface CaseData {
 
 export default function FeaturedCase() {
   const t = useT();
+  const { locale } = useLocale();
   const [caseData, setCaseData] = useState<CaseData | null>(null);
 
   useEffect(() => {
@@ -116,7 +117,7 @@ export default function FeaturedCase() {
             </p>
 
             <Link
-              href={`/workers/${display.company.slug}`}
+              href={`/${locale}/workers/${display.company.slug}`}
               className="inline-flex items-center gap-2 text-sindicato-warm-white font-bold uppercase tracking-wider text-sm hover:text-sindicato-warm-white/80 transition-colors font-[family-name:var(--font-barlow)] group"
             >
               {t("featuredCase.viewReport")}

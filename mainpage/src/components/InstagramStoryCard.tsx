@@ -52,7 +52,7 @@ const CASE_TYPE_VISUALS: Record<string, CaseTypeVisual> = {
   unpaid_wages: {
     impactWord: "STOLEN",
     gradient: "linear-gradient(180deg, #1a1a1a 0%, #6b0f1a 40%, #1a1a1a 100%)",
-    illustration: "/images/hand_red.png",
+    illustration: "/images/hand_red.webp",
     hasAmount: true,
     accentColor: "#C41E3A",
   },
@@ -73,7 +73,7 @@ const CASE_TYPE_VISUALS: Record<string, CaseTypeVisual> = {
   unfair_review: {
     impactWord: "GAGGED",
     gradient: "linear-gradient(180deg, #1a1a1a 0%, #2c2824 40%, #1a1a1a 100%)",
-    illustration: "/images/keyboard.png",
+    illustration: "/images/keyboard.webp",
     hasAmount: false,
     accentColor: "#D4C49F",
   },
@@ -94,7 +94,7 @@ const CASE_TYPE_VISUALS: Record<string, CaseTypeVisual> = {
   retaliation: {
     impactWord: "PUNISHED",
     gradient: "linear-gradient(180deg, #1a1a1a 0%, #c41e3a 40%, #1a1a1a 100%)",
-    illustration: "/images/megaphone_red.png",
+    illustration: "/images/megaphone_red.webp",
     hasAmount: false,
     accentColor: "#C41E3A",
   },
@@ -115,7 +115,7 @@ const CASE_TYPE_VISUALS: Record<string, CaseTypeVisual> = {
   other: {
     impactWord: "INJUSTICE",
     gradient: "linear-gradient(180deg, #1a1a1a 0%, #12261c 40%, #1a1a1a 100%)",
-    illustration: "/images/hand.png",
+    illustration: "/images/hand.webp",
     hasAmount: false,
     accentColor: "#C41E3A",
   },

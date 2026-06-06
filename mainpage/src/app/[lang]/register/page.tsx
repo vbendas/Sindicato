@@ -3,27 +3,9 @@
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useLocale } from "@/lib/i18n";
+import { useLocale, useT } from "@/lib/i18n";
 
 type Step = "email" | "register";
-
-const ROLE_LABELS: Record<string, string> = {
-  lawyer: "Legal Professional",
-  company: "Company Representative",
-  media: "Media & Research",
-};
-
-const ROLE_ORGS: Record<string, string> = {
-  lawyer: "Law Firm",
-  company: "Company Name",
-  media: "Publication / Institution",
-};
-
-const ROLE_ORG_PLACEHOLDERS: Record<string, string> = {
-  lawyer: "Your Law Firm",
-  company: "Registered Legal Name",
-  media: "Media Outlet / University",
-};
 
 const TOS_ROUTES: Record<string, string> = {
   lawyer: "/tos/lawyer",
@@ -34,6 +16,7 @@ const TOS_ROUTES: Record<string, string> = {
 function RegisterForm() {
   const router = useRouter();
   const { locale } = useLocale();
+  const t = useT();
   const searchParams = useSearchParams();
   const role = searchParams.get("role") || "lawyer";
 
@@ -46,9 +29,10 @@ function RegisterForm() {
   const [error, setError] = useState("");
   const [tosAccepted, setTosAccepted] = useState(false);
 
-  const roleLabel = ROLE_LABELS[role] || role;
-  const orgLabel = ROLE_ORGS[role] || "Organization";
-  const orgPlaceholder = ROLE_ORG_PLACEHOLDERS[role] || "Organization name";
+  const roleKey = role.charAt(0).toUpperCase() + role.slice(1);
+  const roleLabel = t(`register.role${roleKey}`) || role;
+  const orgLabel = t(`register.org${roleKey}`) || t("register.orgFallback");
+  const orgPlaceholder = t(`register.orgPlaceholder${roleKey}`) || t("register.orgPlaceholderFallback");
   const tosRoute = TOS_ROUTES[role] || "/tos/lawyer";
 
   async function handleSendCode(e: React.FormEvent) {
@@ -64,12 +48,12 @@ function RegisterForm() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Failed to send code.");
+        setError(data.error || t("register.errorSend"));
         return;
       }
       setStep("register");
     } catch {
-      setError("Network error. Please try again.");
+      setError(t("register.errorNetwork"));
     } finally {
       setLoading(false);
     }
@@ -79,11 +63,11 @@ function RegisterForm() {
     e.preventDefault();
     setError("");
     if (!tosAccepted) {
-      setError("You must accept the Terms of Service to continue.");
+      setError(t("register.errorTos"));
       return;
     }
     if (code.length !== 6) {
-      setError("Please enter the 6-digit verification code.");
+      setError(t("register.errorCode"));
       return;
     }
     setLoading(true);
@@ -102,13 +86,13 @@ function RegisterForm() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Registration failed.");
+        setError(data.error || t("register.errorRegistration"));
         return;
       }
       const redirect = data.data.redirect || `/${locale}/pending-approval`;
       router.push(redirect);
     } catch {
-      setError("Network error. Please try again.");
+      setError(t("register.errorNetwork"));
     } finally {
       setLoading(false);
     }
@@ -122,7 +106,7 @@ function RegisterForm() {
     <>
       <div className="text-center mb-10">
         <p className="text-sm text-sindicato-warm-white/50 uppercase tracking-wider mb-1 font-[family-name:var(--font-barlow)] font-bold">
-          Register as
+          {t("register.registerAs")}
         </p>
         <h1 className="text-2xl font-bold font-[family-name:var(--font-barlow)] uppercase tracking-wider">
           {roleLabel}
@@ -138,18 +122,18 @@ function RegisterForm() {
       {step === "email" && (
         <form onSubmit={handleSendCode} className="space-y-4">
           <div>
-            <label className={labelClass}>Email Address</label>
+            <label className={labelClass}>{t("register.emailLabel")}</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
+              placeholder={t("register.emailPlaceholder")}
               className={inputClass}
               required
             />
           </div>
           <button type="submit" disabled={loading || !email} className={btnClass}>
-            {loading ? "Sending..." : "Send Verification Code"}
+            {loading ? t("register.sending") : t("register.sendCode")}
           </button>
         </form>
       )}
@@ -157,7 +141,7 @@ function RegisterForm() {
       {step === "register" && (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className={labelClass}>Verification Code</label>
+            <label className={labelClass}>{t("register.verificationLabel")}</label>
             <p className="text-xs text-sindicato-warm-white/50 mb-2">
               A 6-digit code was sent to {email}.
             </p>
@@ -175,7 +159,7 @@ function RegisterForm() {
           </div>
 
           <div>
-            <label className={labelClass}>Display Name</label>
+            <label className={labelClass}>{t("register.displayNameLabel")}</label>
             <input
               type="text"
               value={displayName}
@@ -228,7 +212,7 @@ function RegisterForm() {
             disabled={loading || !displayName || !tosAccepted || code.length !== 6}
             className={btnClass}
           >
-            {loading ? "Submitting..." : "Submit for Approval"}
+            {loading ? t("register.submitting") : t("register.submit")}
           </button>
 
           <button
@@ -237,7 +221,7 @@ function RegisterForm() {
             disabled={loading}
             className="w-full text-center text-sindicato-warm-white/40 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors"
           >
-            Resend code
+            {t("register.resendCode")}
           </button>
         </form>
       )}
@@ -245,15 +229,20 @@ function RegisterForm() {
   );
 }
 
+function RegisterLoading() {
+  const t = useT();
+  return (
+    <div className="text-center py-20">
+      <p className="text-sindicato-warm-white/50">{t("register.loading")}</p>
+    </div>
+  );
+}
+
 export default function RegisterPage() {
   return (
     <main className="min-h-screen bg-sindicato-charcoal text-sindicato-warm-white">
       <div className="max-w-md mx-auto px-4 py-20">
-        <Suspense fallback={
-          <div className="text-center py-20">
-            <p className="text-sindicato-warm-white/50">Loading...</p>
-          </div>
-        }>
+        <Suspense fallback={<RegisterLoading />}>
           <RegisterForm />
         </Suspense>
       </div>

@@ -143,3 +143,7 @@ export function getClerkModel() {
 export function getTagModel() {
   return process.env.TAG_MODEL ?? "openai/gpt-oss-120b:free";
 }
+
+export function getScraperModel() {
+  return process.env.SCRAPER_MODEL ?? "deepseek/deepseek-v3";
+}

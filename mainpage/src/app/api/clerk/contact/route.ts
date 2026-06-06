@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit } from "@/lib/auth/rate-limit";
+import { getClientIp } from "@/lib/utils/api";
 import { sendTemplateEmail } from "@/lib/email/send";
 import ContactNotification from "@/lib/email/templates/contact-notification";
 
@@ -16,7 +17,7 @@ const ALLOWED_TYPES = [
 
 export async function POST(req: NextRequest) {
   try {
-    const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
+    const ip = getClientIp(req);
     const { allowed, retryAfterMs } = await rateLimit(`contact_${ip}`, 3, 60 * 60 * 1000);
 
     if (!allowed) {

@@ -57,6 +57,20 @@ export const resolutionStatusEnum = pgEnum("resolution_status", [
   "resolved",
 ]);
 
+export const scrapeStatusEnum = pgEnum("scrape_status", [
+  "not_scraped",
+  "scraping",
+  "found",
+  "not_found",
+  "manual_review",
+]);
+
+export const manualReviewStatusEnum = pgEnum("manual_review_status", [
+  "pending",
+  "resolved",
+  "dismissed",
+]);
+
 export const reportTypeEnum = pgEnum("report_type", ["lawyer", "company"]);
 
 export const platformRoleEnum = pgEnum("platform_role", ["lawyer", "company", "media"]);
@@ -101,8 +115,26 @@ export const companies = pgTable("companies", {
   website: varchar("website", { length: 255 }),
   vertical: varchar("vertical", { length: 50 }).notNull(),
   contactEmails: jsonb("contact_emails").$type<string[]>().default([]),
+  scrapeStatus: scrapeStatusEnum("scrape_status").default("not_scraped").notNull(),
+  scrapedAt: timestamp("scraped_at"),
+  scrapeAttempts: integer("scrape_attempts").default(0).notNull(),
+  scrapeSource: varchar("scrape_source", { length: 50 }),
+  websiteProvidedByWorker: boolean("website_provided_by_worker").default(false).notNull(),
   resolutionEngaged: boolean("resolution_engaged").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const manualReviewQueue = pgTable("manual_review_queue", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  companyId: uuid("company_id")
+    .references(() => companies.id)
+    .notNull(),
+  reason: varchar("reason", { length: 50 }).notNull(),
+  status: manualReviewStatusEnum("status").default("pending").notNull(),
+  adminNotes: text("admin_notes"),
+  resolvedEmails: jsonb("resolved_emails").$type<string[]>(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  resolvedAt: timestamp("resolved_at"),
 });
 
 export const cases = pgTable("cases", {
@@ -236,11 +268,15 @@ export const verificationTokens = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     email: varchar("email", { length: 255 }).notNull(),
     code: varchar("code", { length: 6 }).notNull(),
+    codeHash: varchar("code_hash", { length: 64 }),
     expiresAt: timestamp("expires_at").notNull(),
     usedAt: timestamp("used_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (t) => [index("verification_tokens_email_code").on(t.email, t.code)]
+  (t) => [
+    index("verification_tokens_email_code").on(t.email, t.code),
+    index("verification_tokens_email_expiry").on(t.email, t.expiresAt),
+  ]
 );
 
 export const caseTimelineEvents = pgTable("case_timeline_events", {

@@ -150,6 +150,25 @@ export default function CaseDetailsStep({
             />
           </div>
 
+          {/* Company website (optional) */}
+          <div>
+            <label htmlFor="companyWebsite" className={labelClass}>
+              {t("fileCase.companyWebsite")}
+              <FieldTooltip content={t("fileCase.companyWebsiteTooltip")} />
+            </label>
+            <input
+              id="companyWebsite"
+              type="url"
+              value={caseData.companyWebsite}
+              onChange={(e) => update("companyWebsite", e.target.value)}
+              placeholder="https://www.example.com"
+              className={inputClass}
+            />
+            <p className="text-xs mt-1 text-sindicato-warm-white/40">
+              {t("fileCase.companyWebsiteHint")}
+            </p>
+          </div>
+
           {/* Case type */}
           <div>
             <label className={labelClass}>

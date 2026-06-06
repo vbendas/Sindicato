@@ -70,7 +70,7 @@ export async function GET(request: Request) {
         .where(and(eq(cases.companyId, company.id), eq(cases.status, "active")))
         .limit(50);
       
-      console.log(`Fetched ${companyCases.length} cases`);
+      if (process.env.NODE_ENV === "development") console.log(`Fetched ${companyCases.length} cases`);
       
       companyCases = companyCases.map((c) => ({
         ...c,

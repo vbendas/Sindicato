@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { NextRequest } from "next/server";
 import { db } from "@/lib/db/client";
 import { verificationTokens } from "@/lib/db/schema";
@@ -38,20 +39,32 @@ export async function POST(request: NextRequest) {
     return error("Too many attempts. Please request a new code.", 429);
   }
 
-  // Validate without consuming — signIn() will consume and create the session
-  const [token] = await db
-    .select({ id: verificationTokens.id })
+  // Fetch candidates by email + expiry, then compare hash in JS
+  const candidates = await db
+    .select({ id: verificationTokens.id, codeHash: verificationTokens.codeHash })
     .from(verificationTokens)
     .where(
       and(
         eq(verificationTokens.email, email),
-        eq(verificationTokens.code, code),
         gt(verificationTokens.expiresAt, new Date()),
         isNull(verificationTokens.usedAt)
       )
     )
     .orderBy(desc(verificationTokens.createdAt))
-    .limit(1);
+    .limit(5);
+
+  const codeHash = crypto.createHash("sha256").update(code).digest("hex");
+  const token = candidates.find((c) => {
+    if (!c.codeHash) return false;
+    try {
+      return crypto.timingSafeEqual(
+        Buffer.from(c.codeHash, "hex"),
+        Buffer.from(codeHash, "hex")
+      );
+    } catch {
+      return false;
+    }
+  });
 
   if (!token) {
     return error("Invalid or expired code", 401);

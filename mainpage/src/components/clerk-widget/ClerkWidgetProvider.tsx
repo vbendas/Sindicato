@@ -7,6 +7,7 @@ import {
   useCallback,
   useEffect,
   useRef,
+  useMemo,
   type ReactNode,
 } from "react";
 
@@ -87,14 +88,15 @@ export function ClerkWidgetProvider({ children }: { children: ReactNode }) {
   const [showProactive, setShowProactive] = useState(false);
   const [pendingQuery, setPendingQuery] = useState<string | null>(null);
   const proactiveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const innerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     persistMessages(messages);
   }, [messages]);
 
-  const fetchSession = useCallback(() => {
+  const fetchSession = useCallback((signal?: AbortSignal) => {
     setSessionLoading(true);
-    fetch("/api/auth/session")
+    fetch("/api/auth/session", { signal })
       .then((r) => r.json())
       .then((s) => setSession(s?.user ? s : null))
       .catch(() => setSession(null))
@@ -102,12 +104,10 @@ export function ClerkWidgetProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    fetch("/api/auth/session")
-      .then((r) => r.json())
-      .then((s) => setSession(s?.user ? s : null))
-      .catch(() => setSession(null))
-      .finally(() => setSessionLoading(false));
-  }, []);
+    const controller = new AbortController();
+    fetchSession(controller.signal);
+    return () => controller.abort();
+  }, [fetchSession]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -118,13 +118,14 @@ export function ClerkWidgetProvider({ children }: { children: ReactNode }) {
       setShowProactive(true);
       sessionStorage.setItem(WELCOMED_KEY, "true");
 
-      setTimeout(() => {
+      innerTimerRef.current = setTimeout(() => {
         setShowProactive(false);
       }, 8000);
     }, 5000);
 
     return () => {
       if (proactiveTimerRef.current) clearTimeout(proactiveTimerRef.current);
+      if (innerTimerRef.current) clearTimeout(innerTimerRef.current);
     };
   }, []);
 
@@ -177,27 +178,34 @@ export function ClerkWidgetProvider({ children }: { children: ReactNode }) {
     setMessages((prev) => ({ ...prev, [mode]: [] }));
   }, []);
 
+  const contextValue = useMemo(
+    () => ({
+      isOpen,
+      openWidget,
+      closeWidget,
+      toggleWidget,
+      activeMode,
+      setActiveMode,
+      messages,
+      addMessage,
+      updateLastMessage,
+      clearMessages,
+      session,
+      sessionLoading,
+      showProactive,
+      dismissProactive,
+      pendingQuery,
+      setPendingQuery,
+    }),
+    [
+      isOpen, activeMode, messages, session, sessionLoading,
+      showProactive, pendingQuery, openWidget, closeWidget, toggleWidget,
+      addMessage, updateLastMessage, clearMessages, dismissProactive, setPendingQuery,
+    ]
+  );
+
   return (
-    <ClerkWidgetContext.Provider
-      value={{
-        isOpen,
-        openWidget,
-        closeWidget,
-        toggleWidget,
-        activeMode,
-        setActiveMode,
-        messages,
-        addMessage,
-        updateLastMessage,
-        clearMessages,
-        session,
-        sessionLoading,
-        showProactive,
-        dismissProactive,
-        pendingQuery,
-        setPendingQuery,
-      }}
-    >
+    <ClerkWidgetContext.Provider value={contextValue}>
       {children}
     </ClerkWidgetContext.Provider>
   );

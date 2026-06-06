@@ -3,6 +3,8 @@ import { findKBMatch } from "@/lib/clerk/knowledge-base";
 import { callOpenRouter, getClerkModel } from "@/lib/ai/openrouter";
 import { translateStory } from "@/lib/ai/translate";
 import { isValidLocale } from "@/lib/i18n/config";
+import { rateLimit } from "@/lib/auth/rate-limit";
+import { getClientIp } from "@/lib/utils/api";
 
 const CLERK_KB_SYSTEM = `You are the Sindicato Clerk, a helpful assistant for the Sindicato platform.
 You answer questions about what Sindicato is, how it works, its mission, and how to use the platform.
@@ -48,6 +50,12 @@ RULES:
 - Keep answers friendly but factual`;
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  const { allowed } = await rateLimit(`clerk-kb:${ip}`, 20, 60_000);
+  if (!allowed) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   try {
     const body = await req.json();
     const question = body.question?.trim();

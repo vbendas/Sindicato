@@ -46,7 +46,7 @@ export default function CTAs() {
               {t("ctas.legalBody")}
             </p>
             <Link
-              href="/register?role=lawyer"
+              href={`/${locale}/register?role=lawyer`}
               className="bg-sindicato-charcoal text-sindicato-warm-white px-6 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-sindicato-charcoal/80 transition-all font-[family-name:var(--font-barlow)] mt-auto inline-block text-center"
             >
               {t("ctas.legalCta")}
@@ -67,7 +67,7 @@ export default function CTAs() {
               {t("ctas.companiesBody")}
             </p>
             <Link
-              href="/register?role=company"
+              href={`/${locale}/register?role=company`}
               className="bg-sindicato-charcoal text-sindicato-warm-white px-6 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-sindicato-charcoal/80 transition-all font-[family-name:var(--font-barlow)] mt-auto inline-block text-center"
             >
               {t("ctas.companiesCta")}
@@ -88,7 +88,7 @@ export default function CTAs() {
               {t("ctas.mediaBody")}
             </p>
             <Link
-              href="/register?role=media"
+              href={`/${locale}/register?role=media`}
               className="bg-sindicato-charcoal text-sindicato-warm-white px-6 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-sindicato-charcoal/80 transition-all font-[family-name:var(--font-barlow)] mt-auto inline-block text-center"
             >
               {t("ctas.mediaCta")}

@@ -1,12 +1,12 @@
 import { umamiClient } from "@/lib/umami/client";
-import { error, success } from "@/lib/utils/api";
+import { error, success, getClientIp } from "@/lib/utils/api";
 import { rateLimit } from "@/lib/auth/rate-limit";
 
 const ALLOWED_ENTITY_TYPES = ["company", "case", "timeline_event"];
 const ALLOWED_PLATFORMS = ["x", "linkedin", "whatsapp", "facebook", "copy_link", "instagram"];
 
 export async function POST(request: Request) {
-  const ip = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown";
+  const ip = getClientIp(request);
   const { allowed } = await rateLimit(`track:${ip}`, 30, 60_000);
   if (!allowed) return error("Too many requests", 429);
 

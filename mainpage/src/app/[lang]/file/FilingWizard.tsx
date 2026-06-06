@@ -17,6 +17,7 @@ export interface CaseFormData {
   vertical: string;
   companySlug: string;
   companyName: string;
+  companyWebsite: string;
   caseType: string;
   displayName: string;
   country: string;
@@ -56,6 +57,7 @@ export default function FilingWizard() {
     vertical: "",
     companySlug: searchParams.get("company") || "",
     companyName: "",
+    companyWebsite: "",
     caseType: "",
     displayName: "",
     country: "",

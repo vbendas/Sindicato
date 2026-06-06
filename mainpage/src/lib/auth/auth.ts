@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { db } from "@/lib/db/client";
@@ -41,19 +42,35 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         const { allowed } = await rateLimit(`verify:${email}`);
         if (!allowed) return null;
 
-        const [token] = await db
+        // Fetch candidates by email + expiry, then compare hash in JS
+        const candidates = await db
           .select()
           .from(verificationTokens)
           .where(
             and(
               eq(verificationTokens.email, email),
-              eq(verificationTokens.code, code),
               gt(verificationTokens.expiresAt, new Date()),
               isNull(verificationTokens.usedAt)
             )
           )
           .orderBy(desc(verificationTokens.createdAt))
-          .limit(1);
+          .limit(5);
+
+        const codeHash = crypto.createHash("sha256").update(code).digest("hex");
+        const token = candidates.find((c) => {
+          if (!c.codeHash) {
+            // Backward compat: compare plaintext for old tokens
+            return c.code === code;
+          }
+          try {
+            return crypto.timingSafeEqual(
+              Buffer.from(c.codeHash, "hex"),
+              Buffer.from(codeHash, "hex")
+            );
+          } catch {
+            return false;
+          }
+        });
 
         if (!token) return null;
 

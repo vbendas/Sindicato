@@ -29,7 +29,7 @@ export default function DonatePage() {
             className="mb-12"
           >
             <Link
-              href="/"
+              href={`/${locale}/`}
               className="text-sindicato-warm-white/40 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors mb-6 inline-block font-[family-name:var(--font-barlow)] font-bold"
             >
               &larr; {t("donate.back")}

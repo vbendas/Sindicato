@@ -86,7 +86,7 @@ export default function Hero({ caseCount = 0, companyCount = 0 }: HeroProps) {
             className="w-[129%] h-[116%] -ml-[15%] pointer-events-none select-none"
             style={{
               transform: fistTransform,
-              backgroundImage: 'linear-gradient(#6B0F1A, #6B0F1A), url(/images/handfinal.png)',
+              backgroundImage: 'linear-gradient(#6B0F1A, #6B0F1A), url(/images/handfinal.webp)',
               backgroundBlendMode: 'multiply, normal',
               backgroundSize: 'cover, contain',
               backgroundPosition: 'center, bottom',

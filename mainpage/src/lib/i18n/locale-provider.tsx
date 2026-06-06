@@ -32,7 +32,7 @@ export function LocaleProvider({
 
   const setLocale = useCallback(
     (newLocale: Locale) => {
-      document.cookie = `NEXT_LOCALE=${newLocale};path=/;max-age=31536000;samesite=lax`;
+      document.cookie = `NEXT_LOCALE=${newLocale};path=/;max-age=31536000;samesite=lax${typeof window !== "undefined" && window.location.protocol === "https:" ? ";secure" : ""}`;
 
       const segments = pathname.split("/");
       const hasLocalePrefix = locales.some(

@@ -12,10 +12,13 @@ export function error(message: string, status = 400, details?: unknown) {
 }
 
 export function getClientIp(request: Request): string {
+  const cfIp = request.headers.get("cf-connecting-ip");
+  if (cfIp) return cfIp.trim();
+
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) {
     const ips = forwarded.split(",").map((ip) => ip.trim());
     if (ips.length > 0) return ips[0];
   }
-  return request.headers.get("cf-connecting-ip") ?? "unknown";
+  return "unknown";
 }

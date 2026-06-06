@@ -9,17 +9,19 @@ import { ClerkKBChat } from "./ClerkKBChat";
 import { ClerkQueryChat } from "./ClerkQueryChat";
 import { ClerkContactForm } from "./ClerkContactForm";
 import { useRouter } from "next/navigation";
+import { useLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 export function ClerkPanel() {
   const { isOpen, activeMode } = useClerkWidget();
   const router = useRouter();
   const pathname = usePathname();
+  const { locale } = useLocale();
 
   if (pathname === "/clerk") return null;
 
   const handleExpand = () => {
-    router.push("/clerk");
+    router.push(`/${locale}/clerk`);
   };
 
   return (

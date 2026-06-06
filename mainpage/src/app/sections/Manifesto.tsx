@@ -66,7 +66,7 @@ export default function Manifesto({ companies, activeVertical, onVerticalChange 
               <div className="rotate-[39deg]">
                 <div>
                   <Image
-                    src="/images/hand2.png"
+                    src="/images/hand2.webp"
                     alt="Raised fist"
                     width={262}
                     height={262}

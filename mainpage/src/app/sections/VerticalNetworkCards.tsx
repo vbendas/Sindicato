@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useT } from "@/lib/i18n";
+import { useT, useLocale } from "@/lib/i18n";
 
 interface VerticalStats {
   totalCases: number;
@@ -19,17 +19,18 @@ interface VerticalNetworkCardsProps {
 
 export default function VerticalNetworkCards({ verticals }: VerticalNetworkCardsProps) {
   const t = useT();
+  const { locale } = useLocale();
 
   const verticalConfig = {
     remote: {
       title: t("network.remoteTitle"),
       description: t("network.remoteDescription"),
-      href: "/workers",
+      href: `/${locale}/workers`,
     },
     gig: {
       title: t("network.gigTitle"),
       description: t("network.gigDescription"),
-      href: "/gig",
+      href: `/${locale}/gig`,
     },
   };
 

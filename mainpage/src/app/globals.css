@@ -9,6 +9,7 @@
   src: url('/fonts/LaborUnion-Small.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 :root {

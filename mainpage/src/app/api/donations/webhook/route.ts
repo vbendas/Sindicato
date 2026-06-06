@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     const message = err instanceof Error ? err.message : "Invalid signature";
     logger.error("Stripe webhook signature verification failed", { message });
-    return new Response(`Webhook Error: ${message}`, { status: 400 });
+    return new Response("Webhook signature verification failed", { status: 400 });
   }
 
   try {

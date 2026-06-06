@@ -109,15 +109,17 @@ function validateContactAccess(
 
   const allFilters = [...plan.filters, ...extraFilters];
 
-  console.log('[Contact Access Check]', {
-    userRole,
-    totalFilters: allFilters.length,
-    filters: allFilters.map(f => ({
-      field: f.field,
-      operator: f.operator,
-      value: f.value
-    }))
-  });
+  if (process.env.NODE_ENV === "development") {
+    console.log('[Contact Access Check]', {
+      userRole,
+      totalFilters: allFilters.length,
+      filters: allFilters.map(f => ({
+        field: f.field,
+        operator: f.operator,
+        value: f.value
+      }))
+    });
+  }
 
   const companyFilters = allFilters.filter(f =>
     f.field === "company" || f.field === "company_name" || f.field === "company_id"
@@ -142,21 +144,23 @@ function validateContactAccess(
       const roleLabel = userRole === "company" ? "Company representatives" : "Legal professionals";
       const reason = `${roleLabel} can only access unresolved case contacts.`;
       
-      console.log('[Contact Access Denied]', {
-        userRole,
-        reason,
-        resolvedFilter: allFilters.find(f =>
-          (f.field === "resolution_status" || f.field === "resolutionStatus") &&
-          f.operator === "eq" &&
-          (f.value === "resolved" || f.value === "Resolved")
-        )
-      });
+      if (process.env.NODE_ENV === "development") {
+        console.log('[Contact Access Denied]', {
+          userRole,
+          reason,
+          resolvedFilter: allFilters.find(f =>
+            (f.field === "resolution_status" || f.field === "resolutionStatus") &&
+            f.operator === "eq" &&
+            (f.value === "resolved" || f.value === "Resolved")
+          )
+        });
+      }
       
       return { allowed: false, reason };
     }
   }
 
-  console.log('[Contact Access Granted]', { userRole });
+  if (process.env.NODE_ENV === "development") console.log('[Contact Access Granted]', { userRole });
   return { allowed: true };
 }
 
@@ -804,10 +808,12 @@ export async function POST(request: Request) {
       ? contextForLlm 
       : "No database results available.";
 
-    console.log("[API] Preparing to send response");
-    console.log("[API] Query plan:", plan);
-    console.log("[API] Result rows count:", result.rows.length);
-    console.log("[API] Context for LLM length:", safeContextForLlm.length);
+    if (process.env.NODE_ENV === "development") {
+      console.log("[API] Preparing to send response");
+      console.log("[API] Query plan:", plan);
+      console.log("[API] Result rows count:", result.rows.length);
+      console.log("[API] Context for LLM length:", safeContextForLlm.length);
+    }
 
     // Create a combined stream that sends raw results first, then the AI response
     const encoder = new TextEncoder();
@@ -816,13 +822,15 @@ export async function POST(request: Request) {
         // ALWAYS send raw results marker for consistency
         const rawResultsMarker = `__RAW_RESULTS__${JSON.stringify(result)}__END_RAW_RESULTS__`;
         controller.enqueue(encoder.encode(rawResultsMarker));
-        console.log("[API] Raw results marker size:", rawResultsMarker.length, "bytes");
-        console.log("[API] Result rows:", result.rows.length);
-        if (result.rows.length > 0) {
-          const firstRow = result.rows[0] as any;
-          const lastRow = result.rows[result.rows.length - 1] as any;
-          console.log("[API] First row story length:", firstRow.story?.length || 0);
-          console.log("[API] Last row story length:", lastRow.story?.length || 0);
+        if (process.env.NODE_ENV === "development") {
+          console.log("[API] Raw results marker size:", rawResultsMarker.length, "bytes");
+          console.log("[API] Result rows:", result.rows.length);
+          if (result.rows.length > 0) {
+            const firstRow = result.rows[0] as any;
+            const lastRow = result.rows[result.rows.length - 1] as any;
+            console.log("[API] First row story length:", firstRow.story?.length || 0);
+            console.log("[API] Last row story length:", lastRow.story?.length || 0);
+          }
         }
         
         // Then stream the AI response
@@ -833,7 +841,7 @@ export async function POST(request: Request) {
           while (true) {
             const { done, value } = await reader.read();
             if (done) {
-              console.log("[API] AI stream complete, chunks sent:", aiChunksSent, "total bytes:", totalAiBytes);
+              if (process.env.NODE_ENV === "development") console.log("[API] AI stream complete, chunks sent:", aiChunksSent, "total bytes:", totalAiBytes);
               break;
             }
             aiChunksSent++;

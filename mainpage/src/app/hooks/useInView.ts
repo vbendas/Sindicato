@@ -23,7 +23,7 @@ export function useInView(options?: IntersectionObserverInit) {
     observer.observe(element);
 
     return () => observer.disconnect();
-  }, [options]);
+  }, [options?.threshold, options?.rootMargin]);
 
   return { ref, isInView };
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { signIn, signOut } from "next-auth/react";
+import { LocalizedLink } from "@/lib/i18n/navigation";
 import {
   Dialog,
   DialogContent,
@@ -48,11 +49,13 @@ export default function Header({
   }, []);
 
   useEffect(() => {
-    fetch("/api/auth/session")
+    const controller = new AbortController();
+    fetch("/api/auth/session", { signal: controller.signal })
       .then((r) => r.json())
       .then((s) => setSession(s?.user ? s : null))
       .catch(() => setSession(null))
       .finally(() => setSessionLoading(false));
+    return () => controller.abort();
   }, []);
 
   async function handleSendCode(e: React.FormEvent) {
@@ -124,31 +127,31 @@ export default function Header({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16 relative">
           <nav className="hidden md:flex items-center gap-6 lg:gap-8">
-            <Link
+            <LocalizedLink
               href="/"
               className={`${navTextColor} ${navHoverColor} transition-colors uppercase tracking-wider text-xs lg:text-sm font-[family-name:var(--font-barlow)] font-bold relative after:absolute after:bottom-[-2px] after:left-0 after:h-[1px] after:w-0 after:bg-white/50 after:transition-all hover:after:w-full`}
             >
               {t("header.navHome")}
-            </Link>
-            <Link
+            </LocalizedLink>
+            <LocalizedLink
               href="/manifesto"
               className={`${navTextColor} ${navHoverColor} transition-colors uppercase tracking-wider text-xs lg:text-sm font-[family-name:var(--font-barlow)] font-bold relative after:absolute after:bottom-[-2px] after:left-0 after:h-[1px] after:w-0 after:bg-white/50 after:transition-all hover:after:w-full`}
             >
               {t("header.navManifesto")}
-            </Link>
-            <Link
+            </LocalizedLink>
+            <LocalizedLink
               href="/about"
               className={`${navTextColor} ${navHoverColor} transition-colors uppercase tracking-wider text-xs lg:text-sm font-[family-name:var(--font-barlow)] font-bold relative after:absolute after:bottom-[-2px] after:left-0 after:h-[1px] after:w-0 after:bg-white/50 after:transition-all hover:after:w-full`}
             >
               {t("header.navAbout")}
-            </Link>
+            </LocalizedLink>
           </nav>
 
-          <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 shrink-0">
+          <LocalizedLink href="/" className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 shrink-0">
             <span className={`text-lg sm:text-xl lg:text-2xl font-bold tracking-widest uppercase font-[family-name:var(--font-labor-union)] ${navTextColor}`}>
               {t("header.brand")}
             </span>
-          </Link>
+          </LocalizedLink>
 
           <div className="hidden md:flex items-center gap-6 lg:gap-8">
             <Link
@@ -157,12 +160,12 @@ export default function Header({
             >
               {t("header.navReport")}
             </Link>
-            <Link
+            <LocalizedLink
               href="/cases"
               className={`${navTextColor} ${navHoverColor} transition-colors uppercase tracking-wider text-xs lg:text-sm font-[family-name:var(--font-barlow)] font-bold relative after:absolute after:bottom-[-2px] after:left-0 after:h-[1px] after:w-0 after:bg-white/50 after:transition-all hover:after:w-full`}
             >
               {t("header.navCases")}
-            </Link>
+            </LocalizedLink>
             {session?.user ? (
               <div className="relative group">
                 <button className={`${clerkBg} px-4 lg:px-5 py-1.5 lg:py-2 text-xs lg:text-sm font-bold uppercase tracking-wider hover:opacity-80 transition-all font-[family-name:var(--font-barlow)] shadow-sm`}>
@@ -175,12 +178,12 @@ export default function Header({
                         {session.user.email}
                       </p>
                     </div>
-                    <Link
+                    <LocalizedLink
                       href="/account"
                       className="block px-4 py-2 text-sindicato-warm-white/80 hover:text-sindicato-warm-white hover:bg-white/5 text-xs uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold transition-colors"
                     >
                       {t("header.myCases")}
-                    </Link>
+                    </LocalizedLink>
                     <button
                       onClick={() => signOut()}
                       className="w-full text-left px-4 py-2 text-red-400/80 hover:text-red-400 hover:bg-white/5 text-xs uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold transition-colors"
@@ -263,12 +266,12 @@ export default function Header({
               {t("header.mobileReport")}
             </Link>
             {session?.user ? (
-              <Link
+              <LocalizedLink
                 href="/account"
                 className={`${clerkBg} px-3 py-1.5 text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)]`}
               >
                 {t("header.account")}
-              </Link>
+              </LocalizedLink>
             ) : (
               <button
                 onClick={() => setShowLogin(true)}

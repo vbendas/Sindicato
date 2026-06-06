@@ -17,7 +17,7 @@ export default function ManifestoStrip() {
     t("manifestoStrip.item9"),
   ];
 
-  const flatItems = [...Array(8)].flatMap((_, groupIndex) =>
+  const flatItems = [...Array(3)].flatMap((_, groupIndex) =>
     items.map((text) => ({ text, key: `${groupIndex}-${text}` }))
   );
 

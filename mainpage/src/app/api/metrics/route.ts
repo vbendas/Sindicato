@@ -2,7 +2,7 @@ import { Redis } from "@upstash/redis";
 import { db } from "@/lib/db/client";
 import { entityMetricsSnapshots, shareClickEvents, companies, cases } from "@/lib/db/schema";
 import { eq, and, count, gte, sql } from "drizzle-orm";
-import { success, error } from "@/lib/utils/api";
+import { success, error, getClientIp } from "@/lib/utils/api";
 import { rateLimit } from "@/lib/auth/rate-limit";
 
 const ALLOWED_ENTITY_TYPES = ["company", "case", "timeline_event"] as const;
@@ -14,7 +14,7 @@ const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_RE
 const CACHE_TTL = 300;
 
 export async function GET(request: Request) {
-  const ip = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown";
+  const ip = getClientIp(request);
   const { allowed } = await rateLimit(`metrics:${ip}`, 60, 60_000);
   if (!allowed) return error("Too many requests", 429);
 

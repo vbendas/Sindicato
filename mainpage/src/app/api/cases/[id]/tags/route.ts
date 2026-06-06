@@ -3,6 +3,15 @@ import { caseTags, cases } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { success, error } from "@/lib/utils/api";
 import { auth } from "@/lib/auth";
+import { z } from "zod";
+
+const createTagSchema = z.object({
+  tagName: z.string().min(1).max(200),
+  category: z.enum(["other", "worker_action", "payment", "legal", "communication"]).default("other"),
+  confidence: z.number().int().min(0).max(100).default(100),
+  sourceText: z.string().max(2000).nullable().default(null),
+  source: z.enum(["user", "ai", "auto"]).default("user"),
+});
 
 export async function GET(
   request: Request,
@@ -61,21 +70,20 @@ export async function POST(
     }
 
     const body = await request.json();
-    const { tagName, category, confidence, sourceText, source } = body;
-
-    if (!tagName || typeof tagName !== "string") {
-      return error("tagName is required", 400);
+    const parsed = createTagSchema.safeParse(body);
+    if (!parsed.success) {
+      return error("Invalid tag data", 400, parsed.error.flatten().fieldErrors);
     }
 
     const [newTag] = await db
       .insert(caseTags)
       .values({
         caseId,
-        category: category || "other",
-        tagName: tagName.trim(),
-        confidence: confidence ?? 100,
-        sourceText: sourceText || null,
-        source: source || "user",
+        category: parsed.data.category,
+        tagName: parsed.data.tagName.trim(),
+        confidence: parsed.data.confidence,
+        sourceText: parsed.data.sourceText,
+        source: parsed.data.source,
       })
       .returning();
 
