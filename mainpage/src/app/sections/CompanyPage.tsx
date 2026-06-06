@@ -12,6 +12,7 @@ import { useTrackPageview } from "@/hooks/useTrackPageview";
 import { useT, useLocale } from "@/lib/i18n";
 import { useTranslation } from "@/hooks/useTranslation";
 import { TranslatedCaseStory } from "@/components/case/TranslatedCaseStory";
+import { truncateAtWord } from "@/lib/utils/text";
 import { TAG_I18N_MAP } from "@/components/CaseTag";
 
 interface CaseItem {
@@ -145,12 +146,12 @@ function CompanyCasePreviewCard({ item, locale, t }: CompanyCasePreviewCardProps
         </div>
         <div className="min-h-0 overflow-hidden">
           <TranslatedCaseStory
-            text={item.story}
+            text={truncateAtWord(item.story, 100)}
             cachedTranslation={item.storyTranslated}
             sourceLanguage={item.translationLanguage}
             locale={locale}
             t={t}
-            className="text-sindicato-warm-white/60 text-sm leading-relaxed block line-clamp-2"
+            className="text-sindicato-warm-white/60 text-sm leading-relaxed block line-clamp-2 [mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)]"
             cacheKey={{ entityType: "case", entityId: item.id, field: "story" }}
           />
         </div>

@@ -7,6 +7,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useT, useLocale } from "@/lib/i18n";
 import { TranslatedCaseStory } from "@/components/case/TranslatedCaseStory";
 import { getTagSeverity, type TagSeverity } from "@/lib/ai/tag-taxonomy";
+import { truncateAtWord } from "@/lib/utils/text";
 
 const TAG_SEVERITY_COLORS: Record<TagSeverity, { bg: string; text: string; border: string }> = {
   green: { bg: "bg-emerald-500/10", text: "text-emerald-400", border: "border-emerald-500/20" },
@@ -117,12 +118,12 @@ function CaseCard({ item, locale, t, verticalStyles, onClick }: CaseCardProps) {
 
       <div className="flex-1 min-h-0 overflow-hidden">
         <TranslatedCaseStory
-          text={item.storyPreview || item.story || ""}
+          text={truncateAtWord(item.storyPreview || item.story || "", 280)}
           cachedTranslation={item.storyTranslated ?? null}
           sourceLanguage={item.translationLanguage ?? null}
           locale={locale}
           t={t}
-          className="text-sindicato-warm-white/65 text-sm leading-relaxed block line-clamp-5"
+          className="text-sindicato-warm-white/65 text-sm leading-relaxed block line-clamp-5 [mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)]"
           cacheKey={{ entityType: "case", entityId: item.id, field: "story" }}
         />
       </div>
