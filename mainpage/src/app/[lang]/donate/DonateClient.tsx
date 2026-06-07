@@ -171,7 +171,7 @@ export default function DonateClient({ locale, stripePublishableKey }: DonateCli
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="bg-sindicato-bordeaux-dark/50 backdrop-blur-sm border border-white/10 p-8 sm:p-10 rounded-lg"
+      className="bg-sindicato-bordeaux-dark/75 backdrop-blur-sm border border-white/10 p-8 sm:p-10 rounded-lg"
     >
       <p className="text-sindicato-warm-white/40 text-xs uppercase tracking-widest font-[family-name:var(--font-barlow)] font-bold mb-6">
         {t("donate.formTitle")}
