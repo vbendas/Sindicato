@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { loadStripe, type Stripe as StripeJs } from "@stripe/stripe-js";
 import {
   EmbeddedCheckoutProvider,
@@ -138,30 +139,39 @@ export default function DonateClient({ locale, stripePublishableKey }: DonateCli
   }
 
   if (clientSecret) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="border border-white/10 p-1 sm:p-2"
+    return createPortal(
+      <div
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-sindicato-charcoal/80 backdrop-blur-sm"
+        onClick={handleCancel}
       >
-        <EmbeddedCheckoutProvider
-          stripe={stripePromise}
-          options={{ clientSecret }}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+          className="relative bg-sindicato-charcoal border border-white/10 rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+          onClick={(e) => e.stopPropagation()}
         >
-          <EmbeddedCheckout />
-        </EmbeddedCheckoutProvider>
+          <div className="p-4 sm:p-6">
+            <EmbeddedCheckoutProvider
+              stripe={stripePromise}
+              options={{ clientSecret }}
+            >
+              <EmbeddedCheckout />
+            </EmbeddedCheckoutProvider>
+          </div>
 
-        <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-2 text-right">
-          <button
-            type="button"
-            onClick={handleCancel}
-            className="text-sindicato-warm-white/50 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] font-bold"
-          >
-            ← {t("donate.cancel")}
-          </button>
-        </div>
-      </motion.div>
+          <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-2 text-right border-t border-white/10">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="text-sindicato-warm-white/50 hover:text-sindicato-warm-white text-xs uppercase tracking-wider transition-colors font-[family-name:var(--font-barlow)] font-bold"
+            >
+              ← {t("donate.cancel")}
+            </button>
+          </div>
+        </motion.div>
+      </div>,
+      document.body
     );
   }
 
