@@ -12,6 +12,7 @@ import { createCaseAlias } from "@/lib/email/aliases";
 import { auth } from "@/lib/auth";
 import { translateToEnglish } from "@/lib/ai/translate";
 import { generateCaseTags } from "@/lib/ai/generate-tags";
+import { invalidateCompanySummary } from "@/lib/ai/invalidate-summary";
 
 export async function POST(request: Request) {
   // Require authenticated session
@@ -303,6 +304,10 @@ export async function POST(request: Request) {
         }).catch((err) => console.error("Failed to log notification event:", err));
       }).catch((err) => console.error("Failed to notify company:", err));
     }
+
+    invalidateCompanySummary(company.id).catch((err) =>
+      console.error("Failed to invalidate company summary:", err)
+    );
 
     return success({ id: newCase.id }, 201);
   } catch (err) {

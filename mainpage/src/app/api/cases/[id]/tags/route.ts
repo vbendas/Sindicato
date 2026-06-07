@@ -4,6 +4,7 @@ import { eq, and } from "drizzle-orm";
 import { success, error } from "@/lib/utils/api";
 import { auth } from "@/lib/auth";
 import { z } from "zod";
+import { invalidateCompanySummary } from "@/lib/ai/invalidate-summary";
 
 const createTagSchema = z.object({
   tagName: z.string().min(1).max(200),
@@ -56,7 +57,7 @@ export async function POST(
     const { id: caseId } = await params;
 
     const [caseRow] = await db
-      .select({ id: cases.id, workerId: cases.workerId })
+      .select({ id: cases.id, workerId: cases.workerId, companyId: cases.companyId })
       .from(cases)
       .where(and(eq(cases.id, caseId), eq(cases.status, "active")))
       .limit(1);
@@ -86,6 +87,10 @@ export async function POST(
         source: parsed.data.source,
       })
       .returning();
+
+    invalidateCompanySummary(caseRow.companyId).catch((err) =>
+      console.error("Failed to invalidate company summary:", err)
+    );
 
     return success(newTag, 201);
   } catch (err) {

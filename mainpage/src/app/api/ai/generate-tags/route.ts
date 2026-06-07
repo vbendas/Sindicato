@@ -5,6 +5,7 @@ import { eq, and } from "drizzle-orm";
 import { success, error } from "@/lib/utils/api";
 import { auth } from "@/lib/auth";
 import { generateCaseTags } from "@/lib/ai/generate-tags";
+import { invalidateCompanySummary } from "@/lib/ai/invalidate-summary";
 
 const bodySchema = z.object({
   caseId: z.string().uuid(),
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
     const { caseId } = parsed.data;
 
     const [caseRow] = await db
-      .select({ id: cases.id, workerId: cases.workerId })
+      .select({ id: cases.id, workerId: cases.workerId, companyId: cases.companyId })
       .from(cases)
       .where(and(eq(cases.id, caseId), eq(cases.status, "active")))
       .limit(1);
@@ -44,6 +45,10 @@ export async function POST(request: Request) {
     if (!result.success) {
       return error(result.error || "Tag generation failed", 500);
     }
+
+    invalidateCompanySummary(caseRow.companyId).catch((err) =>
+      console.error("Failed to invalidate company summary:", err)
+    );
 
     return success(result);
   } catch (err) {

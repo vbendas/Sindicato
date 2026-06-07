@@ -4,6 +4,7 @@ import { caseTags, cases } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { success, error } from "@/lib/utils/api";
 import { auth } from "@/lib/auth";
+import { invalidateCompanySummary } from "@/lib/ai/invalidate-summary";
 
 const updateSchema = z.object({
   workerOverride: z.enum(["confirmed", "rejected"]),
@@ -22,7 +23,7 @@ export async function PUT(
     const { id: caseId, tagId } = await params;
 
     const [caseRow] = await db
-      .select({ id: cases.id, workerId: cases.workerId })
+      .select({ id: cases.id, workerId: cases.workerId, companyId: cases.companyId })
       .from(cases)
       .where(and(eq(cases.id, caseId), eq(cases.status, "active")))
       .limit(1);
@@ -59,6 +60,10 @@ export async function PUT(
       .where(eq(caseTags.id, tagId))
       .returning();
 
+    invalidateCompanySummary(caseRow.companyId).catch((err) =>
+      console.error("Failed to invalidate company summary:", err)
+    );
+
     return success(updated);
   } catch (err) {
     console.error("Error updating tag:", err);
@@ -79,7 +84,7 @@ export async function DELETE(
     const { id: caseId, tagId } = await params;
 
     const [caseRow] = await db
-      .select({ id: cases.id, workerId: cases.workerId })
+      .select({ id: cases.id, workerId: cases.workerId, companyId: cases.companyId })
       .from(cases)
       .where(and(eq(cases.id, caseId), eq(cases.status, "active")))
       .limit(1);
@@ -112,6 +117,10 @@ export async function DELETE(
     await db
       .delete(caseTags)
       .where(eq(caseTags.id, tagId));
+
+    invalidateCompanySummary(caseRow.companyId).catch((err) =>
+      console.error("Failed to invalidate company summary:", err)
+    );
 
     return success({ deleted: true });
   } catch (err) {

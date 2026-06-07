@@ -5,6 +5,7 @@ import { success, error } from "@/lib/utils/api";
 import { auth } from "@/lib/auth";
 import { timelineEventInputSchema } from "@/lib/utils/schemas";
 import { generateCaseTags } from "@/lib/ai/generate-tags";
+import { invalidateCompanySummary } from "@/lib/ai/invalidate-summary";
 
 export async function GET(
   request: Request,
@@ -50,7 +51,7 @@ export async function POST(
     const { id: caseId } = await params;
 
     const [caseRow] = await db
-      .select({ id: cases.id, workerId: cases.workerId })
+      .select({ id: cases.id, workerId: cases.workerId, companyId: cases.companyId })
       .from(cases)
       .where(and(eq(cases.id, caseId), eq(cases.status, "active")))
       .limit(1);
@@ -112,6 +113,10 @@ export async function POST(
     // Re-generate AI tags (fire-and-forget)
     generateCaseTags(caseId).catch((err) =>
       console.error("Failed to regenerate case tags:", err)
+    );
+
+    invalidateCompanySummary(caseRow.companyId).catch((err) =>
+      console.error("Failed to invalidate company summary:", err)
     );
 
     return success(event, 201);

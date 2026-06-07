@@ -6,6 +6,7 @@ import { redactName } from "@/lib/utils/redaction";
 import { auth } from "@/lib/auth";
 import { editStorySchema } from "@/lib/utils/schemas";
 import { generateCaseTags } from "@/lib/ai/generate-tags";
+import { invalidateCompanySummary } from "@/lib/ai/invalidate-summary";
 
 export async function GET(
   request: Request,
@@ -93,7 +94,7 @@ export async function PATCH(
     const { id } = await params;
 
     const [caseRow] = await db
-      .select({ id: cases.id, workerId: cases.workerId })
+      .select({ id: cases.id, workerId: cases.workerId, companyId: cases.companyId })
       .from(cases)
       .where(and(eq(cases.id, id), eq(cases.status, "active")))
       .limit(1);
@@ -124,6 +125,10 @@ export async function PATCH(
 
     generateCaseTags(id).catch((err) =>
       console.error("Failed to regenerate case tags:", err)
+    );
+
+    invalidateCompanySummary(caseRow.companyId).catch((err) =>
+      console.error("Failed to invalidate company summary:", err)
     );
 
     return success({ story: parsed.data.story });
