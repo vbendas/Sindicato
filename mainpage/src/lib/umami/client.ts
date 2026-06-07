@@ -4,7 +4,7 @@ import { eq, and } from "drizzle-orm";
 
 const WEBSITE_ID = process.env.UMAMI_WEBSITE_ID || process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
 const UMAMI_API_KEY = process.env.UMAMI_API_KEY;
-const UMAMI_URL = process.env.UMAMI_URL || "https://analytics.sindicato.report/api";
+const UMAMI_URL = process.env.UMAMI_URL || "https://api.umami.is/v1";
 
 interface UmamiStatsResponse {
   pageviews: { value: number };
