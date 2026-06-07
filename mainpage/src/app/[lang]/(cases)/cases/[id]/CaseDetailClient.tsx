@@ -11,6 +11,7 @@ import EntityReachStats from "@/components/EntityReachStats";
 import { CaseTag } from "@/components/CaseTag";
 import { TAG_TAXONOMY, TAG_CATEGORIES } from "@/lib/ai/tag-taxonomy";
 import { useT, useLocale } from "@/lib/i18n";
+import { useTrackPageview } from "@/hooks/useTrackPageview";
 import { LocalizedLink } from "@/lib/i18n/navigation";
 import { localeNames } from "@/lib/i18n/config";
 import type { Locale } from "@/lib/i18n/config";
@@ -207,6 +208,7 @@ export default function CaseDetailClient({
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const t = useT();
   const { locale } = useLocale();
+  useTrackPageview("case", caseId);
 
   // Translate story on-the-fly
   const {

@@ -5,6 +5,7 @@ import { umamiClient } from "@/lib/umami/client";
 import { eq, and, gte } from "drizzle-orm";
 
 const CRON_SECRET = process.env.CRON_SECRET;
+const LOCALES = ["en", "es", "pt", "fr", "it", "de", "hi", "fil", "vi", "sw", "ne", "am", "ar"];
 
 interface SyncEntity {
   entityType: "company" | "case" | "timeline_event";
@@ -45,6 +46,20 @@ async function collectEntities(): Promise<SyncEntity[]> {
   return entities;
 }
 
+async function getStatsAcrossLocales(basePath: string, startAt: number, endAt: number) {
+  const results = await Promise.all(
+    LOCALES.map((locale) => {
+      const path = locale === "en" ? basePath : `/${locale}${basePath}`;
+      return umamiClient.getStats(path, startAt, endAt);
+    })
+  );
+  return {
+    pageviews: results.reduce((sum, r) => sum + r.pageviews, 0),
+    sessions: results.reduce((sum, r) => sum + r.sessions, 0),
+    visitors: results.reduce((sum, r) => sum + r.visitors, 0),
+  };
+}
+
 async function syncEntity(entity: SyncEntity): Promise<void> {
   const now = Date.now();
   const ONE_DAY = 24 * 60 * 60 * 1000;
@@ -52,9 +67,9 @@ async function syncEntity(entity: SyncEntity): Promise<void> {
   const THIRTY_DAYS = 30 * ONE_DAY;
 
   const [total, last7d, last24h] = await Promise.all([
-    umamiClient.getStats(entity.path, now - THIRTY_DAYS, now),
-    umamiClient.getStats(entity.path, now - SEVEN_DAYS, now),
-    umamiClient.getStats(entity.path, now - ONE_DAY, now),
+    getStatsAcrossLocales(entity.path, now - THIRTY_DAYS, now),
+    getStatsAcrossLocales(entity.path, now - SEVEN_DAYS, now),
+    getStatsAcrossLocales(entity.path, now - ONE_DAY, now),
   ]);
 
   const shareCount = await umamiClient.getEventCount("share_click", now - THIRTY_DAYS, now);
