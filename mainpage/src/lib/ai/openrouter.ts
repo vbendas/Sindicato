@@ -9,7 +9,7 @@ export async function callOpenRouter(opts: {
   temperature?: number;
 }): Promise<string> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 30_000);
+  const timeout = setTimeout(() => controller.abort(), 60_000);
 
   try {
     const response = await fetch(BASE_URL, {

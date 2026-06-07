@@ -68,7 +68,7 @@ export async function GET(request: Request) {
         })
         .from(cases)
         .where(and(eq(cases.companyId, company.id), eq(cases.status, "active")))
-        .limit(50);
+        .limit(15);
       
       if (process.env.NODE_ENV === "development") console.log(`Fetched ${companyCases.length} cases`);
       
@@ -99,7 +99,7 @@ export async function GET(request: Request) {
         .select({ id: cases.id })
         .from(cases)
         .where(and(eq(cases.companyId, company.id), eq(cases.status, "active")))
-        .limit(50);
+        .limit(15);
 
       if (companyCaseIds.length > 0) {
         const tagCounts = await db
@@ -245,8 +245,9 @@ export async function GET(request: Request) {
       engagementPattern: aiParsed.engagementPattern,
       keyInsight: aiParsed.keyInsight,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Company summary error:", err);
-    return error("Failed to generate summary", 500);
+    const detail = err?.message ?? String(err);
+    return error(`Failed to generate summary: ${detail}`, 500);
   }
 }
