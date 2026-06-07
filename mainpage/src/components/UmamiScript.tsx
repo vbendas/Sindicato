@@ -2,15 +2,15 @@
 import Script from "next/script";
 import { onUmamiLoaded } from "@/lib/umami";
 
+const WEBSITE_ID = "8674bf5b-c6a5-4cc1-8394-fa5a49cdd053";
+const SCRIPT_URL = process.env.NEXT_PUBLIC_UMAMI_URL || "https://cloud.umami.is/script.js";
+
 export function UmamiScript() {
-  const src = process.env.NEXT_PUBLIC_UMAMI_URL;
-  const websiteId = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
-  if (!src || !websiteId) return null;
   return (
     <Script
       defer
-      src={src}
-      data-website-id={websiteId}
+      src={SCRIPT_URL}
+      data-website-id={WEBSITE_ID}
       strategy="afterInteractive"
       onLoad={onUmamiLoaded}
     />
