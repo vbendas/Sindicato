@@ -6,10 +6,9 @@ const WEBSITE_ID = process.env.UMAMI_WEBSITE_ID || process.env.NEXT_PUBLIC_UMAMI
 const UMAMI_API_KEY = process.env.UMAMI_API_KEY;
 const UMAMI_URL = process.env.UMAMI_URL || "https://api.umami.is/v1";
 
-interface UmamiStatsResponse {
-  pageviews: number;
-  sessions: number;
-  visitors: number;
+interface UmamiPageviewsResponse {
+  pageviews: Array<{ x: string; y: number }>;
+  sessions: Array<{ x: string; y: number }>;
 }
 
 interface UmamiEventResponse {
@@ -57,14 +56,16 @@ class UmamiClient {
       startAt: String(startAt || Date.now() - 30 * 24 * 60 * 60 * 1000),
       endAt: String(endAt || Date.now()),
     });
-    if (path) params.set("url", path);
+    if (path) params.set("pathname", path);
 
     try {
-      const data = await this.request<UmamiStatsResponse>(`/websites/${WEBSITE_ID}/stats?${params.toString()}`);
+      const data = await this.request<UmamiPageviewsResponse>(`/websites/${WEBSITE_ID}/pageviews?${params.toString()}`);
+      const pageviews = data.pageviews.reduce((sum, item) => sum + item.y, 0);
+      const sessions = data.sessions.reduce((sum, item) => sum + item.y, 0);
       return {
-        pageviews: data.pageviews,
-        sessions: data.sessions,
-        visitors: data.visitors,
+        pageviews,
+        sessions,
+        visitors: sessions, // Use sessions as proxy for visitors since /stats ignores pathname
       };
     } catch (err) {
       console.error(`[Umami] getStats failed for path="${path}":`, err);
