@@ -39,7 +39,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob:",
               "font-src 'self' data:",
-              "connect-src 'self' https://challenges.cloudflare.com https://openrouter.ai https://cloud.umami.is",
+              "connect-src 'self' https://challenges.cloudflare.com https://openrouter.ai https://cloud.umami.is https://gateway.umami.is",
               "frame-src https://challenges.cloudflare.com",
               "base-uri 'self'",
               "form-action 'self'",
