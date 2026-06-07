@@ -47,12 +47,14 @@ async function collectEntities(): Promise<SyncEntity[]> {
 }
 
 async function getStatsAcrossLocales(basePath: string, startAt: number, endAt: number) {
-  const results = await Promise.all(
-    LOCALES.map((locale) => {
-      const path = locale === "en" ? basePath : `/${locale}${basePath}`;
-      return umamiClient.getStats(path, startAt, endAt);
-    })
-  );
+  const results = [];
+  for (const locale of LOCALES) {
+    const path = locale === "en" ? basePath : `/${locale}${basePath}`;
+    const stats = await umamiClient.getStats(path, startAt, endAt);
+    results.push(stats);
+    // Small delay to avoid rate limiting
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
   return {
     pageviews: results.reduce((sum, r) => sum + r.pageviews, 0),
     sessions: results.reduce((sum, r) => sum + r.sessions, 0),
@@ -61,7 +63,7 @@ async function getStatsAcrossLocales(basePath: string, startAt: number, endAt: n
 }
 
 async function syncEntity(entity: SyncEntity): Promise<void> {
-  const now = Date.now() - 15 * 60 * 1000;
+  const now = Date.now() - 60 * 60 * 1000;
   const ONE_DAY = 24 * 60 * 60 * 1000;
   const SEVEN_DAYS = 7 * ONE_DAY;
   const THIRTY_DAYS = 30 * ONE_DAY;
