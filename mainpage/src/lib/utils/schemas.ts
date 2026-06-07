@@ -99,5 +99,16 @@ export const companySlugSchema = z
 
 export const emailSchema = z.email();
 
+export const editStorySchema = z.object({
+  story: z.string().min(1).max(10000).refine(
+    (s) => {
+      const words = s.trim().split(/\s+/).filter(Boolean).length;
+      return words >= 100 && words <= 500;
+    },
+    { message: "Story must be between 100 and 500 words" }
+  ),
+});
+
 export type CaseSubmission = z.infer<typeof caseSubmissionSchema>;
 export type CaseSubmissionV2 = z.infer<typeof caseSubmissionV2Schema>;
+export type EditStory = z.infer<typeof editStorySchema>;

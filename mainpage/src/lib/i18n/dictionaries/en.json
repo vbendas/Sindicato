@@ -244,7 +244,15 @@
     "contactAttempts": "Contact Attempts",
     "notFound": "Case Not Found",
     "notFoundBody": "This case may have been removed or does not exist.",
-    "backToCases": "Back to Cases Wall"
+    "backToCases": "Back to Cases Wall",
+    "case": "CASE",
+    "editStory": "Edit Story",
+    "editStoryDescription": "Edit your case story. The updated story will be used for future AI tag analysis.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "storyWordCount": "{count} words",
+    "storyWordRange": "Must be between 100 and 500 words"
   },
   "timelineSection": {
     "title": "Timeline",

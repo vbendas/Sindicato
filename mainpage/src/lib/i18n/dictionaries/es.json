@@ -244,7 +244,14 @@
     "notFound": "Caso No Encontrado",
     "notFoundBody": "Este caso puede haber sido eliminado o no existe.",
     "backToCases": "Volver al Muro de Casos",
-    "case": "CASO"
+    "case": "CASO",
+    "editStory": "Editar Historia",
+    "editStoryDescription": "Edita la historia de tu caso. La historia actualizada se usará para el análisis futuro de etiquetas IA.",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "saving": "Guardando...",
+    "storyWordCount": "{count} palabras",
+    "storyWordRange": "Debe tener entre 100 y 500 palabras"
   },
   "timelineSection": {
     "title": "Cronología",

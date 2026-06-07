@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, PencilIcon } from "lucide-react";
 import Header from "@/app/components/Header";
 import Footer from "@/app/sections/Footer";
 import TimelineSection from "./TimelineSection";
@@ -17,6 +17,15 @@ import { localeNames } from "@/lib/i18n/config";
 import type { Locale } from "@/lib/i18n/config";
 import { useTranslation } from "@/hooks/useTranslation";
 import type { CaseTagData } from "@/components/CaseTag";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 const SEVERITY_DOT_COLORS: Record<string, string> = {
   green: "bg-emerald-400",
@@ -206,6 +215,10 @@ export default function CaseDetailClient({
   const [generatingTags, setGeneratingTags] = useState(false);
   const [tagError, setTagError] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [editingStory, setEditingStory] = useState(false);
+  const [storyDraft, setStoryDraft] = useState("");
+  const [storySaving, setStorySaving] = useState(false);
+  const [storyError, setStoryError] = useState<string | null>(null);
   const t = useT();
   const { locale } = useLocale();
   useTrackPageview("case", caseId);
@@ -362,6 +375,39 @@ export default function CaseDetailClient({
       }
     } catch (err) {
       console.error("Failed to add tag:", err);
+    }
+  };
+
+  const handleStorySave = async () => {
+    if (!caseId || !storyDraft.trim()) return;
+    setStorySaving(true);
+    setStoryError(null);
+    try {
+      const res = await fetch(`/api/cases/${caseId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ story: storyDraft }),
+      });
+      const json = await res.json();
+      if (res.ok) {
+        setCaseData((prev) =>
+          prev ? { ...prev, story: storyDraft, storyTranslated: null, translationLanguage: null } : prev
+        );
+        setEditingStory(false);
+        setShowTranslated(false);
+      } else {
+        const fieldErrors = json.error?.fieldErrors;
+        if (fieldErrors?.story) {
+          setStoryError(fieldErrors.story[0]);
+        } else {
+          setStoryError(json.error || json.message || "Failed to update story");
+        }
+      }
+    } catch (err) {
+      console.error("Failed to update story:", err);
+      setStoryError("Network error. Please try again.");
+    } finally {
+      setStorySaving(false);
     }
   };
 
@@ -532,10 +578,19 @@ export default function CaseDetailClient({
                   </div>
 
                   <div className="border-t border-white/10 pt-6">
-                    <div className="mb-3">
+                    <div className="mb-3 flex items-center gap-2">
                       <p className="text-sindicato-warm-white/40 text-xs uppercase tracking-wider">
                         {t("caseDetail.story")}
                       </p>
+                      {isOwner && (
+                        <button
+                          type="button"
+                          onClick={() => { setStoryDraft(caseData.story); setStoryError(null); setEditingStory(true); }}
+                          className="text-sindicato-warm-white/40 hover:text-sindicato-warm-white transition-colors p-0.5"
+                        >
+                          <PencilIcon className="size-3" />
+                        </button>
+                      )}
                     </div>
                     {showTranslated && isStoryTranslating && (
                       <div className="flex items-center gap-2 mb-2">
@@ -629,6 +684,62 @@ export default function CaseDetailClient({
         </div>
 
         <Footer bg="bg-sindicato-charcoal" />
+
+        {/* Story Edit Dialog */}
+        <Dialog open={editingStory} onOpenChange={(open) => !open && setEditingStory(false)}>
+          <DialogContent className="bg-sindicato-slate border border-white/20 text-sindicato-warm-white max-w-lg max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-sindicato-warm-white font-[family-name:var(--font-barlow)] uppercase tracking-wider">
+                {t("caseDetail.editStory")}
+              </DialogTitle>
+              <DialogDescription className="text-sindicato-warm-white/50 text-xs">
+                {t("caseDetail.editStoryDescription")}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-3">
+              <Textarea
+                value={storyDraft}
+                onChange={(e) => setStoryDraft(e.target.value)}
+                className="bg-white/5 border-white/10 text-sindicato-warm-white min-h-[200px] font-[family-name:var(--font-geist)] text-sm leading-relaxed resize-y"
+              />
+              {(() => {
+                const wordCount = storyDraft.trim().split(/\s+/).filter(Boolean).length;
+                const valid = wordCount >= 100 && wordCount <= 500;
+                return (
+                  <div className="flex items-center justify-between">
+                    <p className={`text-[10px] font-[family-name:var(--font-jetbrains)] ${valid ? "text-sindicato-warm-white/40" : "text-rose-400"}`}>
+                      {t("caseDetail.storyWordCount", { count: wordCount })}
+                    </p>
+                    {!valid && (
+                      <p className="text-rose-400 text-[10px]">
+                        {t("caseDetail.storyWordRange")}
+                      </p>
+                    )}
+                  </div>
+                );
+              })()}
+              {storyError && (
+                <p className="text-amber-400/70 text-[11px]">{storyError}</p>
+              )}
+              <div className="flex justify-end gap-2 pt-2">
+                <Button
+                  variant="ghost"
+                  onClick={() => setEditingStory(false)}
+                  className="text-sindicato-warm-white/60 hover:text-sindicato-warm-white text-xs"
+                >
+                  {t("caseDetail.cancel")}
+                </Button>
+                <Button
+                  onClick={handleStorySave}
+                  disabled={storySaving || !storyDraft.trim()}
+                  className="bg-sindicato-bordeaux hover:bg-sindicato-bordeaux/80 text-sindicato-warm-white text-xs"
+                >
+                  {storySaving ? t("caseDetail.saving") : t("caseDetail.save")}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );
