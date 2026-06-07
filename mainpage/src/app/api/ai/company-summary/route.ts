@@ -178,6 +178,8 @@ export async function GET(request: Request) {
       maxTokens: 800,
     });
 
+    if (process.env.NODE_ENV === "development") console.log("AI response length:", aiResponse.length, "starts with:", aiResponse.substring(0, 100));
+
     // Parse AI response - strip markdown code blocks if present
     let aiParsed;
     try {
@@ -194,9 +196,16 @@ export async function GET(request: Request) {
       }
       jsonString = jsonString.trim();
       
+      // Try to extract JSON from the response if it contains extra text
+      const jsonMatch = jsonString.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        jsonString = jsonMatch[0];
+      }
+      
       aiParsed = JSON.parse(jsonString);
     } catch (parseError) {
       console.error("Failed to parse AI response as JSON:", parseError);
+      console.error("Raw AI response (first 500 chars):", aiResponse.substring(0, 500));
       return success({ summary: null });
     }
 
