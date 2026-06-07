@@ -206,7 +206,7 @@ export async function GET(request: Request) {
     } catch (parseError) {
       console.error("Failed to parse AI response as JSON:", parseError);
       console.error("Raw AI response (first 500 chars):", aiResponse.substring(0, 500));
-      return success({ summary: null });
+      return success({ summary: null, _debug: { raw: aiResponse.substring(0, 2000), model: getReportModel(), parseError: String(parseError) } });
     }
 
     // Cache the result (24 hours)
