@@ -61,7 +61,7 @@ async function getStatsAcrossLocales(basePath: string, startAt: number, endAt: n
 }
 
 async function syncEntity(entity: SyncEntity): Promise<void> {
-  const now = Date.now();
+  const now = Date.now() - 15 * 60 * 1000;
   const ONE_DAY = 24 * 60 * 60 * 1000;
   const SEVEN_DAYS = 7 * ONE_DAY;
   const THIRTY_DAYS = 30 * ONE_DAY;
@@ -90,10 +90,12 @@ async function syncEntity(entity: SyncEntity): Promise<void> {
 const BATCH_SIZE = 50;
 const BATCH_DELAY_MS = 1000;
 
+const NO_CACHE_HEADERS = { "Cache-Control": "no-store, no-cache, must-revalidate" };
+
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("Authorization");
   if (!CRON_SECRET || authHeader !== `Bearer ${CRON_SECRET}`) {
-    return Response.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    return Response.json({ success: false, message: "Unauthorized" }, { status: 401, headers: NO_CACHE_HEADERS });
   }
 
   try {
@@ -122,7 +124,7 @@ export async function GET(req: NextRequest) {
       success: true,
       message: "Umami sync completed",
       stats: { total: entities.length, synced, errors },
-    });
+    }, { headers: NO_CACHE_HEADERS });
   } catch (error) {
     console.error("Umami sync failed:", error);
     return Response.json({ success: false, message: "Sync failed" }, { status: 500 });

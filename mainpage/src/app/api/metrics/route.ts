@@ -6,6 +6,7 @@ import { success, error, getClientIp } from "@/lib/utils/api";
 import { rateLimit } from "@/lib/auth/rate-limit";
 
 const ALLOWED_ENTITY_TYPES = ["company", "case", "timeline_event"] as const;
+const NO_CACHE = { "Cache-Control": "no-store, no-cache, must-revalidate" };
 
 const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
   ? new Redis({ url: process.env.UPSTASH_REDIS_REST_URL, token: process.env.UPSTASH_REDIS_REST_TOKEN })
@@ -16,21 +17,21 @@ const CACHE_TTL = 300;
 export async function GET(request: Request) {
   const ip = getClientIp(request);
   const { allowed } = await rateLimit(`metrics:${ip}`, 60, 60_000);
-  if (!allowed) return error("Too many requests", 429);
+  if (!allowed) return error("Too many requests", 429, undefined, NO_CACHE);
 
   const { searchParams } = new URL(request.url);
   const type = searchParams.get("type");
   const id = searchParams.get("id");
 
-  if (!type || !id) return error("Missing required parameters: type and id", 400);
-  if (!ALLOWED_ENTITY_TYPES.includes(type as any)) return error("Invalid entity type", 400);
+  if (!type || !id) return error("Missing required parameters: type and id", 400, undefined, NO_CACHE);
+  if (!ALLOWED_ENTITY_TYPES.includes(type as any)) return error("Invalid entity type", 400, undefined, NO_CACHE);
 
   const cacheKey = `metrics:${type}:${id}`;
 
   if (redis) {
     try {
       const cached = await redis.get(cacheKey);
-      if (cached) return success(cached);
+      if (cached) return success(cached, 200, NO_CACHE);
     } catch { /* fall through */ }
   }
 
@@ -43,10 +44,10 @@ export async function GET(request: Request) {
       try { await redis.setex(cacheKey, CACHE_TTL, data); } catch { /* ok */ }
     }
 
-    return success(data);
+    return success(data, 200, NO_CACHE);
   } catch (err) {
     console.error("Failed to fetch metrics:", err);
-    return error("Failed to fetch metrics", 500);
+    return error("Failed to fetch metrics", 500, undefined, NO_CACHE);
   }
 }
 

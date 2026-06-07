@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 
-export function success<T>(data: T, status = 200) {
-  return NextResponse.json({ ok: true, data }, { status });
+export function success<T>(data: T, status = 200, headers?: Record<string, string>) {
+  return NextResponse.json({ ok: true, data }, { status, headers });
 }
 
-export function error(message: string, status = 400, details?: unknown) {
+export function error(message: string, status = 400, details?: unknown, headers?: Record<string, string>) {
   return NextResponse.json(
     { ok: false, error: message, ...(details ? { details } : {}) },
-    { status }
+    { status, headers }
   );
 }
 
