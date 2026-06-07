@@ -17,28 +17,41 @@ interface UmamiEventResponse {
 }
 
 class UmamiClient {
-  private apiKey: string = "";
-  private baseUrl: string = "";
+  private apiKey: string;
+  private baseUrl: string;
 
   constructor() {
-    if (!UMAMI_API_KEY) {
-      console.error("Umami configuration missing - analytics will be disabled");
-      return;
-    }
-    this.apiKey = UMAMI_API_KEY;
+    this.apiKey = UMAMI_API_KEY || "";
     this.baseUrl = UMAMI_URL;
+
+    if (!this.apiKey) {
+      console.error("[Umami] UMAMI_API_KEY not set — API calls will fail");
+    }
+    if (!WEBSITE_ID) {
+      console.error("[Umami] No WEBSITE_ID found (checked UMAMI_WEBSITE_ID, NEXT_PUBLIC_UMAMI_WEBSITE_ID)");
+    }
+  }
+
+  private get isConfigured(): boolean {
+    return !!this.apiKey && !!WEBSITE_ID;
   }
 
   private async request<T>(endpoint: string): Promise<T> {
     const res = await fetch(`${this.baseUrl}${endpoint}`, {
       headers: { "x-umami-api-key": this.apiKey },
     });
-    if (!res.ok) throw new Error(`Umami API error: ${res.status}`);
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      throw new Error(`Umami API ${res.status}: ${body.slice(0, 200)}`);
+    }
     return res.json();
   }
 
   async getStats(path?: string, startAt?: number, endAt?: number): Promise<{ pageviews: number; sessions: number; visitors: number }> {
-    if (!WEBSITE_ID) return { pageviews: 0, sessions: 0, visitors: 0 };
+    if (!this.isConfigured) {
+      console.error("[Umami] getStats called but client not configured — skipping");
+      return { pageviews: 0, sessions: 0, visitors: 0 };
+    }
 
     const params = new URLSearchParams({
       startAt: String(startAt || Date.now() - 30 * 24 * 60 * 60 * 1000),
@@ -53,13 +66,14 @@ class UmamiClient {
         sessions: data.sessions.value,
         visitors: data.visitors.value,
       };
-    } catch {
+    } catch (err) {
+      console.error(`[Umami] getStats failed for path="${path}":`, err);
       return { pageviews: 0, sessions: 0, visitors: 0 };
     }
   }
 
   async getEventCount(eventName: string, startAt?: number, endAt?: number): Promise<number> {
-    if (!WEBSITE_ID) return 0;
+    if (!this.isConfigured) return 0;
 
     const params = new URLSearchParams({
       startAt: String(startAt || Date.now() - 30 * 24 * 60 * 60 * 1000),
@@ -69,7 +83,8 @@ class UmamiClient {
     try {
       const data = await this.request<UmamiEventResponse>(`/websites/${WEBSITE_ID}/events?${params.toString()}`);
       return data.events.find((e) => e.eventName === eventName)?.count || 0;
-    } catch {
+    } catch (err) {
+      console.error(`[Umami] getEventCount failed for "${eventName}":`, err);
       return 0;
     }
   }

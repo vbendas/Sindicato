@@ -98,6 +98,15 @@ export async function GET(req: NextRequest) {
     return Response.json({ success: false, message: "Unauthorized" }, { status: 401, headers: NO_CACHE_HEADERS });
   }
 
+  console.log("[umami-sync] Env check:", {
+    hasWebsiteId: !!process.env.UMAMI_WEBSITE_ID || !!process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID,
+    websiteIdValue: (process.env.UMAMI_WEBSITE_ID || process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID || "MISSING").slice(0, 8) + "...",
+    hasApiKey: !!process.env.UMAMI_API_KEY,
+    hasUmamiUrl: !!process.env.UMAMI_URL,
+    hasCronSecret: !!CRON_SECRET,
+    hasDatabaseUrl: !!process.env.DATABASE_URL,
+  });
+
   try {
     const entities = await collectEntities();
     let synced = 0;
