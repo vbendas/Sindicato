@@ -7,9 +7,9 @@ const UMAMI_API_KEY = process.env.UMAMI_API_KEY;
 const UMAMI_URL = process.env.UMAMI_URL || "https://api.umami.is/v1";
 
 interface UmamiStatsResponse {
-  pageviews: { value: number };
-  sessions: { value: number };
-  visitors: { value: number };
+  pageviews: number;
+  sessions: number;
+  visitors: number;
 }
 
 interface UmamiEventResponse {
@@ -62,9 +62,9 @@ class UmamiClient {
     try {
       const data = await this.request<UmamiStatsResponse>(`/websites/${WEBSITE_ID}/stats?${params.toString()}`);
       return {
-        pageviews: data.pageviews.value,
-        sessions: data.sessions.value,
-        visitors: data.visitors.value,
+        pageviews: data.pageviews,
+        sessions: data.sessions,
+        visitors: data.visitors,
       };
     } catch (err) {
       console.error(`[Umami] getStats failed for path="${path}":`, err);
