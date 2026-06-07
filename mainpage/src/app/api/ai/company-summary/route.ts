@@ -247,7 +247,7 @@ export async function GET(request: Request) {
     });
   } catch (err: any) {
     console.error("Company summary error:", err);
-    const detail = err?.message ?? String(err);
+    const detail = err?.cause?.message ?? err?.cause ?? err?.message ?? String(err);
     return error(`Failed to generate summary: ${detail}`, 500);
   }
 }
