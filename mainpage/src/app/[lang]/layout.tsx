@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Barlow_Condensed, Inter, JetBrains_Mono, Geist, Noto_Sans_Arabic, Noto_Sans_Devanagari, Noto_Sans_Ethiopic } from "next/font/google";
-import Script from "next/script";
 import { AuthProvider } from "@/components/AuthProvider";
 import { ClerkWidgetProvider, ClerkBubble, ClerkPanel } from "@/components/clerk-widget";
 import LanguageSuggestionBanner from "@/components/LanguageSuggestionBanner";
-import { onUmamiLoaded } from "@/lib/umami";
+import { UmamiScript } from "@/components/UmamiScript";
 import { LocaleProvider } from "@/lib/i18n/locale-provider";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { locales, defaultLocale, isRTLLocale, type Locale } from "@/lib/i18n/config";
@@ -77,8 +76,6 @@ export async function generateMetadata({
   };
 }
 
-const umamiScript = process.env.NEXT_PUBLIC_UMAMI_URL && process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
-
 export function generateStaticParams() {
   return locales.map((locale) => ({ lang: locale }));
 }
@@ -130,15 +127,7 @@ export default async function RootLayout({
       )}
     >
       <body className="font-[family-name:var(--font-inter)]">
-        {umamiScript && (
-          <Script
-            defer
-            src={process.env.NEXT_PUBLIC_UMAMI_URL}
-            data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
-            strategy="afterInteractive"
-            onLoad={onUmamiLoaded}
-          />
-        )}
+        <UmamiScript />
         <LocaleProvider
           locale={locale}
           dictionary={dictionary}
