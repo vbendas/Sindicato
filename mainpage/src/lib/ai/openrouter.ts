@@ -1,6 +1,12 @@
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const BASE_URL = "https://openrouter.ai/api/v1/chat/completions";
 
+const MARKER_RE = /---\s*(?:BEGIN|END)\s+[A-Z0-9 _-]+\s*---\s*\n?/g;
+
+function stripMarkers(text: string): string {
+  return text.replace(MARKER_RE, "").trim();
+}
+
 export async function callOpenRouter(opts: {
   model: string;
   systemPrompt: string;
@@ -42,7 +48,7 @@ export async function callOpenRouter(opts: {
     const data = await response.json();
     const msg = data.choices[0].message;
     const content = msg.content ?? msg.reasoning ?? "";
-    return content;
+    return stripMarkers(content);
   } finally {
     clearTimeout(timeout);
   }
@@ -85,7 +91,9 @@ export async function callOpenRouterStream(opts: {
   if (!rawStream) throw new Error("No response body in streaming response");
 
   const decoder = new TextDecoder();
-  let buffer = "";
+  let sseBuffer = "";
+  const encoder = new TextEncoder();
+  let collected = "";
 
   return new ReadableStream({
     async start(controller) {
@@ -95,27 +103,33 @@ export async function callOpenRouterStream(opts: {
           const { done, value } = await reader.read();
           if (done) break;
 
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop() ?? "";
+          sseBuffer += decoder.decode(value, { stream: true });
+          const lines = sseBuffer.split("\n");
+          sseBuffer = lines.pop() ?? "";
 
           for (const line of lines) {
             const trimmed = line.trim();
             if (!trimmed || !trimmed.startsWith("data: ")) continue;
 
             const jsonStr = trimmed.slice(6);
-            if (jsonStr === "[DONE]") return;
+            if (jsonStr === "[DONE]") break;
 
             try {
               const parsed = JSON.parse(jsonStr);
               const delta = parsed.choices?.[0]?.delta;
               const content = delta?.content ?? delta?.reasoning ?? "";
               if (content) {
-                controller.enqueue(new TextEncoder().encode(content));
+                collected += content;
               }
             } catch {
             }
           }
+        }
+
+        const cleaned = stripMarkers(collected);
+        const chunks = cleaned.match(/.{1,256}/gs) ?? [cleaned];
+        for (const chunk of chunks) {
+          controller.enqueue(encoder.encode(chunk));
         }
       } finally {
         reader.releaseLock();
