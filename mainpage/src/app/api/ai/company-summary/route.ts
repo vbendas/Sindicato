@@ -193,14 +193,19 @@ export async function GET(request: Request) {
       .limit(1);
 
     if (cachedSummary) {
-      return success({
-        summary: cachedSummary.summary,
-        commonIssues: cachedSummary.commonIssues,
-        detectedPatterns: cachedSummary.detectedPatterns ?? [],
-        resolutionRate: cachedSummary.resolutionRate,
-        engagementPattern: cachedSummary.engagementPattern,
-        keyInsight: cachedSummary.keyInsight,
-      });
+      const isBasic = !cachedSummary.keyInsight ||
+        (Array.isArray(cachedSummary.commonIssues) && cachedSummary.commonIssues.length === 0);
+
+      if (!isBasic) {
+        return success({
+          summary: cachedSummary.summary,
+          commonIssues: cachedSummary.commonIssues,
+          detectedPatterns: cachedSummary.detectedPatterns ?? [],
+          resolutionRate: cachedSummary.resolutionRate,
+          engagementPattern: cachedSummary.engagementPattern,
+          keyInsight: cachedSummary.keyInsight,
+        });
+      }
     }
 
     // Fetch active case IDs
