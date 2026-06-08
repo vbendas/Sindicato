@@ -9,6 +9,7 @@ import Footer from "@/app/sections/Footer";
 import { useT, useLocale } from "@/lib/i18n";
 import { TranslatedCaseStory } from "@/components/case/TranslatedCaseStory";
 import { getTagSeverity, type TagSeverity } from "@/lib/ai/tag-taxonomy";
+import { TAG_I18N_MAP } from "@/components/CaseTag";
 
 interface CaseCard {
   id: string;
@@ -103,12 +104,14 @@ function WallCaseCard({ c, locale, t, router }: CaseCardProps) {
             {c.tags.slice(0, 3).map((tag, i) => {
               const severity = getTagSeverity(tag.tagName);
               const colors = TAG_SEVERITY_COLORS[severity];
+              const i18nKey = TAG_I18N_MAP[tag.tagName];
+              const label = i18nKey ? t(i18nKey) : tag.tagName;
               return (
                 <span
                   key={i}
                   className={`text-[10px] px-1.5 py-0.5 border font-[family-name:var(--font-jetbrains)] ${colors.bg} ${colors.text} ${colors.border}`}
                 >
-                  {tag.tagName}
+                  {label}
                 </span>
               );
             })}

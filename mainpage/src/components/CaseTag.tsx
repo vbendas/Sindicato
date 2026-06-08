@@ -1,6 +1,7 @@
 "use client";
 
-import { useT } from "@/lib/i18n";
+import { useT, useLocale } from "@/lib/i18n";
+import { useTranslation } from "@/hooks/useTranslation";
 import { cn } from "@/lib/utils";
 import {
   Tooltip,
@@ -101,6 +102,7 @@ export function CaseTag({
   onDelete,
 }: CaseTagProps) {
   const t = useT();
+  const { locale } = useLocale();
 
   const severity = getTagSeverity(tag.tagName);
   const colors = SEVERITY_COLORS[severity];
@@ -114,6 +116,15 @@ export function CaseTag({
 
   const sourceI18nKey = SOURCE_LABELS[tag.source];
   const sourceLabel = sourceI18nKey ? t(sourceI18nKey) : tag.source;
+
+  const needsSourceTranslation =
+    locale !== "en" && Boolean(tag.sourceText);
+
+  const { displayText: translatedSourceText, isTranslating: isSourceTranslating } = useTranslation(
+    tag.sourceText,
+    "en",
+    needsSourceTranslation,
+  );
 
   return (
     <TooltipProvider delay={200}>
@@ -171,7 +182,16 @@ export function CaseTag({
 
             {tag.sourceText && (
               <p className="text-[11px] text-sindicato-warm-white/50 leading-relaxed italic">
-                &ldquo;{tag.sourceText}&rdquo;
+                {isSourceTranslating ? (
+                  <span className="flex items-center gap-1.5 not-italic">
+                    <span className="w-2.5 h-2.5 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin" />
+                    <span className="text-blue-400 text-[9px] uppercase tracking-wider font-[family-name:var(--font-jetbrains)]">
+                      {t("common.translating")}
+                    </span>
+                  </span>
+                ) : (
+                  <>&ldquo;{translatedSourceText}&rdquo;</>
+                )}
               </p>
             )}
 
