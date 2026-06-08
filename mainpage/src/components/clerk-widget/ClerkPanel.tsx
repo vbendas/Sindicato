@@ -18,7 +18,7 @@ export function ClerkPanel() {
   const pathname = usePathname();
   const { locale } = useLocale();
 
-  if (pathname === "/clerk") return null;
+  if (pathname.endsWith("/clerk")) return null;
 
   const handleExpand = () => {
     router.push(`/${locale}/clerk`);

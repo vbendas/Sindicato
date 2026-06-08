@@ -14,7 +14,7 @@ export function ClerkBubble() {
   const pathname = usePathname();
   const t = useT();
 
-  if (pathname === "/clerk") return null;
+  if (pathname.endsWith("/clerk")) return null;
 
   return (
     <>
