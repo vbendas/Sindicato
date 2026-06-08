@@ -1,6 +1,5 @@
 {
   "framework": "nextjs",
-  "outputDirectory": "mainpage/.next",
   "crons": [
     {
       "path": "/api/cron/umami-sync",
