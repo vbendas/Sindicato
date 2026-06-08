@@ -5,6 +5,22 @@
     {
       "path": "/api/cron/umami-sync",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/send-pending-notifications",
+      "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/cron/resolution-followup",
+      "schedule": "0 9 * * 1"
+    },
+    {
+      "path": "/api/cron/weekly-per-case-email",
+      "schedule": "0 9 * * 3"
+    },
+    {
+      "path": "/api/cron/weekly-company-stats",
+      "schedule": "0 9 * * 1"
     }
   ]
 }

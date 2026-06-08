@@ -185,6 +185,7 @@ export const cases = pgTable("cases", {
   resolutionDate: timestamp("resolution_date"),
   resolutionFeedback: text("resolution_feedback"),
   lastFollowUpSentAt: timestamp("last_follow_up_sent_at"),
+  lastPerCaseEmailSentAt: timestamp("last_per_case_email_sent_at"),
 });
 
 export const companyAccessLog = pgTable("company_access_log", {
