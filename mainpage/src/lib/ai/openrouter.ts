@@ -36,7 +36,7 @@ export async function callOpenRouter(opts: {
     if (!response.ok) {
       const errBody = await response.text();
       console.error(`OpenRouter error ${response.status}: ${errBody}`);
-      throw new Error(`OpenRouter request failed with status ${response.status}`);
+      throw new Error(`OpenRouter ${response.status}: ${errBody.slice(0, 300)}`);
     }
 
     const data = await response.json();

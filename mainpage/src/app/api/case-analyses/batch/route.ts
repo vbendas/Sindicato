@@ -1,6 +1,6 @@
 import { db } from "@/lib/db/client";
 import { cases, caseAnalyses } from "@/lib/db/schema";
-import { eq, sql, and } from "drizzle-orm";
+import { eq, and, notInArray } from "drizzle-orm";
 import { success, error } from "@/lib/utils/api";
 import { generateCaseAnalysis } from "@/lib/ai/generate-case-analysis";
 
@@ -12,16 +12,31 @@ export async function POST(request: Request) {
     return error("Unauthorized", 401);
   }
 
+  if (!db) {
+    return error("Database not configured", 500);
+  }
+
   try {
     const body = await request.json().catch(() => ({}));
     const limit = Math.min(100, Math.max(1, (body as Record<string, unknown>).limit as number || 20));
 
+    const existingAnalysisCaseIds = await db
+      .select({ caseId: caseAnalyses.caseId })
+      .from(caseAnalyses);
+
+    const existingIds = existingAnalysisCaseIds.map((r) => r.caseId);
+
     const casesWithoutAnalysis = await db
       .select({ id: cases.id })
       .from(cases)
-      .leftJoin(caseAnalyses, eq(caseAnalyses.caseId, cases.id))
-      .where(and(eq(cases.status, "active"), sql`${caseAnalyses.id} IS NULL`))
-      .groupBy(cases.id)
+      .where(
+        and(
+          eq(cases.status, "active"),
+          existingIds.length > 0
+            ? notInArray(cases.id, existingIds)
+            : undefined
+        )
+      )
       .limit(limit);
 
     if (casesWithoutAnalysis.length === 0) {
@@ -60,6 +75,6 @@ export async function POST(request: Request) {
     });
   } catch (err) {
     console.error("Batch case analysis error:", err);
-    return error("Batch analysis failed", 500);
+    return error(`Batch analysis failed: ${err instanceof Error ? err.message : "Unknown"}`, 500);
   }
 }

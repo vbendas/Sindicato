@@ -54,6 +54,7 @@ function extractJsonObject(raw: string): Record<string, unknown> | null {
 export interface GenerateCaseAnalysisResult {
   success: boolean;
   error?: string;
+  rawResponse?: string;
 }
 
 export async function generateCaseAnalysis(
@@ -89,19 +90,20 @@ export async function generateCaseAnalysis(
       systemPrompt: CASE_ANALYSIS_SYSTEM,
       userPrompt: `Analyze this case against ${company.name}:\n\nStory: ${caseRow.story.slice(0, 3000)}`,
       temperature: 0.2,
-      maxTokens: 400,
-      timeoutMs: 30_000,
+      maxTokens: 800,
+      timeoutMs: 60_000,
     });
   } catch (err) {
-    console.error(`[case-analysis] OpenRouter API call failed for case ${caseId}:`, err);
-    return { success: false, error: "AI API call failed" };
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`[case-analysis] OpenRouter API call failed for case ${caseId}:`, msg);
+    return { success: false, error: `AI API call failed: ${msg}` };
   }
 
   const parsed = extractJsonObject(raw);
 
   if (!parsed || !Array.isArray(parsed.keyIssues) || typeof parsed.caseSummary !== "string") {
-    console.error(`[case-analysis] Failed to parse AI response for case ${caseId}:`, raw.slice(0, 300));
-    return { success: false, error: "AI returned invalid JSON" };
+    console.error(`[case-analysis] Failed to parse AI response for case ${caseId}:`, JSON.stringify(raw).slice(0, 500));
+    return { success: false, error: "AI returned invalid JSON", rawResponse: raw.slice(0, 300) };
   }
 
   const keyIssues = (parsed.keyIssues as string[])
