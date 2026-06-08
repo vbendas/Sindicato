@@ -2,6 +2,7 @@ import { db } from "@/lib/db/client";
 import { cases, companies, caseAnalyses } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { callOpenRouter, getReportModel } from "@/lib/ai/openrouter";
+import { invalidateCompanySummary } from "@/lib/ai/invalidate-summary";
 
 const CASE_ANALYSIS_SYSTEM = `You are a case analyst for Sindicato. Analyze a worker's case and extract key issues and a brief summary.
 
@@ -132,6 +133,10 @@ export async function generateCaseAnalysis(
     });
 
   console.log(`[case-analysis] Generated analysis for case ${caseId}: ${keyIssues.length} issues`);
+
+  invalidateCompanySummary(caseRow.companyId).catch((err) => {
+    console.error(`[case-analysis] Failed to invalidate company summary for ${caseRow.companyId}:`, err);
+  });
 
   return { success: true };
 }
