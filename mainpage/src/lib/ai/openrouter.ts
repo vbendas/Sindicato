@@ -7,9 +7,10 @@ export async function callOpenRouter(opts: {
   userPrompt: string;
   maxTokens?: number;
   temperature?: number;
+  timeoutMs?: number;
 }): Promise<string> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 60_000);
+  const timeout = setTimeout(() => controller.abort(), opts.timeoutMs ?? 60_000);
 
   try {
     const response = await fetch(BASE_URL, {

@@ -5,6 +5,8 @@ import { success, error } from "@/lib/utils/api";
 import { auth } from "@/lib/auth";
 import { z } from "zod";
 import { generateCaseTags } from "@/lib/ai/generate-tags";
+import { generateCaseAnalysis } from "@/lib/ai/generate-case-analysis";
+import { invalidateCompanySummary } from "@/lib/ai/invalidate-summary";
 
 const updateEventSchema = z.object({
   eventType: z.enum(["email_sent", "no_response", "canned_response", "chat_support", "phone_call", "legal_notice", "payment_partial", "case_updated", "resolved", "other"]).optional(),
@@ -81,6 +83,18 @@ export async function PUT(
       console.error("Failed to regenerate case tags after update:", err)
     );
 
+    generateCaseAnalysis(id).catch((err) =>
+      console.error("Failed to regenerate case analysis after update:", err)
+    );
+
+    // Invalidate company summary (fire-and-forget)
+    const [caseRow] = await db.select({ companyId: cases.companyId }).from(cases).where(eq(cases.id, id)).limit(1);
+    if (caseRow) {
+      invalidateCompanySummary(caseRow.companyId).catch((err) =>
+        console.error("Failed to invalidate company summary after event update:", err)
+      );
+    }
+
     return success(updated);
   } catch (err) {
     console.error("Error updating timeline event:", err);
@@ -114,6 +128,18 @@ export async function DELETE(
     generateCaseTags(id).catch((err) =>
       console.error("Failed to regenerate case tags after delete:", err)
     );
+
+    generateCaseAnalysis(id).catch((err) =>
+      console.error("Failed to regenerate case analysis after delete:", err)
+    );
+
+    // Invalidate company summary (fire-and-forget)
+    const [caseRow] = await db.select({ companyId: cases.companyId }).from(cases).where(eq(cases.id, id)).limit(1);
+    if (caseRow) {
+      invalidateCompanySummary(caseRow.companyId).catch((err) =>
+        console.error("Failed to invalidate company summary after event delete:", err)
+      );
+    }
 
     return success({ deleted: true });
   } catch (err) {

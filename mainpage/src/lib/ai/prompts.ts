@@ -157,7 +157,7 @@ Date: ${c.dateRange}
 Amount: $${c.amountOwed}
 Contact attempts: ${c.contactAttempts}
 Days without answer: ${c.daysWithoutAnswer ?? 'N/A'}
-Story: ${c.story.slice(0, 400)}`).join("\n\n")}
+Story: ${c.story.slice(0, 250)}`).join("\n\n")}
 --- END CASES ---`;
 
 export const CASE_STRENGTH_USER = (caseData: {

@@ -12,6 +12,7 @@ import { createCaseAlias } from "@/lib/email/aliases";
 import { auth } from "@/lib/auth";
 import { translateToEnglish } from "@/lib/ai/translate";
 import { generateCaseTags } from "@/lib/ai/generate-tags";
+import { generateCaseAnalysis } from "@/lib/ai/generate-case-analysis";
 import { invalidateCompanySummary } from "@/lib/ai/invalidate-summary";
 
 export async function POST(request: Request) {
@@ -281,6 +282,11 @@ export async function POST(request: Request) {
         console.error("Failed to generate case tags:", err)
       );
     }
+
+    // Generate per-case analysis (fire-and-forget)
+    generateCaseAnalysis(newCase.id).catch((err) =>
+      console.error("Failed to generate case analysis:", err)
+    );
 
     if (data.optInCompanyNotify) {
       notifyCompanyNewCase({

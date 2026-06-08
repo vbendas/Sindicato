@@ -6,6 +6,7 @@ import { redactName } from "@/lib/utils/redaction";
 import { auth } from "@/lib/auth";
 import { editStorySchema } from "@/lib/utils/schemas";
 import { generateCaseTags } from "@/lib/ai/generate-tags";
+import { generateCaseAnalysis } from "@/lib/ai/generate-case-analysis";
 import { invalidateCompanySummary } from "@/lib/ai/invalidate-summary";
 
 export async function GET(
@@ -125,6 +126,10 @@ export async function PATCH(
 
     generateCaseTags(id).catch((err) =>
       console.error("Failed to regenerate case tags:", err)
+    );
+
+    generateCaseAnalysis(id).catch((err) =>
+      console.error("Failed to regenerate case analysis:", err)
     );
 
     invalidateCompanySummary(caseRow.companyId).catch((err) =>

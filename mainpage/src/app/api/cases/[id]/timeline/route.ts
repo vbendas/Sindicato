@@ -5,6 +5,7 @@ import { success, error } from "@/lib/utils/api";
 import { auth } from "@/lib/auth";
 import { timelineEventInputSchema } from "@/lib/utils/schemas";
 import { generateCaseTags } from "@/lib/ai/generate-tags";
+import { generateCaseAnalysis } from "@/lib/ai/generate-case-analysis";
 import { invalidateCompanySummary } from "@/lib/ai/invalidate-summary";
 
 export async function GET(
@@ -113,6 +114,10 @@ export async function POST(
     // Re-generate AI tags (fire-and-forget)
     generateCaseTags(caseId).catch((err) =>
       console.error("Failed to regenerate case tags:", err)
+    );
+
+    generateCaseAnalysis(caseId).catch((err) =>
+      console.error("Failed to regenerate case analysis:", err)
     );
 
     invalidateCompanySummary(caseRow.companyId).catch((err) =>

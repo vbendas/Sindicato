@@ -366,6 +366,26 @@ export const caseTags = pgTable(
   ]
 );
 
+export const caseAnalyses = pgTable(
+  "case_analyses",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    caseId: uuid("case_id")
+      .references(() => cases.id)
+      .notNull()
+      .unique(),
+    companyId: uuid("company_id")
+      .references(() => companies.id)
+      .notNull(),
+    keyIssues: jsonb("key_issues").$type<string[]>().default([]),
+    caseSummary: text("case_summary").notNull(),
+    generatedAt: timestamp("generated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    index("case_analyses_company_id").on(t.companyId),
+  ]
+);
+
 export interface DetectedPattern {
   pattern: string;
   severity: string;
@@ -385,6 +405,7 @@ export const companySummaries = pgTable("company_summaries", {
   resolutionRate: varchar("resolution_rate", { length: 20 }),
   engagementPattern: varchar("engagement_pattern", { length: 50 }),
   keyInsight: text("key_insight"),
+  includedCaseIds: jsonb("included_case_ids").$type<string[]>().default([]),
   generatedAt: timestamp("generated_at").defaultNow().notNull(),
   expiresAt: timestamp("expires_at").notNull(),
 });
