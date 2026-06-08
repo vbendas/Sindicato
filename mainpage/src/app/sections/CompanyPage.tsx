@@ -183,6 +183,7 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
     keyInsight: string;
   } | null>(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
+  const [summaryError, setSummaryError] = useState(false);
   const pathname = usePathname();
   const { data: session } = useSession();
 
@@ -246,16 +247,24 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
   useEffect(() => {
     async function fetchSummary() {
       setSummaryLoading(true);
+      setSummaryError(false);
       try {
         const res = await fetch(`/api/ai/company-summary?company=${slug}`);
         if (res.ok) {
           const json = await res.json();
           if (json.ok && json.data) {
             setSummary(json.data);
+          } else {
+            console.error("Company summary API returned ok=false:", json);
+            setSummaryError(true);
           }
+        } else {
+          console.error("Company summary API error:", res.status, await res.text());
+          setSummaryError(true);
         }
-      } catch {
-        // Silent fail - don't show error, just hide summary
+      } catch (err) {
+        console.error("Failed to fetch company summary:", err);
+        setSummaryError(true);
       } finally {
         setSummaryLoading(false);
       }
@@ -264,6 +273,22 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
       fetchSummary();
     }
   }, [slug, cases.length]);
+
+  const retrySummary = () => {
+    setSummaryError(false);
+    setSummaryLoading(true);
+    fetch(`/api/ai/company-summary?company=${slug}`)
+      .then((res) => {
+        if (res.ok) return res.json();
+        throw new Error(`HTTP ${res.status}`);
+      })
+      .then((json) => {
+        if (json.ok && json.data) setSummary(json.data);
+        else setSummaryError(true);
+      })
+      .catch(() => setSummaryError(true))
+      .finally(() => setSummaryLoading(false));
+  };
 
   const companyName = cases.length > 0 ? cases[0].company.name : slug;
   const totalOwed = cases.reduce(
@@ -334,6 +359,24 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
                     {t("companyPage.loadingSummary")}
                   </span>
                 </div>
+              </motion.div>
+            )}
+
+            {summaryError && !summaryLoading && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-8 bg-sindicato-charcoal/50 backdrop-blur-sm border border-white/10 p-6 rounded-lg"
+              >
+                <p className="text-sindicato-warm-white/60 text-sm mb-3">
+                  {t("companyPage.summaryError")}
+                </p>
+                <button
+                  onClick={retrySummary}
+                  className="text-xs text-sindicato-bordeaux hover:text-sindicato-bordeaux/80 underline underline-offset-2 transition-colors"
+                >
+                  {t("common.retry")}
+                </button>
               </motion.div>
             )}
 
