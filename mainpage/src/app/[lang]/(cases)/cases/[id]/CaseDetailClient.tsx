@@ -451,7 +451,7 @@ export default function CaseDetailClient({
       <div className="fixed inset-0 pointer-events-none z-[60] grain-overlay" style={{ opacity: 0.45 }} />
       <Header scrolledBg="bg-sindicato-charcoal/70 backdrop-blur-md border-white/5" clerkBg="bg-sindicato-bordeaux text-sindicato-warm-white" />
 
-      <div className="relative bg-sindicato-charcoal flex flex-col h-screen">
+      <div className="relative bg-sindicato-charcoal flex flex-col min-h-screen">
 
         <div className="flex-1 flex flex-col min-h-0 pt-24">
           <div className="relative z-10 px-4 sm:px-6 lg:px-8 flex-1 flex flex-col min-h-0">
@@ -675,7 +675,7 @@ export default function CaseDetailClient({
                 </ScrollableColumn>
 
                 {/* Right Column: Timeline */}
-                <ScrollableColumn className="bg-white/5 backdrop-blur-sm border border-white/10 p-6 sm:p-8 pb-16 sm:pb-20" innerClassName="pl-8">
+                <ScrollableColumn className="bg-white/5 backdrop-blur-sm border border-white/10 p-6 sm:p-8 pb-16 sm:pb-20 max-h-[calc(100vh-8rem)]" innerClassName="pl-8">
                   <TimelineSection caseId={caseId} workerId={caseData.workerId} companyName={caseData.company?.name} />
                 </ScrollableColumn>
               </div>
@@ -683,9 +683,7 @@ export default function CaseDetailClient({
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 z-20">
-          <Footer bg="bg-sindicato-charcoal" />
-        </div>
+        <Footer bg="bg-sindicato-charcoal" />
 
         {/* Story Edit Dialog */}
         <Dialog open={editingStory} onOpenChange={(open) => !open && setEditingStory(false)}>
