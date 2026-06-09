@@ -2,13 +2,20 @@ import { db } from "@/lib/db/client";
 import { manualReviewQueue, companies } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { success, error } from "@/lib/utils/api";
-import { auth } from "@/lib/auth";
+
+const CRON_SECRET = process.env.CRON_SECRET;
+
+function checkAuth(request: Request) {
+  const authHeader = request.headers.get("Authorization");
+  if (!CRON_SECRET || authHeader !== `Bearer ${CRON_SECRET}`) {
+    return error("Unauthorized", 401);
+  }
+  return null;
+}
 
 export async function GET(request: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return error("Authentication required", 401);
-  }
+  const authError = checkAuth(request);
+  if (authError) return authError;
 
   const url = new URL(request.url);
   const status = url.searchParams.get("status") || "pending";
@@ -46,10 +53,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return error("Authentication required", 401);
-  }
+  const authError = checkAuth(request);
+  if (authError) return authError;
 
   try {
     const body = await request.json();
