@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { db } from "@/lib/db/client";
 import { platformAccounts, verificationTokens } from "@/lib/db/schema";
+import crypto from "crypto";
 import { eq, and, gt, isNull, desc } from "drizzle-orm";
 import { rateLimit } from "@/lib/auth/rate-limit";
 import { sendEmail } from "@/lib/email/send";
@@ -52,19 +53,35 @@ export async function POST(request: NextRequest) {
     return error("Too many attempts. Please request a new code.", 429);
   }
 
-  const [token] = await db
-    .select({ id: verificationTokens.id })
+  const codeHash = crypto.createHash("sha256").update(code).digest("hex");
+
+  const candidates = await db
+    .select({ id: verificationTokens.id, codeHash: verificationTokens.codeHash, code: verificationTokens.code })
     .from(verificationTokens)
     .where(
       and(
         eq(verificationTokens.email, email),
-        eq(verificationTokens.code, code),
         gt(verificationTokens.expiresAt, new Date()),
         isNull(verificationTokens.usedAt)
       )
     )
     .orderBy(desc(verificationTokens.createdAt))
-    .limit(1);
+    .limit(5);
+
+  const token = candidates.find((c) => {
+    if (!c.codeHash) {
+      // Backward compat: compare plaintext for old tokens
+      return c.code === code;
+    }
+    try {
+      return crypto.timingSafeEqual(
+        Buffer.from(c.codeHash, "hex"),
+        Buffer.from(codeHash, "hex")
+      );
+    } catch {
+      return false;
+    }
+  });
 
   if (!token) {
     return error("Invalid or expired code", 401);
@@ -119,7 +136,6 @@ export async function POST(request: NextRequest) {
         <p><strong>Name:</strong> ${escapeHtml(displayName)}</p>
         ${organization ? `<p><strong>Organization:</strong> ${escapeHtml(organization)}</p>` : ""}
         <p><strong>TOS Version:</strong> ${escapeHtml(tosVersion)}</p>
-        <p><strong>IP:</strong> ${escapeHtml(ip)}</p>
         <p>To approve, set <code>approval_status = 'approved'</code> in the <code>platform_accounts</code> table for id: ${escapeHtml(account.id)}</p>
       `,
     });
