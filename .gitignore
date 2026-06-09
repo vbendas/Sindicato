@@ -54,3 +54,4 @@ drizzle/meta/
 
 # graphify
 graphify-out/
+.env*.local

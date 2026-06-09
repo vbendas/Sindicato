@@ -1,0 +1,123 @@
+# Sindicato — Labor Rights Reporting Platform
+
+## What is Sindicato?
+Sindicato (sindicato.report) is an open-source platform where workers report labor exploitation
+cases against companies. Cases are public and anonymous. The platform aggregates reports to
+identify patterns and support collective action.
+
+## Purpose
+Sindicato exists to empower workers — especially remote and gig workers — to document and
+publish cases of labor exploitation (unpaid wages, sudden deactivation, unfair reviews,
+harassment, contract violations) against companies. It provides transparency, accountability,
+and a path toward collective legal action.
+
+## Data Model
+
+### Cases
+Individual exploitation reports filed by anonymous workers. Each case contains:
+- **story**: Worker's account of what happened (text)
+- **caseType**: Category of exploitation (see Case Types below)
+- **amountOwed**: Financial amount owed to the worker
+- **currency**: Currency code (EUR, USD, etc.)
+- **companySlug**: URL-friendly identifier for the reported company
+- **timelineEvents**: Chronological record of worker-company interactions
+- **tags**: AI-generated and user-selected labels categorizing issues
+- **status**: active, resolved, deleted
+
+### Companies
+Employers reported on the platform. Each company has:
+- **name**: Display name
+- **slug**: URL identifier (e.g., "toloka", "sindicato")
+- **website**: Company website URL
+- **contactEmails**: Discovered contact emails (via automated LLM scraping)
+- **scrapeStatus**: not_scraped, scraping, found, not_found, manual_review
+
+### Case Tags
+Labels applied to cases by AI or workers:
+- **payment_structure**: Issues with payment terms, delays, deductions
+- **quality_review**: Unfair quality assessments, rating manipulation
+- **communication**: Response quality, ghosting, canned responses
+- **project_lifecycle**: Deactivation patterns, project availability
+- **worker_action**: Worker responses (collective action interest, legal representation)
+- **company_positive**: Positive company behaviors (resolved issues, fair treatment)
+
+### Timeline Events
+Chronological interactions between workers and companies:
+- email_sent, no_response, canned_response, chat_support, phone_call
+- legal_notice, payment_partial, case_updated, resolved, other
+
+### Company Summaries
+AI-generated analysis of patterns across all cases for a company, including common issues,
+detected patterns, resolution rates, and key insights.
+
+## Case Types
+- unpaid_wages: Worker was not paid for completed work
+- late_payment: Payment arrived significantly after the agreed date
+- sudden_deactivation: Worker's account or access was terminated without cause
+- unfair_review: Quality assessment was manipulated or unfair
+- predatory_practices: Company policies designed to exploit workers
+- harassment: Workplace harassment or hostile environment
+- retaliation: Adverse action against worker for reporting issues
+- contract_violation: Company violated agreed terms
+- data_privacy: Unauthorized use or exposure of worker data
+- other: Issues not covered by the above categories
+
+## Verticals
+- remote: Remote work, freelancing, online platforms
+- gig: Gig economy (deprecated, merged into remote)
+
+## Platform Features
+
+### Anonymous Case Filing
+Workers file cases through a multi-step wizard. Identity is protected via:
+- Redacted names (first name + last initial)
+- Aliased email addresses (case-{id}@sindicato.report via Cloudflare Email Routing)
+- No account required to file cases
+
+### Clerk (AI Assistant)
+An AI-powered chat interface that answers questions about case data. Available at /en/clerk.
+Supports natural language queries about cases, companies, and patterns.
+
+### Company Notifications
+Companies are automatically notified when new cases are filed against them. Follow-up emails
+are sent weekly to encourage resolution.
+
+### Lawyer Referrals
+Workers can opt in to be contacted by lawyers for potential collective legal action.
+
+## Public API Endpoints
+
+- `GET /api/cases` — List active cases with pagination
+  - Query params: page, limit, company (slug), vertical
+- `GET /api/cases/{id}` — Single case detail
+- `GET /api/companies` — List companies with case counts
+  - Query params: q (search by name)
+- `GET /api/clerk/knowledge` — Knowledge base Q&A
+  - Query params: q (question), locale (en/es)
+
+## Privacy & Security
+- Worker names are redacted (first name + last initial only)
+- Contact emails are aliased via Cloudflare Email Routing
+- No personal identifying information is publicly accessible
+- All data access is logged for audit trails
+- Companies must verify identity before accessing worker contact data
+
+## Rate Limits
+- Case listing: 60 requests per minute per IP
+- Case submission: Rate-limited per IP
+- Clerk queries: Rate-limited per IP
+- Contact access: 1 request per 24 hours per authenticated user
+
+## Tech Stack
+- Next.js (App Router)
+- Drizzle ORM + PostgreSQL (Neon)
+- Resend (transactional email)
+- OpenRouter (LLM inference for tagging, analysis, scraping, clerk)
+- Stripe (donations)
+- Cloudflare (Turnstile verification, Email Routing)
+- Vercel (hosting)
+
+## Contact
+For questions about the platform or to report issues:
+- Use the Clerk chat at sindicato.report/en/clerk
+- Or visit sindicato.report/en/about
