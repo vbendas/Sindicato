@@ -1,7 +1,6 @@
 import { db } from "@/lib/db/client";
-import { cases, companies, caseTimelineEvents, caseTags } from "@/lib/db/schema";
+import { cases, companies, caseTags } from "@/lib/db/schema";
 import { eq, and, or, isNull, sql } from "drizzle-orm";
-import { render } from "@react-email/components";
 import { sendTemplateEmail } from "@/lib/email/send";
 import PerCaseFollowUp from "@/lib/email/templates/per-case-follow-up";
 import { success, error } from "@/lib/utils/api";
@@ -12,21 +11,6 @@ const BATCH_SIZE = 50;
 const MAX_DAYS_BETWEEN_EMAILS = 7;
 
 const WAGE_THEFT_TYPES = ["unpaid_wages", "late_payment", "contract_violation"];
-
-async function renderPerCaseEmail(props: {
-  companyName: string;
-  caseType: string;
-  displayName: string;
-  amountOwed: string;
-  currency: string;
-  storyPreview: string;
-  daysSinceFiled: number;
-  caseUrl: string;
-  showAmount: boolean;
-  tags: Array<{ tagName: string; severity: TagSeverity }>;
-}) {
-  return render(<PerCaseFollowUp {...props} />);
-}
 
 export async function GET(request: Request) {
   const auth = request.headers.get("authorization");
@@ -124,14 +108,6 @@ export async function GET(request: Request) {
         tags: tagsByCase.get(c.caseId) || [],
       };
 
-      let html: string;
-      try {
-        html = await renderPerCaseEmail(emailProps);
-      } catch (renderErr) {
-        console.error(`Failed to render email for case ${c.caseId}:`, renderErr);
-        continue;
-      }
-
       try {
         await sendTemplateEmail(
           c.companyEmail,
@@ -139,17 +115,6 @@ export async function GET(request: Request) {
           PerCaseFollowUp,
           emailProps
         );
-
-        await db.insert(caseTimelineEvents).values({
-          caseId: c.caseId,
-          eventType: "email_sent",
-          eventDate: now,
-          description: `Automated weekly follow-up email sent to ${c.companyName} regarding unresolved case.`,
-          direction: "system",
-          emailContent: html,
-          isAutomatic: true,
-          labels: ["automated", "weekly_follow_up"],
-        });
 
         await db
           .update(cases)

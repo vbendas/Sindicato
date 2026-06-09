@@ -205,7 +205,7 @@ export async function POST(request: Request) {
       caseId: newCase.id,
       eventType: "case_updated" as const,
       eventDate: new Date(),
-      description: `Case filed against ${company.name}. ${data.amountOwed ? `Amount owed: ${data.amountOwed} ${data.currency}.` : ""}`,
+      description: data.amountOwed ? `Amount owed: ${data.amountOwed} ${data.currency}.` : "Case filed.",
       responseReceived: false,
       isAutomatic: true,
     }).catch((err) => console.error("Failed to log case filed event:", err));
@@ -304,7 +304,7 @@ export async function POST(request: Request) {
           caseId: newCase.id,
           eventType: "email_sent" as const,
           eventDate: new Date(),
-          description: `Sindicato sent notification email to ${company.name}.`,
+          description: `Notification email sent to ${company.name}.`,
           responseReceived: false,
           isAutomatic: true,
         }).catch((err) => console.error("Failed to log notification event:", err));

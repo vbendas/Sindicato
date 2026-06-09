@@ -104,29 +104,10 @@ function getEventTitle(event: TimelineEvent, companyName: string, t: (key: strin
     return t("timelineSection.eventTitleStartedWorking", { company: companyName });
   }
   
-  // Check if title starts with 'Case filed against'
-  if (event.title?.startsWith("Case filed against")) {
-    return t("timelineSection.eventTitleCaseFiled", { company: companyName });
-  }
-  
-  // Check if title matches known hardcoded titles
-  if (event.title === "Company Response") {
-    return t("timelineSection.eventTitleCompanyResponse");
-  }
-  if (event.title === "Email Access Requested") {
-    return t("timelineSection.eventTitleEmailAccessed");
-  }
-  if (event.title === "Company Reply") {
-    return t("timelineSection.eventTitleCompanyReply");
-  }
-  if (event.title === "Worker Reply") {
-    return t("timelineSection.eventTitleWorkerReply");
-  }
-  
   // Check if we have a translation key for this event type
   const translationKey = titleMap[event.eventType];
   if (translationKey) {
-    return t(translationKey, { company: companyName });
+    return t(translationKey);
   }
   
   // Fallback to event title or untitled
@@ -549,7 +530,7 @@ function TimelineEventItem({
                       {t("timelineSection.emailContent")}
                     </p>
                     <p className="text-sindicato-warm-white/50 text-xs whitespace-pre-wrap">
-                      {event.emailContent}
+                      {event.emailContent.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim()}
                     </p>
                   </div>
                 )}

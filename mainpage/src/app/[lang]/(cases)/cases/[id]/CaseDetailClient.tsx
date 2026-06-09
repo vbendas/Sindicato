@@ -451,7 +451,7 @@ export default function CaseDetailClient({
       <div className="fixed inset-0 pointer-events-none z-[60] grain-overlay" style={{ opacity: 0.45 }} />
       <Header scrolledBg="bg-sindicato-charcoal/70 backdrop-blur-md border-white/5" clerkBg="bg-sindicato-bordeaux text-sindicato-warm-white" />
 
-      <div className="relative bg-sindicato-charcoal flex flex-col min-h-screen">
+      <div className="relative bg-sindicato-charcoal flex flex-col h-screen">
 
         <div className="flex-1 flex flex-col min-h-0 pt-24">
           <div className="relative z-10 px-4 sm:px-6 lg:px-8 flex-1 flex flex-col min-h-0">
@@ -683,7 +683,9 @@ export default function CaseDetailClient({
           </div>
         </div>
 
-        <Footer bg="bg-sindicato-charcoal" />
+        <div className="absolute bottom-0 left-0 right-0 z-20">
+          <Footer bg="bg-sindicato-charcoal" />
+        </div>
 
         {/* Story Edit Dialog */}
         <Dialog open={editingStory} onOpenChange={(open) => !open && setEditingStory(false)}>

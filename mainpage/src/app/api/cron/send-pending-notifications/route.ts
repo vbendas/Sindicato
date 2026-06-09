@@ -68,7 +68,7 @@ export async function GET(request: Request) {
           caseId: c.caseId,
           eventType: "email_sent",
           eventDate: new Date(),
-          description: `Sindicato sent notification email to ${c.companyName}.`,
+          description: `Notification email sent to ${c.companyName}.`,
           responseReceived: false,
           isAutomatic: true,
         });
