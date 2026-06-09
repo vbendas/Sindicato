@@ -127,9 +127,8 @@ export async function callOpenRouterStream(opts: {
         }
 
         const cleaned = stripMarkers(collected);
-        const chunks = cleaned.match(/.{1,256}/gs) ?? [cleaned];
-        for (const chunk of chunks) {
-          controller.enqueue(encoder.encode(chunk));
+        for (let i = 0; i < cleaned.length; i += 256) {
+          controller.enqueue(encoder.encode(cleaned.slice(i, i + 256)));
         }
       } finally {
         reader.releaseLock();
