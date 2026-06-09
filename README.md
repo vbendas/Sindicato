@@ -90,7 +90,6 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed technical documentation.
 - **Case Analysis** -- Automated tagging and strength scoring
 - **Company Summaries** -- Per-company pattern analysis
 - **Translation** -- Real-time story translation across 12 languages
-- **Writing Assistant** -- Helps workers articulate cases clearly
 
 ## Contributing
 
