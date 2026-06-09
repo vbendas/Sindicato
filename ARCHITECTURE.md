@@ -56,7 +56,7 @@ Sindicato is a Next.js 14 application using the App Router pattern. It aggregate
 | `workers` | Worker accounts (email, display name) |
 | `platformAccounts` | Lawyer/company/media accounts with roles |
 | `verificationTokens` | Email verification codes (hashed) |
-| `donations` | Payment records (Stripe/CoinGate) |
+| `donations` | Payment records (Stripe) |
 | `manualReviewQueue` | Company email scrape review items |
 
 ### Relationships
@@ -136,7 +136,7 @@ platformAccounts ── companies (N:1)
 - **Auth:** NextAuth.js v5 with email verification codes
 - **AI:** OpenRouter API (multiple model providers)
 - **Email:** Resend + Cloudflare Email Routing
-- **Payments:** Stripe Embedded Checkout + CoinGate
+- **Payments:** Stripe Embedded Checkout
 - **Analytics:** Umami Cloud (privacy-focused)
 
 ### Security

@@ -18,7 +18,7 @@ One unpaid worker is a statistic. A hundred with matching documentation is a cas
 - **Anonymous Aliases** -- Cloudflare Email Routing protects worker identities
 - **Multi-Language Support** -- 12 languages with AI translation
 - **Automated Notifications** -- Companies notified when new cases are filed
-- **Donation System** -- Crowdfunding for platform sustainability (Stripe + CoinGate)
+- **Donation System** -- Crowdfunding for platform sustainability (Stripe)
 
 ## Tech Stack
 
@@ -29,7 +29,7 @@ One unpaid worker is a statistic. A hundred with matching documentation is a cas
 | Auth | NextAuth.js v5 with email verification codes |
 | AI | OpenRouter (DeepSeek, Kimi, GPT) |
 | Email | Resend + Cloudflare Email Routing |
-| Payments | Stripe (donations) + CoinGate (crypto) |
+| Payments | Stripe (donations) |
 | Analytics | Umami (privacy-focused) |
 | Security | Cloudflare Turnstile, Upstash Redis rate limiting |
 

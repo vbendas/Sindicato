@@ -15,7 +15,7 @@ Digital labor rights platform. Workers self-publish wage theft cases. Cases aggr
 - **Cloudflare Email Routing** — anonymous `case-{id}@sindicato.report` aliases per case
 - **Cloudflare Turnstile** — invisible human verification on submission
 - **OpenRouter** — AI routing (Kimi K2 Instant, DeepSeek R1, DeepSeek V3)
-- **CoinGate** — payments (company access fees, lawyer referral fees)
+- **Stripe** — payments (company access fees, lawyer referral fees)
 - **@react-pdf/renderer** — PDF generation (case reports, cluster summaries)
 
 ---
@@ -74,7 +74,7 @@ src/
       clerk/             AI chat endpoint
       auth/              NextAuth + send-code
       cron/              resolution followup
-      payments/          CoinGate + NexaPay webhooks
+      payments/          Stripe webhooks
       company-access/    verification + payment flow
   lib/
     db/                  Drizzle schema + client + queries
@@ -83,7 +83,7 @@ src/
     email/               Resend wrapper + React Email templates
     email/aliases.ts     Cloudflare Email Routing alias management
     agreements/          PDF generation (case reports, cluster summaries)
-    payments/            CoinGate + NexaPay clients
+    payments/            Stripe client
     scraper/             Company contact email scraper
     utils/               Redaction, Zod schemas, API helpers, Turnstile verify
 ```
