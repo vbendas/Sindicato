@@ -463,7 +463,7 @@ export default function CaseDetailClient({
             >
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 flex-1 min-h-0">
                 {/* Left Column: Case Data */}
-                <ScrollableColumn className="bg-white/5 backdrop-blur-sm border border-white/10 p-6 sm:p-8 pb-16 sm:pb-20">
+                <ScrollableColumn className="bg-white/5 backdrop-blur-sm border border-white/10 p-6 sm:p-8 pb-16 sm:pb-20 max-h-[calc(100vh-8rem)]">
                   <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
                     <div className="flex items-center gap-3">
                       <span className="text-sindicato-warm-white/30 text-[10px] font-bold uppercase tracking-widest font-[family-name:var(--font-jetbrains)]">
