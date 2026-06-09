@@ -3,8 +3,13 @@ import { companies, platformAccounts } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
 async function fixCompanyUser() {
-  const email = "vbendas-company@gmail.com";
-  const companyName = "Alignerr";
+  const email = process.argv[2];
+  const companyName = process.argv[3];
+
+  if (!email || !companyName) {
+    console.error("Usage: npx tsx fix-company-user.ts <email> <company-name>");
+    process.exit(1);
+  }
 
   console.log(`\n=== Fixing company user: ${email} ===\n`);
 
@@ -73,7 +78,7 @@ async function fixCompanyUser() {
   console.log("\n=== Fix complete! ===");
   console.log("\nNext steps:");
   console.log("1. Log out of the application");
-  console.log("2. Log back in with vbendas-company@gmail.com");
+  console.log("2. Log back in with your email");
   console.log("3. Navigate to /clerk");
   console.log("4. You should now see company templates and 'my company' should work\n");
 
