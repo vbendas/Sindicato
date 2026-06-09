@@ -64,7 +64,11 @@ async function diagnoseUser(email: string) {
 }
 
 // Run diagnosis
-const email = process.argv[2] || "vbendas-company@gmail.com";
+const email = process.argv[2];
+if (!email) {
+  console.error("Usage: npx tsx diagnose-user.ts <email>");
+  process.exit(1);
+}
 diagnoseUser(email)
   .then(() => process.exit(0))
   .catch((err) => {
