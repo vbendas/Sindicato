@@ -1,17 +1,21 @@
 import { describe, it, expect } from "vitest";
-import { redactName, redactEmail } from "@/lib/utils/redaction";
+import { redactName, redactEmail, formatCaseType } from "@/lib/utils/redaction";
 
 describe("redactName", () => {
-  it("redacts a standard name", () => {
+  it("redacts a standard single-word name", () => {
     expect(redactName("Victor")).toBe("V*****");
   });
 
+  it("redacts a multi-word name", () => {
+    expect(redactName("Victor B")).toBe("V***** B***");
+  });
+
   it("redacts a 3-char name", () => {
-    expect(redactName("Vic")).toBe("V*****");
+    expect(redactName("Vic")).toBe("V***");
   });
 
   it("redacts a 2-char name", () => {
-    expect(redactName("Al")).toBe("A*****");
+    expect(redactName("Al")).toBe("A***");
   });
 
   it("returns *** for empty string", () => {
@@ -19,20 +23,42 @@ describe("redactName", () => {
   });
 
   it("redacts a single char", () => {
-    expect(redactName("A")).toBe("A*****");
+    expect(redactName("A")).toBe("A***");
   });
 
   it("handles unicode names", () => {
-    expect(redactName("José")).toBe("J*****");
+    expect(redactName("José")).toBe("J***");
   });
 
   it("handles long names", () => {
-    expect(redactName("Alexander")).toBe("A*****");
+    expect(redactName("Alexander")).toBe("A********");
   });
 
-  it("always produces exactly 6 chars for non-empty names", () => {
-    const result = redactName("Catherine");
-    expect(result.length).toBe(6);
+  it("redacts three-word names", () => {
+    expect(redactName("John Michael Smith")).toBe("J*** M*** S*****");
+  });
+
+  it("handles null/undefined", () => {
+    expect(redactName(null as unknown as string)).toBe("***");
+    expect(redactName(undefined as unknown as string)).toBe("***");
+  });
+});
+
+describe("formatCaseType", () => {
+  it("formats single-word case types", () => {
+    expect(formatCaseType("harassment")).toBe("Harassment");
+  });
+
+  it("formats multi-word case types with underscores", () => {
+    expect(formatCaseType("unpaid_wages")).toBe("Unpaid Wages");
+  });
+
+  it("formats three-word case types", () => {
+    expect(formatCaseType("wrongful_termination")).toBe("Wrongful Termination");
+  });
+
+  it("handles all lowercase", () => {
+    expect(formatCaseType("discrimination")).toBe("Discrimination");
   });
 });
 
@@ -42,7 +68,9 @@ describe("redactEmail", () => {
   });
 
   it("redacts a multi-part TLD", () => {
-    expect(redactEmail("user@sub.domain.co.uk")).toBe("u*****@s***.domain.co.uk");
+    expect(redactEmail("user@sub.domain.co.uk")).toBe(
+      "u*****@s***.domain.co.uk",
+    );
   });
 
   it("returns empty string for empty input", () => {

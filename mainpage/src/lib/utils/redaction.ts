@@ -1,6 +1,16 @@
 export function redactName(fullName: string): string {
-  if (!fullName || fullName.length < 1) return "***";
-  return fullName[0] + "*****";
+  if (!fullName) return "***";
+  return fullName
+    .split(" ")
+    .map((w) => w[0] + "*".repeat(Math.max(w.length - 1, 3)))
+    .join(" ");
+}
+
+export function formatCaseType(caseType: string): string {
+  return caseType
+    .split("_")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
 }
 
 export function redactEmail(email: string): string {

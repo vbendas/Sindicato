@@ -1,13 +1,8 @@
-import {
-  Html,
-  Head,
-  Body,
-  Container,
-  Text,
-  Heading,
-  Button,
-  Hr,
-} from "@react-email/components";
+import { Text, Button } from "@react-email/components";
+import type { TagSeverity } from "@/lib/ai/tag-taxonomy";
+import EmailLayout from "../components/EmailLayout";
+import DetailCard, { DetailRow } from "../components/DetailCard";
+import TagPill from "../components/TagPill";
 
 interface PerCaseFollowUpProps {
   companyName: string;
@@ -18,6 +13,8 @@ interface PerCaseFollowUpProps {
   storyPreview: string;
   daysSinceFiled: number;
   caseUrl: string;
+  showAmount: boolean;
+  tags: Array<{ tagName: string; severity: TagSeverity }>;
 }
 
 export default function PerCaseFollowUp({
@@ -29,84 +26,103 @@ export default function PerCaseFollowUp({
   storyPreview,
   daysSinceFiled,
   caseUrl,
+  showAmount,
+  tags,
 }: PerCaseFollowUpProps) {
+  const positiveTags = tags.filter((t) => t.severity === "green");
+  const concernTags = tags.filter((t) => t.severity !== "green");
+
   return (
-    <Html>
-      <Head />
-      <Body style={{ backgroundColor: "#faf9f6", fontFamily: "sans-serif" }}>
-        <Container style={{ maxWidth: 600, margin: "0 auto", padding: 24 }}>
-          <Heading style={{ color: "#1a1a1a", fontSize: 24 }}>
-            Open Case Follow-Up — Sindicato
-          </Heading>
-          <Text style={{ fontSize: 16, color: "#333" }}>
-            Dear {companyName} team,
-          </Text>
-          <Text style={{ fontSize: 16, color: "#333" }}>
-            This is a follow-up regarding an open case filed against your
-            company through Sindicato. The case has been active for{" "}
-            {daysSinceFiled} days without resolution.
-          </Text>
-          <Container
+    <EmailLayout
+      preview={`Open case follow-up: ${caseType} — ${companyName}`}
+    >
+      <Text style={{ fontSize: 16, color: "#333" }}>
+        Dear {companyName} team,
+      </Text>
+      <Text style={{ fontSize: 16, color: "#333" }}>
+        This is a follow-up regarding an open case filed against your company
+        through Sindicato. The case has been active for {daysSinceFiled} days
+        without resolution.
+      </Text>
+
+      <DetailCard>
+        <DetailRow label="Case Type">{caseType}</DetailRow>
+        <DetailRow label="Worker">{displayName}</DetailRow>
+        {showAmount && (
+          <DetailRow label="Amount Owed">
+            {currency} {amountOwed}
+          </DetailRow>
+        )}
+        <DetailRow label="Days Open">{daysSinceFiled}</DetailRow>
+        {storyPreview && (
+          <Text
             style={{
-              backgroundColor: "#fff",
-              border: "1px solid #e5e5e5",
-              borderRadius: 8,
-              padding: 20,
-              marginBottom: 20,
+              margin: "12px 0 4px",
+              fontSize: 14,
+              color: "#555",
+              fontStyle: "italic",
+              borderLeft: "3px solid #e5e5e5",
+              paddingLeft: 12,
             }}
           >
-            <Text style={{ margin: "4px 0", fontSize: 14, color: "#555" }}>
-              <strong>Case Type:</strong> {caseType}
-            </Text>
-            <Text style={{ margin: "4px 0", fontSize: 14, color: "#555" }}>
-              <strong>Worker:</strong> {displayName}
-            </Text>
-            <Text style={{ margin: "4px 0", fontSize: 14, color: "#555" }}>
-              <strong>Amount Owed:</strong> {currency} {amountOwed}
-            </Text>
-            <Text style={{ margin: "4px 0", fontSize: 14, color: "#555" }}>
-              <strong>Days Open:</strong> {daysSinceFiled}
-            </Text>
-            {storyPreview && (
-              <Text
-                style={{
-                  margin: "12px 0 4px",
-                  fontSize: 14,
-                  color: "#555",
-                  fontStyle: "italic",
-                  borderLeft: "3px solid #e5e5e5",
-                  paddingLeft: 12,
-                }}
-              >
-                &ldquo;{storyPreview}&rdquo;
-              </Text>
-            )}
-          </Container>
-          <Text style={{ fontSize: 16, color: "#333" }}>
-            Resolving this case promptly demonstrates good faith and helps
-            avoid escalation. We are here to facilitate a fair resolution for
-            all parties.
+            &ldquo;{storyPreview}&rdquo;
           </Text>
-          <Button
-            href={caseUrl}
-            style={{
-              backgroundColor: "#c53030",
-              color: "#fff",
-              padding: "12px 24px",
-              borderRadius: 6,
-              textDecoration: "none",
-              display: "inline-block",
-              fontSize: 16,
-            }}
-          >
-            View Case Details
-          </Button>
-          <Hr style={{ margin: "32px 0" }} />
-          <Text style={{ fontSize: 12, color: "#999" }}>
-            Sindicato — Collective action for workers worldwide.
+        )}
+      </DetailCard>
+
+      {concernTags.length > 0 && (
+        <div style={{ marginBottom: 16 }}>
+          <Text style={{ fontSize: 13, color: "#666", margin: "0 0 8px" }}>
+            <strong>Detected patterns:</strong>
           </Text>
-        </Container>
-      </Body>
-    </Html>
+          <div style={{ lineHeight: 2 }}>
+            {concernTags.map((tag) => (
+              <TagPill
+                key={tag.tagName}
+                name={tag.tagName}
+                severity={tag.severity}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {positiveTags.length > 0 && (
+        <div style={{ marginBottom: 16 }}>
+          <Text style={{ fontSize: 13, color: "#666", margin: "0 0 8px" }}>
+            <strong>Positive indicators:</strong>
+          </Text>
+          <div style={{ lineHeight: 2 }}>
+            {positiveTags.map((tag) => (
+              <TagPill
+                key={tag.tagName}
+                name={tag.tagName}
+                severity={tag.severity}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <Text style={{ fontSize: 16, color: "#333" }}>
+        Resolving this case promptly demonstrates good faith and helps avoid
+        escalation. We are here to facilitate a fair resolution for all parties.
+      </Text>
+
+      <Button
+        href={caseUrl}
+        style={{
+          backgroundColor: "#c53030",
+          color: "#fff",
+          padding: "12px 24px",
+          borderRadius: 6,
+          textDecoration: "none",
+          display: "inline-block",
+          fontSize: 16,
+        }}
+      >
+        View Case Details
+      </Button>
+    </EmailLayout>
   );
 }

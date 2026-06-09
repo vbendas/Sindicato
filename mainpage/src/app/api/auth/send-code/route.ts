@@ -4,7 +4,8 @@ import { db } from "@/lib/db/client";
 import { verificationTokens } from "@/lib/db/schema";
 import { eq, and, isNull, gt } from "drizzle-orm";
 import { rateLimit } from "@/lib/auth/rate-limit";
-import { sendEmail } from "@/lib/email/send";
+import { sendTemplateEmail } from "@/lib/email/send";
+import VerificationCodeEmail from "@/lib/email/templates/verification-code";
 import { emailSchema } from "@/lib/utils/schemas";
 import { success, error, getClientIp } from "@/lib/utils/api";
 
@@ -56,11 +57,15 @@ export async function POST(request: NextRequest) {
   await db.insert(verificationTokens).values({ email, code, codeHash, expiresAt });
 
   try {
-    await sendEmail({
-      to: email,
-      subject: "Your Sindicato verification code",
-      html: `<p>Your verification code is: <strong>${code}</strong></p><p>It expires in 10 minutes.</p>`,
-    });
+    await sendTemplateEmail(
+      email,
+      "Your Sindicato verification code",
+      VerificationCodeEmail,
+      {
+        code,
+        loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/en/auth/verify`,
+      }
+    );
   } catch (err) {
     console.error("Failed to send verification email:", err);
     return error("Failed to send verification email. Please try again.", 500);

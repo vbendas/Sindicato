@@ -1,13 +1,17 @@
 import { db } from "@/lib/db/client";
-import { cases, companies, caseTimelineEvents } from "@/lib/db/schema";
+import { cases, companies, caseTimelineEvents, caseTags } from "@/lib/db/schema";
 import { eq, and, or, isNull, sql } from "drizzle-orm";
 import { render } from "@react-email/components";
 import { sendTemplateEmail } from "@/lib/email/send";
 import PerCaseFollowUp from "@/lib/email/templates/per-case-follow-up";
 import { success, error } from "@/lib/utils/api";
+import { redactName, formatCaseType } from "@/lib/utils/redaction";
+import { getTagSeverity, type TagSeverity } from "@/lib/ai/tag-taxonomy";
 
 const BATCH_SIZE = 50;
 const MAX_DAYS_BETWEEN_EMAILS = 7;
+
+const WAGE_THEFT_TYPES = ["unpaid_wages", "late_payment", "contract_violation"];
 
 async function renderPerCaseEmail(props: {
   companyName: string;
@@ -18,6 +22,8 @@ async function renderPerCaseEmail(props: {
   storyPreview: string;
   daysSinceFiled: number;
   caseUrl: string;
+  showAmount: boolean;
+  tags: Array<{ tagName: string; severity: TagSeverity }>;
 }) {
   return render(<PerCaseFollowUp {...props} />);
 }
@@ -61,6 +67,35 @@ export async function GET(request: Request) {
       )
       .limit(BATCH_SIZE);
 
+    const caseIds = eligibleCases.map((c) => c.caseId);
+
+    const tagsByCase = new Map<
+      string,
+      Array<{ tagName: string; severity: TagSeverity }>
+    >();
+
+    if (caseIds.length > 0) {
+      const allTags = await db
+        .select({
+          caseId: caseTags.caseId,
+          tagName: caseTags.tagName,
+        })
+        .from(caseTags)
+        .where(
+          sql`${caseTags.caseId} IN (${sql.join(
+            caseIds.map((id) => sql`${id}`),
+            sql`, `
+          )})`
+        );
+
+      for (const tag of allTags) {
+        const severity = getTagSeverity(tag.tagName);
+        const existing = tagsByCase.get(tag.caseId) || [];
+        existing.push({ tagName: tag.tagName, severity });
+        tagsByCase.set(tag.caseId, existing);
+      }
+    }
+
     let emailsSent = 0;
     const now = new Date();
 
@@ -78,13 +113,15 @@ export async function GET(request: Request) {
 
       const emailProps = {
         companyName: c.companyName,
-        caseType: c.caseType,
-        displayName: c.displayName,
+        caseType: formatCaseType(c.caseType),
+        displayName: redactName(c.displayName),
         amountOwed: c.amountOwed,
         currency: c.currency,
         storyPreview,
         daysSinceFiled,
         caseUrl,
+        showAmount: WAGE_THEFT_TYPES.includes(c.caseType),
+        tags: tagsByCase.get(c.caseId) || [],
       };
 
       let html: string;
