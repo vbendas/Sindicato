@@ -18,7 +18,7 @@ export function ClerkPanel() {
   const pathname = usePathname();
   const { locale } = useLocale();
 
-  if (pathname.endsWith("/clerk")) return null;
+  if (pathname.endsWith("/clerk") || pathname.includes("/presentation-workers")) return null;
 
   const handleExpand = () => {
     router.push(`/${locale}/clerk`);

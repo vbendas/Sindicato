@@ -14,7 +14,7 @@ export function ClerkBubble() {
   const pathname = usePathname();
   const t = useT();
 
-  if (pathname.endsWith("/clerk")) return null;
+  if (pathname.endsWith("/clerk") || pathname.includes("/presentation-workers")) return null;
 
   return (
     <>

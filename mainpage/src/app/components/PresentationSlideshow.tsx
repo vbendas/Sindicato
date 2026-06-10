@@ -166,17 +166,16 @@ export default function PresentationSlideshow({
 
   const slideVariants = {
     enter: (dir: number) => ({
-      x: dir > 0 ? "100%" : "-100%",
+      x: dir > 0 ? "50%" : "-50%",
       opacity: 0,
     }),
     center: {
       x: 0,
       opacity: 1,
     },
-    exit: (dir: number) => ({
-      x: dir > 0 ? "-100%" : "100%",
+    exit: {
       opacity: 0,
-    }),
+    },
   };
 
   return (
@@ -189,7 +188,7 @@ export default function PresentationSlideshow({
       onTouchEnd={onTouchEnd}
     >
       {/* Slide */}
-      <AnimatePresence initial={false} custom={direction} mode="wait">
+      <AnimatePresence initial={false} custom={direction}>
         <motion.div
           key={current}
           custom={direction}
@@ -197,7 +196,7 @@ export default function PresentationSlideshow({
           initial="enter"
           animate="center"
           exit="exit"
-          transition={{ type: "tween", duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+          transition={{ type: "tween", duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
           className="absolute inset-0 flex items-center justify-center"
         >
           <Image
