@@ -13,7 +13,7 @@ export default function EmailLayout({ children, preview }: EmailLayoutProps) {
       <Head>
         <Font
           fontFamily="Barlow Condensed"
-          fallbackFontFamily="Arial, Helvetica, sans-serif"
+          fallbackFontFamily={["Arial", "Helvetica", "sans-serif"]}
           webFont={{
             url: "https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&display=swap",
             format: "woff2",
