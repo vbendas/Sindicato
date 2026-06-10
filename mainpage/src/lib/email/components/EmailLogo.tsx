@@ -1,4 +1,4 @@
-import { Img, Text } from "@react-email/components";
+import { Text } from "@react-email/components";
 
 interface EmailLogoProps {
   baseUrl?: string;
@@ -9,12 +9,20 @@ export default function EmailLogo({
 }: EmailLogoProps) {
   return (
     <div style={{ textAlign: "center", marginBottom: 32 }}>
-      <Img
-        src={`${baseUrl}/images/logo.png`}
-        alt="Sindicato"
-        width={120}
-        style={{ display: "inline-block" }}
-      />
+      <Text
+        style={{
+          fontFamily: "'Barlow Condensed', Arial, Helvetica, sans-serif",
+          fontSize: 28,
+          fontWeight: 700,
+          color: "#1a1a2e",
+          margin: 0,
+          letterSpacing: "0.15em",
+          textTransform: "uppercase",
+          lineHeight: 1,
+        }}
+      >
+        Sindicato
+      </Text>
       <Text
         style={{
           fontSize: 12,
