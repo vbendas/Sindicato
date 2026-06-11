@@ -36,8 +36,8 @@ export default function DataProtection() {
           </p>
         </motion.div>
 
-        <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
-          {points.map((point, i) => {
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {points.slice(0, 3).map((point, i) => {
             const Icon = icons[i];
             return (
               <motion.div
@@ -46,7 +46,29 @@ export default function DataProtection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="bg-white/5 border border-white/10 p-6 flex items-start gap-4 transition-all duration-300 hover:border-white/20 w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.667rem)]"
+                className="bg-white/5 border border-white/10 p-6 flex items-center gap-4 transition-all duration-300 hover:border-white/20"
+              >
+                <span className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                  <Icon className="w-5 h-5 text-sindicato-warm-white" />
+                </span>
+                <p className="text-sindicato-warm-white/65 text-sm leading-relaxed">
+                  {point}
+                </p>
+              </motion.div>
+            );
+          })}
+        </div>
+        <div className="flex justify-center gap-4 sm:gap-6 mt-4 sm:mt-6">
+          {points.slice(3).map((point, i) => {
+            const Icon = icons[i + 3];
+            return (
+              <motion.div
+                key={i + 3}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: (i + 3) * 0.1, duration: 0.5 }}
+                className="bg-white/5 border border-white/10 p-6 flex items-center gap-4 transition-all duration-300 hover:border-white/20 w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.667rem)]"
               >
                 <span className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
                   <Icon className="w-5 h-5 text-sindicato-warm-white" />
