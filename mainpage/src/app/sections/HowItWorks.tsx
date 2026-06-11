@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FileText, ShieldCheck, Eye } from "lucide-react";
+import { FileText, ShieldCheck, CheckCircle } from "lucide-react";
 import { useT } from "@/lib/i18n";
 
 export default function HowItWorks() {
@@ -23,7 +23,7 @@ export default function HowItWorks() {
     {
       number: 3,
       title: t("howItWorks.step3Title"),
-      icon: Eye,
+      icon: CheckCircle,
       description: t("howItWorks.step3Description"),
     },
   ];

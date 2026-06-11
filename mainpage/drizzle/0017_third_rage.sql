@@ -1,0 +1,1 @@
+CREATE INDEX "case_tags_tag_name" ON "case_tags" USING btree ("tag_name");

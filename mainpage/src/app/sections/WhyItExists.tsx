@@ -55,6 +55,10 @@ export default function WhyItExists({ stats, activeVertical, onVerticalChange }:
       title: t("whyItExists.commitment6Title"),
       body: t("whyItExists.commitment6Body"),
     },
+    {
+      title: t("whyItExists.commitment7Title"),
+      body: t("whyItExists.commitment7Body"),
+    },
   ];
 
   const slowDuration = 4000;
@@ -83,6 +87,15 @@ export default function WhyItExists({ stats, activeVertical, onVerticalChange }:
       label: t("whyItExists.statCompaniesLabel"),
       body: t("whyItExists.statCompaniesBody"),
       invert: false,
+    },
+    {
+      stat: (
+        <Counter target={stats.casesResolved} isInView={isInView} duration={slowDuration} />
+      ),
+      label: t("whyItExists.statResolvedLabel"),
+      body: t("whyItExists.statResolvedBody"),
+      invert: true,
+      color: "text-emerald-400",
     },
   ];
 
@@ -133,7 +146,7 @@ export default function WhyItExists({ stats, activeVertical, onVerticalChange }:
                 }`}
               >
                 <div className={row.invert ? "order-2 md:order-2" : "order-2 md:order-1"}>
-                  <div className="text-6xl sm:text-7xl lg:text-8xl font-bold text-sindicato-warm-white font-[family-name:var(--font-barlow)] leading-none">
+                  <div className={`text-6xl sm:text-7xl lg:text-8xl font-bold font-[family-name:var(--font-barlow)] leading-none ${row.color ?? "text-sindicato-warm-white"}`}>
                     {row.stat}
                   </div>
                   <div className="text-sindicato-warm-white/40 text-xs uppercase tracking-widest mt-2 font-[family-name:var(--font-jetbrains)]">

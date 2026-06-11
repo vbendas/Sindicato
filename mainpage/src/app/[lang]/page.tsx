@@ -6,9 +6,11 @@ import Header from "../components/Header";
 import Hero from "../sections/Hero";
 import ManifestoStrip from "../sections/ManifestoStrip";
 import HowItWorks from "../sections/HowItWorks";
-import FeaturedCase from "../sections/FeaturedCase";
+import DataProtection from "../sections/DataProtection";
+import PlatformOverview from "../sections/PlatformOverview";
 import WhyItExists from "../sections/WhyItExists";
 import VerticalNetworkCards from "../sections/VerticalNetworkCards";
+import PathToResolution from "../sections/PathToResolution";
 import LiveCaseFeed from "../sections/LiveCaseFeed";
 import CTAs from "../sections/CTAs";
 import Footer from "../sections/Footer";
@@ -26,12 +28,19 @@ interface VerticalStats {
   activeCompanies: number;
 }
 
+interface TopTag {
+  tagName: string;
+  severity: "green" | "yellow" | "orange" | "red";
+  count: number;
+}
+
 interface Stats {
   totalCases: number;
   totalUnpaid: number;
   activeCompanies: number;
   workersLegal: number;
   casesResolved: number;
+  topTags: TopTag[];
   companies: Company[];
   verticals?: {
     remote: VerticalStats;
@@ -45,6 +54,7 @@ const defaultStats: Stats = {
   activeCompanies: 0,
   workersLegal: 0,
   casesResolved: 0,
+  topTags: [],
   companies: [],
 };
 
@@ -137,13 +147,15 @@ export default function Home() {
         />
         <ManifestoStrip />
         <HowItWorks />
-        <FeaturedCase />
+        <DataProtection />
+        <PlatformOverview stats={displayStats} />
         <WhyItExists
           stats={displayStats}
           activeVertical={activeVertical}
           onVerticalChange={handleVerticalChange}
         />
         <VerticalNetworkCards verticals={stats.verticals ?? defaultVerticals} />
+        <PathToResolution />
         <LiveCaseFeed />
         <CTAs />
         <Footer />

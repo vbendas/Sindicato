@@ -30,29 +30,30 @@
   },
   "footer": {
     "tagline": "Arbeitende besitzen ihre Ansprüche. Wir stellen die Plattform, nicht das Urteil.",
-    "builtInPublic": "ÖFFENTLICH ENTWICKELT"
+    "builtInPublic": "ÖFFENTLICH ENTWICKELT",
+    "disclaimer": "Alle Fälle werden von Arbeitenden unter eigener rechtlicher Verantwortung gemeldet. Sindicato überprüft, befürwortet oder bestätigt individuelle Ansprüche nicht. Die Plattform bietet Dokumentationsinfrastruktur, keine rechtlichen Urteile."
   },
   "hero": {
     "caseLabel": "Sindicato Fall #001",
     "titleMain": "Lohnraub",
     "titleSub1": "Ist kein Versehen.",
-    "titleSub2": "Es ist System.",
-    "subtitle": "Ein Arbeiter wurde ausgebeutet. Aus einem Fall wurde eine Plattform. Dutzende Stimmen stehen kurz davor, nicht mehr ignoriert werden zu können.",
+    "titleSub2": "Es ist eine Geschäftsentscheidung.",
+    "subtitle": "Arbeitende dokumentieren unbezahlte Löhne, Vergeltung, Aussperrungen und unfaire Praktiken. Unternehmen werden benachrichtigt. Muster werden sichtbar. Lösung wird möglich.",
     "ctaFileReport": "Fall melden",
-    "ctaSeeRecord": "Akten einsehen",
-    "statsCasesFiled": "EINGEREICHTE FÄLLE",
-    "statsCompaniesExposed": "ENTLARVTE UNTERNEHMEN",
-    "statsWorkerReported": "ALLE VON ARBEITENDEN GEMELDET"
+    "ctaSeeRecord": "Fälle einsehen",
+    "statsCasesFiled": "FÄLLE EINGEREICHT",
+    "statsCompaniesNotified": "UNTERNEHMEN BENACHRICHTIGT",
+    "statsWorkerDocumented": "VON ARBEITENDEN DOKUMENTIERT"
   },
   "howItWorks": {
     "title": "So funktioniert es",
-    "subtitle": "Drei Schritte. Deine Bedingungen, dein Zeitplan.",
+    "subtitle": "Drei Schritte. Deine Bedingungen. Dein Zeitplan.",
     "step1Title": "Dokumentieren",
-    "step1Description": "Was passiert ist, wann und was dir geschuldet wird. Namen, Daten, Beträge. Was auch immer du erinnerst. Wir ändern niemals deine Worte. Sie bleiben deine.",
-    "step2Title": "Melden",
-    "step2Description": "Deine Geschichte reiht sich ein neben andere aus demselben Unternehmen. Öffentlich dokumentiert, für alle sichtbar. Eine einzelne Beschwerde ist ein Flüstern. Ein Stapel davon wird zu einem Muster, das niemand ignorieren kann.",
-    "step3Title": "Aufdecken",
-    "step3Description": "Muster werden öffentlich. Anwälte prüfen die Fälle. Wenn eine Sammelklage Gestalt annimmt, legen die Arbeitenden ihre Beweise selbst vor. Die Plattform verbindet. Die Arbeitenden entscheiden."
+    "step1Description": "Erzähle deine Geschichte mit Daten, Beträgen und Beweisen. Deine Worte gehören dir. Wir ändern niemals, was du schreibst.",
+    "step2Title": "Benachrichtigen",
+    "step2Description": "Dein Fall schließt sich anderen aus derselben Firma. Die Firma wird durch unser System benachrichtigt. Deine Identität bleibt geschützt, bis du dich entscheidest, sie preiszugeben.",
+    "step3Title": "Lösen",
+    "step3Description": "Unternehmen können direkt antworten. Anwälte prüfen Fälle auf rechtliche Schritte. Arbeitende entscheiden über den nächsten Schritt. Jede Lösung ist ein öffentlicher Beweis guten Willens."
   },
   "whyItExists": {
     "title": "Warum es existiert",
@@ -60,11 +61,13 @@
     "tabRemote": "Remote Workers",
     "tabGig": "Gig Workers",
     "statCasesLabel": "eingereichte Fälle",
-    "statCasesBody": "Jeder Fall ergänzt ein dauerhaftes öffentliches Verzeichnis. Einzelne Beschwerden werden ignoriert. Tausend einzelne Beschwerden werden zu einer Bewegung, die Aufsichtsbehörden und Anwälte nicht ignorieren können.",
+    "statCasesBody": "Jeder Fall ergänzt ein dauerhaftes öffentliches Verzeichnis. Einzelne Beschwerden verschwinden. Kollektive Dokumentation schafft Rechenschaftspflicht — für Arbeitende, für Unternehmen und für die Systeme, die Ausbeutung fortsetzen lassen.",
+    "statResolvedLabel": "gelöste Fälle",
+    "statResolvedBody": "Jeder gelöste Fall ist ein Beweis dafür, dass Dokumentation funktioniert. Unternehmen, die sich einlassen, bauen Vertrauen auf. Arbeitende, die klagen, schaffen Rechenschaftspflicht. Lösung ist das Ziel — und sie geschieht.",
     "statUnpaidLabel": "dokumentierte unbezahlte Löhne",
-    "statUnpaidBody": "Das ist kein hypothetisches Geld. Das sind geleistete Arbeitsstunden, abgeschlossene Aufgaben und gebrochene Versprechen. Jeder Euro steht für gestohlene Zeit von Arbeitenden, die erschienen sind und geliefert haben.",
-    "statCompaniesLabel": "entlarvte Unternehmen",
-    "statCompaniesBody": "Hinter jeder Zahl steht eine Unternehmenspolitik. Lohnraub ist kein Versehen — es ist eine Geschäftsentscheidung. Wir machen diese Entscheidungen sichtbar, damit sich Arbeitende anhand gemeinsamer Muster organisieren können.",
+    "statUnpaidBody": "Dies ist kein hypothetisches Geld. Das sind geleistete Stunden, abgeschlossene Aufgaben und gebrochene Versprechen. Jeder Euro steht für gestohlene Zeit von Arbeitenden, die erschienen sind und geliefert haben.",
+    "statCompaniesLabel": "benachrichtigte Unternehmen",
+    "statCompaniesBody": "Hinter jeder Zahl steht ein Muster. Manche Unternehmen reagieren und lösen. Andere nicht. Das Verzeichnis spricht für sich — und Arbeitende nutzen es, um sich zu organisieren, zu verhandeln und rechtliche Schritte einzuleiten.",
     "commitmentTitle": "Unser Versprechen",
     "commitment1Title": "Kein Geld. Keine Bedingungen. Kein Geschäft.",
     "commitment1Body": "Sindicato nimmt kein Geld von Investoren, Werbetreibenden oder einem auf dieser Plattform gelisteten Unternehmen. Niemals. Es läuft durch die freiwillige Unterstützung von Arbeitenden, Anwälten, Journalisten und allen, die glauben, dass Lohnraub Konsequenzen haben sollte. Kein Druck. Keine Kommerzialisierung. Kein Geschäft. Gemeinschaft für Gemeinschaft gebaut.",
@@ -77,17 +80,19 @@
     "commitment5Title": "Rechtlicher Schutz ist eingebaut.",
     "commitment5Body": "Dein Fall ist auf der Plattform öffentlich. Deine Identität nicht. Persönliche Daten und E-Mail-Weiterleitung bleiben anonymisiert, bis du dich entscheidest, sie zu teilen. Unternehmen und Anwälte können deine Geschichte lesen, aber sehen niemals deinen Namen, es sei denn, du gibst ihn frei. Wenn jemand Vergeltung übt, weil du den Mund aufgemacht hast, ist dein öffentlicher Fall auf Sindicato ein zeitgestempeltes Beweismittel, das du verwenden kannst. Du kontrollierst deine Daten. Du kontrollierst, wer dich sieht.",
     "commitment6Title": "Identität ist eine Wahl.",
-    "commitment6Body": "Arbeitende entscheiden selbst, wann und ob sie ihre Identität oder Kontaktdaten teilen. Anonymität ist niemals ein Hindernis für die Einreichung eines Falls."
+    "commitment6Body": "Arbeitende entscheiden selbst, wann und ob sie ihre Identität oder Kontaktdaten teilen. Anonymität ist niemals ein Hindernis für die Einreichung eines Falls.",
+    "commitment7Title": "Lösung ist das Ziel.",
+    "commitment7Body": "Sindicato existiert, um Rechenschaftspflicht und Lösung zu schaffen — nicht Bestrafung. Jedes Unternehmen, das sich einlägt, ist ein Unternehmen, das zuhören wollte. Das zählt."
   },
   "ctas": {
     "workersTitle": "Für Arbeitende",
-    "workersBody": "Nicht bekommen, was dir zusteht? Melde es hier. Lohnraub, unbezahlte Arbeit, unfaire Praktiken, Ausbeutung von Auftragnehmern. Was auch immer auf deiner Plattform passiert ist — reiche einen Fall ein und lass ihn dokumentieren.",
+    "workersBody": "Wurdest du nicht bezahlt, was dir zusteht? Unbezahlte Löhne, unfaire Praktiken, Ausbeutung von Auftragnehmern. Was auch immer passiert ist — dokumentiere deine Erfahrung und schließe dich anderen aus derselben Firma an.",
     "workersCta": "Fall melden",
     "legalTitle": "Für Rechtsbeistand",
     "legalBody": "Arbeitende, die Fälle einreichen, können ihre Kontaktdaten mit Anwälten teilen. Das gibt dir direkten Zugang zu Menschen mit dokumentierten, aktiven Ansprüchen und verschafft Arbeitenden eine Rechtsvertretung, die sie sich allein nicht leisten könnten.",
     "legalCta": "Fallübersicht anzeigen",
     "companiesTitle": "Für Unternehmen",
-    "companiesBody": "Registriere dein Unternehmen, um auf gegen dich eingereichte Fälle zuzugreifen und direkt zu antworten. Jede Lösung ist öffentlich. Arbeitende und die Presse können sehen, welche Unternehmen reagieren und welche nicht. Es ist dasselbe Verzeichnis, das dir schadet, wenn du es ignorierst, und das dir hilft, wenn du es nicht tust.",
+    "companiesBody": "Gegen dein Unternehmen wurden Fälle eingereicht. Du kannst sie sehen, antworten und lösen — öffentlich. Jede Lösung ist ein Beweis guten Willens. Unternehmen, die sich einlassen, bauen Vertrauen auf, bei Arbeitenden, der Öffentlichkeit und der Wirtschaft.",
     "companiesCta": "Unternehmenszugang",
     "mediaTitle": "Medien & Forschung",
     "mediaBody": "Journalisten, Content Creator, Wissenschaftler und Forschende. Erhaltet Zugang zu Falldaten, anonymisierten Kontakten und verifizierten Geschichten von Arbeitenden. Nutzt die Daten für Berichterstattung, Studien und gemeinnützige Arbeit mit vollständigem Datenschutz.",
@@ -104,7 +109,7 @@
     "error": "Aktuelle Fälle konnten nicht geladen werden. Bitte versuche es später erneut.",
     "emptyTitle": "Noch keine Fälle gemeldet",
     "emptySubtitle": "Sei der Erste, der seine Erfahrung meldet",
-    "statusSolved": "gelöst",
+    "statusResolved": "gelöst",
     "statusUnresolved": "ungelöst",
     "viewAll": "Alle Fälle anzeigen",
     "timeJustNow": "gerade eben",
@@ -112,27 +117,29 @@
     "timeHoursAgo": "vor {n} Std.",
     "timeDaysAgo": "vor {n} T."
   },
-  "featuredCase": {
-    "label": "// AUSGEWÄHLTER FALL #001",
-    "statusSolved": "gelöst",
+  "platformOverview": {
+    "label": "// DER STAND BISLANG",
+    "statusResolved": "gelöst",
     "statusUnresolved": "ungelöst",
     "amountLabel": "Betrag",
     "periodLabel": "Zeitraum",
     "casesFiledLabel": "Eingereichte Fälle",
-    "workersLegalLabel": "Arbeitende für Sammelklage",
-    "description": "Ein erfahrener ML-Ingenieur dokumentierte Lohnraub über mehrere KI-Trainingsprojekte, komplett mit Hubstaff-Protokollen, AutoQA-Scores und einer dokumentierten Vergeltungssequenz. Dieser Gründungsfall etablierte das Muster, das Sindicato aufdecken soll.",
-    "viewReport": "Vollständigen Bericht anzeigen"
+    "workersLegalLabel": "Arbeitende für rechtliche Schritte",
+    "description": "Jeder Fall, der auf Sindicato eingereicht wird, wird Teil eines dauerhaften öffentlichen Registers. Arbeitende dokumentieren. Unternehmen werden benachrichtigt. Muster entstehen. Dies ist der kollektive Beweis.",
+    "viewAll": "Alle Fälle ansehen",
+    "topTagsLabel": "Meist gemeldete Muster"
   },
   "manifestoStrip": {
-    "item1": "Vereinte Stimmen",
-    "item2": "Stärke durch Zahlen",
+    "item1": "Dokumentiert, nicht zum Schweigen gebracht",
+    "item2": "Lösung statt Schweigen",
     "item3": "Open Source",
     "item4": "Gemeinnützig",
-    "item5": "Anonym & Sicher",
-    "item6": "Brücken zur Justiz",
-    "item7": "Unternehmen, die lösen",
-    "item8": "Jeder Fall zählt",
-    "item9": "Öffentliches Verzeichnis"
+    "item5": "Anonymisiert & Sicher",
+    "item6": "Rechtliche Wege eingebaut",
+    "item7": "Unternehmen, die Lösungen finden",
+    "item8": "Jeder Arbeitende zählt",
+    "item9": "Öffentliches Verzeichnis",
+    "item10": "Finanzielle Transparenz"
   },
   "verticalHub": {
     "remoteTitle": "Remote-Arbeitende",
@@ -165,7 +172,7 @@
     "filedCases": "Eingereichte Fälle",
     "loading": "Fälle werden geladen...",
     "noCases": "Noch keine Fälle gegen dieses Unternehmen eingereicht.",
-    "statusSolved": "gelöst",
+    "statusResolved": "gelöst",
     "statusUnresolved": "ungelöst",
     "unpaid": "unbezahlt",
     "aiSummary": "Unternehmensanalyse",
@@ -222,7 +229,7 @@
     "empty": "Noch keine Fälle gemeldet. Sei der Erste, der seine Geschichte teilt.",
     "emptyCta": "Fall melden",
     "caseLabel": "FALL #",
-    "statusSolved": "gelöst",
+    "statusResolved": "gelöst",
     "statusUnresolved": "ungelöst",
     "pageOf": "Seite {page} von {total}"
   },
@@ -650,6 +657,10 @@
     "howStartedP3": "Sindicato ist die Infrastruktur, die sicherstellt, dass das nie wieder passiert.",
     "sectionCase001": "Fall #001",
     "sectionThePattern": "Das Muster",
+    "patternP1": "Was ich nach meinem eigenen Fall entdeckte, schockierte mich, obwohl es nicht hätte sollen. Ich war nicht der Erste. Ich war nicht der Fünfzigste.",
+    "patternP2": "In den Bereichen KI-Training, Gig-Lieferung und Freelance-Plattformen berichten Arbeitende vom selben Ablauf: Monatelang zuverlässige Zahlung, dann plötzliche Kündigung oder Deaktivierung, wenn sie nach rückständigen Löhnen fragen. Die Beträge klicken. Die Zeitlinien wiederholen sich. Das sind keine Rechenfehler. Das sind Muster.",
+    "patternP3": "Arbeitende haben Beschwerden auf mehreren Plattformen eingereicht — Reddit, Glassdoor, Trustpilot und unabhängige Foren. Einige Unternehmen sind verklagt worden. Andere wurden von Behörden zur Rechenschaft gezogen. Das Muster ist dokumentiert — und es wächst.",
+    "patternP4": "Sindicato macht diese Muster sichtbar. Nicht um zu bestrafen, sondern um Rechenschaftspflicht zu schaffen.",
     "sectionTheModel": "Das Modell",
     "modelP1": "Das Uberisierungsmodell — von Uber entwickelt und in der Essenslieferung, im KI-Training, auf Freelance-Marktplätzen, Therapieplattformen, Reinigungs-Apps, Datenannotationsdiensten repliziert — hat überall dieselbe Struktur:",
     "modelP2": "Arbeitende werden als selbstständige Auftragnehmer eingestuft, nicht als Angestellte. Sie werden gezielt aus Ländern rekrutiert, in denen Währungen schwächer und rechtliche Optionen geringer sind. Zahlungen fließen über Plattformen, die das Unternehmen einseitig kontrolliert. Streitbeilegung ist eine Blackbox, betrieben von derselben Partei, die dir Geld schuldet. Nutzungsbedingungen sind zum Schutz der Plattform geschrieben, nicht der Arbeitenden. Es gibt keine Tarifverhandlungen. Es gibt keine Gewerkschaft. Es gibt niemanden, den man anrufen kann.",
@@ -678,6 +689,24 @@
     "fileCaseP4": "Die Tür ist offen.",
     "footerBrand": "Sindicato — sindicato.report",
     "footerTagline": "Aus Fall #001 entstanden. Für alle danach gebaut."
+  },
+  "pathToResolution": {
+    "title": "Ein Weg zur Lösung",
+    "subtitle": "Für Unternehmen, die Probleme lösen wollen, bevor sie eskalieren.",
+    "body1": "Fälle gegen dein Unternehmen sind bereits Teil des öffentlichen Registers. Arbeitende, Journalisten, Anwälte und die Öffentlichkeit können sie sehen. Du kannst schweigen — oder du kannst antworten.",
+    "body2": "Sindicato gibt Unternehmen direkten Zugang zu den Fällen, die gegen sie eingereicht wurden. Du kannst die Geschichten lesen, die Zeitstrahlen sehen und öffentlich antworten. Jede Lösung ist ein zeitgestempelter Beweis guten Willens.",
+    "body3": "Unternehmen, die sich früh einlassen, lösen schneller, bauen Vertrauen auf und zeigen Rechenschaftspflicht. Unternehmen, die Fälle ignorieren, sehen das Register wachsen — und den Druck steigen.",
+    "closing": "Sindicato ist nicht hier, um Unternehmen zu bestrafen. Es ist hier, um das Ignorieren von Arbeitenden teurer zu machen als die Lösung mit ihnen.",
+    "cta": "Als Unternehmen registrieren"
+  },
+  "dataProtection": {
+    "title": "Deine Identität. Deine Wahl.",
+    "subtitle": "Eingebaute Schutzmaßnahmen in jedem Schritt.",
+    "point1": "Dein Name wird auf der öffentlichen Fallwand teilweise geschwärzt",
+    "point2": "Deine E-Mail wird durch unser Alias-System anonymisiert",
+    "point3": "Unternehmen und Anwälte sehen aliaste Kontakte, nie deine echte E-Mail",
+    "point4": "Du entscheidest, wann und ob du deine Identität preisgibst",
+    "point5": "Alle Daten sind öffentliches Register — zeitgestempelt und überprüfbar"
   },
   "manifesto": {
     "title": "MANIFEST",

@@ -30,41 +30,44 @@
   },
   "footer": {
     "tagline": "Les travailleurs sont propriétaires de leurs réclamations. Nous fournissons la plateforme, pas le verdict.",
-    "builtInPublic": "CONSTRUIT EN PUBLIC"
+    "builtInPublic": "CONSTRUIT EN PUBLIC",
+    "disclaimer": "Tous les dossiers sont auto-déclarés par les travailleurs sous leur propre responsabilité juridique. Sindicato ne vérifie, ne cautionne ni n'affirme les réclamations individuelles. La plateforme fournit une infrastructure de documentation, pas des jugements juridiques."
   },
   "hero": {
     "caseLabel": "Dossier Sindicato n°001",
-    "titleMain": "Le vol de salaire",
-    "titleSub1": "n'est pas une erreur.",
-    "titleSub2": "C'est une politique.",
-    "subtitle": "Un travailleur a été exploité. Un dossier est devenu une plateforme. Des dizaines de voix sont sur le point de devenir impossibles à ignorer.",
+    "titleMain": "Vol de salaire",
+    "titleSub1": "N'est pas une erreur de facturation.",
+    "titleSub2": "C'est une décision commerciale.",
+    "subtitle": "Les travailleurs documentent les salaires impayés, les représailles, les exclusions et les pratiques injustes. Les entreprises sont notifiées. Les schémas deviennent visibles. La résolution devient possible.",
     "ctaFileReport": "Signaler un cas",
-    "ctaSeeRecord": "Voir le dossier",
+    "ctaSeeRecord": "Voir les dossiers",
     "statsCasesFiled": "DOSSIERS DÉPOSÉS",
-    "statsCompaniesExposed": "ENTREPRISES EXPOSÉES",
-    "statsWorkerReported": "TOUS SIGNALÉS PAR DES TRAVAILLEURS"
+    "statsCompaniesNotified": "ENTREPRISES NOTIFIÉES",
+    "statsWorkerDocumented": "DOCUMENTÉ PAR LES TRAVAILLEURS"
   },
   "howItWorks": {
     "title": "Comment ça marche",
-    "subtitle": "Trois étapes. Vos conditions, votre calendrier.",
+    "subtitle": "Trois étapes. Vos conditions. Votre calendrier.",
     "step1Title": "Documentez",
-    "step1Description": "Ce qui s'est passé, quand, et ce qu'on vous devait. Noms, dates, montants. Tout ce dont vous vous souvenez. Nous ne modifions jamais vos mots. Ils restent les vôtres.",
-    "step2Title": "Signalez",
-    "step2Description": "Votre histoire rejoint celles d'autres travailleurs de la même entreprise. Au dossier public, visible par tous. Une plainte est un murmure. Un ensemble de plaintes devient un schéma que personne ne peut ignorer.",
-    "step3Title": "Exposez",
-    "step3Description": "Les schémas deviennent publics. Des avocats examinent les dossiers. Lorsqu'une action collective prend forme, les travailleurs présentent eux-mêmes leurs preuves. La plateforme connecte. Les travailleurs décident."
+    "step1Description": "Racontez votre histoire avec des dates, des montants et des preuves. Vos mots restent les vôtres. Nous ne modifions jamais ce que vous écrivez.",
+    "step2Title": "Notifiez",
+    "step2Description": "Votre dossier rejoint d'autres dossiers de la même entreprise. L'entreprise est notifiée par notre système. Votre identité reste protégée sauf si vous choisissez de la révéler.",
+    "step3Title": "Résolvez",
+    "step3Description": "Les entreprises peuvent répondre directement. Des avocats examinent les dossiers pour des actions juridiques. Les travailleurs décident de leur prochaine étape. Chaque résolution est une preuve publique de bonne foi."
   },
   "whyItExists": {
     "title": "Pourquoi ça existe",
     "tabAll": "Tous les réseaux",
-    "tabRemote": "Remote Workers",
-    "tabGig": "Gig Workers",
+    "tabRemote": "Travailleurs à distance",
+    "tabGig": "Travailleurs de plateforme",
     "statCasesLabel": "dossiers déposés",
-    "statCasesBody": "Chaque dossier s'ajoute à un registre public permanent. Les plaintes individuelles sont ignorées. Un millier de plaintes individuelles deviennent un mouvement que les régulateurs et les avocats ne peuvent pas ignorer.",
+    "statCasesBody": "Chaque dossier s'ajoute à un registre public permanent. Les plaintes individuelles disparaissent. La documentation collective crée de la responsabilité — pour les travailleurs, pour les entreprises, et pour les systèmes qui permettent à l'exploitation de continuer.",
+    "statResolvedLabel": "dossiers résolus",
+    "statResolvedBody": "Chaque dossier résolu est la preuve que la documentation fonctionne. Les entreprises qui s'engagent bâtissent la confiance. Les travailleurs qui déposent des dossiers créent de la responsabilité. La résolution est l'objectif — et elle arrive.",
     "statUnpaidLabel": "salaires impayés documentés",
     "statUnpaidBody": "Ce n'est pas de l'argent hypothétique. Ce sont des heures travaillées, des tâches accomplies et des promesses rompues. Chaque euro représente du temps volé à des travailleurs qui se sont présentés et ont livré.",
-    "statCompaniesLabel": "entreprises exposées",
-    "statCompaniesBody": "Derrière chaque chiffre se cache une politique d'entreprise. Le vol de salaire n'est pas une erreur — c'est une décision commerciale. Nous rendons ces décisions visibles pour que les travailleurs puissent s'organiser autour de schémas communs.",
+    "statCompaniesLabel": "entreprises notifiées",
+    "statCompaniesBody": "Derrière chaque chiffre se cache un schéma. Certaines entreprises répondent et résolvent. D'autres non. Le registre parle de lui-même — et les travailleurs l'utilisent pour s'organiser, négocier et prendre des mesures juridiques.",
     "commitmentTitle": "Notre engagement",
     "commitment1Title": "Pas d'argent. Pas de conditions. Pas de business.",
     "commitment1Body": "Sindicato n'accepte aucun argent d'investisseurs, de publicitaires ou d'entreprises référencées sur cette plateforme. Jamais. La plateforme fonctionne grâce au soutien volontaire des travailleurs, des avocats, des journalistes et de tous ceux qui pensent que le vol de salaire doit avoir des conséquences. Pas de pression. Pas de commercialisation. Pas de business. Une communauté construite pour la communauté.",
@@ -77,17 +80,19 @@
     "commitment5Title": "Protection juridique intégrée.",
     "commitment5Body": "Votre dossier est public sur la plateforme. Votre identité ne l'est pas. Les données personnelles et le routage des e-mails restent anonymisés jusqu'à ce que vous décidiez de les partager. Les entreprises et les avocats peuvent lire votre histoire mais ne voient jamais votre nom sauf si vous choisissez de le révéler. Si quelqu'un exerce des représailles contre vous pour avoir pris la parole, votre dossier public sur Sindicato constitue une preuve horodatée que vous pouvez utiliser. Vous contrôlez vos données. Vous contrôlez qui vous voit.",
     "commitment6Title": "L'identité est un choix.",
-    "commitment6Body": "Les travailleurs choisissent quand et s'ils partagent leur identité ou leurs coordonnées. L'anonymat n'est jamais un obstacle au dépôt d'un dossier."
+    "commitment6Body": "Les travailleurs choisissent quand et s'ils partagent leur identité ou leurs coordonnées. L'anonymat n'est jamais un obstacle au dépôt d'un dossier.",
+    "commitment7Title": "La résolution est l'objectif.",
+    "commitment7Body": "Sindicato existe pour créer de la responsabilité et de la résolution — pas de la punition. Chaque entreprise qui s'engage est une entreprise qui a choisi d'écouter. C'est important."
   },
   "ctas": {
     "workersTitle": "Pour les travailleurs",
-    "workersBody": "Vous n'avez pas été payé ce qui vous était dû ? Signalez-le ici. Vol de salaire, travail non rémunéré, pratiques injustes, exploitation de sous-traitants. Quoi qu'il se soit passé sur votre plateforme, déposez un dossier et faites-le documenter.",
+    "workersBody": "Vous n'avez pas été payé ce qui vous était dû ? Salaires impayés, pratiques injustes, exploitation de sous-traitants, représailles. Quoi qu'il se soit passé, documentez votre expérience et rejoignez d'autres travailleurs de la même entreprise.",
     "workersCta": "Signaler un cas",
     "legalTitle": "Pour les professionnels du droit",
     "legalBody": "Les travailleurs qui déposent des dossiers peuvent choisir de partager leurs coordonnées avec des avocats. Cela vous donne un accès direct à des personnes ayant des réclamations documentées et actives, et offre aux travailleurs une représentation juridique qu'ils ne pourraient pas se permettre seuls.",
     "legalCta": "Voir les dossiers",
     "companiesTitle": "Pour les entreprises",
-    "companiesBody": "Inscrivez votre entreprise pour accéder aux dossiers déposés contre vous et y répondre directement. Chaque résolution est publique. Les travailleurs et la presse peuvent voir quelles entreprises s'engagent et lesquelles ne le font pas. C'est le même dossier qui vous nuit quand vous l'ignorez, et qui vous aide quand vous ne l'ignorez pas.",
+    "companiesBody": "Des dossiers ont été déposés contre votre entreprise. Vous pouvez les voir, y répondre et les résoudre — publiquement. Chaque résolution est une preuve de bonne foi. Les entreprises qui s'engagent bâtissent la confiance avec les travailleurs, la presse et le public.",
     "companiesCta": "Accès entreprise",
     "mediaTitle": "Médias et recherche",
     "mediaBody": "Journalistes, créateurs de contenu, universitaires et chercheurs. Accédez aux données des dossiers, aux contacts anonymisés et aux témoignages vérifiés de travailleurs. Utilisez les données pour vos reportages, études et travaux d'intérêt public avec des protections complètes de la vie privée.",
@@ -104,7 +109,7 @@
     "error": "Impossible de charger les dossiers récents. Veuillez réessayer plus tard.",
     "emptyTitle": "Aucun dossier signalé pour le moment",
     "emptySubtitle": "Soyez le premier à signaler votre expérience",
-    "statusSolved": "résolu",
+    "statusResolved": "résolu",
     "statusUnresolved": "non résolu",
     "viewAll": "Voir tous les dossiers",
     "timeJustNow": "à l'instant",
@@ -112,27 +117,29 @@
     "timeHoursAgo": "il y a {n}h",
     "timeDaysAgo": "il y a {n}j"
   },
-  "featuredCase": {
-    "label": "// DOSSIER VEDETTE n°001",
-    "statusSolved": "résolu",
+  "platformOverview": {
+    "label": "// LE REGISTRE À CE JOUR",
+    "statusResolved": "résolu",
     "statusUnresolved": "non résolu",
     "amountLabel": "Montant",
     "periodLabel": "Période",
     "casesFiledLabel": "Dossiers déposés",
     "workersLegalLabel": "Travailleurs pour action juridique",
-    "description": "Un ingénieur ML senior a documenté le vol de salaire à travers plusieurs projets de formation d'IA, avec des journaux Hubstaff, des scores AutoQA et une séquence de représailles documentée. Ce dossier fondateur a établi le schéma que Sindicato a été construit pour exposer.",
-    "viewReport": "Voir le rapport complet"
+    "description": "Chaque dossier déposé sur Sindicato devient partie d'un registre public permanent. Les travailleurs documentent. Les entreprises sont notifiées. Les schémas émergent. C'est la preuve collective.",
+    "viewAll": "Voir tous les dossiers",
+    "topTagsLabel": "Schémas les plus signalés"
   },
   "manifestoStrip": {
-    "item1": "Voix unies",
-    "item2": "La force du nombre",
+    "item1": "Documenté, Pas Réduit au Silence",
+    "item2": "Résolution Plutôt que Silence",
     "item3": "Open Source",
     "item4": "À but non lucratif",
     "item5": "Anonymisé et sécurisé",
-    "item6": "Passerelles vers le juridique",
+    "item6": "Voies juridiques intégrées",
     "item7": "Entreprises qui résolvent",
-    "item8": "Chaque dossier compte",
-    "item9": "Registre public"
+    "item8": "Chaque travailleur compte",
+    "item9": "Registre public",
+    "item10": "Transparence financière"
   },
   "verticalHub": {
     "remoteTitle": "Travailleurs à distance",
@@ -165,7 +172,7 @@
     "filedCases": "Dossiers déposés",
     "loading": "Chargement des dossiers...",
     "noCases": "Aucun dossier déposé contre cette entreprise pour le moment.",
-    "statusSolved": "résolu",
+    "statusResolved": "résolu",
     "statusUnresolved": "non résolu",
     "unpaid": "impayé",
     "aiSummary": "Analyse de l'Entreprise",
@@ -222,7 +229,7 @@
     "empty": "Aucun dossier signalé pour le moment. Soyez le premier à partager votre histoire.",
     "emptyCta": "Signaler un cas",
     "caseLabel": "DOSSIER n°",
-    "statusSolved": "résolu",
+    "statusResolved": "résolu",
     "statusUnresolved": "non résolu",
     "pageOf": "Page {page} sur {total}"
   },
@@ -641,6 +648,24 @@
       "varDateTo": "To date"
     }
   },
+  "pathToResolution": {
+    "title": "Un chemin vers la résolution",
+    "subtitle": "Pour les entreprises qui veulent résoudre les problèmes avant qu'ils n'escaladent.",
+    "body1": "Les dossiers contre votre entreprise font déjà partie du registre public. Les travailleurs, les journalistes, les avocats et le public peuvent les voir. Vous pouvez choisir le silence — ou vous pouvez répondre.",
+    "body2": "Sindicato offre aux entreprises un accès direct aux dossiers déposées contre elles. Vous pouvez lire les histoires, voir les chronologies et répondre publiquement. Chaque résolution est une preuve horodatée de bonne foi.",
+    "body3": "Les entreprises qui s'engagent tôt résolvent plus vite, bâtissent la confiance et démontrent la responsabilité. Les entreprises qui ignorent les dossiers voient le registre croître — et la pression s'accumuler.",
+    "closing": "Sindicato n'est pas là pour punir les entreprises. Il est là pour rendre ignorer les travailleurs plus coûteux que de résoudre avec eux.",
+    "cta": "S'inscrire en tant qu'entreprise"
+  },
+  "dataProtection": {
+    "title": "Votre identité. Votre choix.",
+    "subtitle": "Protections intégrées à chaque étape.",
+    "point1": "Votre nom est partiellement masqué sur le mur public des dossiers",
+    "point2": "Votre e-mail est anonymisé via notre système d'alias",
+    "point3": "Les entreprises et les avocats voient des contacts aliasés, jamais votre vrai e-mail",
+    "point4": "Vous choisissez quand et si partager votre identité",
+    "point5": "Toutes les données sont un registre public — horodatées et vérifiables"
+  },
   "about": {
     "title": "À propos de Sindicato",
     "subtitle": "Un dossier. De nombreuses voix.",
@@ -650,6 +675,10 @@
     "howStartedP3": "Sindicato est l'infrastructure qui fait en sorte que cela ne se reproduise plus jamais.",
     "sectionCase001": "Dossier n°001",
     "sectionThePattern": "Le schéma",
+    "patternP1": "Ce que j'ai découvert après mon propre dossier m'a choqué, bien que cela n'aurait pas dû. Je n'étais pas le premier. Je n'étais pas le cinquantième.",
+    "patternP2": "Dans les secteurs de la formation d'IA, de la livraison de plateforme et des marchés freelance, les travailleurs rapportent la même séquence : paiement régulier pendant quelques mois, puis résiliation brutale ou désactivation lorsqu'ils demandent des arriérés de salaire. Les montants se regroupent. Les délais se répètent. Ce ne sont pas des erreurs de facturation. Ce sont des schémas.",
+    "patternP3": "Les travailleurs ont déposé des plaintes sur plusieurs plateformes — Reddit, Glassdoor, Trustpilot et des forums indépendants. Certaines entreprises ont fait face à des poursuites. D'autres ont fait face à des actions réglementaires. Le schéma est documenté — et il grandit.",
+    "patternP4": "Sindicato rend ces schémas visibles. Pas pour punir, mais pour créer de la responsabilité.",
     "sectionTheModel": "Le modèle",
     "modelP1": "Le modèle d'ubérisation — initié par Uber et reproduit dans la livraison de repas, la formation d'IA, les places de marché freelance, les plateformes de thérapie, les applications de ménage, les services d'annotation de données — partage une structure identique partout où il apparaît :",
     "modelP2": "Les travailleurs sont classés comme indépendants, pas comme salariés. Ils sont recrutés délibérément dans des pays où les monnaies sont plus faibles et les recours juridiques moins nombreux. Les paiements transitent par des plateformes que l'entreprise contrôle unilatéralement. La résolution des litiges est une boîte noire opérée par la même partie qui vous doit de l'argent. Les conditions d'utilisation sont rédigées pour protéger la plateforme, pas le travailleur. Il n'y a pas de négociation collective. Il n'y a pas de syndicat. Il n'y a personne à appeler.",

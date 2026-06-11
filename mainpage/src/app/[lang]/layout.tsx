@@ -68,7 +68,7 @@ export async function generateMetadata({
   return {
     title: "Sindicato — Make Exploitation Expensive",
     description:
-      "Workers report wage theft, unpaid work, and contractor exploitation. Together, our voices become impossible to silence.",
+      "Workers document unpaid wages, retaliation, lockouts, and unfair practices. Companies are notified. Patterns become visible. Resolution becomes possible.",
     alternates: {
       canonical: `${baseUrl}${locale === defaultLocale ? "" : `/${locale}`}`,
       languages: alternates,

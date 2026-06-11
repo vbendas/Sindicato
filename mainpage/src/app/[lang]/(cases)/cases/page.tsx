@@ -8,7 +8,7 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/sections/Footer";
 import { useT, useLocale } from "@/lib/i18n";
 import { TranslatedCaseStory } from "@/components/case/TranslatedCaseStory";
-import { getTagSeverity, type TagSeverity } from "@/lib/ai/tag-taxonomy";
+import { getTagSeverity, TAG_SEVERITY_COLORS, type TagSeverity } from "@/lib/ai/tag-taxonomy";
 import { TAG_I18N_MAP } from "@/components/CaseTag";
 
 interface CaseCard {
@@ -46,13 +46,6 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   GBP: "\u00a3",
   BRL: "R$",
   INR: "\u20b9",
-};
-
-const TAG_SEVERITY_COLORS: Record<TagSeverity, { bg: string; text: string; border: string }> = {
-  green: { bg: "bg-emerald-500/10", text: "text-emerald-400", border: "border-emerald-500/20" },
-  yellow: { bg: "bg-amber-500/10", text: "text-amber-400", border: "border-amber-500/20" },
-  orange: { bg: "bg-orange-500/10", text: "text-orange-400", border: "border-orange-500/20" },
-  red: { bg: "bg-rose-500/10", text: "text-rose-400", border: "border-rose-500/20" },
 };
 
 interface CaseCardProps {

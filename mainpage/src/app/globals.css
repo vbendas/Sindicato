@@ -94,6 +94,7 @@
   --color-sindicato-moss-green: var(--moss-green);
   --color-sindicato-burnt-sienna: var(--burnt-sienna);
   --color-sindicato-cream: var(--parchment);
+  --color-sindicato-resolved: #22c55e;
   --font-display: var(--font-barlow);
   --font-body: var(--font-inter);
   --font-mono: var(--font-jetbrains);

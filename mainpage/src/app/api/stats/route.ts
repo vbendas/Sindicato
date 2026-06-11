@@ -1,8 +1,9 @@
 import { db } from "@/lib/db/client";
-import { cases, companies } from "@/lib/db/schema";
+import { cases, companies, caseTags } from "@/lib/db/schema";
 import { eq, sql, count, sum, and, ne } from "drizzle-orm";
 import { success, error, getClientIp } from "@/lib/utils/api";
 import { rateLimit } from "@/lib/auth/rate-limit";
+import { getTagSeverity, type TagSeverity } from "@/lib/ai/tag-taxonomy";
 
 type Vertical = "remote" | "gig";
 
@@ -76,6 +77,27 @@ async function getStats(vertical?: Vertical | null) {
     .where(and(...companyWhere))
     .groupBy(cases.companyId, companies.slug, companies.name, companies.vertical);
 
+  const topTagConditions = [ne(cases.status, "deleted")];
+  if (vw) topTagConditions.push(vw);
+
+  const topTagRows = await db
+    .select({
+      tagName: caseTags.tagName,
+      cnt: sql<number>`COUNT(*)`,
+    })
+    .from(caseTags)
+    .innerJoin(cases, eq(caseTags.caseId, cases.id))
+    .where(and(...topTagConditions))
+    .groupBy(caseTags.tagName)
+    .orderBy(sql`COUNT(*) DESC`)
+    .limit(5);
+
+  const topTags = topTagRows.map((row) => ({
+    tagName: row.tagName,
+    severity: getTagSeverity(row.tagName) as TagSeverity,
+    count: row.cnt,
+  }));
+
   return {
     totalCases: totalCasesRow?.total ?? 0,
     totalUnpaid: Number(totalUnpaidRow?.total ?? 0),
@@ -86,6 +108,7 @@ async function getStats(vertical?: Vertical | null) {
     activeCompanies: activeCompaniesRow?.total ?? 0,
     workersLegal: workersLegalRow?.total ?? 0,
     casesResolved: casesResolvedRow?.total ?? 0,
+    topTags,
     companies: companyStats.map((c) => ({
       slug: c.companySlug,
       name: c.companyName,

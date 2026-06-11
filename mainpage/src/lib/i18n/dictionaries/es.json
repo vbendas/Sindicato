@@ -30,41 +30,44 @@
   },
   "footer": {
     "tagline": "Los trabajadores son dueños de sus reclamos. Nosotros proporcionamos la plataforma, no el veredicto.",
-    "builtInPublic": "CONSTRUIDO EN PÚBLICO"
+    "builtInPublic": "CONSTRUIDO EN PÚBLICO",
+    "disclaimer": "Todos los casos son auto-reportados por los trabajadores bajo su propia responsabilidad legal. Sindicato no verifica, respalda ni afirma reclamos individuales. La plataforma proporciona infraestructura de documentación, no juicios legales."
   },
   "hero": {
     "caseLabel": "Caso Sindicato #001",
-    "titleMain": "El Robo Salarial",
-    "titleSub1": "No Es un Error.",
-    "titleSub2": "Es una Política.",
-    "subtitle": "Un trabajador fue explotado. Un caso se convirtió en una plataforma. Decenas de voces están a punto de volverse imposibles de ignorar.",
+    "titleMain": "Robo Salarial",
+    "titleSub1": "No Es un Error de Facturación.",
+    "titleSub2": "Es una Decisión de Negocio.",
+    "subtitle": "Los trabajadores documentan salarios impagos, represalias, bloqueos y prácticas injustas. Las empresas son notificadas. Los patrones se hacen visibles. La resolución se vuelve posible.",
     "ctaFileReport": "Reportar un Caso",
-    "ctaSeeRecord": "Ver el Expediente",
+    "ctaSeeRecord": "Ver Casos",
     "statsCasesFiled": "CASOS PRESENTADOS",
-    "statsCompaniesExposed": "EMPRESAS EXPUESTAS",
-    "statsWorkerReported": "TODOS REPORTADOS POR TRABAJADORES"
+    "statsCompaniesNotified": "EMPRESAS NOTIFICADAS",
+    "statsWorkerDocumented": "DOCUMENTADO POR TRABAJADORES"
   },
   "howItWorks": {
     "title": "Cómo Funciona",
-    "subtitle": "Tres pasos. Tus condiciones, tu cronograma.",
+    "subtitle": "Tres pasos. Tus condiciones. Tu cronograma.",
     "step1Title": "Documentar",
-    "step1Description": "Qué pasó, cuándo y qué te debían. Nombres, fechas, montos. Lo que recuerdes. Nunca editamos tus palabras. Siguen siendo tuyas.",
-    "step2Title": "Reportar",
-    "step2Description": "Tu historia se une a otras de la misma empresa. En el registro público, visible para todos. Una queja es un susurro. Un conjunto de ellas se convierte en un patrón que nadie puede ignorar.",
-    "step3Title": "Exponer",
-    "step3Description": "Los patrones se hacen públicos. Los abogados revisan los casos. Cuando una acción colectiva toma forma, los trabajadores presentan sus pruebas directamente. La plataforma conecta. Los trabajadores deciden."
+    "step1Description": "Cuenta tu historia con fechas, montos y evidencia. Tus palabras siguen siendo tuyas. Nunca editamos lo que escribes.",
+    "step2Title": "Notificar",
+    "step2Description": "Tu caso se une a otros de la misma empresa. La empresa es notificada a través de nuestro sistema. Tu identidad se mantiene protegida a menos que elijas revelarla.",
+    "step3Title": "Resolver",
+    "step3Description": "Las empresas pueden responder directamente. Los abogados revisan los casos para acciones legales. Los trabajadores deciden su próximo paso. Cada resolución es prueba pública de buena fe."
   },
   "whyItExists": {
     "title": "Por Qué Existe",
     "tabAll": "Todas las Redes",
-    "tabRemote": "Remote Workers",
-    "tabGig": "Gig Workers",
+    "tabRemote": "Trabajadores Remotos",
+    "tabGig": "Trabajadores de Gig",
     "statCasesLabel": "casos presentados",
-    "statCasesBody": "Cada caso se suma a un registro público permanente. Las quejas individuales son ignoradas. Mil quejas individuales se convierten en un movimiento que reguladores y abogados no pueden ignorar.",
+    "statCasesBody": "Cada caso se suma a un registro público permanente. Las quejas individuales desaparecen. La documentación colectiva crea responsabilidad — para los trabajadores, para las empresas y para los sistemas que permiten que la explotación continúe.",
+    "statResolvedLabel": "casos resueltos",
+    "statResolvedBody": "Cada caso resuelto es prueba de que la documentación funciona. Las empresas que se comprometen generan confianza. Los trabajadores que presentan casos crean responsabilidad. La resolución es el objetivo — y sucede.",
     "statUnpaidLabel": "salarios impagos documentados",
     "statUnpaidBody": "Esto no es dinero hipotético. Son horas trabajadas, tareas completadas y promesas rotas. Cada dólar representa tiempo robado a trabajadores que se presentaron y cumplieron.",
-    "statCompaniesLabel": "empresas expuestas",
-    "statCompaniesBody": "Detrás de cada número hay una política empresarial. El robo salarial no es un error — es una decisión de negocio. Hacemos visibles esas decisiones para que los trabajadores puedan organizarse en torno a patrones compartidos.",
+    "statCompaniesLabel": "empresas notificadas",
+    "statCompaniesBody": "Detrás de cada número hay un patrón. Algunas empresas responden y resuelven. Otras no. El registro habla por sí mismo — y los trabajadores lo usan para organizarse, negociar y tomar acciones legales.",
     "commitmentTitle": "Nuestro Compromiso",
     "commitment1Title": "Sin dinero. Sin condiciones. Sin negocio.",
     "commitment1Body": "Sindicato no acepta dinero de inversores, anunciantes ni ninguna empresa listada en esta plataforma. Jamás. Funciona con el apoyo voluntario de trabajadores, abogados, periodistas y cualquier persona que crea que el robo salarial debe tener consecuencias. Sin presión. Sin comercialización. Sin negocio. Comunidad construida para la comunidad.",
@@ -77,20 +80,22 @@
     "commitment5Title": "Protección legal integrada.",
     "commitment5Body": "Tu caso es público en la plataforma. Tu identidad no lo es. Los datos personales y el enrutamiento de correos permanecen anónimos hasta que decidas compartirlos. Las empresas y los abogados pueden leer tu historia pero nunca ver tu nombre a menos que elijas revelarlo. Si alguien toma represalias contra ti por hablar, tu caso público en Sindicato es evidencia con marca de tiempo que puedes usar. Tú controlas tus datos. Tú controlas quién te ve.",
     "commitment6Title": "La identidad es una elección.",
-    "commitment6Body": "Los trabajadores eligen cuándo y si compartir su identidad o datos de contacto. El anonimato nunca es una barrera para presentar un caso."
+    "commitment6Body": "Los trabajadores eligen cuándo y si compartir su identidad o datos de contacto. El anonimato nunca es una barrera para presentar un caso.",
+    "commitment7Title": "La resolución es el objetivo.",
+    "commitment7Body": "Sindicato existe para crear responsabilidad y resolución — no castigo. Cada empresa que se compromete es una empresa que eligió escuchar. Eso importa."
   },
   "ctas": {
     "workersTitle": "Para Trabajadores",
-    "workersBody": "¿No te pagaron lo que te debían? Repórtalo aquí. Robo salarial, trabajo no remunerado, prácticas injustas, explotación de contratistas. Lo que haya pasado en tu plataforma, presenta un caso y haz que quede documentado.",
+    "workersBody": "¿No te pagaron lo que te debían? Salarios impagos, prácticas injustas, explotación de contratistas, represalias. Lo que haya pasado, documenta tu experiencia y únete a otros de la misma empresa.",
     "workersCta": "Reportar un Caso",
     "legalTitle": "Para Apoyo Legal",
     "legalBody": "Los trabajadores que presentan casos pueden elegir compartir su contacto con abogados. Eso te da acceso directo a personas con reclamos documentados y activos, y les brinda a los trabajadores representación legal que no podrían costear por su cuenta.",
     "legalCta": "Ver Listado de Casos",
     "companiesTitle": "Para Empresas",
-    "companiesBody": "Registra tu empresa para acceder a los casos presentados en tu contra y responder directamente. Cada resolución es pública. Los trabajadores y la prensa pueden ver qué empresas participan y cuáles no. Es el mismo registro que te perjudica cuando lo ignoras y te ayuda cuando no lo haces.",
+    "companiesBody": "Se han presentado casos contra tu empresa. Puedes verlos, responder y resolverlos — públicamente. Cada resolución es prueba de buena fe. Las empresas que se comprometen generan confianza con los trabajadores, la prensa y el público.",
     "companiesCta": "Acceso para Empresas",
     "mediaTitle": "Medios e Investigación",
-    "mediaBody": "Periodistas, creadores de contenido, académicos e investigadores. Obtengan acceso a datos de casos, contactos anonimizados e historias verificadas de trabajadores. Usen los datos para reportajes, estudios y trabajo de interés público con protecciones de privacidad completas.",
+    "mediaBody": "Periodistas, creadores de contenido, académicos e investigadores. Obtén acceso a datos de casos, contactos anonimizados e historias verificadas de trabajadores. Usa los datos para reportajes, estudios y trabajo de interés público con protecciones completas de privacidad.",
     "mediaCta": "Solicitar Acceso"
   },
   "liveFeed": {
@@ -104,7 +109,7 @@
     "error": "No se pudieron cargar los casos recientes. Por favor, inténtalo de nuevo más tarde.",
     "emptyTitle": "Aún no hay casos reportados",
     "emptySubtitle": "Sé el primero en reportar tu experiencia",
-    "statusSolved": "resuelto",
+    "statusResolved": "resuelto",
     "statusUnresolved": "sin resolver",
     "viewAll": "Ver Todos los Casos",
     "timeJustNow": "ahora mismo",
@@ -112,27 +117,29 @@
     "timeHoursAgo": "hace {n}h",
     "timeDaysAgo": "hace {n}d"
   },
-  "featuredCase": {
-    "label": "// CASO DESTACADO #001",
-    "statusSolved": "resuelto",
+  "platformOverview": {
+    "label": "// EL REGISTRO HASTA AHORA",
+    "statusResolved": "resuelto",
     "statusUnresolved": "sin resolver",
     "amountLabel": "Monto",
     "periodLabel": "Período",
     "casesFiledLabel": "Casos Presentados",
     "workersLegalLabel": "Trabajadores para Acción Legal",
-    "description": "Un ingeniero senior de ML documentó el robo salarial a través de múltiples proyectos de entrenamiento de IA, con registros de Hubstaff, puntuaciones de AutoQA y una secuencia documentada de represalias. Este caso fundacional estableció el patrón que Sindicato fue construido para exponer.",
-    "viewReport": "Ver Informe Completo"
+    "description": "Cada caso presentado en Sindicato se convierte en parte de un registro público permanente. Los trabajadores documentan. Las empresas son notificadas. Los patrones emergen. Esta es la evidencia colectiva.",
+    "viewAll": "Ver Todos los Casos",
+    "topTagsLabel": "Patrones Más Reportados"
   },
   "manifestoStrip": {
-    "item1": "Voces Unidas",
-    "item2": "Fuerza en Números",
+    "item1": "Documentado, No Silenciado",
+    "item2": "Resolución sobre Silencio",
     "item3": "Código Abierto",
     "item4": "Sin Fines de Lucro",
     "item5": "Anonimizado y Seguro",
-    "item6": "Puentes hacia lo Legal",
+    "item6": "Vías Legales Integradas",
     "item7": "Empresas que Resuelven",
-    "item8": "Cada Caso Cuenta",
-    "item9": "Registro Público"
+    "item8": "Cada Trabajador Cuenta",
+    "item9": "Registro Público",
+    "item10": "Transparencia Financiera"
   },
   "verticalHub": {
     "remoteTitle": "Trabajadores Remotos",
@@ -165,7 +172,7 @@
     "filedCases": "Casos Presentados",
     "loading": "Cargando casos...",
     "noCases": "Aún no hay casos presentados contra esta empresa.",
-    "statusSolved": "resuelto",
+    "statusResolved": "resuelto",
     "statusUnresolved": "sin resolver",
     "unpaid": "impago",
     "aiSummary": "Análisis de la Empresa",
@@ -222,7 +229,7 @@
     "empty": "Aún no hay casos reportados. Sé el primero en compartir tu historia.",
     "emptyCta": "Relatar un Caso",
     "caseLabel": "CASO #",
-    "statusSolved": "resuelto",
+    "statusResolved": "resuelto",
     "statusUnresolved": "sin resolver",
     "pageOf": "Página {page} de {total}"
   },
@@ -648,6 +655,24 @@
       "varDateTo": "To date"
     }
   },
+  "pathToResolution": {
+    "title": "Un Camino hacia la Resolución",
+    "subtitle": "Para empresas que quieren resolver problemas antes de que escalen.",
+    "body1": "Los casos contra tu empresa ya son parte del registro público. Los trabajadores, periodistas, abogados y el público pueden verlos. Puedes elegir el silencio — o puedes responder.",
+    "body2": "Sindicato ofrece a las empresas acceso directo a los casos presentados contra ellas. Puedes leer las historias, ver las cronologías y responder públicamente. Cada resolución es prueba con marca de tiempo de buena fe.",
+    "body3": "Las empresas que se comprometen temprano resuelven más rápido, generan confianza y demuestran responsabilidad. Las empresas que ignoran los casos ven crecer el registro — y la presión acumularse.",
+    "closing": "Sindicato no está aquí para castigar a las empresas. Está aquí para hacer que ignorar a los trabajadores sea más costoso que resolver con ellos.",
+    "cta": "Registrarse como Empresa"
+  },
+  "dataProtection": {
+    "title": "Tu Identidad. Tu Elección.",
+    "subtitle": "Protecciones integradas en cada paso.",
+    "point1": "Tu nombre aparece parcialmente redactado en el muro público de casos",
+    "point2": "Tu correo es anonimizado a través de nuestro sistema de alias",
+    "point3": "Las empresas y los abogados ven contactos con alias, nunca tu correo real",
+    "point4": "Tú decides cuándo y si compartir tu identidad",
+    "point5": "Todos los datos son registro público — con marca de tiempo y verificables"
+  },
   "about": {
     "title": "Sobre Sindicato",
     "subtitle": "Un caso. Muchas voces.",
@@ -657,6 +682,10 @@
     "howStartedP3": "Sindicato es la infraestructura que asegura que eso nunca vuelva a pasar.",
     "sectionCase001": "Caso #001",
     "sectionThePattern": "El Patrón",
+    "patternP1": "Lo que descubrí después de mi propio caso me dejó en shock, aunque no debería. Yo no fui el primero. No fui el quincuagésimo.",
+    "patternP2": "En las industrias de entrenamiento de IA, entregas de plataformas y mercados freelance, los trabajadores reportan la misma secuencia: pago consistente durante unos meses, luego terminación abrupta o desactivación al preguntar sobre pagos atrasados. Los montos se agrupan. Los tiempos se repiten. Estos no son errores de facturación. Son patrones.",
+    "patternP3": "Los trabajadores han presentado quejas en múltiples plataformas — Reddit, Glassdoor, Trustpilot y foros independientes. Algunas empresas enfrentan demandas. Otras enfrentan acciones regulatorias. El patrón está documentado — y está creciendo.",
+    "patternP4": "Sindicato hace esos patrones visibles. No para castigar, sino para crear responsabilidad.",
     "sectionTheModel": "El Modelo",
     "modelP1": "El modelo de uberización — pionero en Uber y replicado en entregas de comida, entrenamiento de IA, mercados freelance, plataformas de terapia, aplicaciones de limpieza, servicios de anotación de datos — comparte una estructura idéntica en todas partes donde aparece:",
     "modelP2": "Los trabajadores son clasificados como contratistas independientes, no empleados. Son reclutados deliberadamente de países donde las monedas son más débiles y las opciones legales son menos. El pago fluye a través de plataformas que la empresa controla unilateralmente. La resolución de disputas es una caja negra operada por la misma parte que te debe dinero. Los términos de servicio están escritos para proteger a la plataforma, no al trabajador. No hay negociación colectiva. No hay sindicato. No hay a quién llamar.",

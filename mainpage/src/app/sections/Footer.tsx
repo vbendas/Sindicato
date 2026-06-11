@@ -65,9 +65,14 @@ export default function Footer({ bg = "bg-sindicato-bordeaux" }: FooterProps) {
         </div>
 
         <div className="border-t border-white/10 pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-sindicato-warm-white/40 text-[10px] sm:text-xs text-center sm:text-left">
-            &copy; 2026 Sindicato. {t("footer.tagline")}
-          </p>
+          <div className="text-center sm:text-left">
+            <p className="text-sindicato-warm-white/40 text-[10px] sm:text-xs">
+              &copy; 2026 Sindicato. {t("footer.tagline")}
+            </p>
+            <p className="text-sindicato-warm-white/25 text-[9px] sm:text-[10px] mt-2 max-w-xl leading-relaxed">
+              {t("footer.disclaimer")}
+            </p>
+          </div>
           <LanguageSelector />
         </div>
 

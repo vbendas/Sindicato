@@ -30,29 +30,30 @@
   },
   "footer": {
     "tagline": "Workers own their claims. We provide the platform, not the verdict.",
-    "builtInPublic": "BUILT IN PUBLIC"
+    "builtInPublic": "BUILT IN PUBLIC",
+    "disclaimer": "All cases are self-reported by workers under their own legal responsibility. Sindicato does not verify, endorse, or assert individual claims. The platform provides documentation infrastructure, not legal judgments."
   },
   "hero": {
     "caseLabel": "Sindicato Case #001",
     "titleMain": "Wage Theft",
-    "titleSub1": "Is Not a Mistake.",
-    "titleSub2": "It's a Policy.",
-    "subtitle": "One worker was exploited. One case became a platform. Dozens of voices are about to become impossible to ignore.",
+    "titleSub1": "Is Not a Billing Error.",
+    "titleSub2": "It's a Business Decision.",
+    "subtitle": "Workers document unpaid wages, retaliation, lockouts, and unfair practices. Companies are notified. Patterns become visible. Resolution becomes possible.",
     "ctaFileReport": "File a Report",
-    "ctaSeeRecord": "See the Record",
+    "ctaSeeRecord": "See Cases",
     "statsCasesFiled": "CASES FILED",
-    "statsCompaniesExposed": "COMPANIES EXPOSED",
-    "statsWorkerReported": "ALL WORKER-REPORTED"
+    "statsCompaniesNotified": "COMPANIES NOTIFIED",
+    "statsWorkerDocumented": "WORKER-DOCUMENTED"
   },
   "howItWorks": {
     "title": "How It Works",
-    "subtitle": "Three steps. Your terms, your timeline.",
+    "subtitle": "Three steps. Your terms. Your timeline.",
     "step1Title": "Document",
-    "step1Description": "What happened, when, and what you were owed. Names, dates, amounts. Whatever you remember. We never edit your words. They stay yours.",
-    "step2Title": "Report",
-    "step2Description": "Your story joins others from the same company. On the public record, visible to everyone. One complaint is a whisper. A stack of them becomes a pattern no one can ignore.",
-    "step3Title": "Expose",
-    "step3Description": "Patterns go public. Attorneys review the cases. When a collective action takes shape, workers present their evidence directly. The platform connects. The workers decide."
+    "step1Description": "Tell your story with dates, amounts, and evidence. Your words stay yours. We never edit what you write.",
+    "step2Title": "Notify",
+    "step2Description": "Your case joins others from the same company. The company is notified through our system. Your identity stays protected unless you choose to reveal it.",
+    "step3Title": "Resolve",
+    "step3Description": "Companies can respond directly. Attorneys review cases for legal action. Workers decide their next step. Every resolution is public proof of good faith."
   },
   "whyItExists": {
     "title": "Why It Exists",
@@ -60,11 +61,13 @@
     "tabRemote": "Remote Workers",
     "tabGig": "Gig Workers",
     "statCasesLabel": "cases filed",
-    "statCasesBody": "Every case adds to a permanent public record. Individual complaints get ignored. A thousand individual complaints become a movement that regulators and attorneys cannot ignore.",
+    "statCasesBody": "Every case adds to a permanent public record. Individual complaints disappear. Collective documentation creates accountability — for workers, for companies, and for the systems that allow exploitation to continue.",
+    "statResolvedLabel": "cases resolved",
+    "statResolvedBody": "Every resolved case is proof that documentation works. Companies that engage build trust. Workers who file create accountability. Resolution is the goal — and it happens.",
     "statUnpaidLabel": "unpaid wages documented",
     "statUnpaidBody": "This is not hypothetical money. These are hours worked, tasks completed, and promises broken. Every dollar represents time stolen from workers who showed up and delivered.",
-    "statCompaniesLabel": "companies exposed",
-    "statCompaniesBody": "Behind every number is a company policy. Wage theft is not a mistake — it is a business decision. We make those decisions visible so workers can organize around shared patterns.",
+    "statCompaniesLabel": "companies notified",
+    "statCompaniesBody": "Behind every number is a pattern. Some companies respond and resolve. Others don't. The record speaks for itself — and workers use it to organize, negotiate, and take legal action.",
     "commitmentTitle": "Our Commitment",
     "commitment1Title": "No money. No strings. No business.",
     "commitment1Body": "Sindicato takes no money from investors, advertisers, or any company listed on this platform. Ever. It runs on the voluntary support of workers, attorneys, journalists, and anyone who believes wage theft should have consequences. No pressure. No commercialisation. No business. Community built for community.",
@@ -77,17 +80,19 @@
     "commitment5Title": "Legal protection built in.",
     "commitment5Body": "Your case is public on the platform. Your identity is not. Personal data and email routing stay anonymized until you decide to share them. Companies and attorneys can read your story but never see your name unless you choose to reveal it. If someone retaliates against you for speaking up, your public case on Sindicato is timestamped evidence you can use. You control your data. You control who sees you.",
     "commitment6Title": "Identity is a choice.",
-    "commitment6Body": "Workers choose when and if to share their identity or contact details. Anonymity is never a barrier to filing a case."
+    "commitment6Body": "Workers choose when and if to share their identity or contact details. Anonymity is never a barrier to filing a case.",
+    "commitment7Title": "Resolution is the goal.",
+    "commitment7Body": "Sindicato exists to create accountability and resolution — not punishment. Every company that engages is a company that chose to listen. That matters."
   },
   "ctas": {
     "workersTitle": "For Workers",
-    "workersBody": "Weren't paid what you were owed? Report it here. Wage theft, unpaid work, unfair practices, contractor exploitation. Whatever happened on your platform, file a case and get it documented.",
+    "workersBody": "Were you paid what you were owed? Unpaid wages, unfair practices, contractor exploitation, retaliation. Whatever happened — document your experience and join others from the same company.",
     "workersCta": "File a Report",
     "legalTitle": "For Legal Support",
     "legalBody": "Workers who file cases can choose to share their contact with attorneys. That gives you direct access to people with documented, active claims, and gives workers legal representation they couldn't afford on their own.",
     "legalCta": "View Case Listings",
     "companiesTitle": "For Companies",
-    "companiesBody": "Register your company to access cases filed against you and respond directly. Every resolution is public. Workers and the press can see which companies engage and which ones don't. It's the same record that hurts you when you ignore it, and helps you when you don't.",
+    "companiesBody": "Cases have been filed against your company. You can see them, respond, and resolve them — publicly. Every resolution is proof of good faith. Companies that engage build trust with workers, the press, and the public.",
     "companiesCta": "Company Access",
     "mediaTitle": "Media & Research",
     "mediaBody": "Journalists, content creators, academics, and researchers. Get access to case data, aliased contacts, and verified worker stories. Use the data for reporting, studies, and public interest work with full privacy protections.",
@@ -104,7 +109,7 @@
     "error": "Unable to load recent cases. Please try again later.",
     "emptyTitle": "No cases reported yet",
     "emptySubtitle": "Be the first to report your experience",
-    "statusSolved": "solved",
+    "statusResolved": "resolved",
     "statusUnresolved": "unresolved",
     "viewAll": "View All Cases",
     "timeJustNow": "just now",
@@ -112,27 +117,32 @@
     "timeHoursAgo": "{n}h ago",
     "timeDaysAgo": "{n}d ago"
   },
-  "featuredCase": {
-    "label": "// FEATURED CASE #001",
-    "statusSolved": "solved",
+  "platformOverview": {
+    "label": "// THE RECORD SO FAR",
+    "statusResolved": "resolved",
     "statusUnresolved": "unresolved",
     "amountLabel": "Amount",
     "periodLabel": "Period",
     "casesFiledLabel": "Cases Filed",
+    "companiesNotifiedLabel": "Companies Notified",
+    "totalUnpaidLabel": "Total Unpaid",
+    "resolvedLabel": "Resolved",
     "workersLegalLabel": "Workers for Legal Action",
-    "description": "A senior ML engineer documented wage theft through multiple AI training projects, complete with Hubstaff logs, AutoQA scores, and a documented retaliation sequence. This founding case established the pattern that Sindicato was built to expose.",
-    "viewReport": "View Full Report"
+    "description": "Every case filed on Sindicato becomes part of a permanent public record. Workers document. Companies are notified. Patterns emerge. This is the collective evidence.",
+    "viewAll": "View All Cases",
+    "topTagsLabel": "Most Reported Patterns"
   },
   "manifestoStrip": {
-    "item1": "Voices United",
-    "item2": "Strength in Numbers",
+    "item1": "Documented, Not Silenced",
+    "item2": "Resolution Over Silence",
     "item3": "Open Source",
     "item4": "Non-Profit",
     "item5": "Anonymized & Safe",
-    "item6": "Bridges to Legal",
+    "item6": "Legal Pathways Built In",
     "item7": "Companies That Solve",
-    "item8": "Every Case Counts",
-    "item9": "Public Record"
+    "item8": "Every Worker Counts",
+    "item9": "Public Record",
+    "item10": "Financial Transparency"
   },
   "verticalHub": {
     "remoteTitle": "Remote Workers",
@@ -165,7 +175,7 @@
     "filedCases": "Filed Cases",
     "loading": "Loading cases...",
     "noCases": "No cases filed against this company yet.",
-    "statusSolved": "solved",
+    "statusResolved": "resolved",
     "statusUnresolved": "unresolved",
     "unpaid": "unpaid",
     "aiSummary": "Company Analysis",
@@ -222,7 +232,7 @@
     "empty": "No cases reported yet. Be the first to share your story.",
     "emptyCta": "Relate a Case",
     "caseLabel": "CASE #",
-    "statusSolved": "solved",
+    "statusResolved": "resolved",
     "statusUnresolved": "unresolved",
     "pageOf": "Page {page} of {total}"
   },
@@ -655,6 +665,24 @@
       "varDateTo": "To date"
     }
   },
+  "pathToResolution": {
+    "title": "A Path to Resolution",
+    "subtitle": "For companies that want to resolve issues before they escalate.",
+    "body1": "Cases against your company are already part of the public record. Workers, journalists, attorneys, and the public can see them. You can choose silence — or you can respond.",
+    "body2": "Sindicato gives companies direct access to the cases filed against them. You can read the stories, see the timelines, and respond publicly. Every resolution is timestamped proof of good faith.",
+    "body3": "Companies that engage early resolve faster, build trust, and demonstrate accountability. Companies that ignore cases watch the record grow — and the pressure compound.",
+    "closing": "Sindicato is not here to punish companies. It is here to make ignoring workers more expensive than resolving with them.",
+    "cta": "Register as a Company"
+  },
+  "dataProtection": {
+    "title": "Your Identity. Your Choice.",
+    "subtitle": "Built-in protections at every step.",
+    "point1": "Your name is partially redacted on the public case wall",
+    "point2": "Your email is anonymized through our alias system",
+    "point3": "Companies and attorneys see aliased contacts, never your real email",
+    "point4": "You choose when and if to share your identity",
+    "point5": "All data is public record — timestamped and verifiable"
+  },
   "about": {
     "title": "About Sindicato",
     "subtitle": "One case. Many voices.",
@@ -664,6 +692,10 @@
     "howStartedP3": "Sindicato is the infrastructure that makes sure that never happens again.",
     "sectionCase001": "Case #001",
     "sectionThePattern": "The Pattern",
+    "patternP1": "What I discovered after my own case shocked me, though it should not have. I was not the first. I was not the fiftieth.",
+    "patternP2": "Across the AI training, gig delivery, and freelance platform industries, workers report the same sequence: consistent payment for a few months, then abrupt termination or deactivation upon inquiring about back pay. The amounts cluster. The timelines repeat. These are not billing errors. They are patterns.",
+    "patternP3": "Workers have filed complaints across multiple platforms — Reddit, Glassdoor, Trustpilot, and independent forums. Some companies have faced lawsuits. Others have faced regulatory action. The pattern is documented — and it is growing.",
+    "patternP4": "Sindicato makes those patterns visible. Not to punish, but to create accountability.",
     "sectionTheModel": "The Model",
     "modelP1": "The uberization model — pioneered by Uber and replicated across food delivery, AI training, freelance marketplaces, therapy platforms, cleaning apps, data annotation services — shares an identical structure everywhere it appears:",
     "modelP2": "Workers are classified as independent contractors, not employees. They are sourced deliberately from countries where currencies are weaker and legal options are fewer. Payment flows through platforms the company controls unilaterally. Dispute resolution is a black box operated by the same party that owes you money. Terms of service are written to protect the platform, not the worker. There is no collective bargaining. There is no union. There is no one to call.",

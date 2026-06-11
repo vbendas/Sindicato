@@ -38,12 +38,10 @@ export default function AboutPage() {
     {
       title: t("about.sectionThePattern"),
       paragraphs: [
-        "What I discovered after my own case shocked me, though it should not have. I was not the first. I was not the tenth. I was not even the fiftieth.",
-        "Over sixty unique workers have filed complaints across more than fifteen platforms — Reddit, Glassdoor, Trustpilot, the Better Business Bureau, Twitter, independent Discord servers, investigative journalism outlets. The complaints span two years and multiple continents. They describe the same sequence, every time: consistent payment for two to four months, then abrupt termination upon inquiring about back pay, reaching a cumulative balance of $800 to $2,100, or completing a project milestone. The amounts cluster too tightly to be random. The timeline repeats too precisely to be accidental. This is not a series of billing errors. It is a business model.",
-        "The Better Business Bureau gave Alignerr an F rating — its lowest possible score — for failing to respond to seven consecutive payment complaints. The BBB's own summary describes the company as operating \"illegally.\" Glassdoor carries a 2.2 out of 5 rating, with algorithmically generated tags that read like an indictment: \"Missing payments,\" \"No transparency,\" \"Stolen hours,\" \"Random termination.\" On Reddit, workers who post about unpaid wages are banned within hours. The official r/alignerr subreddit operates as a reputation management tool: moderators publicly promise help, redirect complainants to a support black hole, then delete the posts. Workers created r/alignerrunofficial as an uncensored refuge — it exists precisely because the official channel cannot be trusted.",
-        "The CHP Claude Code project alone affected over five hundred workers simultaneously. Completed tasks were retroactively flipped from \"passed\" to \"failed\" — eliminating pay for work already done, en masse. An open letter posted to Reddit named the exact same three projects I worked on: CHP Claude Code, CC Review, and NEXT. Weeks of completed work, still unpaid. Forty-seven upvotes. Thirty-four comments. Then silence.",
-        "Scale AI, a $13.8 billion competitor in the same market, settled four separate worker lawsuits and exited the California independent contractor market entirely. Surge AI faces an identical class action. Three major annotation companies facing simultaneous litigation over the same practices is not coincidence. It is the industry's business model exposed.",
-        "A senior Labelbox engineer posted anonymously that the company had \"burned the rest of their runway on this shitty Alignerr platform\" and expected bankruptcy. Whether that prediction proves accurate is beside the point. What matters is that wage theft appears to be not a bug in the system but a feature of survival — contractors' pay treated as a discretionary expense rather than a contractual obligation.",
+        t("about.patternP1"),
+        t("about.patternP2"),
+        t("about.patternP3"),
+        t("about.patternP4"),
       ],
     },
     {

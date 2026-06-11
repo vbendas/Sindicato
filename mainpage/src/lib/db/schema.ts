@@ -363,6 +363,7 @@ export const caseTags = pgTable(
   (t) => [
     index("case_tags_case_id").on(t.caseId),
     index("case_tags_case_category").on(t.caseId, t.category),
+    index("case_tags_tag_name").on(t.tagName),
   ]
 );
 
