@@ -268,15 +268,15 @@ export const verificationTokens = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     email: varchar("email", { length: 255 }).notNull(),
-    code: varchar("code", { length: 6 }).notNull(),
-    codeHash: varchar("code_hash", { length: 64 }),
+    codeHash: varchar("code_hash", { length: 64 }).notNull(),
     expiresAt: timestamp("expires_at").notNull(),
     usedAt: timestamp("used_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [
-    index("verification_tokens_email_code").on(t.email, t.code),
+    index("verification_tokens_email_code_hash").on(t.email, t.codeHash),
     index("verification_tokens_email_expiry").on(t.email, t.expiresAt),
+    index("verification_tokens_email_created").on(t.email, t.createdAt),
   ]
 );
 

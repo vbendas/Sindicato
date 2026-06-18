@@ -127,6 +127,13 @@
       "when": 1781135366419,
       "tag": "0017_third_rage",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1781386510623,
+      "tag": "0018_safe_lord_hawal",
+      "breakpoints": true
     }
   ]
 }

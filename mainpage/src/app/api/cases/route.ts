@@ -327,6 +327,9 @@ export async function GET(request: Request) {
   const { allowed } = await rateLimit(`cases-list:${ip}`, 60, 60_000);
   if (!allowed) return error("Too many requests", 429);
 
+  const session = await auth();
+  const isPrivileged = !!(session?.user?.role && session?.user?.approvalStatus === "approved");
+
   const { searchParams } = new URL(request.url);
   const preview = searchParams.get("preview") === "true";
 
@@ -417,7 +420,7 @@ export async function GET(request: Request) {
         tags: tagsByCase.get(row.id) ?? [],
       };
 
-      if (preview) {
+      if (preview || !isPrivileged) {
         return {
           ...base,
           storyPreview: row.story.slice(0, 600),

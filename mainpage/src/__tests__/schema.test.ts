@@ -114,7 +114,7 @@ describe("Database schema structure", () => {
     const cols = Object.keys(verificationTokens);
     expect(cols).toContain("id");
     expect(cols).toContain("email");
-    expect(cols).toContain("code");
+    expect(cols).toContain("codeHash");
     expect(cols).toContain("expiresAt");
     expect(cols).toContain("usedAt");
     expect(cols).toContain("createdAt");

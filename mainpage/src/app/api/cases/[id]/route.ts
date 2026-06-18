@@ -15,6 +15,8 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    const session = await auth();
+    const isPrivileged = !!(session?.user?.role && session?.user?.approvalStatus === "approved");
 
     const [row] = await db
       .select({
@@ -53,14 +55,14 @@ export async function GET(
       id: row.id,
       displayName: redactName(row.displayName),
       country: row.country,
-      ageRange: row.ageRange,
-      sex: row.sex,
+      ageRange: isPrivileged ? row.ageRange : null,
+      sex: isPrivileged ? row.sex : null,
       project: row.project,
       dateRange: row.dateRange,
       amountOwed: row.amountOwed,
       currency: row.currency,
-      contactAttempts: row.contactAttempts,
-      contactAlias: row.contactAlias,
+      contactAttempts: isPrivileged ? row.contactAttempts : undefined,
+      contactAlias: isPrivileged ? row.contactAlias : undefined,
       story: row.story,
       storyTranslated: row.storyTranslated,
       translationLanguage: row.translationLanguage,

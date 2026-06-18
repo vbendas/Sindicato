@@ -2,7 +2,7 @@ export function redactName(fullName: string): string {
   if (!fullName) return "***";
   return fullName
     .split(" ")
-    .map((w) => w[0] + "*".repeat(Math.max(w.length - 1, 3)))
+    .map((w) => w[0] + "***")
     .join(" ");
 }
 

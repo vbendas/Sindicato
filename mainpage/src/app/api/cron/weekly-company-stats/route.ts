@@ -1,6 +1,6 @@
 import { db } from "@/lib/db/client";
 import { cases, companies, companySummaries, caseTags } from "@/lib/db/schema";
-import { eq, sql, desc } from "drizzle-orm";
+import { eq, sql, desc, and } from "drizzle-orm";
 import { sendTemplateEmail } from "@/lib/email/send";
 import WeeklyCompanyReport from "@/lib/email/templates/weekly-company-report";
 import { getTagSeverity } from "@/lib/ai/tag-taxonomy";
@@ -53,8 +53,10 @@ export async function GET(request: Request) {
         })
         .from(cases)
         .where(
-          eq(cases.companyId, company.companyId) &&
-          eq(cases.status, "active")
+          and(
+            eq(cases.companyId, company.companyId),
+            eq(cases.status, "active")
+          )
         )
         .orderBy(desc(cases.createdAt))
         .limit(1);

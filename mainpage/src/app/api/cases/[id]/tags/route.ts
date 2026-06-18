@@ -20,6 +20,8 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    const session = await auth();
+    const isPrivileged = !!(session?.user?.role && session?.user?.approvalStatus === "approved");
 
     const [caseRow] = await db
       .select({ id: cases.id })
@@ -37,7 +39,18 @@ export async function GET(
       .where(eq(caseTags.caseId, id))
       .orderBy(caseTags.category, caseTags.confidence);
 
-    return success(tags);
+    const sanitized = tags.map((t) => ({
+      id: t.id,
+      caseId: t.caseId,
+      category: t.category,
+      tagName: t.tagName,
+      confidence: t.confidence,
+      source: t.source,
+      createdAt: t.createdAt,
+      ...(isPrivileged ? { sourceText: t.sourceText, workerOverride: t.workerOverride } : {}),
+    }));
+
+    return success(sanitized);
   } catch (err) {
     console.error("Error fetching case tags:", err);
     return error("Failed to fetch tags", 500);

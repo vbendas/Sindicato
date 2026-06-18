@@ -2,9 +2,11 @@ import { z } from "zod/v4";
 import { db } from "@/lib/db/client";
 import { cases, companies, companySummaries, caseTags, caseAnalyses } from "@/lib/db/schema";
 import { eq, and, sum, sql, count, inArray } from "drizzle-orm";
-import { success, error } from "@/lib/utils/api";
+import { success, error, getClientIp } from "@/lib/utils/api";
 import { callOpenRouter, getReportModel } from "@/lib/ai/openrouter";
 import { COMPANY_SUMMARY_SYSTEM, COMPANY_SUMMARY_USER } from "@/lib/ai/prompts";
+import { auth } from "@/lib/auth";
+import { rateLimit } from "@/lib/auth/rate-limit";
 
 const querySchema = z.object({
   companySlug: z.string().min(1),
@@ -160,6 +162,12 @@ async function buildTagSummary(caseIds: string[]) {
 
 export async function GET(request: Request) {
   try {
+    const ip = getClientIp(request);
+    const { allowed } = await rateLimit(`ai-company-summary:${ip}`, 30, 60 * 60 * 1000);
+    if (!allowed) {
+      return error("Too many requests", 429);
+    }
+
     const { searchParams } = new URL(request.url);
     const parsed = querySchema.safeParse({
       companySlug: searchParams.get("company"),
@@ -206,6 +214,12 @@ export async function GET(request: Request) {
           keyInsight: cachedSummary.keyInsight,
         });
       }
+    }
+
+    // Generating a new summary is expensive; require authentication.
+    const session = await auth();
+    if (!session?.user?.id) {
+      return error("Authentication required to generate a company summary", 401);
     }
 
     // Fetch active case IDs

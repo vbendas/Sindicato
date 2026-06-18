@@ -70,5 +70,10 @@ export async function POST(request: NextRequest) {
     return error("Invalid or expired code", 401);
   }
 
+  await db
+    .update(verificationTokens)
+    .set({ usedAt: new Date() })
+    .where(eq(verificationTokens.id, token.id));
+
   return success({ email });
 }

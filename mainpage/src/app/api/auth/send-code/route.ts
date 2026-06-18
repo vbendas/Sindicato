@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
   const codeHash = crypto.createHash("sha256").update(code).digest("hex");
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-  await db.insert(verificationTokens).values({ email, code, codeHash, expiresAt });
+  await db.insert(verificationTokens).values({ email, codeHash, expiresAt });
 
   try {
     await sendTemplateEmail(

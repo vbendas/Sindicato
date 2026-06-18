@@ -3,11 +3,11 @@ import { redactName, redactEmail, formatCaseType } from "@/lib/utils/redaction";
 
 describe("redactName", () => {
   it("redacts a standard single-word name", () => {
-    expect(redactName("Victor")).toBe("V*****");
+    expect(redactName("Victor")).toBe("V***");
   });
 
   it("redacts a multi-word name", () => {
-    expect(redactName("Victor B")).toBe("V***** B***");
+    expect(redactName("Victor B")).toBe("V*** B***");
   });
 
   it("redacts a 3-char name", () => {
@@ -31,11 +31,11 @@ describe("redactName", () => {
   });
 
   it("handles long names", () => {
-    expect(redactName("Alexander")).toBe("A********");
+    expect(redactName("Alexander")).toBe("A***");
   });
 
   it("redacts three-word names", () => {
-    expect(redactName("John Michael Smith")).toBe("J*** M*** S*****");
+    expect(redactName("John Michael Smith")).toBe("J*** M*** S***");
   });
 
   it("handles null/undefined", () => {

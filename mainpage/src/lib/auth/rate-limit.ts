@@ -48,7 +48,11 @@ export async function rateLimit(
     return { allowed: true, retryAfterMs: 0 };
   } catch (error) {
     console.error("Rate limit error:", error);
-    // Allow requests if Redis fails
+    // In production, fail closed when Redis is unavailable. In dev/test, allow
+    // so local development is not blocked.
+    if (process.env.NODE_ENV === "production") {
+      return { allowed: false, retryAfterMs: 60_000 };
+    }
     return { allowed: true, retryAfterMs: 0 };
   }
 }

@@ -27,7 +27,7 @@ vi.mock("@/lib/db/client", () => ({
 }));
 
 vi.mock("@/lib/email/send", () => ({
-  sendEmail: vi.fn().mockResolvedValue(undefined),
+  sendTemplateEmail: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock("@/lib/auth/rate-limit", () => ({
@@ -35,7 +35,7 @@ vi.mock("@/lib/auth/rate-limit", () => ({
 }));
 
 import { POST } from "@/app/api/auth/send-code/route";
-import { sendEmail } from "@/lib/email/send";
+import { sendTemplateEmail } from "@/lib/email/send";
 import { rateLimit } from "@/lib/auth/rate-limit";
 
 function makeRequest(body: unknown, ip = "127.0.0.1") {
@@ -58,7 +58,7 @@ beforeEach(() => {
   selectLimit.mockResolvedValue([]);
   insertValues.mockResolvedValue(undefined);
   deleteWhere.mockResolvedValue(undefined);
-  (sendEmail as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
+  (sendTemplateEmail as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 });
 
 describe("POST /api/auth/send-code", () => {
@@ -69,10 +69,13 @@ describe("POST /api/auth/send-code", () => {
     expect(res.status).toBe(200);
     expect(data.ok).toBe(true);
     expect(insertValues).toHaveBeenCalled();
-    expect(sendEmail).toHaveBeenCalledWith(
+    expect(sendTemplateEmail).toHaveBeenCalledWith(
+      "test@example.com",
+      "Your Sindicato verification code",
+      expect.anything(),
       expect.objectContaining({
-        to: "test@example.com",
-        subject: "Your Sindicato verification code",
+        code: expect.any(String),
+        loginUrl: expect.any(String),
       })
     );
   });
@@ -137,11 +140,11 @@ describe("POST /api/auth/send-code", () => {
     );
     expect(deleteWhere).toHaveBeenCalled();
     expect(insertValues).toHaveBeenCalled(); // It should still insert a new token
-    expect(sendEmail).toHaveBeenCalled(); // And send the email
+    expect(sendTemplateEmail).toHaveBeenCalled(); // And send the email
   });
 
   it("returns 500 when email sending fails", async () => {
-    (sendEmail as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
+    (sendTemplateEmail as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
       new Error("Resend error")
     );
 
@@ -154,5 +157,15 @@ describe("POST /api/auth/send-code", () => {
   it("does not insert token when email is invalid", async () => {
     await POST(makeRequest({ email: "bad" }));
     expect(insertValues).not.toHaveBeenCalled();
+  });
+
+  it("stores only codeHash, never the plaintext code", async () => {
+    await POST(makeRequest({ email: "test@example.com" }));
+
+    expect(insertValues).toHaveBeenCalledTimes(1);
+    const inserted = insertValues.mock.calls[0][0];
+    expect(inserted).not.toHaveProperty("code");
+    expect(inserted).toHaveProperty("codeHash");
+    expect(inserted.codeHash).toMatch(/^[a-f0-9]{64}$/);
   });
 });

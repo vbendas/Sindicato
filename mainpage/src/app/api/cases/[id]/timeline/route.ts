@@ -14,6 +14,8 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    const session = await auth();
+    const isPrivileged = !!(session?.user?.role && session?.user?.approvalStatus === "approved");
 
     const [caseRow] = await db
       .select({ id: cases.id })
@@ -31,7 +33,22 @@ export async function GET(
       .where(eq(caseTimelineEvents.caseId, id))
       .orderBy(asc(caseTimelineEvents.eventDate));
 
-    return success(events);
+    const sanitized = events.map((e) => ({
+      id: e.id,
+      caseId: e.caseId,
+      eventType: e.eventType,
+      eventDate: e.eventDate,
+      title: e.title,
+      description: e.description,
+      direction: e.direction,
+      labels: e.labels,
+      isAutomatic: e.isAutomatic,
+      responseReceived: e.responseReceived,
+      createdAt: e.createdAt,
+      ...(isPrivileged ? { workerId: e.workerId, emailContent: e.emailContent } : {}),
+    }));
+
+    return success(sanitized);
   } catch (err) {
     console.error("Error fetching timeline events:", err);
     return error("Failed to fetch timeline events", 500);

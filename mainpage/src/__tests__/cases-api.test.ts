@@ -182,7 +182,12 @@ describe("GET /api/cases", () => {
           }),
         }),
       })
-      .mockReturnValueOnce(selectChain);
+      .mockReturnValueOnce(selectChain)
+      .mockReturnValueOnce({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockResolvedValue([]),
+        }),
+      });
 
     const req = mockGetRequest("http://localhost/api/cases?page=1&limit=20");
     const res = await GET(req);
@@ -191,7 +196,7 @@ describe("GET /api/cases", () => {
     expect(res.status).toBe(200);
     expect(json.ok).toBe(true);
     expect(json.data.cases).toHaveLength(1);
-    expect(json.data.cases[0].displayName).toBe("J*****");
+    expect(json.data.cases[0].displayName).toBe("J*** D***");
     expect(json.data.pagination.total).toBe(1);
   });
 });

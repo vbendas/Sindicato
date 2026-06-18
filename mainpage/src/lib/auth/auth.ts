@@ -58,10 +58,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
         const codeHash = crypto.createHash("sha256").update(code).digest("hex");
         const token = candidates.find((c) => {
-          if (!c.codeHash) {
-            // Backward compat: compare plaintext for old tokens
-            return c.code === code;
-          }
+          if (!c.codeHash) return false;
           try {
             return crypto.timingSafeEqual(
               Buffer.from(c.codeHash, "hex"),
@@ -94,7 +91,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           if (process.env.NODE_ENV === 'development') {
             console.log('[Auth] Authorize - treating as platform account');
           }
-          
+
+          if (platformAccount.approvalStatus !== 'approved') {
+            return null;
+          }
+
           await db
             .update(platformAccounts)
             .set({ emailVerified: true, updatedAt: new Date() })

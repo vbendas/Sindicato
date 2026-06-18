@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
   const codeHash = crypto.createHash("sha256").update(code).digest("hex");
 
   const candidates = await db
-    .select({ id: verificationTokens.id, codeHash: verificationTokens.codeHash, code: verificationTokens.code })
+    .select({ id: verificationTokens.id, codeHash: verificationTokens.codeHash })
     .from(verificationTokens)
     .where(
       and(
@@ -69,10 +69,7 @@ export async function POST(request: NextRequest) {
     .limit(5);
 
   const token = candidates.find((c) => {
-    if (!c.codeHash) {
-      // Backward compat: compare plaintext for old tokens
-      return c.code === code;
-    }
+    if (!c.codeHash) return false;
     try {
       return crypto.timingSafeEqual(
         Buffer.from(c.codeHash, "hex"),
