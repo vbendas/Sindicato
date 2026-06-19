@@ -82,6 +82,16 @@ export default function CompanyPage({
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: displayName,
+          }),
+        }}
+      />
       <div className="fixed inset-0 pointer-events-none z-[60] grain-overlay" style={{ opacity: 0.45 }} />
       <Header clerkBg="bg-sindicato-bordeaux text-sindicato-warm-white" />
 

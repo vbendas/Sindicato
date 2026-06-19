@@ -12,6 +12,7 @@ import PlatformCombobox from "./PlatformCombobox";
 import type { CaseFormData } from "../FilingWizard";
 import { fileDropdownContentClass, fileSelectItemClass } from "../fileFormStyles";
 import { useT } from "@/lib/i18n";
+import { getTemplateForCaseType } from "@/lib/case-templates";
 
 const CASE_TYPES = [
   { value: "unpaid_wages" },
@@ -284,6 +285,30 @@ export default function CaseDetailsStep({
               </span>
               <FieldTooltip content={t("fileCase.whatHappenedTooltip")} />
             </label>
+            {caseData.caseType && getTemplateForCaseType(caseData.caseType) && !caseData.story && (
+              <div className="mb-3">
+                <Select
+                  value=""
+                  onValueChange={(val) => {
+                    if (!val) return;
+                    const tpl = getTemplateForCaseType(val);
+                    if (tpl) update("story", tpl.scaffold);
+                  }}
+                >
+                  <SelectTrigger className="w-full bg-white/5 border border-white/10 rounded-none text-sindicato-warm-white/60 h-auto py-2 px-3 focus:border-sindicato-warm-white/50 focus:ring-0 text-xs [&_svg]:text-sindicato-warm-white/40">
+                    <SelectValue placeholder={`Use a template for ${caseData.caseType!.replace(/_/g, " ")}...`} />
+                  </SelectTrigger>
+                  <SelectContent className={fileDropdownContentClass}>
+                    <SelectItem value={caseData.caseType!} className={fileSelectItemClass}>
+                      {getTemplateForCaseType(caseData.caseType!)?.title}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs mt-1 text-sindicato-warm-white/30">
+                  {t("fileCase.templateHint") ?? "Pre-fill your story with a suggested template"}
+                </p>
+              </div>
+            )}
             <textarea
               id="story"
               value={caseData.story}

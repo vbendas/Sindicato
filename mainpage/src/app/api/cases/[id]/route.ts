@@ -35,6 +35,7 @@ export async function GET(
         storyTranslated: cases.storyTranslated,
         translationLanguage: cases.translationLanguage,
         caseType: cases.caseType,
+        workDateEnd: cases.workDateEnd,
         status: cases.status,
         resolutionStatus: cases.resolutionStatus,
         vertical: cases.vertical,
@@ -67,6 +68,7 @@ export async function GET(
       storyTranslated: row.storyTranslated,
       translationLanguage: row.translationLanguage,
       caseType: row.caseType,
+      workDateEnd: row.workDateEnd?.toISOString() ?? null,
       vertical: row.vertical,
       resolutionStatus: row.resolutionStatus,
       createdAt: row.createdAt,
@@ -111,6 +113,18 @@ export async function PATCH(
     }
 
     const body = await request.json();
+
+    if (body.resolutionFeedback !== undefined) {
+      await db
+        .update(cases)
+        .set({
+          resolutionFeedback: body.resolutionFeedback,
+          updatedAt: new Date(),
+        })
+        .where(eq(cases.id, id));
+      return success({ resolutionFeedback: body.resolutionFeedback });
+    }
+
     const parsed = editStorySchema.safeParse(body);
     if (!parsed.success) {
       return error("Invalid input", 400, parsed.error.flatten());

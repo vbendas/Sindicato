@@ -13,9 +13,12 @@ import { TAG_TAXONOMY, TAG_CATEGORIES } from "@/lib/ai/tag-taxonomy";
 import { useT, useLocale } from "@/lib/i18n";
 import { useTrackPageview } from "@/hooks/useTrackPageview";
 import { LocalizedLink } from "@/lib/i18n/navigation";
+import { getStatuteDeadline } from "@/lib/statute-of-limitations";
+import { SimilarCases } from "@/components/cases/SimilarCases";
 import { localeNames } from "@/lib/i18n/config";
 import type { Locale } from "@/lib/i18n/config";
 import { useTranslation } from "@/hooks/useTranslation";
+import { ResolutionFeedback } from "@/components/cases/ResolutionFeedback";
 import type { CaseTagData } from "@/components/CaseTag";
 import {
   Dialog,
@@ -183,6 +186,7 @@ interface CaseDetail {
   storyTranslated: string | null;
   translationLanguage: string | null;
   caseType: string;
+  workDateEnd: string | null;
   vertical: string;
   resolutionStatus: string;
   createdAt: string;
@@ -577,6 +581,39 @@ export default function CaseDetailClient({
                     )}
                   </div>
 
+                  {/* Statute of Limitations */}
+                  {(() => {
+                    const statuteInfo = getStatuteDeadline(
+                      caseData.workDateEnd ? new Date(caseData.workDateEnd) : null,
+                      caseData.country,
+                      caseData.caseType
+                    );
+                    if (!statuteInfo) return null;
+                    return (
+                      <div className={`mb-6 p-3 border ${statuteInfo.urgent ? "border-amber-500/50 bg-amber-500/10" : "border-white/10 bg-white/5"}`}>
+                        <div className="flex items-center gap-2">
+                          <p className={`text-[10px] uppercase tracking-widest font-[family-name:var(--font-jetbrains)] ${statuteInfo.urgent ? "text-amber-400" : "text-sindicato-warm-white/40"}`}>
+                            {t("caseDetail.statuteDeadline")}
+                          </p>
+                          {statuteInfo.urgent && (
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-amber-400 bg-amber-400/10 px-1.5 py-0.5">
+                              Urgent
+                            </span>
+                          )}
+                        </div>
+                        <p className={`text-sm mt-1 ${statuteInfo.urgent ? "text-amber-400/80" : "text-sindicato-warm-white/60"}`}>
+                          {statuteInfo.label}
+                        </p>
+                        <p className="text-sindicato-warm-white/30 text-[10px] mt-0.5">
+                          Deadline: {statuteInfo.deadline.toLocaleDateString(locale, { year: "numeric", month: "long", day: "numeric" })}
+                        </p>
+                      </div>
+                    );
+                  })()}
+
+                  {/* Similar Cases */}
+                  <SimilarCases caseId={caseId} />
+
                   <div className="border-t border-white/10 pt-6">
                     <div className="mb-3 flex items-center gap-2">
                       <p className="text-sindicato-warm-white/40 text-xs uppercase tracking-wider">
@@ -650,6 +687,15 @@ export default function CaseDetailClient({
                       {t("caseDetail.case")} #{caseData.id.slice(-8).toUpperCase()}
                     </p>
                   </div>
+
+                  {caseData.resolutionStatus === "resolved" && (
+                    <ResolutionFeedback
+                      caseId={caseId}
+                      onSaved={(feedback) =>
+                        setCaseData((prev) => prev ? { ...prev } : prev)
+                      }
+                    />
+                  )}
 
                   <div className="mt-6 pt-4 border-t border-white/10">
                     <p className="text-sindicato-warm-white/30 text-[10px] uppercase tracking-widest mb-3 font-[family-name:var(--font-jetbrains)]">

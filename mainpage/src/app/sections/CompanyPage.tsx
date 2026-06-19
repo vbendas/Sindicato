@@ -14,6 +14,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { TranslatedCaseStory } from "@/components/case/TranslatedCaseStory";
 import { truncateAtWord } from "@/lib/utils/text";
 import { TAG_I18N_MAP } from "@/components/CaseTag";
+import { EngagementBadge } from "@/components/company/EngagementBadge";
 
 interface CaseItem {
   id: string;
@@ -308,9 +309,12 @@ export default function CompanyPage({ slug, vertical }: CompanyPageProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-warm-white uppercase font-[family-name:var(--font-barlow)] tracking-tight mb-4">
-              {companyName}
-            </h1>
+            <div className="flex items-center gap-3 mb-4">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-warm-white uppercase font-[family-name:var(--font-barlow)] tracking-tight">
+                {companyName}
+              </h1>
+              <EngagementBadge pattern={summary?.engagementPattern} />
+            </div>
 
             <div className="flex flex-wrap gap-6 mb-8">
               <div>
