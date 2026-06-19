@@ -1,20 +1,21 @@
 "use client";
 
+import { useT } from "@/lib/i18n";
+
 type Step = "details" | "timeline" | "review";
-
-const STEPS: { id: Step; label: string; number: number }[] = [
-  { id: "details", label: "Your Case", number: 1 },
-  { id: "timeline", label: "Timeline", number: 2 },
-  { id: "review", label: "Review", number: 3 },
-];
-
-const STEP_ORDER: Step[] = ["details", "timeline", "review"];
 
 interface StepIndicatorProps {
   currentStep: Step;
 }
 
 export default function StepIndicator({ currentStep }: StepIndicatorProps) {
+  const t = useT();
+  const STEPS: { id: Step; label: string; number: number }[] = [
+    { id: "details", label: t("steps.stepDetails"), number: 1 },
+    { id: "timeline", label: t("steps.stepTimeline"), number: 2 },
+    { id: "review", label: t("steps.stepReview"), number: 3 },
+  ];
+  const STEP_ORDER: Step[] = ["details", "timeline", "review"];
   const currentIndex = STEP_ORDER.indexOf(currentStep);
 
   return (

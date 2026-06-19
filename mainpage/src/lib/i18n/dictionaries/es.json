@@ -258,7 +258,8 @@
     "cancel": "Cancelar",
     "saving": "Guardando...",
     "storyWordCount": "{count} palabras",
-    "storyWordRange": "Debe tener entre 100 y 500 palabras"
+    "storyWordRange": "Debe tener entre 100 y 500 palabras",
+    "downloadDemandLetter": "Descargar Carta de Demanda"
   },
   "timelineSection": {
     "title": "Cronología",
@@ -323,6 +324,13 @@
     "companyWebsite": "Company website (optional)",
     "companyWebsiteTooltip": "Providing the company website helps us find their contact information faster.",
     "companyWebsiteHint": "e.g. https://www.example.com",
+    "selectPlatform": "Seleccionar tipo de plataforma...",
+    "searchPlatforms": "Buscar tipos de plataforma...",
+    "noPlatformsFound": "No se encontraron plataformas.",
+    "selectCountry": "Seleccionar país...",
+    "searchCountries": "Buscar países...",
+    "noCountriesFound": "No se encontraron países.",
+    "selectWorkPeriod": "Seleccionar período de trabajo",
     "caseType": "Tipo de caso",
     "caseTypeTooltip": "Selecciona la categoría que mejor describa tu problema. Esto ayuda a organizar los casos e identificar patrones entre empresas.",
     "yourName": "Tu nombre",

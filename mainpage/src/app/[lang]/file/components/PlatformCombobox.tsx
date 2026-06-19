@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Command, CommandInput, CommandList, CommandItem, CommandEmpty } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ChevronDownIcon } from "lucide-react";
+import { useT } from "@/lib/i18n";
 import {
   fileDropdownCommandClass,
   fileDropdownContentClass,
@@ -31,6 +32,7 @@ interface PlatformComboboxProps {
 }
 
 export default function PlatformCombobox({ value, onChange }: PlatformComboboxProps) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -62,7 +64,7 @@ export default function PlatformCombobox({ value, onChange }: PlatformComboboxPr
         aria-label="Select platform type"
       >
         <span className={displayName ? "text-sindicato-warm-white" : "text-sindicato-warm-white/40"}>
-          {displayName || "Select platform type..."}
+          {displayName || t("fileCase.selectPlatform")}
         </span>
         <ChevronDownIcon className="w-4 h-4 text-sindicato-warm-white/40 flex-shrink-0" />
       </PopoverTrigger>
@@ -74,14 +76,14 @@ export default function PlatformCombobox({ value, onChange }: PlatformComboboxPr
       >
         <Command shouldFilter={false} className={fileDropdownCommandClass}>
           <CommandInput
-            placeholder="Search platform types..."
+            placeholder={t("fileCase.searchPlatforms")}
             value={search}
             onValueChange={setSearch}
             className="text-sindicato-warm-white placeholder:text-sindicato-warm-white/30"
           />
           <CommandList>
             <CommandEmpty className="text-sindicato-warm-white/60 py-4 text-center text-sm">
-              No platforms found.
+              {t("fileCase.noPlatformsFound")}
             </CommandEmpty>
             {filtered.map((platform) => (
               <CommandItem

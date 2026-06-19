@@ -262,7 +262,8 @@
     "cancel": "Cancel",
     "saving": "Saving...",
     "storyWordCount": "{count} words",
-    "storyWordRange": "Must be between 100 and 500 words"
+    "storyWordRange": "Must be between 100 and 500 words",
+    "downloadDemandLetter": "Download Demand Letter"
   },
   "timelineSection": {
     "title": "Timeline",
@@ -327,6 +328,13 @@
     "companyWebsite": "Company website (optional)",
     "companyWebsiteTooltip": "Providing the company's website helps us find their contact information faster and notify them about your case.",
     "companyWebsiteHint": "e.g. https://www.example.com — This helps us contact the company about your case.",
+    "selectPlatform": "Select platform type...",
+    "searchPlatforms": "Search platform types...",
+    "noPlatformsFound": "No platforms found.",
+    "selectCountry": "Select country...",
+    "searchCountries": "Search countries...",
+    "noCountriesFound": "No countries found.",
+    "selectWorkPeriod": "Select work period",
     "searchCompanies": "Search companies...",
     "loadingCompanies": "Loading companies...",
     "companiesLoadFailed": "Couldn't load companies. You can still type a new one.",

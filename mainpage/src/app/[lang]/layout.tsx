@@ -4,6 +4,7 @@ import { AuthProvider } from "@/components/AuthProvider";
 import { ClerkWidgetProvider, ClerkBubble, ClerkPanel } from "@/components/clerk-widget";
 import LanguageSuggestionBanner from "@/components/LanguageSuggestionBanner";
 import { UmamiScript } from "@/components/UmamiScript";
+import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import { LocaleProvider } from "@/lib/i18n/locale-provider";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { locales, defaultLocale, isRTLLocale, type Locale } from "@/lib/i18n/config";
@@ -126,7 +127,12 @@ export default async function RootLayout({
         needsEthiopicFont && notoSansEthiopic.variable
       )}
     >
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#e94560" />
+      </head>
       <body className="font-[family-name:var(--font-inter)]">
+        <ServiceWorkerRegistration />
         <UmamiScript />
         <LocaleProvider
           locale={locale}

@@ -4,23 +4,32 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { nanoid } from "nanoid";
 import { format } from "date-fns";
+import { useT } from "@/lib/i18n";
 import type { CaseFormData, TimelineEvent } from "../FilingWizard";
 
-const EVENT_TYPE_OPTIONS = [
-  { value: "email_sent", label: "Email Sent" },
-  { value: "no_response", label: "No Response" },
-  { value: "canned_response", label: "Canned / Template Response" },
-  { value: "chat_support", label: "Support Chat" },
-  { value: "phone_call", label: "Phone Call" },
-  { value: "legal_notice", label: "Legal Notice" },
-  { value: "payment_partial", label: "Partial Payment Received" },
-  { value: "case_updated", label: "Case Updated" },
-  { value: "other", label: "Other" },
-];
+const EVENT_TYPE_KEYS: Record<string, string> = {
+  email_sent: "timeline.eventEmailSent",
+  no_response: "timeline.eventNoResponse",
+  canned_response: "timeline.eventCannedResponse",
+  chat_support: "timeline.eventChatSupport",
+  phone_call: "timeline.eventPhoneCall",
+  legal_notice: "timeline.eventLegalNotice",
+  payment_partial: "timeline.eventPaymentPartial",
+  case_updated: "timeline.eventCaseUpdated",
+  other: "timeline.eventOther",
+};
 
-const EVENT_TYPE_LABELS: Record<string, string> = Object.fromEntries(
-  EVENT_TYPE_OPTIONS.map((o) => [o.value, o.label])
-);
+const EVENT_TYPE_VALUES = [
+  "email_sent",
+  "no_response",
+  "canned_response",
+  "chat_support",
+  "phone_call",
+  "legal_notice",
+  "payment_partial",
+  "case_updated",
+  "other",
+];
 
 interface TimelineStepProps {
   caseData: CaseFormData;
@@ -51,6 +60,7 @@ export default function TimelineStep({
   onBack,
   onNext,
 }: TimelineStepProps) {
+  const t = useT();
   const companyDisplay = caseData.companyName || "the company";
   const [showForm, setShowForm] = useState(false);
   const [draft, setDraft] = useState<EventDraft>(emptyDraft());
@@ -59,7 +69,7 @@ export default function TimelineStep({
   function handleAddEvent() {
     setDraftError("");
     if (!draft.description.trim()) {
-      setDraftError("Please describe the interaction.");
+      setDraftError(t("timeline.errorDescription"));
       return;
     }
     const event: TimelineEvent = {
@@ -96,10 +106,10 @@ export default function TimelineStep({
     >
       <div className="bg-white/10 backdrop-blur-sm border border-white/10 p-6 sm:p-8">
         <h2 className="text-2xl font-bold text-sindicato-warm-white font-[family-name:var(--font-barlow)] uppercase tracking-wider mb-1">
-          Log your interactions
+          {t("timeline.title")}
         </h2>
         <p className="text-sindicato-warm-white/60 text-sm mb-8">
-          Track every email, chat, and contact attempt with {companyDisplay}. This creates a verifiable paper trail.
+          {t("timeline.subtitle", { company: companyDisplay })}
         </p>
 
         {/* Event list */}
@@ -113,7 +123,7 @@ export default function TimelineStep({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)] text-sindicato-bordeaux">
-                        {EVENT_TYPE_LABELS[ev.eventType] || ev.eventType}
+                        {t(EVENT_TYPE_KEYS[ev.eventType] || `timeline.eventOther`)}
                       </span>
                       <span className="text-sindicato-warm-white/30 text-xs">·</span>
                       <span className="text-xs text-sindicato-warm-white/50">
@@ -122,7 +132,7 @@ export default function TimelineStep({
                       {ev.responseReceived && (
                         <>
                           <span className="text-sindicato-warm-white/30 text-xs">·</span>
-                          <span className="text-xs text-sindicato-warm-white/50">Response received</span>
+                          <span className="text-xs text-sindicato-warm-white/50">{t("timeline.responseReceived")}</span>
                         </>
                       )}
                     </div>
@@ -157,24 +167,24 @@ export default function TimelineStep({
             >
               <div className="border border-sindicato-bordeaux/30 bg-sindicato-parchment/30 p-5 mb-6 space-y-4">
                 <h3 className="text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)] text-sindicato-charcoal/70">
-                  New interaction
+                  {t("timeline.newInteraction")}
                 </h3>
                 <div>
-                  <label className={labelClass}>Type</label>
+                  <label className={labelClass}>{t("timeline.typeLabel")}</label>
                   <select
                     value={draft.eventType}
                     onChange={(e) => setDraft((d) => ({ ...d, eventType: e.target.value }))}
                     className={inputClass}
                   >
-                    {EVENT_TYPE_OPTIONS.map((o) => (
-                      <option key={o.value} value={o.value}>
-                        {o.label}
+                    {EVENT_TYPE_VALUES.map((value) => (
+                      <option key={value} value={value}>
+                        {t(EVENT_TYPE_KEYS[value])}
                       </option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className={labelClass}>Date</label>
+                  <label className={labelClass}>{t("timeline.dateLabel")}</label>
                   <input
                     type="date"
                     value={draft.eventDate}
@@ -183,11 +193,11 @@ export default function TimelineStep({
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Description</label>
+                  <label className={labelClass}>{t("timeline.descriptionLabel")}</label>
                   <textarea
                     value={draft.description}
                     onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))}
-                    placeholder="Describe what happened..."
+                    placeholder={t("timeline.descriptionPlaceholder")}
                     rows={3}
                     className={`${inputClass} resize-none`}
                   />
@@ -200,7 +210,7 @@ export default function TimelineStep({
                     className="accent-sindicato-bordeaux"
                   />
                   <span className="text-xs text-sindicato-charcoal/70">
-                    I received a response (even if it was a canned reply)
+                    {t("timeline.responseCheckbox")}
                   </span>
                 </label>
                 {draftError && <p className="text-xs text-red-600">{draftError}</p>}
@@ -210,14 +220,14 @@ export default function TimelineStep({
                     onClick={handleAddEvent}
                     className="bg-sindicato-bordeaux text-sindicato-warm-white px-5 py-2 text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)] hover:bg-sindicato-bordeaux-dark transition-colors"
                   >
-                    Add
+                    {t("timeline.add")}
                   </button>
                   <button
                     type="button"
                     onClick={() => { setShowForm(false); setDraft(emptyDraft()); setDraftError(""); }}
                     className="text-sindicato-charcoal/50 hover:text-sindicato-charcoal text-xs uppercase tracking-wider font-[family-name:var(--font-barlow)] font-bold transition-colors"
                   >
-                    Cancel
+                    {t("common.cancel")}
                   </button>
                 </div>
               </div>
@@ -238,14 +248,14 @@ export default function TimelineStep({
                 </svg>
               </div>
               <p className="text-sindicato-charcoal/40 text-sm font-[family-name:var(--font-barlow)] uppercase tracking-wider">
-                No events yet
+                {t("timeline.noEvents")}
               </p>
               <button
                 type="button"
                 onClick={() => setShowForm(true)}
                 className="border border-sindicato-bordeaux text-sindicato-bordeaux px-5 py-2 text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)] hover:bg-sindicato-bordeaux/5 transition-colors"
               >
-                Add Event
+                {t("timeline.addEvent")}
               </button>
             </div>
           ) : (
@@ -254,25 +264,25 @@ export default function TimelineStep({
               onClick={() => setShowForm(true)}
               className="border border-sindicato-bordeaux text-sindicato-bordeaux px-5 py-2 text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-barlow)] hover:bg-sindicato-bordeaux/5 transition-colors mb-6 block"
             >
-              + Add Another Event
+              {t("timeline.addAnother")}
             </button>
           )
         )}
 
         <div className="flex flex-col gap-3">
           <button type="button" onClick={onNext} className={primaryBtnClass}>
-            Continue
+            {t("common.continue")}
           </button>
           <div className="flex items-center justify-between">
             <button type="button" onClick={onBack} className={secondaryBtnClass}>
-              Back
+              {t("common.back")}
             </button>
             <button
               type="button"
               onClick={onNext}
               className="text-sindicato-charcoal/40 hover:text-sindicato-charcoal/60 text-xs uppercase tracking-wider font-[family-name:var(--font-barlow)] transition-colors"
             >
-              Skip for now
+              {t("timeline.skip")}
             </button>
           </div>
         </div>

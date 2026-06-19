@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Command, CommandInput, CommandList, CommandItem, CommandEmpty } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ChevronDownIcon } from "lucide-react";
+import { useT } from "@/lib/i18n";
 import {
   fileDropdownCommandClass,
   fileDropdownContentClass,
@@ -110,6 +111,7 @@ interface CountryComboboxProps {
 }
 
 export default function CountryCombobox({ value, onChange }: CountryComboboxProps) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -137,7 +139,7 @@ export default function CountryCombobox({ value, onChange }: CountryComboboxProp
         <span className={selectedCountry ? "text-sindicato-warm-white" : "text-sindicato-warm-white/40"}>
           {selectedCountry
             ? `${selectedCountry.flag} ${selectedCountry.name}`
-            : "Select country..."}
+            : t("fileCase.selectCountry")}
         </span>
         <ChevronDownIcon className="w-4 h-4 text-sindicato-warm-white/40 flex-shrink-0" />
       </PopoverTrigger>
@@ -149,13 +151,13 @@ export default function CountryCombobox({ value, onChange }: CountryComboboxProp
       >
         <Command shouldFilter={false} className={fileDropdownCommandClass}>
           <CommandInput
-            placeholder="Search countries..."
+            placeholder={t("fileCase.searchCountries")}
             value={search}
             onValueChange={setSearch}
             className="text-sindicato-warm-white placeholder:text-sindicato-warm-white/30"
           />
           <CommandList>
-            <CommandEmpty className="text-sindicato-warm-white/60 py-4 text-center text-sm">No countries found.</CommandEmpty>
+            <CommandEmpty className="text-sindicato-warm-white/60 py-4 text-center text-sm">{t("fileCase.noCountriesFound")}</CommandEmpty>
             {filtered.map((country) => (
 <CommandItem
                  key={country.code}

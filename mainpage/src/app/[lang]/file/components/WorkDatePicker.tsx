@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { useT } from "@/lib/i18n";
 import {
   fileCalendarClass,
   fileCalendarClassNames,
@@ -21,12 +22,12 @@ interface WorkDatePickerProps {
 }
 
 export default function WorkDatePicker({ from, to, onChange }: WorkDatePickerProps) {
+  const t = useT();
   const [open, setOpen] = useState(false);
 
   const range: DateRange = { from, to };
 
   function handleOpenChange(nextOpen: boolean) {
-    // Keep popover open until the range has an end date
     if (!nextOpen && from && !to) return;
     setOpen(nextOpen);
   }
@@ -43,7 +44,7 @@ export default function WorkDatePicker({ from, to, onChange }: WorkDatePickerPro
     onChange({ from: selected.from, to: undefined });
   }
 
-  let displayText = "Select work period";
+  let displayText = t("fileCase.selectWorkPeriod");
   if (from && to) {
     displayText = `${format(from, "MMM yyyy")} – ${format(to, "MMM yyyy")}`;
   } else if (from) {

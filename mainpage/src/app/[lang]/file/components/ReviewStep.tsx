@@ -397,10 +397,10 @@ export default function ReviewStep({ email: propEmail, workerId: propWorkerId, c
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-sindicato-warm-white font-[family-name:var(--font-barlow)] uppercase tracking-wider mb-2">
-            Case filed
+            {t("review.submittedTitle")}
           </h2>
           <p className="text-sindicato-warm-white/60 text-sm mb-1">
-            Your case has been recorded.
+            {t("review.submittedBody")}
           </p>
           {caseId && (
             <p className="text-xs text-sindicato-warm-white/40 font-mono">
