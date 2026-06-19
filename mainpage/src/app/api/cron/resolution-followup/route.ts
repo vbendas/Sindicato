@@ -3,11 +3,10 @@ import { cases, companies } from "@/lib/db/schema";
 import { eq, and, lt, lte, or, isNull, sql } from "drizzle-orm";
 import { sendTemplateEmail } from "@/lib/email/send";
 import ResolutionFollowUp from "@/lib/email/templates/resolution-follow-up";
-import { success, error } from "@/lib/utils/api";
+import { success, error, verifyBearerSecret } from "@/lib/utils/api";
 
 export async function GET(request: Request) {
-  const auth = request.headers.get("authorization");
-  if (!process.env.CRON_SECRET || auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!verifyBearerSecret(request.headers.get("authorization"), process.env.CRON_SECRET)) {
     return error("Unauthorized", 401);
   }
 

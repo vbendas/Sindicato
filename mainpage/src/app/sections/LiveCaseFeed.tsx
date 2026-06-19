@@ -1,14 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useT, useLocale } from "@/lib/i18n";
 import { TranslatedCaseStory } from "@/components/case/TranslatedCaseStory";
 import { getTagSeverity, TAG_SEVERITY_COLORS, type TagSeverity } from "@/lib/ai/tag-taxonomy";
 import { TAG_I18N_MAP } from "@/components/CaseTag";
-import Masonry from "react-masonry-css";
 
 interface CaseItem {
   id: string;
@@ -194,16 +192,18 @@ export default function LiveCaseFeed() {
     
     // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
     void fetchCases(activeTab, controller.signal);
-    const interval = setInterval(() => {
+
+    const onVisibilityChange = () => {
       if (document.visibilityState === "visible") {
         void fetchCases(activeTab);
       }
-    }, 60000);
+    };
+    const intervalId = setInterval(onVisibilityChange, 60000);
     
     return () => {
       clearTimeout(timeoutId);
       controller.abort();
-      clearInterval(interval);
+      clearInterval(intervalId);
     };
   }, [fetchCases, activeTab]);
 
@@ -234,18 +234,12 @@ export default function LiveCaseFeed() {
   return (
     <section id="feed" className="bg-sindicato-charcoal pt-14 sm:pt-16 lg:pt-20 pb-4">
       <div className="px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
+        <div className="text-center mb-12 animate-[fade-in_0.6s_ease-out]">
           <div className="w-12 h-0.5 bg-white/20 mx-auto mb-4" />
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sindicato-warm-white uppercase font-[family-name:var(--font-barlow)] tracking-wide">
             {t("liveFeed.title")}
           </h2>
-        </motion.div>
+        </div>
 
         <div className="flex justify-center gap-2 mb-10">
           {tabs.map((tab) => (
@@ -294,11 +288,7 @@ export default function LiveCaseFeed() {
               WebkitMaskImage: "linear-gradient(to bottom, black 65%, transparent 100%)",
             } : undefined}
           >
-            <Masonry
-              breakpointCols={{ default: 3, 1024: 2, 640: 1 }}
-              className="flex gap-6"
-              columnClassName="flex flex-col gap-5"
-            >
+            <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 [&>*]:break-inside-avoid [&>*]:mb-5">
               {cases.map((item) => (
                 <CaseCard
                   key={item.id}
@@ -309,7 +299,7 @@ export default function LiveCaseFeed() {
                   onClick={() => router.push(`/${locale}/cases/${item.id}`)}
                 />
               ))}
-            </Masonry>
+            </div>
           </div>
         )}
 

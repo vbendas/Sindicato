@@ -1,7 +1,7 @@
 import { franc } from "franc";
 import { db } from "@/lib/db/client";
 import { cases, companies, caseTimelineEvents, caseTags } from "@/lib/db/schema";
-import { eq, and, desc, count, ilike, inArray } from "drizzle-orm";
+import { eq, and, desc, count, ilike, inArray, sql } from "drizzle-orm";
 import { success, error, getClientIp } from "@/lib/utils/api";
 import { rateLimit } from "@/lib/auth/rate-limit";
 import { caseSubmissionV2Schema } from "@/lib/utils/schemas";
@@ -43,11 +43,12 @@ export async function POST(request: Request) {
 
     const data = parsed.data;
 
-    if (data.turnstileToken) {
-      const verified = await verifyTurnstileToken(data.turnstileToken);
-      if (!verified) {
-        return error("Human verification failed. Please try again.", 400);
-      }
+    if (!data.turnstileToken) {
+      return error("Human verification required.", 400);
+    }
+    const verified = await verifyTurnstileToken(data.turnstileToken);
+    if (!verified) {
+      return error("Human verification failed. Please try again.", 400);
     }
 
     // Look up company by slug (case-insensitive), create if not found
@@ -73,14 +74,31 @@ export async function POST(request: Request) {
         return error("Invalid company name format", 400);
       }
 
-      [company] = await db
-        .insert(companies)
-        .values({
-          slug: data.companySlug,
-          name: data.companyName,
-          vertical: data.vertical,
-        })
-        .returning();
+      try {
+        [company] = await db
+          .insert(companies)
+          .values({
+            slug: data.companySlug,
+            name: data.companyName,
+            vertical: data.vertical,
+          })
+          .returning();
+      } catch (err: any) {
+        if (err?.code === "23505") {
+          const [existing] = await db
+            .select()
+            .from(companies)
+            .where(ilike(companies.slug, data.companySlug))
+            .limit(1);
+          if (existing) {
+            company = existing;
+          } else {
+            return error("Failed to create company", 500);
+          }
+        } else {
+          throw err;
+        }
+      }
     }
 
     // Update company website if worker provided one and company doesn't have one
@@ -92,6 +110,15 @@ export async function POST(request: Request) {
           websiteProvidedByWorker: true,
         })
         .where(eq(companies.id, company.id));
+    }
+
+    // Reset stale "scraping" status (>10 minutes old)
+    if (company.scrapeStatus === "scraping" && company.scrapedAt) {
+      const tenMinAgo = new Date(Date.now() - 10 * 60 * 1000);
+      if (company.scrapedAt < tenMinAgo) {
+        await db.update(companies).set({ scrapeStatus: "not_scraped" }).where(eq(companies.id, company.id));
+        company.scrapeStatus = "not_scraped";
+      }
     }
 
     // Trigger LLM email scraping if company has no contact emails
@@ -144,150 +171,157 @@ export async function POST(request: Request) {
     // Compute contactAttempts from timeline events
     const contactAttempts = data.timelineEvents.length;
 
-    const [newCase] = await db
-      .insert(cases)
-      .values({
-        companyId: company.id,
-        workerId: workerId,
-        vertical: data.vertical,
-        caseType: data.caseType,
-        displayName: data.displayName,
-        country: data.country || null,
-        ageRange: data.ageRange || null,
-        sex: data.sex || null,
-        project: data.project || null,
-        dateRange,
-        workDateStart: data.workDateStart ? new Date(data.workDateStart) : null,
-        workDateEnd: data.workDateEnd ? new Date(data.workDateEnd) : null,
-        amountOwed: data.amountOwed || "0",
-        currency: data.currency,
-        contactAttempts,
-        story: data.story,
-        storyTranslated,
-        email: data.email,
-        translationLanguage: detectedLang,
-        attested: true,
-        turnstileVerified: !!data.turnstileToken,
-        optInSolicitor: data.optInSolicitor,
-        optInCollective: data.optInCollective,
-        optInCompanyNotify: data.optInCompanyNotify,
-        optInCompanyContact: data.optInCompanyContact,
-        status: "active",
-      })
-      .returning({ id: cases.id });
+    const amountStr = data.amountOwed != null && data.amountOwed !== "" && Number(data.amountOwed) !== 0
+      ? `Amount owed: ${data.amountOwed} ${data.currency}.`
+      : "Case filed.";
 
-    try {
-      const alias = await createCaseAlias(newCase.id, data.email);
-      await db
-        .update(cases)
-        .set({ contactAlias: alias })
-        .where(eq(cases.id, newCase.id));
-    } catch (err) {
-      console.error("Failed to create alias:", err);
-    }
-
-    // Insert worker-provided timeline events
-    if (data.timelineEvents.length > 0) {
-      await db.insert(caseTimelineEvents).values(
-        data.timelineEvents.map((ev) => ({
-          caseId: newCase.id,
+    // Wrap core writes in a transaction
+    const newCaseId = await db.transaction(async (tx) => {
+      const [newCase] = await tx
+        .insert(cases)
+        .values({
+          companyId: company.id,
           workerId: workerId,
-          eventType: ev.eventType,
-          eventDate: new Date(ev.eventDate),
-          description: ev.description,
-          responseReceived: ev.responseReceived,
-        }))
-      );
-    }
+          vertical: data.vertical,
+          caseType: data.caseType,
+          displayName: data.displayName,
+          country: data.country || null,
+          ageRange: data.ageRange || null,
+          sex: data.sex || null,
+          project: data.project || null,
+          dateRange,
+          workDateStart: data.workDateStart ? new Date(data.workDateStart) : null,
+          workDateEnd: data.workDateEnd ? new Date(data.workDateEnd) : null,
+          amountOwed: data.amountOwed || "0",
+          currency: data.currency,
+          contactAttempts,
+          story: data.story,
+          storyTranslated,
+          email: data.email,
+          translationLanguage: detectedLang,
+          attested: true,
+          turnstileVerified: !!data.turnstileToken,
+          optInSolicitor: data.optInSolicitor,
+          optInCollective: data.optInCollective,
+          optInCompanyNotify: data.optInCompanyNotify,
+          optInCompanyContact: data.optInCompanyContact,
+          status: "active",
+        })
+        .returning({ id: cases.id });
 
-    // Auto-log case filed event
-    await db.insert(caseTimelineEvents).values({
-      caseId: newCase.id,
-      eventType: "case_updated" as const,
-      eventDate: new Date(),
-      description: data.amountOwed ? `Amount owed: ${data.amountOwed} ${data.currency}.` : "Case filed.",
-      responseReceived: false,
-      isAutomatic: true,
-    }).catch((err) => console.error("Failed to log case filed event:", err));
+      // Create alias
+      try {
+        const alias = await createCaseAlias(newCase.id, data.email);
+        await tx
+          .update(cases)
+          .set({ contactAlias: alias })
+          .where(eq(cases.id, newCase.id));
+      } catch (err) {
+        console.error("Failed to create alias:", err);
+      }
 
-    // Auto-insert user-selected tags from filing wizard
-    if (data.selectedTags && data.selectedTags.length > 0) {
-      const userTagRows = data.selectedTags.map((tagName: string) => ({
+      // Insert worker-provided timeline events
+      if (data.timelineEvents.length > 0) {
+        await tx.insert(caseTimelineEvents).values(
+          data.timelineEvents.map((ev) => ({
+            caseId: newCase.id,
+            workerId: workerId,
+            eventType: ev.eventType,
+            eventDate: new Date(ev.eventDate),
+            description: ev.description,
+            responseReceived: ev.responseReceived,
+          }))
+        );
+      }
+
+      // Auto-log case filed event
+      await tx.insert(caseTimelineEvents).values({
         caseId: newCase.id,
-        category: "other" as const,
-        tagName: tagName.trim(),
-        confidence: 100,
-        sourceText: "Selected by worker during case filing",
-        source: "user" as const,
-      }));
-      await db.insert(caseTags).values(userTagRows).catch((err) =>
-        console.error("Failed to insert user-selected tags:", err)
-      );
-    }
-
-    // Auto-tag based on form selections
-    const autoTagRows: Array<{
-      caseId: string;
-      category: string;
-      tagName: string;
-      confidence: number;
-      sourceText: string;
-      source: string;
-    }> = [];
-
-    if (data.optInCollective) {
-      autoTagRows.push({
-        caseId: newCase.id,
-        category: "worker_action",
-        tagName: "Collective action interest",
-        confidence: 100,
-        sourceText: "Worker opted in to collective action during case filing",
-        source: "auto",
+        eventType: "case_updated" as const,
+        eventDate: new Date(),
+        description: amountStr,
+        responseReceived: false,
+        isAutomatic: true,
       });
-    }
 
-    if (data.optInSolicitor) {
-      autoTagRows.push({
-        caseId: newCase.id,
-        category: "worker_action",
-        tagName: "Open to legal representation",
-        confidence: 100,
-        sourceText: "Worker opted in to be contacted by lawyers during case filing",
-        source: "auto",
-      });
-    }
+      // Auto-insert user-selected tags from filing wizard
+      if (data.selectedTags && data.selectedTags.length > 0) {
+        const userTagRows = data.selectedTags.map((tagName: string) => ({
+          caseId: newCase.id,
+          category: "other" as const,
+          tagName: tagName.trim(),
+          confidence: 100,
+          sourceText: "Selected by worker during case filing",
+          source: "user" as const,
+        }));
+        await tx.insert(caseTags).values(userTagRows);
+      }
 
-    if (autoTagRows.length > 0) {
-      await db.insert(caseTags).values(autoTagRows).catch((err) =>
-        console.error("Failed to insert auto-tags:", err)
-      );
-    }
+      // Auto-tag based on form selections
+      const autoTagRows: Array<{
+        caseId: string;
+        category: string;
+        tagName: string;
+        confidence: number;
+        sourceText: string;
+        source: string;
+      }> = [];
 
-    // Insert AI tags from the filing wizard (pre-computed during review step)
-    if (data.aiTags && data.aiTags.length > 0) {
-      const aiTagRows = data.aiTags.map((t) => ({
-        caseId: newCase.id,
-        category: t.category,
-        tagName: t.tagName.trim(),
-        confidence: Math.min(100, Math.max(0, Math.round(t.confidence))),
-        sourceText: t.sourceText.trim(),
-        source: "ai" as const,
-      }));
-      await db.insert(caseTags).values(aiTagRows).catch((err) =>
-        console.error("Failed to insert AI tags from payload:", err)
-      );
-    } else {
-      // Fallback: generate AI tags fire-and-forget if not pre-computed
-      generateCaseTags(newCase.id).catch((err) =>
+      if (data.optInCollective) {
+        autoTagRows.push({
+          caseId: newCase.id,
+          category: "worker_action",
+          tagName: "Collective action interest",
+          confidence: 100,
+          sourceText: "Worker opted in to collective action during case filing",
+          source: "auto",
+        });
+      }
+
+      if (data.optInSolicitor) {
+        autoTagRows.push({
+          caseId: newCase.id,
+          category: "worker_action",
+          tagName: "Open to legal representation",
+          confidence: 100,
+          sourceText: "Worker opted in to be contacted by lawyers during case filing",
+          source: "auto",
+        });
+      }
+
+      if (autoTagRows.length > 0) {
+        await tx.insert(caseTags).values(autoTagRows);
+      }
+
+      // Insert AI tags from the filing wizard (pre-computed during review step)
+      if (data.aiTags && data.aiTags.length > 0) {
+        const aiTagRows = data.aiTags.map((t) => ({
+          caseId: newCase.id,
+          category: t.category,
+          tagName: t.tagName.trim(),
+          confidence: Math.min(100, Math.max(0, Math.round(t.confidence))),
+          sourceText: t.sourceText.trim(),
+          source: "ai" as const,
+        }));
+        await tx.insert(caseTags).values(aiTagRows);
+      }
+
+      return newCase.id;
+    });
+
+    // Fire-and-forget: AI tag generation (outside transaction)
+    if (!data.aiTags || data.aiTags.length === 0) {
+      generateCaseTags(newCaseId).catch((err) =>
         console.error("Failed to generate case tags:", err)
       );
     }
 
-    // Generate per-case analysis (fire-and-forget)
-    generateCaseAnalysis(newCase.id).catch((err) =>
+    // Fire-and-forget: per-case analysis (outside transaction)
+    generateCaseAnalysis(newCaseId).catch((err) =>
       console.error("Failed to generate case analysis:", err)
     );
 
+    // Fire-and-forget: notify company
     if (data.optInCompanyNotify) {
       notifyCompanyNewCase({
         companyEmail: company.contactEmails?.[0] || "",
@@ -297,11 +331,11 @@ export async function POST(request: Request) {
           country: data.country || "",
           amountOwed: data.amountOwed || "0",
           currency: data.currency,
-          caseId: newCase.id,
+          caseId: newCaseId,
         },
       }).then(() => {
         db.insert(caseTimelineEvents).values({
-          caseId: newCase.id,
+          caseId: newCaseId,
           eventType: "email_sent" as const,
           eventDate: new Date(),
           description: `Notification email sent to ${company.name}.`,
@@ -315,7 +349,7 @@ export async function POST(request: Request) {
       console.error("Failed to invalidate company summary:", err)
     );
 
-    return success({ id: newCase.id }, 201);
+    return success({ id: newCaseId }, 201);
   } catch (err) {
     console.error("Error submitting case:", err);
     return error("Failed to submit case", 500);
@@ -359,6 +393,8 @@ export async function GET(request: Request) {
 
     const total = countResult?.total ?? 0;
 
+    const needFullStory = isPrivileged && !preview;
+
     const rows = await db
       .select({
         id: cases.id,
@@ -371,7 +407,9 @@ export async function GET(request: Request) {
         ageRange: cases.ageRange,
         sex: cases.sex,
         contactAlias: cases.contactAlias,
-        story: cases.story,
+        story: needFullStory
+          ? cases.story
+          : sql`LEFT(${cases.story}, 600)`.as("story_preview"),
         storyTranslated: cases.storyTranslated,
         translationLanguage: cases.translationLanguage,
         vertical: cases.vertical,
@@ -423,7 +461,7 @@ export async function GET(request: Request) {
       if (preview || !isPrivileged) {
         return {
           ...base,
-          storyPreview: row.story.slice(0, 600),
+          storyPreview: row.story,
           translationLanguage: row.translationLanguage,
         };
       }
@@ -448,7 +486,7 @@ export async function GET(request: Request) {
         total,
         totalPages: Math.ceil(total / limit),
       },
-    });
+    }, 200, { "Cache-Control": "public, s-maxage=30" });
   } catch (err) {
     console.error("Error fetching cases:", err);
     return error("Failed to fetch cases", 500);

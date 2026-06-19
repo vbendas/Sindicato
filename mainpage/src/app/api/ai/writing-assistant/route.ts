@@ -1,4 +1,5 @@
 import { z } from "zod/v4";
+import { auth } from "@/lib/auth";
 import { success, error, getClientIp } from "@/lib/utils/api";
 import { rateLimit } from "@/lib/auth/rate-limit";
 import { callOpenRouter, getWritingModel } from "@/lib/ai/openrouter";
@@ -16,6 +17,11 @@ const writingAssistantSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const session = await auth();
+  if (!session?.user) {
+    return error("Authentication required", 401);
+  }
+
   const ip = getClientIp(request);
   const { allowed } = await rateLimit(`ai-writing:${ip}`);
   if (!allowed) {

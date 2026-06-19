@@ -1,18 +1,11 @@
 import { db } from "@/lib/db/client";
 import { cases, caseAnalyses } from "@/lib/db/schema";
 import { eq, and, notInArray } from "drizzle-orm";
-import { success, error } from "@/lib/utils/api";
+import { success, error, verifyBearerSecret } from "@/lib/utils/api";
 import { generateCaseAnalysis } from "@/lib/ai/generate-case-analysis";
 
-export async function GET(request: Request) {
-  return POST(request);
-}
-
 export async function POST(request: Request) {
-  const authHeader = request.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+  if (!verifyBearerSecret(request.headers.get("authorization"), process.env.CRON_SECRET)) {
     return error("Unauthorized", 401);
   }
 

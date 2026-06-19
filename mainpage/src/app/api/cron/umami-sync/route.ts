@@ -1,11 +1,10 @@
 import { NextRequest } from "next/server";
+import { verifyBearerSecret } from "@/lib/utils/api";
 
-const CRON_SECRET = process.env.CRON_SECRET;
 const NO_CACHE_HEADERS = { "Cache-Control": "no-store, no-cache, must-revalidate" };
 
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("Authorization");
-  if (!CRON_SECRET || authHeader !== `Bearer ${CRON_SECRET}`) {
+  if (!verifyBearerSecret(req.headers.get("Authorization"), process.env.CRON_SECRET)) {
     return Response.json({ success: false, message: "Unauthorized" }, { status: 401, headers: NO_CACHE_HEADERS });
   }
 

@@ -1,4 +1,5 @@
 import { z } from "zod/v4";
+import { auth } from "@/lib/auth";
 import { success, error, getClientIp } from "@/lib/utils/api";
 import { rateLimit } from "@/lib/auth/rate-limit";
 import { callOpenRouter, getReportModel } from "@/lib/ai/openrouter";
@@ -29,6 +30,11 @@ const strengthResultSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const session = await auth();
+  if (!session?.user) {
+    return error("Authentication required", 401);
+  }
+
   const ip = getClientIp(request);
   const { allowed } = await rateLimit(`ai-strength:${ip}`);
   if (!allowed) {
@@ -49,14 +55,15 @@ export async function POST(request: Request) {
       temperature: 0.3,
     });
 
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
+    const firstBrace = raw.indexOf("{");
+    const lastBrace = raw.lastIndexOf("}");
+    if (firstBrace === -1 || lastBrace === -1 || lastBrace <= firstBrace) {
       return error("Failed to parse strength evaluation", 500);
     }
 
     let aiParsed: unknown;
     try {
-      aiParsed = JSON.parse(jsonMatch[0]);
+      aiParsed = JSON.parse(raw.slice(firstBrace, lastBrace + 1));
     } catch {
       return error("Invalid JSON from AI evaluation", 500);
     }

@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
 
   const parsed = verifyCodeSchema.safeParse(body);
   if (!parsed.success) {
-    return error("Invalid email or code format", 400);
+    return error("Invalid or expired code.", 400);
   }
 
   const { email, code } = parsed.data;
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
   });
 
   if (!token) {
-    return error("Invalid or expired code", 401);
+    return error("Invalid or expired code.", 401);
   }
 
   await db

@@ -1,13 +1,12 @@
 import { db } from "@/lib/db/client";
 import { cases, companies, caseTimelineEvents } from "@/lib/db/schema";
 import { eq, and, sql } from "drizzle-orm";
-import { success, error } from "@/lib/utils/api";
+import { success, error, verifyBearerSecret } from "@/lib/utils/api";
 import { notifyCompanyNewCase } from "@/lib/email/notifications";
 import { redactName } from "@/lib/utils/redaction";
 
 export async function GET(request: Request) {
-  const auth = request.headers.get("authorization");
-  if (!process.env.CRON_SECRET || auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!verifyBearerSecret(request.headers.get("authorization"), process.env.CRON_SECRET)) {
     return error("Unauthorized", 401);
   }
 
@@ -36,7 +35,7 @@ export async function GET(request: Request) {
             WHERE e.case_id = ${cases.id}
             AND e.event_type = 'email_sent'
             AND e.is_automatic = true
-            AND e.description LIKE '%notification%'
+            AND e.description ILIKE '%notification%'
           ) = false`
         )
       )

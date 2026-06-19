@@ -1,6 +1,6 @@
 import { db } from "@/lib/db/client";
 import { cases, companies, entityMetricsSnapshots, dataAccessLogs, auditLogs } from "@/lib/db/schema";
-import { eq, ne, and, or, gt, gte, lt, lte, inArray, like, count, sum, asc, desc, type SQL } from "drizzle-orm";
+import { eq, ne, and, or, gt, gte, lt, lte, inArray, like, count, sum, asc, desc, sql, type SQL } from "drizzle-orm";
 import type { PgColumn } from "drizzle-orm/pg-core";
 import { error, getClientIp } from "@/lib/utils/api";
 import { rateLimit } from "@/lib/auth/rate-limit";
@@ -408,7 +408,7 @@ async function executeMetricsPlan(plan: QueryPlan, fieldMap: Record<string, stri
   return { rows: [], summary: { type: "count", value: 0 } };
 }
 
-async function executeCasesPlan(plan: QueryPlan, fieldMap: Record<string, string>, extraFilters?: Filter[], requestsContact?: boolean): Promise<QueryResult> {
+async function executeCasesPlan(plan: QueryPlan, fieldMap: Record<string, string>, extraFilters?: Filter[], requestsContact?: boolean, isPrivileged?: boolean): Promise<QueryResult> {
   const whereClause = buildFilters(plan, fieldMap, extraFilters, false);
 
   if (plan.aggregation === "count") {
@@ -479,8 +479,13 @@ async function executeCasesPlan(plan: QueryPlan, fieldMap: Record<string, string
       dateRange: cases.dateRange,
       resolutionStatus: cases.resolutionStatus,
       createdAt: cases.createdAt,
-      story: cases.story,
     };
+
+    if (isPrivileged) {
+      selectFields.story = cases.story;
+    } else {
+      selectFields.story = sql<string>`LEFT(${cases.story}, 600)`;
+    }
     
     // Only include contactAlias when user explicitly requests contact information
     if (requestsContact && fieldMap.contactAlias) {
@@ -523,9 +528,9 @@ async function executeCasesPlan(plan: QueryPlan, fieldMap: Record<string, string
   return { rows: [], summary: { type: "count", value: 0 } };
 }
 
-async function executePlan(plan: QueryPlan, fieldMap: Record<string, string>, extraFilters?: Filter[], requestsContact?: boolean): Promise<QueryResult> {
+async function executePlan(plan: QueryPlan, fieldMap: Record<string, string>, extraFilters?: Filter[], requestsContact?: boolean, isPrivileged?: boolean): Promise<QueryResult> {
   if (plan.source === "metrics") return executeMetricsPlan(plan, fieldMap);
-  return executeCasesPlan(plan, fieldMap, extraFilters, requestsContact);
+  return executeCasesPlan(plan, fieldMap, extraFilters, requestsContact, isPrivileged);
 }
 
 function formatResultsForLlm(plan: QueryPlan, result: QueryResult): string {
@@ -704,7 +709,7 @@ export async function POST(request: Request) {
 
     let result;
     try {
-      result = await executePlan(plan, fieldMap, extraFilters, requestsContact);
+      result = await executePlan(plan, fieldMap, extraFilters, requestsContact, isPrivileged);
     } catch (execError) {
       console.error("[Query Execution Error]", {
         query: message,

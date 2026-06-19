@@ -1,15 +1,14 @@
 import { db } from "@/lib/db/client";
 import { cases, companies, companySummaries, caseTags } from "@/lib/db/schema";
-import { eq, sql, desc, and } from "drizzle-orm";
+import { eq, sql, asc, and, ne } from "drizzle-orm";
 import { sendTemplateEmail } from "@/lib/email/send";
 import WeeklyCompanyReport from "@/lib/email/templates/weekly-company-report";
 import { getTagSeverity } from "@/lib/ai/tag-taxonomy";
-import { success, error } from "@/lib/utils/api";
+import { success, error, verifyBearerSecret } from "@/lib/utils/api";
 import type { TagSeverity } from "@/lib/ai/tag-taxonomy";
 
 export async function GET(request: Request) {
-  const auth = request.headers.get("authorization");
-  if (!process.env.CRON_SECRET || auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!verifyBearerSecret(request.headers.get("authorization"), process.env.CRON_SECRET)) {
     return error("Unauthorized", 401);
   }
 
@@ -42,7 +41,7 @@ export async function GET(request: Request) {
           totalUnpaid: sql<string>`COALESCE(SUM(CASE WHEN ${cases.status} = 'active' THEN ${cases.amountOwed}::numeric ELSE 0 END), 0)`,
         })
         .from(cases)
-        .where(eq(cases.companyId, company.companyId));
+        .where(and(eq(cases.companyId, company.companyId), ne(cases.status, "deleted")));
 
       const row = stats[0];
       if (!row) continue;
@@ -58,7 +57,7 @@ export async function GET(request: Request) {
             eq(cases.status, "active")
           )
         )
-        .orderBy(desc(cases.createdAt))
+        .orderBy(asc(cases.createdAt))
         .limit(1);
 
       const oldestCaseDays = oldestCase

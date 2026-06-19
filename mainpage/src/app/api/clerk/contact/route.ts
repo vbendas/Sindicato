@@ -17,6 +17,12 @@ const ALLOWED_TYPES = [
 
 export async function POST(req: NextRequest) {
   try {
+    const origin = req.headers.get("origin");
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    if (baseUrl && (!origin || !origin.startsWith(baseUrl))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const ip = getClientIp(req);
     const { allowed, retryAfterMs } = await rateLimit(`contact_${ip}`, 3, 60 * 60 * 1000);
 

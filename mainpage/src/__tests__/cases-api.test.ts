@@ -1,12 +1,35 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("@/lib/db/client", () => ({
-  db: {
-    select: vi.fn(),
-    insert: vi.fn(),
-    update: vi.fn(),
-  },
-}));
+vi.mock("@/lib/db/client", () => {
+  const makeTxInsert = () => {
+    const chain = {
+      values: vi.fn().mockReturnValue({
+        returning: vi.fn().mockResolvedValue([{ id: "case-tx" }]),
+        catch: vi.fn().mockResolvedValue(undefined),
+      }),
+    };
+    return chain;
+  };
+  const makeTxUpdate = () => ({
+    set: vi.fn().mockReturnValue({
+      where: vi.fn().mockResolvedValue(undefined),
+    }),
+  });
+  return {
+    db: {
+      select: vi.fn(),
+      insert: vi.fn(),
+      update: vi.fn(),
+      transaction: vi.fn().mockImplementation(async (cb: any) => {
+        const tx = {
+          insert: vi.fn().mockImplementation(() => makeTxInsert()),
+          update: vi.fn().mockImplementation(() => makeTxUpdate()),
+        };
+        return cb(tx);
+      }),
+    },
+  };
+});
 
 vi.mock("@/lib/email/notifications", () => ({
   notifyCompanyNewCase: vi.fn().mockResolvedValue(undefined),

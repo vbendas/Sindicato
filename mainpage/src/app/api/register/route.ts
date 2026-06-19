@@ -84,11 +84,6 @@ export async function POST(request: NextRequest) {
     return error("Invalid or expired code", 401);
   }
 
-  await db
-    .update(verificationTokens)
-    .set({ usedAt: new Date() })
-    .where(eq(verificationTokens.id, token.id));
-
   const [existing] = await db
     .select()
     .from(platformAccounts)
@@ -108,6 +103,12 @@ export async function POST(request: NextRequest) {
     return error(`This email is already registered as a ${existing.role}. Use a different email or role.`, 409);
   }
 
+  // Mark token as used only after validation checks pass
+  await db
+    .update(verificationTokens)
+    .set({ usedAt: new Date() })
+    .where(eq(verificationTokens.id, token.id));
+
   const [account] = await db
     .insert(platformAccounts)
     .values({
@@ -123,9 +124,13 @@ export async function POST(request: NextRequest) {
     .returning();
 
   try {
-    await sendEmail({
-      to: process.env.ADMIN_EMAIL || email,
-      subject: `New ${role} registration: ${email}`,
+    const adminEmail = process.env.ADMIN_EMAIL;
+    if (!adminEmail) {
+      console.warn("ADMIN_EMAIL not set — skipping admin notification for registration");
+    } else {
+      await sendEmail({
+        to: adminEmail,
+        subject: `New ${role} registration: ${email}`,
       html: `
         <h1>New Platform Registration</h1>
         <p><strong>Role:</strong> ${escapeHtml(role)}</p>
@@ -135,7 +140,8 @@ export async function POST(request: NextRequest) {
         <p><strong>TOS Version:</strong> ${escapeHtml(tosVersion)}</p>
         <p>To approve, set <code>approval_status = 'approved'</code> in the <code>platform_accounts</code> table for id: ${escapeHtml(account.id)}</p>
       `,
-    });
+      });
+    }
   } catch (err) {
     console.error("Failed to send admin notification:", err);
   }

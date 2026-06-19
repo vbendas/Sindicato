@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
 import { translateStory } from "@/lib/ai/translate";
 import { rateLimit } from "@/lib/auth/rate-limit";
-import { getClientIp } from "@/lib/utils/api";
+import { error, getClientIp } from "@/lib/utils/api";
 import { locales } from "@/lib/i18n/config";
 
 export async function POST(request: Request) {
+  const session = await auth();
+  if (!session?.user) {
+    return error("Authentication required", 401);
+  }
+
   const ip = getClientIp(request);
   const rl = await rateLimit(`translate:${ip}`, 10, 60_000);
   if (!rl.allowed) {

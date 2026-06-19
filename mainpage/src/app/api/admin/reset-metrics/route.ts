@@ -1,18 +1,15 @@
 import { db } from "@/lib/db/client";
 import { entityMetricsSnapshots } from "@/lib/db/schema";
 import { sql } from "drizzle-orm";
-import { error, success, getClientIp } from "@/lib/utils/api";
+import { error, success, getClientIp, verifyBearerSecret } from "@/lib/utils/api";
 import { rateLimit } from "@/lib/auth/rate-limit";
-
-const CRON_SECRET = process.env.CRON_SECRET;
 
 export async function POST(request: Request) {
   const ip = getClientIp(request);
   const { allowed } = await rateLimit(`reset-metrics:${ip}`, 5, 60_000);
   if (!allowed) return error("Too many requests", 429);
 
-  const authHeader = request.headers.get("Authorization");
-  if (!CRON_SECRET || authHeader !== `Bearer ${CRON_SECRET}`) {
+  if (!verifyBearerSecret(request.headers.get("Authorization"), process.env.CRON_SECRET)) {
     return error("Unauthorized", 401);
   }
 

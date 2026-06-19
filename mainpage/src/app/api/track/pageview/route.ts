@@ -1,5 +1,5 @@
 import { db } from "@/lib/db/client";
-import { entityMetricsSnapshots } from "@/lib/db/schema";
+import { entityMetricsSnapshots, companies, cases } from "@/lib/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { error, success, getClientIp } from "@/lib/utils/api";
 import { rateLimit } from "@/lib/auth/rate-limit";
@@ -23,33 +23,18 @@ export async function POST(request: Request) {
       return error("Invalid entityType", 400);
     }
 
-    // Upsert: increment viewsTotal by 1
-    const existing = await db
-      .select()
-      .from(entityMetricsSnapshots)
-      .where(
-        and(
-          eq(entityMetricsSnapshots.entityType, entityType),
-          eq(entityMetricsSnapshots.entityId, entityId)
-        )
-      )
-      .limit(1);
+    // Validate entityId exists before tracking
+    if (entityType === "company") {
+      const [exists] = await db.select({ id: companies.id }).from(companies).where(eq(companies.id, entityId)).limit(1);
+      if (!exists) return success({ recorded: true });
+    } else if (entityType === "case") {
+      const [exists] = await db.select({ id: cases.id }).from(cases).where(eq(cases.id, entityId)).limit(1);
+      if (!exists) return success({ recorded: true });
+    }
 
-    if (existing.length > 0) {
-      await db
-        .update(entityMetricsSnapshots)
-        .set({
-          viewsTotal: sql`${entityMetricsSnapshots.viewsTotal} + 1`,
-          lastSyncedAt: new Date(),
-        })
-        .where(
-          and(
-            eq(entityMetricsSnapshots.entityType, entityType),
-            eq(entityMetricsSnapshots.entityId, entityId)
-          )
-        );
-    } else {
-      await db.insert(entityMetricsSnapshots).values({
+    // Atomic upsert using ON CONFLICT DO UPDATE
+    await db.insert(entityMetricsSnapshots)
+      .values({
         entityType,
         entityId,
         viewsTotal: 1,
@@ -60,8 +45,14 @@ export async function POST(request: Request) {
         visitors24h: 1,
         visitors7d: 1,
         lastSyncedAt: new Date(),
+      })
+      .onConflictDoUpdate({
+        target: [entityMetricsSnapshots.entityType, entityMetricsSnapshots.entityId],
+        set: {
+          viewsTotal: sql`${entityMetricsSnapshots.viewsTotal} + 1`,
+          lastSyncedAt: new Date(),
+        },
       });
-    }
 
     return success({ recorded: true });
   } catch (err) {

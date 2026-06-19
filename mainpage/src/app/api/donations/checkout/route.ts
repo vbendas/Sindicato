@@ -71,11 +71,12 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  if (turnstileToken) {
-    const verified = await verifyTurnstileToken(turnstileToken);
-    if (!verified) {
-      return error("Human verification failed. Please try again.", 400);
-    }
+  if (!turnstileToken) {
+    return error("Human verification required.", 400);
+  }
+  const verified = await verifyTurnstileToken(turnstileToken);
+  if (!verified) {
+    return error("Human verification failed. Please try again.", 400);
   }
 
   if (
@@ -145,7 +146,14 @@ export async function POST(request: NextRequest) {
             donorName: donorName ?? "",
           },
         },
-        return_url: `${baseUrl}/${locale}/donate/thanks?session_id={CHECKOUT_SESSION_ID}${returnTo && /^\/[a-z]{2}(\/.*)?$/.test(returnTo) ? `&returnTo=${encodeURIComponent(returnTo)}` : ""}`,
+        return_url: (() => {
+          const url = new URL(`/${locale}/donate/thanks`, baseUrl);
+          url.searchParams.set("session_id", "{CHECKOUT_SESSION_ID}");
+          if (returnTo && /^\/[a-z]{2}(\/.*)?$/.test(returnTo)) {
+            url.searchParams.set("returnTo", returnTo);
+          }
+          return url.toString();
+        })(),
       },
       { idempotencyKey: donationId }
     );
@@ -165,6 +173,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (e) {
     console.error("Stripe checkout session error:", e);
+    await db.update(donations).set({ status: "failed" }).where(eq(donations.id, donationId));
     return error("Could not create payment session. Please try again.", 500);
   }
 }

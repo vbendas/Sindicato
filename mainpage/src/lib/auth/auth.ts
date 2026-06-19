@@ -149,14 +149,27 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           if (process.env.NODE_ENV === 'development') {
             console.log('[Auth] Authorize - creating new worker');
           }
-          [worker] = await db
-            .insert(workers)
-            .values({
-              email,
-              displayName: email.split("@")[0],
-              emailVerified: true,
-            })
-            .returning();
+          try {
+            [worker] = await db
+              .insert(workers)
+              .values({
+                email,
+                displayName: email.split("@")[0],
+                emailVerified: true,
+              })
+              .returning();
+          } catch (err: any) {
+            if (err?.code === "23505") {
+              [worker] = await db
+                .select()
+                .from(workers)
+                .where(eq(workers.email, email))
+                .limit(1);
+              if (!worker) throw err;
+            } else {
+              throw err;
+            }
+          }
         } else {
           await db
             .update(workers)
@@ -224,33 +237,31 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         // Fetch companyId from database if not in token (for existing sessions)
         let companyId = token.companyId as string | undefined;
         if (!companyId && token.id) {
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[Auth] Fetching companyId from database for user:', token.id);
-          }
-          const [account] = await db
-            .select({ companyId: platformAccounts.companyId })
-            .from(platformAccounts)
-            .where(eq(platformAccounts.id, token.id as string))
-            .limit(1);
-          companyId = account?.companyId || undefined;
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[Auth] Fetched companyId:', companyId);
+          try {
+            const [account] = await db
+              .select({ companyId: platformAccounts.companyId })
+              .from(platformAccounts)
+              .where(eq(platformAccounts.id, token.id as string))
+              .limit(1);
+            companyId = account?.companyId || undefined;
+          } catch (err) {
+            console.error("Session callback: failed to fetch companyId:", err);
           }
         }
         
         if (companyId) {
           session.user.companyId = companyId;
-          // Fetch companyName from database
-          const [company] = await db
-            .select({ name: companies.name })
-            .from(companies)
-            .where(eq(companies.id, companyId))
-            .limit(1);
-          if (company) {
-            session.user.companyName = company.name;
-            if (process.env.NODE_ENV === 'development') {
-              console.log('[Auth] Fetched companyName:', company.name);
+          try {
+            const [company] = await db
+              .select({ name: companies.name })
+              .from(companies)
+              .where(eq(companies.id, companyId))
+              .limit(1);
+            if (company) {
+              session.user.companyName = company.name;
             }
+          } catch (err) {
+            console.error("Session callback: failed to fetch companyName:", err);
           }
         }
         

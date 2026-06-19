@@ -134,6 +134,13 @@
       "when": 1781386510623,
       "tag": "0018_safe_lord_hawal",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1781450000000,
+      "tag": "0019_add_performance_indexes",
+      "breakpoints": true
     }
   ]
 }

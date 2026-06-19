@@ -1,13 +1,10 @@
 import { db } from "@/lib/db/client";
 import { manualReviewQueue, companies } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
-import { success, error } from "@/lib/utils/api";
-
-const CRON_SECRET = process.env.CRON_SECRET;
+import { success, error, verifyBearerSecret } from "@/lib/utils/api";
 
 function checkAuth(request: Request) {
-  const authHeader = request.headers.get("Authorization");
-  if (!CRON_SECRET || authHeader !== `Bearer ${CRON_SECRET}`) {
+  if (!verifyBearerSecret(request.headers.get("Authorization"), process.env.CRON_SECRET)) {
     return error("Unauthorized", 401);
   }
   return null;

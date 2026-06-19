@@ -1,4 +1,8 @@
 import { callOpenRouter, getTranslationModel } from "./openrouter";
+import { db } from "@/lib/db/client";
+import { translations } from "@/lib/db/schema";
+import { eq, and } from "drizzle-orm";
+import { createHash } from "crypto";
 
 const TRANSLATION_SYSTEM = `You are a professional translator specializing in worker testimonies and labor rights documentation. Your task is to translate text accurately while preserving the original tone, emotion, and factual details.
 
@@ -50,6 +54,30 @@ export async function translateStory(
     return story;
   }
 
+  // Check cache first
+  const sourceHash = createHash("sha256").update(story).digest("hex");
+  const cacheKey = `${fromLang}-${toLang}`;
+
+  try {
+    const [cached] = await db
+      .select()
+      .from(translations)
+      .where(
+        and(
+          eq(translations.entityType, "story"),
+          eq(translations.field, cacheKey),
+          eq(translations.sourceHash, sourceHash)
+        )
+      )
+      .limit(1);
+
+    if (cached) {
+      return cached.translatedText;
+    }
+  } catch (err) {
+    console.error("Cache lookup failed:", err);
+  }
+
   const userPrompt = `Translate the following worker testimony from ${fromName} to ${toName}. Preserve the original tone, emotion, and all factual details. Return ONLY the translated text.
 
 --- BEGIN TEXT ---
@@ -65,7 +93,26 @@ ${story}
       temperature: 0.3,
     });
 
-    return translated.trim();
+    const result = translated.trim();
+
+    // Store in cache
+    try {
+      await db
+        .insert(translations)
+        .values({
+          entityType: "story",
+          entityId: sourceHash.slice(0, 255),
+          field: cacheKey,
+          locale: toLang,
+          translatedText: result,
+          sourceHash,
+        })
+        .onConflictDoNothing();
+    } catch (err) {
+      console.error("Cache store failed:", err);
+    }
+
+    return result;
   } catch (err) {
     console.error("Translation failed:", err);
     return story;

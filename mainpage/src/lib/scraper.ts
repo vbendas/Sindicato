@@ -1,4 +1,5 @@
 import { callOpenRouter, getScraperModel } from "@/lib/ai/openrouter";
+import { isUrlSafe } from "@/lib/utils/url-safety";
 
 const ROLE_BASED_PREFIXES = [
   "info@", "noreply@", "no-reply@", "support@",
@@ -82,6 +83,12 @@ function stripHtml(html: string): string {
 }
 
 async function fetchPageText(url: string): Promise<string | null> {
+  const safety = await isUrlSafe(url);
+  if (!safety.safe) {
+    console.warn(`Blocked unsafe URL: ${url} — ${safety.reason}`);
+    return null;
+  }
+
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10_000);

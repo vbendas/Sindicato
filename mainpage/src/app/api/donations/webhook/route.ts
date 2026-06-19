@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { eq } from "drizzle-orm";
+import { eq, and, ne } from "drizzle-orm";
 import type Stripe from "stripe";
 import { db } from "@/lib/db/client";
 import { donations } from "@/lib/db/schema";
@@ -121,14 +121,16 @@ async function handleCompleted(session: Stripe.Checkout.Session) {
     updates.donorName = session.customer_details.name;
   }
 
-  await db.update(donations).set(updates).where(eq(donations.id, donationId));
+  const [updated] = await db
+    .update(donations)
+    .set(updates)
+    .where(and(eq(donations.id, donationId), ne(donations.status, "completed")))
+    .returning();
+
+  if (!updated) return;
 
   // Fetch the row for receipt fields
-  const [row] = await db
-    .select()
-    .from(donations)
-    .where(eq(donations.id, donationId))
-    .limit(1);
+  const row = updated;
 
   if (row?.donorEmail) {
     try {

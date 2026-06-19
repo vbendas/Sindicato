@@ -1,12 +1,12 @@
 import { db } from "@/lib/db/client";
 import { companies, manualReviewQueue } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { success, error } from "@/lib/utils/api";
+import { success, error, verifyBearerSecret } from "@/lib/utils/api";
 import { scrapeCompanyEmails } from "@/lib/scraper";
+import { isUrlSafe } from "@/lib/utils/url-safety";
 
 export async function POST(request: Request) {
-  const auth = request.headers.get("authorization");
-  if (!process.env.CRON_SECRET || auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!verifyBearerSecret(request.headers.get("authorization"), process.env.CRON_SECRET)) {
     return error("Unauthorized", 401);
   }
 
@@ -16,6 +16,11 @@ export async function POST(request: Request) {
 
     if (!companyId) return error("companyId is required", 400);
     if (!companyWebsite) return error("companyWebsite is required", 400);
+
+    const urlSafety = await isUrlSafe(companyWebsite);
+    if (!urlSafety.safe) {
+      return error(`Unsafe URL: ${urlSafety.reason}`, 400);
+    }
 
     const [company] = await db
       .select()

@@ -3,7 +3,7 @@ import { cases, companies, caseTags } from "@/lib/db/schema";
 import { eq, and, or, isNull, sql } from "drizzle-orm";
 import { sendTemplateEmail } from "@/lib/email/send";
 import PerCaseFollowUp from "@/lib/email/templates/per-case-follow-up";
-import { success, error } from "@/lib/utils/api";
+import { success, error, verifyBearerSecret } from "@/lib/utils/api";
 import { redactName, formatCaseType } from "@/lib/utils/redaction";
 import { getTagSeverity, type TagSeverity } from "@/lib/ai/tag-taxonomy";
 
@@ -13,8 +13,7 @@ const MAX_DAYS_BETWEEN_EMAILS = 7;
 const WAGE_THEFT_TYPES = ["unpaid_wages", "late_payment", "contract_violation"];
 
 export async function GET(request: Request) {
-  const auth = request.headers.get("authorization");
-  if (!process.env.CRON_SECRET || auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!verifyBearerSecret(request.headers.get("authorization"), process.env.CRON_SECRET)) {
     return error("Unauthorized", 401);
   }
 

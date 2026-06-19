@@ -5,6 +5,8 @@ import { success, error, getClientIp } from "@/lib/utils/api";
 import { rateLimit } from "@/lib/auth/rate-limit";
 import { getTagSeverity, type TagSeverity } from "@/lib/ai/tag-taxonomy";
 
+export const revalidate = 120;
+
 type Vertical = "remote" | "gig";
 
 function verticalWhere(vertical?: Vertical | null) {
@@ -17,86 +19,69 @@ async function getStats(vertical?: Vertical | null) {
   const conditions = [ne(cases.status, "deleted")];
   if (vw) conditions.push(vw);
 
-  const [totalCasesRow] = await db
-    .select({ total: count() })
-    .from(cases)
-    .where(and(...conditions));
-
   const activeConditions = [eq(cases.status, "active")];
   if (vw) activeConditions.push(vw);
-
-  const [totalUnpaidRow] = await db
-    .select({ total: sum(cases.amountOwed) })
-    .from(cases)
-    .where(and(...activeConditions));
-
-  const unpaidByCurrency = await db
-    .select({
-      currency: cases.currency,
-      total: sum(cases.amountOwed),
-    })
-    .from(cases)
-    .where(and(...activeConditions))
-    .groupBy(cases.currency);
-
-  const [activeCompaniesRow] = await db
-    .select({ total: sql<number>`COUNT(DISTINCT ${cases.companyId})` })
-    .from(cases)
-    .where(and(...activeConditions));
 
   const solicitorConditions = [eq(cases.optInSolicitor, true), ne(cases.status, "deleted")];
   if (vw) solicitorConditions.push(vw);
 
-  const [workersLegalRow] = await db
-    .select({ total: count() })
-    .from(cases)
-    .where(and(...solicitorConditions));
-
   const resolvedConditions = [eq(cases.status, "resolved")];
   if (vw) resolvedConditions.push(vw);
-
-  const [casesResolvedRow] = await db
-    .select({ total: count() })
-    .from(cases)
-    .where(and(...resolvedConditions));
 
   const companyWhere = [ne(cases.status, "deleted")];
   if (vw) companyWhere.push(vw);
 
-  const companyStats = await db
-    .select({
-      companyId: cases.companyId,
-      companySlug: companies.slug,
-      companyName: companies.name,
-      vertical: companies.vertical,
-      caseCount: count(),
-      totalUnpaid: sum(cases.amountOwed),
-    })
-    .from(cases)
-    .innerJoin(companies, eq(cases.companyId, companies.id))
-    .where(and(...companyWhere))
-    .groupBy(cases.companyId, companies.slug, companies.name, companies.vertical);
-
   const topTagConditions = [ne(cases.status, "deleted")];
   if (vw) topTagConditions.push(vw);
 
-  const topTagRows = await db
-    .select({
-      tagName: caseTags.tagName,
-      cnt: sql<number>`COUNT(*)`,
-    })
-    .from(caseTags)
-    .innerJoin(cases, eq(caseTags.caseId, cases.id))
-    .where(and(...topTagConditions))
-    .groupBy(caseTags.tagName)
-    .orderBy(sql`COUNT(*) DESC`)
-    .limit(5);
-
-  const topTags = topTagRows.map((row) => ({
-    tagName: row.tagName,
-    severity: getTagSeverity(row.tagName) as TagSeverity,
-    count: row.cnt,
-  }));
+  const [
+    [totalCasesRow],
+    [totalUnpaidRow],
+    unpaidByCurrency,
+    [activeCompaniesRow],
+    [workersLegalRow],
+    [casesResolvedRow],
+    companyStats,
+    topTagRows,
+  ] = await Promise.all([
+    db.select({ total: count() }).from(cases).where(and(...conditions)),
+    db.select({ total: sum(cases.amountOwed) }).from(cases).where(and(...activeConditions)),
+    db
+      .select({ currency: cases.currency, total: sum(cases.amountOwed) })
+      .from(cases)
+      .where(and(...activeConditions))
+      .groupBy(cases.currency),
+    db
+      .select({ total: sql<number>`COUNT(DISTINCT ${cases.companyId})` })
+      .from(cases)
+      .where(and(...activeConditions)),
+    db.select({ total: count() }).from(cases).where(and(...solicitorConditions)),
+    db.select({ total: count() }).from(cases).where(and(...resolvedConditions)),
+    db
+      .select({
+        companyId: cases.companyId,
+        companySlug: companies.slug,
+        companyName: companies.name,
+        vertical: companies.vertical,
+        caseCount: count(),
+        totalUnpaid: sum(cases.amountOwed),
+      })
+      .from(cases)
+      .innerJoin(companies, eq(cases.companyId, companies.id))
+      .where(and(...companyWhere))
+      .groupBy(cases.companyId, companies.slug, companies.name, companies.vertical),
+    db
+      .select({
+        tagName: caseTags.tagName,
+        cnt: sql<number>`COUNT(*)`,
+      })
+      .from(caseTags)
+      .innerJoin(cases, eq(caseTags.caseId, cases.id))
+      .where(and(...topTagConditions))
+      .groupBy(caseTags.tagName)
+      .orderBy(sql`COUNT(*) DESC`)
+      .limit(5),
+  ]);
 
   return {
     totalCases: totalCasesRow?.total ?? 0,
@@ -108,7 +93,11 @@ async function getStats(vertical?: Vertical | null) {
     activeCompanies: activeCompaniesRow?.total ?? 0,
     workersLegal: workersLegalRow?.total ?? 0,
     casesResolved: casesResolvedRow?.total ?? 0,
-    topTags,
+    topTags: topTagRows.map((row) => ({
+      tagName: row.tagName,
+      severity: getTagSeverity(row.tagName) as TagSeverity,
+      count: row.cnt,
+    })),
     companies: companyStats.map((c) => ({
       slug: c.companySlug,
       name: c.companyName,
@@ -125,7 +114,7 @@ export async function GET(request: Request) {
   if (!allowed) return error("Too many requests", 429);
 
   const responseHeaders = {
-    "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60",
+    "Cache-Control": "public, s-maxage=120, stale-while-revalidate=300",
   };
 
   try {

@@ -139,7 +139,7 @@ export const manualReviewQueue = pgTable("manual_review_queue", {
 
 export const cases = pgTable("cases", {
   id: uuid("id").primaryKey().defaultRandom(),
-  workerId: uuid("worker_id"),
+  workerId: uuid("worker_id").references(() => workers.id),
   companyId: uuid("company_id")
     .references(() => companies.id)
     .notNull(),
@@ -186,7 +186,13 @@ export const cases = pgTable("cases", {
   resolutionFeedback: text("resolution_feedback"),
   lastFollowUpSentAt: timestamp("last_follow_up_sent_at"),
   lastPerCaseEmailSentAt: timestamp("last_per_case_email_sent_at"),
-});
+}, (t) => [
+  index("cases_company_id_idx").on(t.companyId),
+  index("cases_status_created_idx").on(t.status, t.createdAt),
+  index("cases_worker_id_idx").on(t.workerId),
+  index("cases_vertical_idx").on(t.vertical),
+  index("cases_created_at_idx").on(t.createdAt),
+]);
 
 export const companyAccessLog = pgTable("company_access_log", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -294,7 +300,9 @@ export const caseTimelineEvents = pgTable("case_timeline_events", {
   emailContent: text("email_content"),
   responseReceived: boolean("response_received").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (t) => [
+  index("timeline_case_id_idx").on(t.caseId, t.eventDate),
+]);
 
 export const entityMetricsSnapshots = pgTable(
   "entity_metrics_snapshots",
@@ -340,7 +348,9 @@ export const auditLogs = pgTable("audit_logs", {
   success: boolean("success").notNull(),
   reason: text("reason"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (t) => [
+  index("audit_logs_user_created_idx").on(t.userId, t.createdAt),
+]);
 
 export const caseTags = pgTable(
   "case_tags",
@@ -453,4 +463,6 @@ export const donations = pgTable("donations", {
   userAgent: text("user_agent"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   completedAt: timestamp("completed_at"),
-});
+}, (t) => [
+  index("donations_status_idx").on(t.status),
+]);

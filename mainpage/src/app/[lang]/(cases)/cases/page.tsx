@@ -101,7 +101,7 @@ function WallCaseCard({ c, locale, t, router }: CaseCardProps) {
               const label = i18nKey ? t(i18nKey) : tag.tagName;
               return (
                 <span
-                  key={i}
+                  key={tag.tagName}
                   className={`text-[10px] px-1.5 py-0.5 border font-[family-name:var(--font-jetbrains)] ${colors.bg} ${colors.text} ${colors.border}`}
                 >
                   {label}

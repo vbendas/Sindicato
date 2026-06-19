@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { inArray } from "drizzle-orm";
+import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/auth/rate-limit";
-import { getClientIp } from "@/lib/utils/api";
+import { error, getClientIp } from "@/lib/utils/api";
 import { locales } from "@/lib/i18n/config";
 import { db } from "@/lib/db";
 import { cases, companies, caseTimelineEvents } from "@/lib/db/schema";
@@ -43,6 +44,11 @@ interface RejectedItem {
 }
 
 export async function POST(request: Request) {
+  const session = await auth();
+  if (!session?.user) {
+    return error("Authentication required", 401);
+  }
+
   const ip = getClientIp(request);
   // 100 req/min/IP — batch endpoint, more permissive than per-translate.
   const rl = await rateLimit(`translations:${ip}`, 100, 60_000);
