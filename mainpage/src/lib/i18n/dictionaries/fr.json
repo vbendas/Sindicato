@@ -348,7 +348,6 @@
     "wordCount": "{count} / 500 mots",
     "minWords": "(min. 100)",
     "writeInYourLanguage": "Écrivez dans votre langue. Nous la traduirons pour vous.",
-    "templateHint": "Pré-remplissez votre récit avec un modèle suggéré",
     "ageRange": "Tranche d'âge (facultatif)",
     "ageRangeTooltip": "Votre tranche d'âge nous aide à identifier les schémas démographiques dans les problèmes liés au travail.",
     "projectName": "Nom du projet (facultatif)",

@@ -348,7 +348,6 @@
     "wordCount": "{count} / 500 palavras",
     "minWords": "(mín. 100)",
     "writeInYourLanguage": "Escreva no seu idioma. Nós traduzimos para você.",
-    "templateHint": "Preencha sua história com um modelo sugerido",
     "ageRange": "Faixa etária (opcional)",
     "ageRangeTooltip": "Sua faixa etária nos ajuda a identificar padrões demográficos nos problemas do trabalho.",
     "projectName": "Nome do projeto (opcional)",
