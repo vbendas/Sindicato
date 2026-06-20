@@ -9,10 +9,11 @@ import CompanyCombobox from "./CompanyCombobox";
 import CountryCombobox from "./CountryCombobox";
 import WorkDatePicker from "./WorkDatePicker";
 import PlatformCombobox from "./PlatformCombobox";
+import { StoryTips } from "@/components/cases/StoryTips";
 import type { CaseFormData } from "../FilingWizard";
 import { fileDropdownContentClass, fileSelectItemClass } from "../fileFormStyles";
 import { useT } from "@/lib/i18n";
-import { getTemplateForCaseType, getQuestionsForCaseType, buildStoryFromAnswers } from "@/lib/case-templates";
+import { getTemplateForCaseType } from "@/lib/case-templates";
 
 const CASE_TYPES = [
   { value: "unpaid_wages" },
@@ -86,23 +87,9 @@ export default function CaseDetailsStep({
     : 0;
 
   const showAmountField = !NO_AMOUNT_TYPES.has(caseData.caseType);
-  const [guidedMode, setGuidedMode] = useState(false);
-  const [questionAnswers, setQuestionAnswers] = useState<Record<string, string>>({});
-  const questions = caseData.caseType ? getQuestionsForCaseType(caseData.caseType) : [];
 
   function update<K extends keyof CaseFormData>(key: K, value: CaseFormData[K]) {
     setCaseData((prev) => ({ ...prev, [key]: value }));
-  }
-
-  function updateQuestionAnswer(id: string, value: string) {
-    const next = { ...questionAnswers, [id]: value };
-    setQuestionAnswers(next);
-    update("story", buildStoryFromAnswers(next, caseData.caseType || ""));
-  }
-
-  function switchToGuided() {
-    setGuidedMode(true);
-    setQuestionAnswers({});
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -300,36 +287,8 @@ export default function CaseDetailsStep({
               <FieldTooltip content={t("fileCase.whatHappenedTooltip")} />
             </label>
 
-            {/* Guided mode toggle */}
-            {caseData.caseType && questions.length > 0 && (
-              <div className="flex gap-2 mb-4">
-                <button
-                  type="button"
-                  onClick={() => switchToGuided()}
-                  className={`px-3 py-1.5 text-xs font-medium uppercase tracking-wider border transition-colors ${
-                    guidedMode
-                      ? "bg-white/20 border-white/40 text-sindicato-warm-white"
-                      : "bg-white/5 border-white/10 text-sindicato-warm-white/50 hover:border-white/30 hover:text-sindicato-warm-white/70"
-                  }`}
-                >
-                  {t("fileCase.guidedMode") ?? "Guided"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setGuidedMode(false)}
-                  className={`px-3 py-1.5 text-xs font-medium uppercase tracking-wider border transition-colors ${
-                    !guidedMode
-                      ? "bg-white/20 border-white/40 text-sindicato-warm-white"
-                      : "bg-white/5 border-white/10 text-sindicato-warm-white/50 hover:border-white/30 hover:text-sindicato-warm-white/70"
-                  }`}
-                >
-                  {t("fileCase.freeTextMode") ?? "Free text"}
-                </button>
-              </div>
-            )}
-
-            {/* Template dropdown (only in free text mode when story is empty) */}
-            {!guidedMode && caseData.caseType && getTemplateForCaseType(caseData.caseType) && !caseData.story && (
+            {/* Template dropdown (when story is empty) */}
+            {caseData.caseType && getTemplateForCaseType(caseData.caseType) && !caseData.story && (
               <div className="mb-3">
                 <Select
                   value=""
@@ -354,66 +313,42 @@ export default function CaseDetailsStep({
               </div>
             )}
 
-            {/* Guided mode: questions */}
-            {guidedMode && questions.length > 0 ? (
-              <div className="space-y-4">
-                {questions.map((q) => (
-                  <div key={q.id}>
-                    <label htmlFor={`q-${q.id}`} className="flex items-center text-sindicato-warm-white/70 mb-1.5 text-xs font-medium">
-                      {q.question}
-                      {q.required && <span className="text-sindicato-warm-white/40 ml-1">*</span>}
-                    </label>
-                    <textarea
-                      id={`q-${q.id}`}
-                      value={questionAnswers[q.id] || ""}
-                      onChange={(e) => updateQuestionAnswer(q.id, e.target.value)}
-                      placeholder={q.placeholder}
-                      rows={2}
-                      className={`${inputClass} resize-y min-h-[4rem]`}
-                    />
-                  </div>
-                ))}
-                {wordCount > 0 && (
-                  <p className={`text-xs text-right ${
-                    wordCount < 100 || wordCount > 500
-                      ? "text-sindicato-warm-white/40"
-                      : "text-green-400"
-                  }`}>
-                    {t("fileCase.wordCount", { count: wordCount.toString() })}
-                    {wordCount < 100 && wordCount > 0 && (
-                      <span className="ml-1">{t("fileCase.minWords")}</span>
-                    )}
-                  </p>
-                )}
-              </div>
-            ) : (
-              /* Free text mode */
-              <>
-                <textarea
-                  id="story"
-                  value={caseData.story}
-                  onChange={(e) => update("story", e.target.value)}
-                  placeholder={t("fileCase.whatHappenedPlaceholder")}
-                  rows={8}
-                  className={`${inputClass} resize-y min-h-[12rem]`}
-                  required
-                />
-                <p className="text-xs mt-1 text-left text-sindicato-warm-white/50 italic">
-                  {t("fileCase.writeInYourLanguage")}
-                </p>
-                <p
-                  className={`text-xs mt-1 text-right ${
-                    wordCount < 100 || wordCount > 500
-                      ? "text-sindicato-warm-white/40"
-                      : "text-green-400"
-                  }`}
-                >
-                  {t("fileCase.wordCount", { count: wordCount.toString() })}
-                  {wordCount < 100 && wordCount > 0 && (
-                    <span className="ml-1">{t("fileCase.minWords")}</span>
-                  )}
-                </p>
-              </>
+            <textarea
+              id="story"
+              value={caseData.story}
+              onChange={(e) => update("story", e.target.value)}
+              placeholder={t("fileCase.whatHappenedPlaceholder")}
+              rows={8}
+              className={`${inputClass} resize-y min-h-[12rem]`}
+              required
+            />
+            <p className="text-xs mt-1 text-left text-sindicato-warm-white/50 italic">
+              {t("fileCase.writeInYourLanguage")}
+            </p>
+            <p
+              className={`text-xs mt-1 text-right ${
+                wordCount < 100 || wordCount > 500
+                  ? "text-sindicato-warm-white/40"
+                  : "text-green-400"
+              }`}
+            >
+              {t("fileCase.wordCount", { count: wordCount.toString() })}
+              {wordCount < 100 && wordCount > 0 && (
+                <span className="ml-1">{t("fileCase.minWords")}</span>
+              )}
+            </p>
+
+            {/* AI Story Tips */}
+            {wordCount >= 50 && caseData.caseType && (
+              <StoryTips
+                displayName={caseData.displayName}
+                country={caseData.country}
+                project={caseData.project}
+                dateRange={[caseData.workDateStart, caseData.workDateEnd].filter(Boolean).join(" – ")}
+                amountOwed={caseData.amountOwed}
+                currency={caseData.currency}
+                story={caseData.story}
+              />
             )}
           </div>
 

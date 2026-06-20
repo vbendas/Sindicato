@@ -358,8 +358,6 @@
     "wordCount": "{count} / 500 words",
     "minWords": "(min. 100)",
     "writeInYourLanguage": "Write in your own language. We'll translate it for you.",
-    "guidedMode": "Guided",
-    "freeTextMode": "Free text",
     "templateHint": "Pre-fill your story with a suggested template",
     "ageRange": "Age range (optional)",
     "ageRangeTooltip": "Your age range helps us identify demographic patterns in workplace issues.",
